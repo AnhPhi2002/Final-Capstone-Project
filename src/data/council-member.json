@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "email": "fender1@example.com",
+    "phoneNumber": "+0321558881",
+    "lecturerCode": "L001",
+    "role": "Chủ tịch",
+    "status": "Hoạt động",
+    "createdAt": "2023-01-15T10:00:00Z",
+    "updatedAt": "2023-12-01T12:00:00Z"
+  },
+  {
+    "id": 2,
+    "email": "fender2@example.com",
+    "phoneNumber": "+0321558882",
+    "lecturerCode": "L002",
+    "role": "Thư ký",
+    "status": "Hoạt động",
+    "createdAt": "2022-08-22T09:30:00Z",
+    "updatedAt": "2023-11-15T14:00:00Z"
+  },
+  {
+    "id": 3,
+    "email": "fender3@example.com",
+    "phoneNumber": "+0321558883",
+    "lecturerCode": "L003",
+    "role": "Thành viên",
+    "status": "Hoạt động",
+    "createdAt": "2023-05-10T08:15:00Z",
+    "updatedAt": "2023-12-10T16:45:00Z"
+  },
+  {
+    "id": 4,
+    "email": "fender4@example.com",
+    "phoneNumber": "+0321558884",
+    "lecturerCode": "L004",
+    "role": "Thành viên",
+    "status": "Tạm thay thế",
+    "createdAt": "2023-03-05T11:20:00Z",
+    "updatedAt": "2023-12-12T10:30:00Z"
+  },
+  {
+    "id": 5,
+    "email": "fender5@example.com",
+    "phoneNumber": "+0321558885",
+    "lecturerCode": "L005",
+    "role": "Thành viên",
+    "status": "Vắng mặt",
+    "createdAt": "2022-11-11T07:45:00Z",
+    "updatedAt": "2023-12-15T09:00:00Z"
+  }
+]
