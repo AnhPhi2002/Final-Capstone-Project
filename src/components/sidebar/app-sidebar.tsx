@@ -48,6 +48,10 @@ const data = {
           url: "/student",
         },
         {
+          title: "D.s nhóm KLTN",
+          url: "/group-student",
+        },
+        {
           title: "D.s hội đồng đánh giá ",
           url: "/council-member",
         },

@@ -3,6 +3,9 @@ import MainLayout from "@/layouts/main-layout";
 
 import CouncilMemberPage from "@/pages/admin/council-member/council-member-listing/council-member-page";
 import DashboardPage from "@/pages/admin/dashboard/dashboard-page";
+import { GroupStudentDetail } from "@/pages/admin/group-student/group-student-detail/group-student-detail";
+import { GroupStudentPage } from "@/pages/admin/group-student/group-student-page";
+import ImportStudentPage from "@/pages/admin/import-student/import-student-page";
 import StudentListPage from "@/pages/admin/student-list/student-list-page";
 
 import CreateUserPage from "@/pages/admin/user/create-user-page";
@@ -19,6 +22,9 @@ const MainContainter = () => {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/council-member" element={<CouncilMemberPage />} />
         <Route path="/student" element={<StudentListPage />} />
+        <Route path="/group-student" element={<GroupStudentPage />} />
+        <Route path="/group-student/:groupId" element={<GroupStudentDetail />} />
+        <Route path="/import-student" element={<ImportStudentPage />} />
         <Route path="/user" element={<UsersPage />} />
         <Route path="/user/:userId" element={<UserDetail />} />
         <Route path="/create-user" element={<CreateUserPage />} />

@@ -1,0 +1,128 @@
+[
+  {
+    "id": 1,
+    "group_code": "G2025A01",
+    "semester_id": 2,
+    "status": "active",
+    "is_auto_created": true,
+    "created_by": 101,
+    "max_members": 30,
+    "is_multi_major": false,
+    "created_at": "2025-01-13T08:00:00Z",
+    "updated_at": "2025-01-13T10:00:00Z",
+    "mentor_1_id": "M123",
+    "mentor_2_id": null,
+    "group_members": [
+      {
+        "id": 1,
+        "group_id": 1,
+        "student_id": 1001,
+        "role": "leader",
+        "joined_at": "2025-01-01T08:00:00Z",
+        "leave_at": null,
+        "leave_reason": null,
+        "is_active": true,
+        "status": "active"
+      },
+      {
+        "id": 2,
+        "group_id": 1,
+        "student_id": 1002,
+        "role": "member",
+        "joined_at": "2025-01-02T09:00:00Z",
+        "leave_at": null,
+        "leave_reason": null,
+        "is_active": true,
+        "status": "active"
+      }
+   
+    ]
+  },
+  {
+    "id": 2,
+    "group_code": "G2025B02",
+    "semester_id": 3,
+    "status": "pending",
+    "is_auto_created": false,
+    "created_by": 102,
+    "max_members": 25,
+    "is_multi_major": true,
+    "created_at": "2025-01-10T08:00:00Z",
+    "updated_at": "2025-01-12T09:00:00Z",
+    "mentor_1_id": "M124",
+    "mentor_2_id": "M125",
+    "group_members": [
+      {
+        "id": 3,
+        "group_id": 2,
+        "student_id": 1003,
+        "role": "assistant",
+        "joined_at": "2025-01-11T08:30:00Z",
+        "leave_at": "2025-01-15T10:00:00Z",
+        "leave_reason": "Transferred",
+        "is_active": false,
+        "status": "left"
+      },
+      {
+        "id": 4,
+        "group_id": 2,
+        "student_id": 1004,
+        "role": "member",
+        "joined_at": "2025-01-11T09:00:00Z",
+        "leave_at": null,
+        "leave_reason": null,
+        "is_active": true,
+        "status": "active"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "group_code": "G2025C03",
+    "semester_id": 1,
+    "status": "inactive",
+    "is_auto_created": true,
+    "created_by": 103,
+    "max_members": 20,
+    "is_multi_major": false,
+    "created_at": "2024-12-01T10:00:00Z",
+    "updated_at": "2025-01-05T10:30:00Z",
+    "mentor_1_id": null,
+    "mentor_2_id": null,
+    "group_members": [
+      {
+        "id": 5,
+        "group_id": 3,
+        "student_id": 1005,
+        "role": "leader",
+        "joined_at": "2024-12-02T08:00:00Z",
+        "leave_at": "2025-01-01T12:00:00Z",
+        "leave_reason": "Graduated",
+        "is_active": false,
+        "status": "left"
+      },
+      {
+        "id": 6,
+        "group_id": 3,
+        "student_id": 1006,
+        "role": "member",
+        "joined_at": "2024-12-03T08:30:00Z",
+        "leave_at": null,
+        "leave_reason": null,
+        "is_active": true,
+        "status": "active"
+      },
+      {
+        "id": 7,
+        "group_id": 3,
+        "student_id": 1007,
+        "role": "member",
+        "joined_at": "2024-12-05T09:00:00Z",
+        "leave_at": null,
+        "leave_reason": null,
+        "is_active": true,
+        "status": "active"
+      }
+    ]
+  }
+]
