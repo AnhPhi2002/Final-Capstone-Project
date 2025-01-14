@@ -23,34 +23,43 @@ export const columns: ColumnDef<Student>[] = [
     header: "ID",
   },
   {
-    accessorKey: "student_code",
-    header: "Student Code",
+    accessorKey: "email",
+    header: "Email",
+    cell: ({ row }) => {
+      return "phi@fpt.edu.vn"
+    },
   },
   {
     accessorKey: "major_id",
     header: "Major ID",
+    cell: ({ row }) => {
+      return "SE"
+    },
   },
   {
     accessorKey: "specialty_id",
     header: "Specialty ID",
+    cell: ({ row }) => {
+      return "NJS"
+    },
   },
-  {
-    accessorKey: "credits_completed",
-    header: "Credits Completed",
-  },
-  {
-    accessorKey: "is_eligible",
-    header: "Eligible",
-    cell: ({ getValue }) => (getValue() ? "Yes" : "No"),
-  },
+  // {
+  //   accessorKey: "credits_completed",
+  //   header: "Credits Completed",
+  // },
+  // {
+  //   accessorKey: "is_eligible",
+  //   header: "Eligible",
+  //   cell: ({ getValue }) => (getValue() ? "Yes" : "No"),
+  // },
   {
     accessorKey: "block3w_status",
     header: "Block 3W Status",
   },
-  {
-    accessorKey: "semester_id",
-    header: "Semester ID",
-  },
+  // {
+  //   accessorKey: "semester_id",
+  //   header: "Semester ID",
+  // },
   {
     accessorKey: "status",
     header: "Status",
@@ -58,15 +67,16 @@ export const columns: ColumnDef<Student>[] = [
   {
     accessorKey: "import_at",
     header: "Import Date",
-    cell: ({ getValue }) => format(new Date(getValue() as string), "yyyy-MM-dd HH:mm"),
+    cell: ({ getValue }) =>
+      format(new Date(getValue() as string), "HH:mm dd/MM/yyyy"),
   },
-  {
-    accessorKey: "import_source",
-    header: "Import Source",
-  },
-  {
-    accessorKey: "is_imported",
-    header: "Imported",
-    cell: ({ getValue }) => (getValue() ? "Yes" : "No"),
-  },
+  // {
+  //   accessorKey: "import_source",
+  //   header: "Import Source",
+  // },
+  // {
+  //   accessorKey: "is_imported",
+  //   header: "Imported",
+  //   cell: ({ getValue }) => (getValue() ? "Yes" : "No"),
+  // },
 ];
