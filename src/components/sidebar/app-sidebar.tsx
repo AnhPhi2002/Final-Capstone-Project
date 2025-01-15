@@ -60,112 +60,113 @@ const data = {
     },
     {
       title: "Hội đồng đánh giá ",
-      url: "/product",
+      url: "/",
       icon: Store,
       isActive: true,
       items: [
-        // {
-        //   title: "Hội đồng đánh giá ",
-        //   url: "/product",
-        // },
+   
         {
           title: "Đánh giá đợi 1 ",
-          url: "/order",
+          url: "/",
         },
         {
           title: "Đánh giá đợi 2 ",
-          url: "/category",
+          url: "/",
         },
         {
           title: "",
-          url: "/brand",
+          url: "/",
         },
   
       ],
     },
     {
-      title: "Tai khoan",
+      title: "Người dùng ",
       url: "/user",
       icon: CircleUserRound,
       isActive: true,
       items: [
-        {
-          title: "Hội đồng xét duyệt",
-          url: "/category",
-        },
-        {
-          title: "Hội đồng review",
-          url: "/category",
-        },
-        {
-          title: "Giảng viên hướng dẫn",
-          url: "/category",
-        },
-        {
-          title: "Sinh viên",
-          url: "/category",
-        },
-      ],
-    },
-    {
-      title: "Hội đồng xét duyệt",
-      url: "/user",
-      icon: CircleUserRound,
-      isActive: true,
-      items: [
-      
-      ],
-    },
-    {
-      title: "Hội đồng review",
-      url: "/user",
-      icon: CircleUserRound,
-      isActive: true,
-      items: [
-   
-      ],
-    },
-    {
-      title: "Giảng viên hướng dẫn ",
-      url: "/user",
-      icon: CircleUserRound,
-      isActive: true,
-      items: [
-    
-      ],
-    },
-    {
-      title: "Sinh viên",
-      url: "/user",
-      icon: CircleUserRound,
-      isActive: true,
-      items: [
-     
-      ],
-    },
-    {
-      title: "Admin",
-      url: "#",
-      icon: RectangleEllipsis,
-      items: [
-        {
+       {
           title: "Tài khoản",
           url: "/user",
         },
-      ],
-    },
-    {
-      title: "test",
-      url: "/council-member",
-      icon: CircleUserRound,
-      isActive: true,
-      items: [
         {
-          title: "D.s hội đồng đánh giá ",
-          url: "/council-member",
+          title: "Hội đồng xét duyệt",
+          url: "",
+        },
+        {
+          title: "Hội đồng review",
+          url: "",
+        },
+        {
+          title: "Giảng viên hướng dẫn",
+          url: "",
+        },
+        {
+          title: "Sinh viên",
+          url: "",
         },
       ],
     },
+    // {
+    //   title: "Hội đồng xét duyệt",
+    //   url: "/user",
+    //   icon: CircleUserRound,
+    //   isActive: true,
+    //   items: [
+      
+    //   ],
+    // },
+    // {
+    //   title: "Hội đồng review",
+    //   url: "/user",
+    //   icon: CircleUserRound,
+    //   isActive: true,
+    //   items: [
+   
+    //   ],
+    // },
+    // {
+    //   title: "Giảng viên hướng dẫn ",
+    //   url: "/user",
+    //   icon: CircleUserRound,
+    //   isActive: true,
+    //   items: [
+    
+    //   ],
+    // },
+    // {
+    //   title: "Sinh viên",
+    //   url: "/user",
+    //   icon: CircleUserRound,
+    //   isActive: true,
+    //   items: [
+     
+    //   ],
+    // },
+    // {
+    //   title: "Admin",
+    //   url: "#",
+    //   icon: RectangleEllipsis,
+    //   items: [
+    //     {
+    //       title: "Tài khoản",
+    //       url: "/user",
+    //     },
+    //   ],
+    // },
+    // {
+    //   title: "test",
+    //   url: "/council-member",
+    //   icon: CircleUserRound,
+    //   isActive: true,
+    //   items: [
+    //     {
+    //       title: "D.s hội đồng đánh giá ",
+    //       url: "/council-member",
+    //     },
+    //   ],
+    // },
   ],
 };
 
@@ -179,8 +180,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <img src="/electric-guitar.png" className="size-4" />
             </div>
             <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-semibold">Innovibe</span>
-              <span className="truncate text-xs">OMS</span>
+              <span className="truncate font-semibold">FCPRIMS</span>
+              <span className="truncate text-xs">HCMC FU</span>
             </div>
           </SidebarMenuItem>
         </SidebarMenu>
