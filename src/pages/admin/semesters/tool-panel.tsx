@@ -24,7 +24,6 @@ export function ToolPanel({ table }: { table: any }) {
 
   return (
     <div className="flex items-center py-4">
-      {/* Input Filter */}
       <Input
         placeholder="Filter semesters..."
         value={(table.getColumn("code")?.getFilterValue() as string) ?? ""}
@@ -33,11 +32,8 @@ export function ToolPanel({ table }: { table: any }) {
         }
         className="max-w-sm"
       />
-
-      {/* Dropdown Menu & Select ở bên phải */}
       <div className="ml-auto flex items-center space-x-4">
-        {/* Dropdown Menu */}
-        <Select onValueChange={handleSemesterFilter}>
+      <Select onValueChange={handleSemesterFilter}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Select a semester" />
           </SelectTrigger>
@@ -72,9 +68,7 @@ export function ToolPanel({ table }: { table: any }) {
               ))}
           </DropdownMenuContent>
         </DropdownMenu>
-
-        {/* Select */}
-  
+       
       </div>
     </div>
   );

@@ -1,4 +1,11 @@
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table";
 import { flexRender } from "@tanstack/react-table";
 
 export function DataTable({ table }: { table: any }) {
@@ -12,7 +19,10 @@ export function DataTable({ table }: { table: any }) {
                 <TableHead key={header.id}>
                   {header.isPlaceholder
                     ? null
-                    : flexRender(header.column.columnDef.header, header.getContext())}
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                 </TableHead>
               ))}
             </TableRow>
@@ -31,7 +41,10 @@ export function DataTable({ table }: { table: any }) {
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={table.getAllColumns().length} className="text-center">
+              <TableCell
+                colSpan={table.getAllColumns().length}
+                className="text-center"
+              >
                 No results.
               </TableCell>
             </TableRow>

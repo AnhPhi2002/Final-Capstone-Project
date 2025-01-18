@@ -1,18 +1,10 @@
+// columns.tsx
+
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ActionMenu } from "./action";
-
-export type Semester = {
-  id: string;
-  code: string;
-  start_date: string;
-  end_date: string;
-  registration_deadline: string;
-  status: "Active" | "Inactive";
-  created_at: string;
-  year: string;
-};
+import { Semester } from "@/types/semester";
 
 export const columns: ColumnDef<Semester>[] = [
   {
@@ -56,7 +48,8 @@ export const columns: ColumnDef<Semester>[] = [
   {
     accessorKey: "start_date",
     header: "Ngày bắt đầu",
-    cell: ({ row }) => new Date(row.getValue("start_date")).toLocaleDateString(),
+    cell: ({ row }) =>
+      new Date(row.getValue("start_date")).toLocaleDateString(),
   },
   {
     accessorKey: "end_date",
