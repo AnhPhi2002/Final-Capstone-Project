@@ -1,8 +1,11 @@
 import * as React from "react";
+import Logo from "@/assets/images/img01.jpg";
 import {
   ChartPie,
   CircleUserRound,
-  RectangleEllipsis,
+  
+  ClipboardList,
+  
   Store,
 } from "lucide-react";
 
@@ -59,25 +62,27 @@ const data = {
       ],
     },
     {
-      title: "Hội đồng đánh giá ",
-      url: "/",
+      title: "Review nhóm sinh viên ",
+      url: "/review-group-student",
+      icon: ClipboardList,
+      isActive: true,
+      items: [
+        {
+          title: "Review ",
+          url: "/review-group-student",
+        },
+      ],
+    },
+    {
+      title: "Năm học và kỳ ",
+      url: "/semester",
       icon: Store,
       isActive: true,
       items: [
-   
         {
-          title: "Đánh giá đợi 1 ",
-          url: "/",
+          title: "D.s năm học và kỳ ",
+          url: "/semester",
         },
-        {
-          title: "Đánh giá đợi 2 ",
-          url: "/",
-        },
-        {
-          title: "",
-          url: "/",
-        },
-  
       ],
     },
     {
@@ -108,65 +113,18 @@ const data = {
         },
       ],
     },
-    // {
-    //   title: "Hội đồng xét duyệt",
-    //   url: "/user",
-    //   icon: CircleUserRound,
-    //   isActive: true,
-    //   items: [
-      
-    //   ],
-    // },
-    // {
-    //   title: "Hội đồng review",
-    //   url: "/user",
-    //   icon: CircleUserRound,
-    //   isActive: true,
-    //   items: [
-   
-    //   ],
-    // },
-    // {
-    //   title: "Giảng viên hướng dẫn ",
-    //   url: "/user",
-    //   icon: CircleUserRound,
-    //   isActive: true,
-    //   items: [
-    
-    //   ],
-    // },
-    // {
-    //   title: "Sinh viên",
-    //   url: "/user",
-    //   icon: CircleUserRound,
-    //   isActive: true,
-    //   items: [
-     
-    //   ],
-    // },
-    // {
-    //   title: "Admin",
-    //   url: "#",
-    //   icon: RectangleEllipsis,
-    //   items: [
-    //     {
-    //       title: "Tài khoản",
-    //       url: "/user",
-    //     },
-    //   ],
-    // },
-    // {
-    //   title: "test",
-    //   url: "/council-member",
-    //   icon: CircleUserRound,
-    //   isActive: true,
-    //   items: [
-    //     {
-    //       title: "D.s hội đồng đánh giá ",
-    //       url: "/council-member",
-    //     },
-    //   ],
-    // },
+    {
+      title: "test",
+      url: "/columns",
+      icon: CircleUserRound,
+      isActive: true,
+      items: [
+        {
+          title: "D.s hội đồng đánh giá ",
+          url: "/columns",
+        },
+      ],
+    },
   ],
 };
 
@@ -177,7 +135,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem className="flex gap-2">
             <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-zinc-700 text-sidebar-primary-foreground">
-              <img src="/img01.jpg" className="size-4" />
+              <img src={Logo} className="size-4" />
             </div>
             <div className="grid flex-1 text-left text-sm leading-tight">
               <span className="truncate font-semibold">FCPRIMS</span>
