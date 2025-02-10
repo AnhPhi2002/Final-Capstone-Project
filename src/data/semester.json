@@ -1,4 +1,3 @@
-
 [
   {
     "id": "1",
@@ -6,58 +5,114 @@
     "code": "Spring2025",
     "start_date": "2025-01-01",
     "end_date": "2025-05-31",
-    "registration_deadline": "2024-12-15",
     "status": "Active",
-    "created_at": "2024-11-01"
+    "created_at": "2024-11-01",
+    "semester_detail": [
+      {
+        "id": "1",
+        "year": "2025",
+        "code": "Spring2025",
+        "start_date": "2025-01-01",
+        "end_date": "2025-05-31",
+        "status": "Active",
+        "created_at": "2024-11-01"
+      }
+    ]
   },
   {
     "id": "2",
     "year": "2025",
-    "code": "Summer2025",
-    "start_date": "2025-06-01",
-    "end_date": "2025-08-31",
-    "registration_deadline": "2025-05-01",
-    "status": "Inactive",
-    "created_at": "2024-12-01"
+    "code": "Fall2025",
+    "semester_detail": [
+      {
+        "id": "2",
+        "year": "2025",
+        "code": "Fall2025",
+        "start_date": "2025-09-01",
+        "end_date": "2025-12-31",
+        "status": "Active",
+        "created_at": "2025-07-01"
+      }
+    ]
   },
   {
     "id": "3",
-    "year": "2025",
-    "code": "Fall2025",
-    "start_date": "2025-09-01",
-    "end_date": "2025-12-31",
-    "registration_deadline": "2025-08-15",
-    "status": "Active",
-    "created_at": "2025-01-01"
+    "year": "2026",
+    "code": "Spring2026",
+    "semester_detail": [
+      {
+        "id": "3",
+        "year": "2026",
+        "code": "Spring2026",
+        "start_date": "2026-01-01",
+        "end_date": "2026-05-31",
+        "status": "Active",
+        "created_at": "2025-11-01"
+      }
+    ]
   },
   {
     "id": "4",
-    "year": "2024",
-    "code": "Spring2024",
-    "start_date": "2025-01-01",
-    "end_date": "2025-05-31",
-    "registration_deadline": "2024-12-15",
-    "status": "Active",
-    "created_at": "2024-11-01"
+    "year": "2026",
+    "code": "Fall2026",
+    "semester_detail": [
+      {
+        "id": "4",
+        "year": "2026",
+        "code": "Fall2026",
+        "start_date": "2026-09-01",
+        "end_date": "2026-12-31",
+        "status": "Active",
+        "created_at": "2026-07-01"
+      }
+    ]
   },
   {
     "id": "5",
-    "year": "2024",
-    "code": "Summer2024",
-    "start_date": "2025-06-01",
-    "end_date": "2025-08-31",
-    "registration_deadline": "2025-05-01",
-    "status": "Inactive",
-    "created_at": "2024-12-01"
+    "year": "2027",
+    "code": "Spring2027",
+    "semester_detail": [
+      {
+        "id": "5",
+        "year": "2027",
+        "code": "Spring2027",
+        "start_date": "2027-01-01",
+        "end_date": "2027-05-31",
+        "status": "Active",
+        "created_at": "2026-11-01"
+      }
+    ]
   },
   {
     "id": "6",
-    "year": "2024",
-    "code": "Fall2024",
-    "start_date": "2025-09-01",
-    "end_date": "2025-12-31",
-    "registration_deadline": "2025-08-15",
-    "status": "Active",
-    "created_at": "2025-01-01"
+    "year": "2027",
+    "code": "Fall2027",
+    "semester_detail": [
+      {
+        "id": "6",
+        "year": "2027",
+        "code": "Fall2027",
+        "start_date": "2027-09-01",
+        "end_date": "2027-12-31",
+        "status": "Active",
+        "created_at": "2027-07-01"
+      }
+    ]
+  },
+  {
+    "id": "7",
+    "year": "2025",
+    "code": "Fall2025",
+    "semester_detail": [
+      {
+        "id": "7",
+        "year": "2025",
+        "code": "Fall2022",
+        "start_date": "2027-09-01",
+        "end_date": "2027-12-31",
+        "status": "Active",
+        "created_at": "2027-07-01"
+      }
+    ]
   }
 ]

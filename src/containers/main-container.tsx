@@ -7,7 +7,8 @@ import { GroupStudentDetail } from "@/pages/admin/group-student/group-student-de
 import { GroupStudentPage } from "@/pages/admin/group-student/group-student-page";
 import ImportStudentPage from "@/pages/admin/import-student/import-student-page";
 import { ReviewPage } from "@/pages/admin/review/review-page";
-import { SemestersDetailPage } from "@/pages/admin/semesters/semesters-detail-page";
+import { SemestersDetailPage } from "@/pages/admin/semesters/columns/semesters-detail-page";
+
 import { SemestersPage } from "@/pages/admin/semesters/semesters-page";
 
 import StudentListPage from "@/pages/admin/student-list/student-list-page";
@@ -18,6 +19,7 @@ import CreateUserPage from "@/pages/admin/user/create-user-page";
 import UpdateUserPage from "@/pages/admin/user/update-user-page";
 import UserDetail from "@/pages/admin/user/user-detail-page";
 import UsersPage from "@/pages/admin/user/user-listing/users-page";
+import LoginPage from "@/pages/auth/log-in-page";
 import { Route, Routes } from "react-router";
 
 const MainContainter = () => {
@@ -34,7 +36,7 @@ const MainContainter = () => {
 
         <Route path="/semester" element={<SemestersPage />} />
         <Route path="/semester/:semesterId" element={<SemestersDetailPage />} />
-
+        {/* <Route path="/semester-detail" element={<SemestersDetailPage />} /> */}
         <Route path="/import-student" element={<ImportStudentPage />} />
         <Route path="/user" element={<UsersPage />} />
         <Route path="/user/:userId" element={<UserDetail />} />
@@ -42,6 +44,7 @@ const MainContainter = () => {
         <Route path="/edit-user/:userId" element={<UpdateUserPage />} />
         <Route path="/columns" element={<Test />} />
         <Route path="/*" element={<NotFound />} />
+        <Route path="/login" element={<LoginPage />} />
       </Routes>
     </MainLayout>
   );
