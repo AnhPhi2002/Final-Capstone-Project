@@ -25,28 +25,58 @@ export const SelectSemester: React.FC = () => {
       ? semesterData
       : semesterData.filter((semester) => semester.year === selectedYear);
 
-  // Dữ liệu card
+  const handleYearChange = (year: string) => {
+    setSelectedYear(year);
+
+    const matchingSemester = filteredSemesters.find(
+      (semester) => semester.code === selectedSemester
+    );
+
+    if (!matchingSemester) {
+      setSelectedSemester("all"); 
+    } else {
+      setSelectedSemester(matchingSemester.code); 
+    }
+  };
+
   const cardData =
     selectedSemester === "all"
-      ? filteredSemesters
-      : filteredSemesters.filter((semester) => semester.code === selectedSemester);
+      ? filteredSemesters.map((semester) => ({
+          id: semester.id,
+          code: semester.code,
+          year: semester.year,
+          start_date: semester.semester_detail[0]?.start_date,
+          end_date: semester.semester_detail[0]?.end_date,
+        }))
+      : filteredSemesters
+          .filter((semester) => semester.code === selectedSemester)
+          .map((semester) => ({
+            id: semester.id,
+            code: semester.code,
+            year: semester.year,
+            start_date: semester.semester_detail[0]?.start_date,
+            end_date: semester.semester_detail[0]?.end_date,
+          }));
+
+  const isFiltered = selectedYear !== "all" || selectedSemester !== "all";
 
   return (
     <div className="space-y-4">
-      {/* Dropdown năm học và kỳ học */}
       <div className="flex items-center space-x-4">
-        <Select onValueChange={(value) => setSelectedYear(value)}>
+        <Select onValueChange={(value) => handleYearChange(value)}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Select Year" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
               <SelectLabel>Years</SelectLabel>
-              {years.map((year) => (
-                <SelectItem key={year} value={year}>
-                  {year === "all" ? "All Years" : year}
-                </SelectItem>
-              ))}
+              {years
+                .filter((year) => year !== "all") 
+                .map((year) => (
+                  <SelectItem key={year} value={year}>
+                    {year}
+                  </SelectItem>
+                ))}
             </SelectGroup>
           </SelectContent>
         </Select>
@@ -71,11 +101,10 @@ export const SelectSemester: React.FC = () => {
           </SelectContent>
         </Select>
       </div>
-
-      {/* Hiển thị card */}
-      <div className="mt-4">
-        <CardSemester data={cardData} />
+      <div className="mt-4 pt-10">
+        {isFiltered && cardData.length > 0 && <CardSemester data={cardData} />}
       </div>
     </div>
   );
 };
+

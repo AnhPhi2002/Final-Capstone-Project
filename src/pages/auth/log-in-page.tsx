@@ -48,7 +48,7 @@ const LoginPage = () => {
             <form onSubmit={form.handleSubmit(handleSubmit)}>
               {/* <img src={logoImage} alt="" width={70} /> */}
               <h2 className="text-4xl font-bold mt-5">Đăng Nhập</h2>
-              <p className="py-2">Innovibe Order Management System</p>
+              <p className="py-2">chào cậu nhé </p>
               <FormField
                 control={form.control}
                 name="email"
