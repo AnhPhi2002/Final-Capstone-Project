@@ -55,6 +55,10 @@ const data = {
           url: "/group-student",
         },
         {
+          title: "D.s chưa nhóm KLTN",
+          url: "/not-group-student",
+        },
+        {
           title: "D.s hội đồng đánh giá ",
           url: "/council-member",
         },
