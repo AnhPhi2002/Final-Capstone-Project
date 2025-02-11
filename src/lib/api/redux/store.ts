@@ -1,10 +1,16 @@
 
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import counterReducer from './counterSlice';
+import authReducer from './authSlice';
+import yearReducer from "./yearSlice";
+import semesterReducer from "./semesterSlice";
 
 
 const rootReducer = combineReducers({
   counter: counterReducer,
+  auth: authReducer,
+  years: yearReducer,
+  semesters: semesterReducer,
 });
 
 // const persistedReducer = persistReducer(persistConfig, rootReducer)

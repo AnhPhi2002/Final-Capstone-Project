@@ -13,18 +13,25 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 import { z } from "zod";
-// import logoImage from "@/assets/images/electric-guitar.png";
-// import googleLogo from "@/assets/images/google.webp";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
-// import loginBackground from "@/assets/images/login-background.jpg";
+import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
+import { loginUser, loginWithGoogle } from "@/lib/api/redux/authSlice";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // Import CSS Toastify
+import { GoogleLogin } from "@react-oauth/google";
+
 const formSchema = z.object({
   email: z.string().email("Email không hợp lệ"),
   password: z.string().min(5, "Mật khẩu phải chứa ít nhất 5 ký tự"),
 });
+
 const LoginPage = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { loading, error } = useAppSelector((state) => state.auth);
   const [rememberMe, setRememberMe] = useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -32,70 +39,73 @@ const LoginPage = () => {
       password: "",
     },
   });
-  const handleSubmit = () => {
-    console.log("Remember me: " + rememberMe);
-    navigate("/");
+
+  // **Xử lý đăng nhập bằng Email/Mật khẩu**
+  const handleSubmit = async (data: z.infer<typeof formSchema>) => {
+    const result = await dispatch(loginUser(data));
+
+    if (loginUser.fulfilled.match(result)) {
+      toast.success("Đăng nhập thành công!");
+      if (rememberMe) {
+        localStorage.setItem("rememberMe", data.email);
+      }
+      navigate("/");
+    } else {
+      // toast.error(result.payload || "Đăng nhập thất bại");
+    }
   };
-  
+
+  // **Xử lý đăng nhập Google**
+  const handleGoogleSuccess = async (Response: any) => { // Viết hoa chữ "R"
+    const googleToken = Response.credential; // ✅ Lấy token từ Google
+    console.log("Google Token:", googleToken); // Debug token
+
+    const result = await dispatch(loginWithGoogle(googleToken));
+
+    if (loginWithGoogle.fulfilled.match(result)) {
+      toast.success("Đăng nhập Google thành công!");
+    } else {
+      toast.error(result.payload ? String(result.payload) : "Đăng nhập thất bại");
+    }
+  };
+
+  const handleGoogleFailure = () => {
+    toast.error("Đăng nhập Google thất bại");
+  };
+
   return (
-    <div
-      className="grid grid-cols-12"
-      // style={{ backgroundImage: `url(${loginBackground})`, backgroundSize: "cover" }}
-    >
+    <div className="grid grid-cols-12">
       <div className="col-span-6 h-screen overflow-auto rounded-e shadow-md bg-white">
         <div className="bg-white min-h-screen py-16 px-24">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSubmit)}>
-              {/* <img src={logoImage} alt="" width={70} /> */}
               <h2 className="text-4xl font-bold mt-5">Đăng Nhập</h2>
-              <p className="py-2">chào cậu nhé </p>
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="font-bold">
-                      Email <span className="text-red-500">*</span>
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Nhập địa chỉ email"
-                        type="email"
-                        className="py-6"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem className="mt-5">
-                    <FormLabel className="font-bold">
-                      Password <span className="text-red-500">*</span>
-                    </FormLabel>
-                    <FormControl>
-                      <PasswordInput
-                        placeholder="Nhập mật khẩu"
-                        className="py-6"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <p className="py-2">Innovibe Order Management System</p>
+
+              <FormField control={form.control} name="email" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl><Input placeholder="Nhập email" type="email" {...field} /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+
+              <FormField control={form.control} name="password" render={({ field }) => (
+                <FormItem className="mt-5">
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <PasswordInput placeholder="Nhập mật khẩu" className="py-6" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+
               <div className="flex justify-between mt-5">
                 <div className="items-top flex space-x-2">
                   <Checkbox
                     id="remember-me"
                     checked={rememberMe}
-                    onCheckedChange={(value) => {
-                      setRememberMe(value == true);
-                    }}
+                    onCheckedChange={(value) => setRememberMe(value == true)}
                   />
                   <label
                     htmlFor="remember-me"
@@ -108,23 +118,26 @@ const LoginPage = () => {
                   Quên mật khẩu?
                 </Link>
               </div>
-              <Button
-                className="mt-5 bg-orange-500 hover:bg-orange-600 text-white font-bold p-6 focus:outline-none focus:shadow-outline w-full"
-                type="submit"
-              >
-                Đăng Nhập
+
+              <Button type="submit" className="mt-5 w-full bg-orange-500 hover:bg-orange-600 text-white font-bold p-6" disabled={loading}>
+                {loading ? "Đang đăng nhập..." : "Đăng Nhập"}
               </Button>
             </form>
           </Form>
+
           <div className="flex justify-between gap-5 items-center my-5">
             <hr className="border flex-1" />
             <p className="uppercase text-sm">Hoặc</p>
             <hr className="border flex-1" />
           </div>
-          <Button className="w-full p-6" variant={"outline"}>
-            {/* <img src={googleLogo} alt="" width={30} /> */}
-            Đăng nhập bằng tài khoản Google
-          </Button>
+
+          {/* ✅ Nút Đăng nhập Google */}
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess} // Khi đăng nhập thành công
+            onError={handleGoogleFailure} // Khi đăng nhập thất bại
+          />
+
+          {error && <p className="text-red-500 text-center mt-3">{error}</p>}
         </div>
       </div>
     </div>
