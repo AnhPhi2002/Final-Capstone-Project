@@ -28,10 +28,7 @@ const ToolPanel = () => {
           <SelectContent>
             <SelectItem value="*">Tất cả</SelectItem>
             <SelectItem value="In Stock">Còn hàng</SelectItem>
-            <SelectItem value="Out of Stock">Hết hàng</SelectItem>
-            <SelectItem value="In Transit">Đang vận chuyển</SelectItem>
-            <SelectItem value="Pending">Đợi duyệt</SelectItem>
-            <SelectItem value="Discontinued">Ngừng kinh doanh</SelectItem>
+     
           </SelectContent>
         </Select>
       </div>

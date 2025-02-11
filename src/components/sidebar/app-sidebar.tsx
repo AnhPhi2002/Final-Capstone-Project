@@ -41,6 +41,22 @@ const data = {
       ],
     },
     {
+      title: "Năm học và kỳ ",
+      url: "/semester",
+      icon: Store,
+      isActive: true,
+      items: [
+        {
+          title: "D.s năm học ",
+          url: "/year-semester",
+        },
+        {
+          title: "D.s học kỳ ",
+          url: "/semester",
+        },
+      ],
+    },
+    {
       title: "Cán bộ nghiệp vụ",
       url: "/council-member",
       icon: Store,
@@ -53,6 +69,10 @@ const data = {
         {
           title: "D.s nhóm KLTN",
           url: "/group-student",
+        },
+        {
+          title: "D.s chưa nhóm KLTN",
+          url: "/not-group-student",
         },
         {
           title: "D.s hội đồng đánh giá ",
@@ -73,18 +93,7 @@ const data = {
         },
       ],
     },
-    {
-      title: "Năm học và kỳ ",
-      url: "/semester",
-      icon: Store,
-      isActive: true,
-      items: [
-        {
-          title: "D.s năm học và kỳ ",
-          url: "/semester",
-        },
-      ],
-    },
+
     {
       title: "Người dùng ",
       url: "/user",

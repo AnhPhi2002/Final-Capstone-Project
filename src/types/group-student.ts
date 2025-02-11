@@ -1,39 +1,42 @@
-// Define possible statuses for Group
+// Các trạng thái có thể có của Nhóm
 export type GroupStatus = "active" | "inactive" | "pending";
 
-// Define the Group interface
 export interface Group {
-  id: number; // Primary key
-  group_code: string; // Unique key
-  semester_id: number; // Foreign key
-  status: GroupStatus; // Enum for status
+  id: string; 
+  group_code: string;
+  semester_id: string; 
+  created_by: string; 
+  year: string;
+  code: string;
+  start_date: string;
+  end_date: string;
+  status: GroupStatus;
   is_auto_created: boolean;
-  created_by: number; // Foreign key
   max_members: number;
   is_multi_major: boolean;
-  created_at: string; // ISO date string
-  updated_at: string; // ISO date string
-  mentor_1_id: string | null; // Nullable
-  mentor_2_id: string | null; // Nullable
-  group_members?: GroupMember[]; // Optional array of GroupMember
+  created_at: string;
+  updated_at: string;
+  mentor_1_id: string | null;
+  mentor_2_id: string | null;
+  group_members?: GroupMember[];
 }
 
-// Define possible roles for GroupMember
-export type Role = "member" | "leader" | "assistant";
 
-// Define possible statuses for GroupMember
-export type Status = "active" | "inactive" | "left";
+// Các vai trò có thể có trong nhóm
+export type Role = "member" | "leader" ;
 
-// Define the GroupMember interface
+// Các trạng thái có thể có của thành viên nhóm
+export type Status = "active" | "inactive";
+
+// Định nghĩa thông tin của thành viên trong nhóm
 export interface GroupMember {
-  id: number; // Primary key
-  group_id: number; // Foreign key to Group
-  student_id: number; // Foreign key to Student
-  role: Role; // Enum for role
-  joined_at: string; // ISO date string
-  leave_at: string | null; // Nullable ISO date string
-  leave_reason: string | null; // Nullable reason for leaving
-  is_active: boolean; // Current active status
-  status: Status; // Enum for status
-  group?: Group; // Optional reference to Group
+  id: number; // Khóa chính của thành viên nhóm
+  group_id: number; // ID của nhóm mà thành viên thuộc về
+  student_id: number; // ID của sinh viên
+  role: Role; // Vai trò của sinh viên trong nhóm
+  joined_at: string; // Ngày tham gia nhóm (ISO date string)
+  leave_at: string | null; // Ngày rời nhóm (có thể null)
+  leave_reason: string | null; // Lý do rời nhóm (có thể null)
+  is_active: boolean; // Trạng thái hoạt động của sinh viên trong nhóm
+  status: Status; // Trạng thái hiện tại của sinh viên
 }

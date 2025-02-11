@@ -40,20 +40,14 @@ export const columns: ColumnDef<Semester>[] = [
     cell: ({ row }) => <span>{row.getValue("code")}</span>,
   },
   {
-    accessorKey: "registration_deadline",
-    header: "Registration Deadline",
-    cell: ({ row }) =>
-      new Date(row.getValue("registration_deadline")).toLocaleDateString(),
-  },
-  {
     accessorKey: "start_date",
-    header: "Ngày bắt đầu",
+    header: "Ngày bắt đầu học kỳ  ",
     cell: ({ row }) =>
       new Date(row.getValue("start_date")).toLocaleDateString(),
   },
   {
     accessorKey: "end_date",
-    header: "Ngày kết thúc",
+    header: "Ngày kết thúc học kỳ ",
     cell: ({ row }) => new Date(row.getValue("end_date")).toLocaleDateString(),
   },
   {
@@ -76,7 +70,7 @@ export const columns: ColumnDef<Semester>[] = [
   },
   {
     accessorKey: "created_at",
-    header: "Ngày tạo",
+    header: "Ngày tạo học kỳ ",
     cell: ({ row }) =>
       new Date(row.getValue("created_at")).toLocaleDateString(),
   },
