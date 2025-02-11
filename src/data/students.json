@@ -1,77 +1,169 @@
 [
   {
     "id": 1,
-    "user_id": 101,
-    "student_code": "STU2023001",
-    "major_id": 5,
-    "specialty_id": 12,
-    "credits_completed": 90,
-    "is_eligible": true,
-    "block3w_status": "Active",
-    "semester_id": 3,
-    "status": "Enrolled",
-    "import_at": "2025-01-10T14:30:00Z",
-    "import_source": "System Import",
-    "is_imported": true
+    "year": "2025",
+    "semesters": [
+      {
+        "code": "SpringA2025",
+        "start_date": "2025-01-01",
+        "end_date": "2025-05-31",
+        "students": [
+          {
+            "id": 4,
+            "email": "john.doe@fpt.edu.vn",
+            "major_id": "AI",
+            "specialty_id": "DL",
+            "block3w_status": "Active",
+            "status": "Qualified"
+          },
+          {
+            "id": 5,
+            "email": "jane.smith@fpt.edu.vn",
+            "major_id": "SE",
+            "specialty_id": "Mobile",
+            "block3w_status": "Completed",
+            "status": "Qualified"
+          }
+        ]
+      },
+      {
+        "code": "SummerX2025",
+        "start_date": "2025-06-01",
+        "end_date": "2025-08-31",
+        "students": [
+          {
+            "id": 1,
+            "email": "phi@fpt.edu.vn",
+            "major_id": "SE",
+            "specialty_id": "NJS",
+            "block3w_status": "Active",
+            "status": "Qualified"
+          },
+          {
+            "id": 2,
+            "email": "phi@fpt.edu.vn",
+            "major_id": "SE",
+            "specialty_id": "NJS",
+            "block3w_status": "Pending",
+            "status": "Not Qualified"
+          },
+          {
+            "id": 3,
+            "email": "phi@fpt.edu.vn",
+            "major_id": "SE",
+            "specialty_id": "NJS",
+            "block3w_status": "Completed",
+            "status": "Qualified"
+          }
+        ]
+      },
+      {
+        "code": "AutumnBreeze2025",
+        "start_date": "2025-09-01",
+        "end_date": "2025-12-31",
+        "students": [
+          {
+            "id": 6,
+            "email": "michael.wang@fpt.edu.vn",
+            "major_id": "ITS",
+            "specialty_id": "CyberSec",
+            "block3w_status": "Active",
+            "status": "Qualified"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": 2,
-    "user_id": 102,
-    "student_code": "STU2023002",
-    "major_id": 8,
-    "specialty_id": 15,
-    "credits_completed": 75,
-    "is_eligible": false,
-    "block3w_status": "Pending",
-    "semester_id": 2,
-    "status": "Pending Approval",
-    "import_at": "2025-01-11T09:45:00Z",
-    "import_source": "Manual Entry",
-    "is_imported": false
+    "year": "2026",
+    "semesters": [
+      {
+        "code": "SpringX2026",
+        "start_date": "2026-01-01",
+        "end_date": "2026-05-31",
+        "students": [
+          {
+            "id": 7,
+            "email": "lucas.brown@fpt.edu.vn",
+            "major_id": "IA",
+            "specialty_id": "Embedded",
+            "block3w_status": "Completed",
+            "status": "Qualified"
+          },
+          {
+            "id": 8,
+            "email": "olivia.lee@fpt.edu.vn",
+            "major_id": "AI",
+            "specialty_id": "NLP",
+            "block3w_status": "Pending",
+            "status": "Not Qualified"
+          }
+        ]
+      },
+      {
+        "code": "SummerB2026",
+        "start_date": "2026-06-01",
+        "end_date": "2026-08-31",
+        "students": []
+      },
+      {
+        "code": "WinterWave2026",
+        "start_date": "2026-09-01",
+        "end_date": "2026-12-31",
+        "students": [
+          {
+            "id": 9,
+            "email": "david.kim@fpt.edu.vn",
+            "major_id": "SE",
+            "specialty_id": "GameDev",
+            "block3w_status": "Active",
+            "status": "Qualified"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": 3,
-    "user_id": 103,
-    "student_code": "STU2023003",
-    "major_id": 4,
-    "specialty_id": 10,
-    "credits_completed": 120,
-    "is_eligible": true,
-    "block3w_status": "Completed",
-    "semester_id": 4,
-    "status": "Graduated",
-    "import_at": "2025-01-09T16:20:00Z",
-    "import_source": "System Import",
-    "is_imported": true
-  },
-  {
-    "id": 4,
-    "user_id": 104,
-    "student_code": "STU2023004",
-    "major_id": 3,
-    "specialty_id": 9,
-    "credits_completed": 60,
-    "is_eligible": true,
-    "block3w_status": "Active",
-    "semester_id": 1,
-    "status": "Enrolled",
-    "import_at": "2025-01-12T11:00:00Z",
-    "import_source": "Manual Entry",
-    "is_imported": false
-  },
-  {
-    "id": 5,
-    "user_id": 105,
-    "student_code": "STU2023005",
-    "major_id": 7,
-    "specialty_id": 14,
-    "credits_completed": 30,
-    "is_eligible": false,
-    "block3w_status": "Blocked",
-    "semester_id": 1,
-    "status": "Suspended",
-    "import_at": "2025-01-13T08:15:00Z",
-    "import_source": "System Import",
-    "is_imported": true
+    "year": "2027",
+    "semesters": [
+      {
+        "code": "SpringBright2027",
+        "start_date": "2027-01-01",
+        "end_date": "2027-05-31",
+        "students": [
+          {
+            "id": 10,
+            "email": "emma.wilson@fpt.edu.vn",
+            "major_id": "AI",
+            "specialty_id": "Computer Vision",
+            "block3w_status": "Completed",
+            "status": "Qualified"
+          }
+        ]
+      },
+      {
+        "code": "MidSummerDream2027",
+        "start_date": "2027-06-01",
+        "end_date": "2027-08-31",
+        "students": [
+          {
+            "id": 11,
+            "email": "noah.anderson@fpt.edu.vn",
+            "major_id": "SE",
+            "specialty_id": "Blockchain",
+            "block3w_status": "Pending",
+            "status": "Not Qualified"
+          }
+        ]
+      },
+      {
+        "code": "GoldenFall2027",
+        "start_date": "2027-09-01",
+        "end_date": "2027-12-31",
+        "students": []
+      }
+    ]
   }
 ]

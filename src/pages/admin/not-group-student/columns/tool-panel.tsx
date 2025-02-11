@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -19,25 +19,25 @@ const ToolPanel = () => {
           <Search />
         </Button>
       </div>
-      <div className="col-span-3"></div>
+
+      <div className="col-span-3">
+      
+      </div>
       <div className="col-span-3">
         <Select>
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="Trạng thái" />
+            <SelectValue placeholder="Trạng thái sinh viên" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="*">Tất cả</SelectItem>
-            <SelectItem value="In Stock">Còn hàng</SelectItem>
-     
+            <SelectItem value="Qualified">Đạt</SelectItem>
+            <SelectItem value="Not Qualified">Không đạt</SelectItem>
           </SelectContent>
         </Select>
       </div>
       <div className="col-span-2 flex">
-        <Link to={'/create-product'} className="w-full">
-          <Button className="w-full flex gap-3 items-center">
-            <Plus />
-            Tạo mới
-          </Button>
+        <Link to={"/import-student"} className="w-full">
+          <Button className="w-full flex gap-3 items-center">Import</Button>
         </Link>
       </div>
     </div>

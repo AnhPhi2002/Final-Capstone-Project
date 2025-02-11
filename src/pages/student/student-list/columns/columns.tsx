@@ -70,13 +70,5 @@ export const columns: ColumnDef<Student>[] = [
     cell: ({ getValue }) =>
       format(new Date(getValue() as string), "HH:mm dd/MM/yyyy"),
   },
-  // {
-  //   accessorKey: "import_source",
-  //   header: "Import Source",
-  // },
-  // {
-  //   accessorKey: "is_imported",
-  //   header: "Imported",
-  //   cell: ({ getValue }) => (getValue() ? "Yes" : "No"),
-  // },
+
 ];

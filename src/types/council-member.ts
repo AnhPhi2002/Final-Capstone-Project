@@ -1,10 +1,21 @@
 export type CouncilMember = {
-  id: number; // Mã định danh duy nhất của thành viên hội đồng
-  email: string; // Email của thành viên
-  phoneNumber: string; // Số điện thoại
-  lecturerCode: string; // Mã giảng viên
-  role: "Chủ tịch" | "Thư ký" | "Thành viên"; // Vai trò trong hội đồng
-  status: "Hoạt động" | "Tạm thay thế" | "Vắng mặt"; // Trạng thái của thành viên
-  createdAt: string; // Ngày tạo dữ liệu
-  updatedAt: string; // Ngày cập nhật dữ liệu
+  id: number;
+  email: string;
+  phoneNumber: string;
+  lecturerCode: string;
+  role: string;
+  status: string;
+  createdAt: string; // ISO format (YYYY-MM-DDTHH:mm:ssZ)
+  updatedAt: string; // ISO format (YYYY-MM-DDTHH:mm:ssZ)
 };
+
+export type SemesterCouncil = {
+  id: string;
+  year: string;
+  code: string;
+  start_date: string;
+  end_date: string;
+  councilMember: CouncilMember[];
+};
+
+export type AcademicYearCouncil = SemesterCouncil[];

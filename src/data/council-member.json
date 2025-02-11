@@ -1,52 +1,109 @@
 [
   {
-    "id": 1,
-    "email": "fender1@example.com",
-    "phoneNumber": "+0321558881",
-    "lecturerCode": "L001",
-    "role": "Chủ tịch",
-    "status": "Hoạt động",
-    "createdAt": "2023-01-15T10:00:00Z",
-    "updatedAt": "2023-12-01T12:00:00Z"
+    "id": "1",
+    "year": "2025",
+    "code": "Spring2025",
+    "start_date": "2025-01-01",
+    "end_date": "2025-05-31",
+    "councilMember": [
+      {
+        "id": 101,
+        "email": "fender1@example.com",
+        "phoneNumber": "+0321558881",
+        "lecturerCode": "L001",
+        "role": "Chủ tịch",
+        "status": "Hoạt động",
+        "createdAt": "2023-01-15T10:00:00Z",
+        "updatedAt": "2023-12-01T12:00:00Z"
+      },
+      {
+        "id": 102,
+        "email": "fender2@example.com",
+        "phoneNumber": "+0321558882",
+        "lecturerCode": "L002",
+        "role": "Thư ký",
+        "status": "Hoạt động",
+        "createdAt": "2022-08-22T09:30:00Z",
+        "updatedAt": "2023-11-15T14:00:00Z"
+      },
+      {
+        "id": 103,
+        "email": "fender3@example.com",
+        "phoneNumber": "+0321558883",
+        "lecturerCode": "L003",
+        "role": "Thành viên",
+        "status": "Hoạt động",
+        "createdAt": "2023-05-10T08:15:00Z",
+        "updatedAt": "2023-12-10T16:45:00Z"
+      },
+      {
+        "id": 104,
+        "email": "fender4@example.com",
+        "phoneNumber": "+0321558884",
+        "lecturerCode": "L004",
+        "role": "Thành viên",
+        "status": "Tạm thay thế",
+        "createdAt": "2023-03-05T11:20:00Z",
+        "updatedAt": "2023-12-12T10:30:00Z"
+      },
+      {
+        "id": 105,
+        "email": "fender5@example.com",
+        "phoneNumber": "+0321558885",
+        "lecturerCode": "L005",
+        "role": "Thành viên",
+        "status": "Vắng mặt",
+        "createdAt": "2022-11-11T07:45:00Z",
+        "updatedAt": "2023-12-15T09:00:00Z"
+      }
+    ]
   },
   {
-    "id": 2,
-    "email": "fender2@example.com",
-    "phoneNumber": "+0321558882",
-    "lecturerCode": "L002",
-    "role": "Thư ký",
-    "status": "Hoạt động",
-    "createdAt": "2022-08-22T09:30:00Z",
-    "updatedAt": "2023-11-15T14:00:00Z"
+    "id": "2",
+    "year": "2025",
+    "code": "Summer2025",
+    "start_date": "2025-01-01",
+    "end_date": "2025-05-31",
+    "councilMember": [
+      {
+        "id": 106,
+        "email": "fender6@example.com",
+        "phoneNumber": "+0321558886",
+        "lecturerCode": "L006",
+        "role": "Chủ tịch",
+        "status": "Hoạt động",
+        "createdAt": "2023-02-10T09:00:00Z",
+        "updatedAt": "2023-12-20T13:45:00Z"
+      },
+      {
+        "id": 107,
+        "email": "fender7@example.com",
+        "phoneNumber": "+0321558887",
+        "lecturerCode": "L007",
+        "role": "Thư ký",
+        "status": "Hoạt động",
+        "createdAt": "2022-09-30T11:20:00Z",
+        "updatedAt": "2023-11-05T15:30:00Z"
+      }
+    ]
   },
   {
-    "id": 3,
-    "email": "fender3@example.com",
-    "phoneNumber": "+0321558883",
-    "lecturerCode": "L003",
-    "role": "Thành viên",
-    "status": "Hoạt động",
-    "createdAt": "2023-05-10T08:15:00Z",
-    "updatedAt": "2023-12-10T16:45:00Z"
-  },
-  {
-    "id": 4,
-    "email": "fender4@example.com",
-    "phoneNumber": "+0321558884",
-    "lecturerCode": "L004",
-    "role": "Thành viên",
-    "status": "Tạm thay thế",
-    "createdAt": "2023-03-05T11:20:00Z",
-    "updatedAt": "2023-12-12T10:30:00Z"
-  },
-  {
-    "id": 5,
-    "email": "fender5@example.com",
-    "phoneNumber": "+0321558885",
-    "lecturerCode": "L005",
-    "role": "Thành viên",
-    "status": "Vắng mặt",
-    "createdAt": "2022-11-11T07:45:00Z",
-    "updatedAt": "2023-12-15T09:00:00Z"
+    "id": "3",
+    "year": "2025",
+    "code": "Fall2025",
+    "start_date": "2025-01-01",
+    "end_date": "2025-05-31",
+    "councilMember": [
+      {
+        "id": 108,
+        "email": "fender8@example.com",
+        "phoneNumber": "+0321558888",
+        "lecturerCode": "L008",
+        "role": "Chủ tịch",
+        "status": "Hoạt động",
+        "createdAt": "2023-04-15T10:30:00Z",
+        "updatedAt": "2023-12-25T18:00:00Z"
+      }
+    ]
   }
 ]

@@ -1,0 +1,100 @@
+[
+  {
+    "id": 1,
+    "year": "2025",
+    "code": "SpringA2025",
+    "start_date": "2025-01-01",
+    "end_date": "2025-05-31",
+    "students": [
+      {
+        "id": 101,
+        "email": "john.doe@fpt.edu.vn",
+        "major_id": "AI",
+        "specialty_id": "DL",
+        "block3w_status": "Active",
+        "status": "Qualified"
+      },
+      {
+        "id": 102,
+        "email": "jane.smith@fpt.edu.vn",
+        "major_id": "SE",
+        "specialty_id": "Mobile",
+        "block3w_status": "Inactive",
+        "status": "Qualified"
+      },
+      {
+        "id": 103,
+        "email": "mark.johnson@fpt.edu.vn",
+        "major_id": "ITS",
+        "specialty_id": "Security",
+        "block3w_status": "Active",
+        "status": "Pending"
+      },
+      {
+        "id": 104,
+        "email": "lisa.brown@fpt.edu.vn",
+        "major_id": "IA",
+        "specialty_id": "Network",
+        "block3w_status": "Active",
+        "status": "Rejected"
+      },
+      {
+        "id": 105,
+        "email": "david.wilson@fpt.edu.vn",
+        "major_id": "AI",
+        "specialty_id": "Data Science",
+        "block3w_status": "Active",
+        "status": "Qualified"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "year": "2025",
+    "code": "SummerB2025",
+    "start_date": "2025-06-01",
+    "end_date": "2025-10-31",
+    "students": [
+      {
+        "id": 106,
+        "email": "emily.davis@fpt.edu.vn",
+        "major_id": "SE",
+        "specialty_id": "Web Development",
+        "block3w_status": "Inactive",
+        "status": "Qualified"
+      },
+      {
+        "id": 107,
+        "email": "michael.miller@fpt.edu.vn",
+        "major_id": "ITS",
+        "specialty_id": "Security",
+        "block3w_status": "Active",
+        "status": "Pending"
+      },
+      {
+        "id": 108,
+        "email": "sarah.martinez@fpt.edu.vn",
+        "major_id": "AI",
+        "specialty_id": "Machine Learning",
+        "block3w_status": "Active",
+        "status": "Qualified"
+      },
+      {
+        "id": 109,
+        "email": "james.garcia@fpt.edu.vn",
+        "major_id": "IA",
+        "specialty_id": "Cloud Computing",
+        "block3w_status": "Active",
+        "status": "Rejected"
+      },
+      {
+        "id": 110,
+        "email": "olivia.rodriguez@fpt.edu.vn",
+        "major_id": "SE",
+        "specialty_id": "Game Development",
+        "block3w_status": "Inactive",
+        "status": "Qualified"
+      }
+    ]
+  }
+]
