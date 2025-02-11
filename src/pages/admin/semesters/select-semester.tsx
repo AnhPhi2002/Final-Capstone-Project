@@ -4,12 +4,6 @@ import { RootState, AppDispatch } from "@/lib/api/redux/store";
 import { fetchYears } from "@/lib/api/redux/yearSlice";
 import { fetchSemesters } from "@/lib/api/redux/semesterSlice";
 
-// import React, { useEffect, useState } from "react";
-// import { useDispatch, useSelector } from "react-redux";
-// import { RootState, AppDispatch } from "@/lib/api/redux/store";
-// import { fetchYears } from "@/lib/api/redux/yearSlice";
-// import { fetchSemesters } from "@/lib/api/redux/semesterSlice";
-
 import {
   Select,
   SelectContent,
