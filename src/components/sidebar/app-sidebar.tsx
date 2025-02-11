@@ -47,7 +47,11 @@ const data = {
       isActive: true,
       items: [
         {
-          title: "D.s năm học và kỳ ",
+          title: "D.s năm học ",
+          url: "/year-semester",
+        },
+        {
+          title: "D.s học kỳ ",
           url: "/semester",
         },
       ],

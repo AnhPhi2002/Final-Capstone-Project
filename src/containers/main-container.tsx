@@ -25,6 +25,7 @@ import CreateUserPage from "@/pages/admin/user/create-user-page";
 import UpdateUserPage from "@/pages/admin/user/update-user-page";
 import UserDetail from "@/pages/admin/user/user-detail-page";
 import UsersPage from "@/pages/admin/user/user-listing/users-page";
+import { YearSemesterPage } from "@/pages/admin/year-semeter/year-semester-page";
 import LoginPage from "@/pages/auth/log-in-page";
 import { Route, Routes } from "react-router";
 
@@ -53,6 +54,8 @@ const MainContainter = () => {
         <Route path="/semester" element={<SemestersPage />} />
         <Route path="/semester/:semesterId" element={<SemestersDetailPage />} />
         {/* <Route path="/semester-detail" element={<SemestersDetailPage />} /> */}
+        <Route path="/year-semester" element={<YearSemesterPage />} />
+
         <Route path="/import-student" element={<ImportStudentPage />} />
         <Route path="/user" element={<UsersPage />} />
         <Route path="/user/:userId" element={<UserDetail />} />

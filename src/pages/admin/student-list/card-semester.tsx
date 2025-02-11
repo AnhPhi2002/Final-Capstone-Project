@@ -39,6 +39,7 @@ export const CardSemester: React.FC<CardSemesterProps> = ({ data }) => {
                   <p className="text-sm">Kết thúc: {new Date(semester.end_date).toLocaleDateString()}</p>
                 </CardContent>
               </Card>
+              
             ))
           ) : null
         )}
