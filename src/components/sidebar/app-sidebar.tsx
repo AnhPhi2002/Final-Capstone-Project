@@ -41,6 +41,18 @@ const data = {
       ],
     },
     {
+      title: "Năm học và kỳ ",
+      url: "/semester",
+      icon: Store,
+      isActive: true,
+      items: [
+        {
+          title: "D.s năm học và kỳ ",
+          url: "/semester",
+        },
+      ],
+    },
+    {
       title: "Cán bộ nghiệp vụ",
       url: "/council-member",
       icon: Store,
@@ -77,18 +89,7 @@ const data = {
         },
       ],
     },
-    {
-      title: "Năm học và kỳ ",
-      url: "/semester",
-      icon: Store,
-      isActive: true,
-      items: [
-        {
-          title: "D.s năm học và kỳ ",
-          url: "/semester",
-        },
-      ],
-    },
+
     {
       title: "Người dùng ",
       url: "/user",
