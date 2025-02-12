@@ -3,6 +3,13 @@ import { Badge } from "@/components/ui/badge";
 import { Semester } from "@/lib/api/types";
 import { ActionMenu } from "./action";
 
+// Define the extended TableMeta type
+declare module '@tanstack/table-core' {
+  interface TableMeta<TData> {
+    refetchData?: () => void;
+  }
+}
+
 export const columns: ColumnDef<Semester>[] = [
   {
     accessorKey: "year.year",
@@ -55,13 +62,13 @@ export const columns: ColumnDef<Semester>[] = [
     cell: ({ row }) =>
       new Date(row.getValue("createdAt")).toLocaleDateString(),
   },
-    {
+  {
     id: "actions",
-    cell: ({ row }) => <ActionMenu semesterId={row.original.id} />,
+    cell: ({ row, table }) => (
+      <ActionMenu 
+        semesterId={row.original.id} 
+        refetchData={table.options.meta?.refetchData}
+      />
+    ),
   },
 ];
-//   {
-//     id: "actions",
-//     cell: ({ row }) => <ActionMenu semesterId={row.original.id} />,
-//   },
-

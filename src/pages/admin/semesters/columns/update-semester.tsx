@@ -1,25 +1,51 @@
-import { Button } from "@/components/ui/button";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { updateSemester } from "@/lib/api/redux/semesterSlice";
+import { AppDispatch, RootState } from "@/lib/api/redux/store";
+import { useSelector } from "react-redux";
 
 type UpdateSemesterProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
   semesterId: string;
+  refetchData?: () => void;
 };
 
 export const UpdateSemester: React.FC<UpdateSemesterProps> = ({
   open,
   setOpen,
   semesterId,
+  refetchData,
 }) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const semesterDetail = useSelector((state: RootState) => state.semesters.semesterDetail);
+
   const [formValues, setFormValues] = useState({
-    year: "",
     code: "",
     startDate: "",
     endDate: "",
     registrationDeadline: "",
-    status: "",
+    status: "ACTIVE",
   });
+
+  // Format date to YYYY-MM-DD for input type="date"
+  const formatDateForInput = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toISOString().split('T')[0];
+  };
+
+  // Load current semester data when modal opens
+  useEffect(() => {
+    if (open && semesterDetail) {
+      setFormValues({
+        code: semesterDetail.code || "",
+        startDate: formatDateForInput(semesterDetail.startDate) || "",
+        endDate: formatDateForInput(semesterDetail.endDate) || "",
+        registrationDeadline: formatDateForInput(semesterDetail.registrationDeadline) || "",
+        status: semesterDetail.status || "ACTIVE",
+      });
+    }
+  }, [open, semesterDetail]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -28,9 +54,18 @@ export const UpdateSemester: React.FC<UpdateSemesterProps> = ({
     setFormValues({ ...formValues, [name]: value });
   };
 
-  const handleSave = () => {
-    console.log("Cập nhật học kỳ:", { semesterId, ...formValues });
-    setOpen(false);
+  const handleSave = async () => {
+    try {
+      await dispatch(updateSemester({ semesterId, updatedData: formValues })).unwrap();
+      alert("Cập nhật học kỳ thành công!");
+      // Call refetchData after successful update
+      if (refetchData) {
+        refetchData();
+      }
+      setOpen(false);
+    } catch (error) {
+      alert(`Cập nhật thất bại: ${error}`);
+    }
   };
 
   if (!open) return null;
@@ -39,24 +74,7 @@ export const UpdateSemester: React.FC<UpdateSemesterProps> = ({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-lg">
         <h2 className="text-xl font-bold mb-4">Cập nhật học kỳ</h2>
-        <p className="text-gray-600 mb-6">
-          Cập nhật thông tin học kỳ bên dưới và nhấn "Lưu" để xác nhận.
-        </p>
         <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Năm học</label>
-            <select
-              name="year"
-              value={formValues.year}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg p-2"
-            >
-              <option value="">Chọn năm học</option>
-              <option value="2024-2025">2024-2025</option>
-              <option value="2025-2026">2025-2026</option>
-            </select>
-          </div>
-
           <div>
             <label className="block text-sm font-medium mb-1">Mã học kỳ</label>
             <input
@@ -70,9 +88,7 @@ export const UpdateSemester: React.FC<UpdateSemesterProps> = ({
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Ngày bắt đầu
-            </label>
+            <label className="block text-sm font-medium mb-1">Ngày bắt đầu</label>
             <input
               type="date"
               name="startDate"
@@ -83,9 +99,7 @@ export const UpdateSemester: React.FC<UpdateSemesterProps> = ({
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Ngày kết thúc
-            </label>
+            <label className="block text-sm font-medium mb-1">Ngày kết thúc</label>
             <input
               type="date"
               name="endDate"
@@ -96,9 +110,7 @@ export const UpdateSemester: React.FC<UpdateSemesterProps> = ({
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Hạn đăng ký
-            </label>
+            <label className="block text-sm font-medium mb-1">Hạn đăng ký</label>
             <input
               type="date"
               name="registrationDeadline"
@@ -116,20 +128,19 @@ export const UpdateSemester: React.FC<UpdateSemesterProps> = ({
               onChange={handleChange}
               className="w-full border border-gray-300 rounded-lg p-2"
             >
-              <option value="">Chọn trạng thái</option>
               <option value="ACTIVE">ACTIVE</option>
               <option value="COMPLETE">COMPLETE</option>
             </select>
           </div>
         </div>
+
         <div className="mt-6 flex justify-end space-x-4">
           <button
             onClick={() => setOpen(false)}
-            className="px-4 py-2 border border-gray-300 text-black rounded-lg hover:bg-gray-100"
+            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg"
           >
             Hủy
           </button>
-
           <button
             onClick={handleSave}
             className="px-4 py-2 bg-black text-white rounded-lg"
@@ -141,3 +152,4 @@ export const UpdateSemester: React.FC<UpdateSemesterProps> = ({
     </div>
   );
 };
+

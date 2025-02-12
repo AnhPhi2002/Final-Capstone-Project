@@ -4,7 +4,6 @@ import {
   getCoreRowModel,
   getPaginationRowModel,
   getFilteredRowModel,
-  type Table,
 } from "@tanstack/react-table";
 import { useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,29 +21,32 @@ export function SemestersDetailPage() {
     (state: RootState) => state.semesters
   );
 
-  React.useEffect(() => {
+  const refetchSemesterDetail = () => {
     if (semesterId) {
       dispatch(fetchSemesterDetail(semesterId));
     }
-  }, [dispatch, semesterId]);
+  };
 
-  // Tạo table với data dựa trên semesterDetail
+  React.useEffect(() => {
+    refetchSemesterDetail();
+  }, [semesterId]);
+
   const table = useReactTable<Semester>({
     data: semesterDetail ? [semesterDetail] : [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    meta: {
+      refetchData: refetchSemesterDetail, // Pass refetch function through table meta
+    },
   });
+
 
   if (loading) {
     return (
       <div className="flex flex-col h-screen">
-        <Header
-          title="Loading..."
-          href="/semester"
-          currentPage="Semester Detail"
-        />
+        <Header title="Loading..." href="/semester" currentPage="Semester Detail" />
         <div className="p-5">Loading semester details...</div>
       </div>
     );
@@ -53,36 +55,15 @@ export function SemestersDetailPage() {
   if (error) {
     return (
       <div className="flex flex-col h-screen">
-        <Header
-          title="Error"
-          href="/semester"
-          currentPage="Semester Detail"
-        />
+        <Header title="Error" href="/semester" currentPage="Semester Detail" />
         <div className="p-5">Error: {error}</div>
-      </div>
-    );
-  }
-
-  if (!semesterDetail) {
-    return (
-      <div className="flex flex-col h-screen">
-        <Header
-          title="Not Found"
-          href="/semester"
-          currentPage="Semester Detail"
-        />
-        <div className="p-5">No semester found.</div>
       </div>
     );
   }
 
   return (
     <div className="flex flex-col h-screen">
-      <Header
-        title={`Semester: ${semesterDetail.code}`}
-        href="/semester"
-        currentPage="Semester Detail"
-      />
+      <Header title={`Semester: ${semesterDetail?.code}`} href="/semester" currentPage="Semester Detail" />
       <div className="p-5 flex-1 overflow-auto">
         <DataTable table={table} />
       </div>

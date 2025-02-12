@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { MoreHorizontal } from "lucide-react";
-import { UpdateSemester } from "./update-semester"; // Chỉnh lại đường dẫn nếu cần
+import { UpdateSemester } from "./update-semester";
 import { DeleteSemester } from "./detele-semester"; // Chỉnh lại đường dẫn nếu cần
 import {
   DropdownMenu,
@@ -12,9 +12,10 @@ import {
 
 type ActionProps = {
   semesterId: string;
+  refetchData?: () => void;
 };
 
-export const ActionMenu: React.FC<ActionProps> = ({ semesterId }) => {
+export const ActionMenu: React.FC<ActionProps> = ({ semesterId, refetchData }) => {
   const [openUpdate, setOpenUpdate] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
 
@@ -49,11 +50,23 @@ export const ActionMenu: React.FC<ActionProps> = ({ semesterId }) => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-    
-      {openUpdate && <UpdateSemester open={openUpdate} setOpen={setOpenUpdate} semesterId={semesterId} />}
-      
-    
-      {openDelete && <DeleteSemester open={openDelete} setOpen={setOpenDelete} semesterId={semesterId} />}
+      {openUpdate && (
+        <UpdateSemester
+          open={openUpdate}
+          setOpen={setOpenUpdate}
+          semesterId={semesterId}
+          refetchData={refetchData}
+        />
+      )}
+
+      {openDelete && (
+        <DeleteSemester
+          open={openDelete}
+          setOpen={setOpenDelete}
+          semesterId={semesterId}
+        />
+      )}
     </>
   );
 };
+
