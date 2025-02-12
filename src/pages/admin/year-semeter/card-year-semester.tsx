@@ -17,7 +17,7 @@ export const CardYearSemester: React.FC = () => {
     totalPages,
   } = useSelector((state: RootState) => state.years);
 
-  const [years, setYears] = useState(initialYears); // State cục bộ để quản lý danh sách years
+  const [years, setYears] = useState(initialYears);
   const [page, setPage] = useState(1);
 
   useEffect(() => {
@@ -25,14 +25,12 @@ export const CardYearSemester: React.FC = () => {
   }, [dispatch, page]);
 
   useEffect(() => {
-    setYears(initialYears); // Cập nhật state cục bộ khi Redux store thay đổi
+    setYears(initialYears);
   }, [initialYears]);
 
   const handleUpdateSuccess = (updatedYear: number, yearId: string) => {
     setYears((prevYears) =>
-      prevYears.map((year) =>
-        year.id === yearId ? { ...year, year: updatedYear } : year
-      )
+      prevYears.map((year) => (year.id === yearId ? { ...year, year: updatedYear } : year))
     );
   };
 
@@ -52,6 +50,7 @@ export const CardYearSemester: React.FC = () => {
               <UpdateYearSemester
                 yearId={item.id}
                 currentYear={item.year}
+                existingYears={years.map((y) => y.year)}
                 onUpdateSuccess={handleUpdateSuccess}
               />
             </div>
