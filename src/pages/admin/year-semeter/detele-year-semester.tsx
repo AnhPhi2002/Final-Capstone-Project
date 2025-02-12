@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/api/redux/store";
 import { deleteYear, fetchYears } from "@/lib/api/redux/yearSlice";
+import { Toaster, toast } from "sonner";
 
 type DeteleYearSemesterProps = {
   yearId: string;
@@ -24,18 +25,19 @@ export const DeteleYearSemester: React.FC<DeteleYearSemesterProps> = ({ yearId }
   const handleDelete = async () => {
     try {
       await dispatch(deleteYear(yearId)).unwrap();
-      alert("Xóa thành công!");
+      toast.success("Xóa thành công!");
       dispatch(fetchYears({ page: 1, pageSize: 9 })); // Reload danh sách
     } catch (error) {
-      alert("Xóa thất bại. Vui lòng thử lại!");
+      toast.error("Xóa thất bại. Vui lòng thử lại!");
     }
   };
 
   return (
     <div>
+      <Toaster position="top-right" />
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button size="sm" className="bg-red-500 hover:bg-red-600 text-white">
+          <Button size="sm" >
             Xóa
           </Button>
         </AlertDialogTrigger>
