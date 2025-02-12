@@ -1,6 +1,6 @@
 import Header from "@/components/header";
 import { SelectSemester } from "./select-semester";
-import { CreateYearSemesters } from "./columns/create-year-semesters";
+// import { CreateYearSemesters } from "./columns/create-year-semesters";
 import { CreateSemesters } from "./columns/create-semesters";
 
 export function SemestersPage() {
@@ -14,7 +14,7 @@ export function SemestersPage() {
           
           {/* Gộp CreateYearSemesters và CreateSemesters vào một div */}
           <div className="flex gap-4 ml-4">
-            <CreateYearSemesters />
+            {/* <CreateYearSemesters /> */}
             <CreateSemesters />
           </div>
         </div>

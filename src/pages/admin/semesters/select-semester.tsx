@@ -1,15 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
-import { fetchYears } from "@/lib/api/redux/yearSlice";
+import { fetchAllYears } from "@/lib/api/redux/yearSlice";
 import { fetchSemesters } from "@/lib/api/redux/semesterSlice";
-
-// import React, { useEffect, useState } from "react";
-// import { useDispatch, useSelector } from "react-redux";
-// import { RootState, AppDispatch } from "@/lib/api/redux/store";
-// import { fetchYears } from "@/lib/api/redux/yearSlice";
-// import { fetchSemesters } from "@/lib/api/redux/semesterSlice";
-
 import {
   Select,
   SelectContent,
@@ -20,57 +13,44 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CardSemester } from "./card-semester";
+import { Button } from "@/components/ui/button";
 
 export const SelectSemester: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const { years, loading: yearLoading } = useSelector(
-    (state: RootState) => state.years
-  );
-  const { semesters, loading: semesterLoading } = useSelector(
-    (state: RootState) => state.semesters
-  );
+  const { data: years, loading: yearLoading } = useSelector((state: RootState) => state.years);
+  const { data: semesters, loading: semesterLoading, currentPage, totalPages } = useSelector((state: RootState) => state.semesters);
 
-  const [selectedYear, setSelectedYear] = useState<string>("all");
-  const [selectedSemester, setSelectedSemester] = useState<string>("all");
+  const [selectedYear, setSelectedYear] = useState<string>("");
+  const [page, setPage] = useState(1);
 
-  // Fetch Years on mount
   useEffect(() => {
-    dispatch(fetchYears());
+    dispatch(fetchAllYears()); 
   }, [dispatch]);
 
-  // Fetch Semesters when selectedYear changes
   useEffect(() => {
-    dispatch(fetchSemesters(selectedYear)); // Nếu selectedYear === "all", lấy tất cả semesters
-  }, [selectedYear, dispatch]);
+    if (selectedYear) {
+      dispatch(fetchSemesters({ yearId: selectedYear, page, pageSize: 2 }));
+    }
+  }, [dispatch, selectedYear, page]);
 
-  // Lọc danh sách semesters theo year nếu chọn năm cụ thể
-  const filteredSemesters =
-    selectedYear === "all"
-      ? semesters
-      : semesters.filter((s) => s.yearId === selectedYear);
+  const handleYearChange = (value: string) => {
+    setSelectedYear(value);
+    setPage(1); // Reset về trang 1 khi đổi năm học
+  };
 
-  // Lọc theo kỳ học nếu chọn cụ thể
-  const cardData =
-    selectedSemester === "all"
-      ? filteredSemesters.map((semester) => ({
-          id: semester.id,
-          code: semester.code,
-          year: semester.year,
-          start_date: semester.semester_detail[0]?.start_date,
-          end_date: semester.semester_detail[0]?.end_date,
-        }))
-      : filteredSemesters
-          .filter((semester) => semester.code === selectedSemester)
-          .map((semester) => ({
-            id: semester.id,
-            code: semester.code,
-            year: semester.year,
-            start_date: semester.semester_detail[0]?.start_date,
-            end_date: semester.semester_detail[0]?.end_date,
-          }));
+  const handleNextPage = () => {
+    if (page < totalPages) setPage(page + 1);
+  };
 
-  const isFiltered = selectedYear !== "all" || selectedSemester !== "all";
+  const handlePreviousPage = () => {
+    if (page > 1) setPage(page - 1);
+  };
+
+  if (!Array.isArray(years)) {
+    console.error("Years is not an array:", years);
+    return <p>Loading years failed...</p>;
+  }
 
   return (
     <div className="space-y-4">
@@ -83,7 +63,6 @@ export const SelectSemester: React.FC = () => {
           <SelectContent>
             <SelectGroup>
               <SelectLabel>Years</SelectLabel>
-              <SelectItem value="all">All Years</SelectItem>
               {yearLoading ? (
                 <SelectItem value="loading" disabled>Loading...</SelectItem>
               ) : (
@@ -96,36 +75,31 @@ export const SelectSemester: React.FC = () => {
             </SelectGroup>
           </SelectContent>
         </Select>
-
-        {/* Dropdown kỳ học */}
-        <Select
-          onValueChange={(value) => setSelectedSemester(value)}
-          disabled={filteredSemesters.length === 0}
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select Semester" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Semesters</SelectLabel>
-              <SelectItem value="all">All Semesters</SelectItem>
-              {semesterLoading ? (
-                <SelectItem value="loading" disabled>Loading...</SelectItem>
-              ) : (
-                filteredSemesters.map((semester) => (
-                  <SelectItem key={semester.id} value={semester.code}>
-                    {semester.code}
-                  </SelectItem>
-                ))
-              )}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
       </div>
-      <div className="mt-4 pt-10">
-        {isFiltered && cardData.length > 0 && <CardSemester data={cardData} />}
+
+      {/* Danh sách semesters */}
+      <div className="mt-4">
+        {semesterLoading ? (
+          <p>Đang tải danh sách kỳ học...</p>
+        ) : (
+          <CardSemester data={semesters} />
+        )}
+
+        {/* Nút phân trang */}
+        {semesters.length > 0 && (
+          <div className="flex justify-between items-center mt-6">
+            <Button onClick={handlePreviousPage} disabled={page === 1}>
+              Trang trước
+            </Button>
+            <span>
+              Trang {currentPage} / {totalPages}
+            </span>
+            <Button onClick={handleNextPage} disabled={page === totalPages}>
+              Trang tiếp theo
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
 };
-

@@ -12,7 +12,7 @@ export const CardSemester: React.FC<CardSemesterProps> = ({ data }) => {
   const navigate = useNavigate();
 
   // Lấy danh sách years từ Redux store
-  const years = useSelector((state: RootState) => state.years.years);
+  const years = useSelector((state: RootState) => state.years.data);
 
   // Hàm tìm `year` từ `yearId`
   const getYearById = (yearId: string) => {

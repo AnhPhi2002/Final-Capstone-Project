@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -19,33 +19,65 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import semesterData from "@/data/semester.json"; // Import dữ liệu năm học
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/lib/api/redux/store";
+import { createSemester, fetchSemesters } from "@/lib/api/redux/semesterSlice";
+import { fetchAllYears } from "@/lib/api/redux/yearSlice";
 
 export const CreateSemesters = () => {
-  const [year, setYear] = useState("");
+  const dispatch = useDispatch<AppDispatch>();
+  const { data: years, loading: yearLoading } = useSelector((state: RootState) => state.years);
+
+  const [open, setOpen] = useState(false);  // Trạng thái của Dialog
+  const [yearId, setYearId] = useState("");
   const [code, setCode] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [status, setStatus] = useState("Active");
+  const [registrationDeadline, setRegistrationDeadline] = useState("");
+  const [status, setStatus] = useState("ACTIVE");
 
-  // Lấy danh sách năm học duy nhất từ `semesterData`
-  const years = [...new Set(semesterData.map((item) => item.year))];
+  useEffect(() => {
+    dispatch(fetchAllYears());
+  }, [dispatch]);
 
-  const handleSave = () => {
-    if (!year || !code || !startDate || !endDate || !status) {
+  const handleSave = async () => {
+    if (!yearId || !code || !startDate || !endDate || !registrationDeadline || !status) {
       alert("Vui lòng nhập đầy đủ thông tin!");
       return;
     }
-
-    console.log("Saving Semester:", { year, code, startDate, endDate, status });
-
-    // Gọi API nếu cần
-    // fetch("/api/semesters", { method: "POST", body: JSON.stringify({ year, code, startDate, endDate, status }) });
+  
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+  
+    if (end <= start) {
+      alert("Ngày kết thúc phải lớn hơn ngày bắt đầu!");
+      return;
+    }
+  
+    const newSemester = {
+      yearId,
+      code,
+      startDate,
+      endDate,
+      registrationDeadline,
+      status,
+    };
+  
+    try {
+      await dispatch(createSemester(newSemester)).unwrap();
+      alert("Học kỳ đã được tạo thành công!");
+      setOpen(false); // Đóng dialog sau khi thêm thành công
+      dispatch(fetchSemesters({ yearId, page: 1, pageSize: 5 })); // Fetch lại danh sách semester
+    } catch (error: any) {
+      console.error("Failed to create semester:", error);
+      alert("Có lỗi xảy ra khi tạo học kỳ!");
+    }
   };
+  
 
   return (
     <div>
-      <Dialog>
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button className="bg-black text-white hover:bg-gray-800">
             Tạo học kỳ mới
@@ -65,17 +97,21 @@ export const CreateSemesters = () => {
               <Label htmlFor="year" className="text-right">
                 Năm học
               </Label>
-              <Select onValueChange={(value) => setYear(value)}>
+              <Select onValueChange={(value) => setYearId(value)}>
                 <SelectTrigger className="w-full col-span-3">
                   <SelectValue placeholder="Chọn năm học" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    {years.map((year) => (
-                      <SelectItem key={year} value={year}>
-                        {year}
-                      </SelectItem>
-                    ))}
+                    {yearLoading ? (
+                      <SelectItem value="loading" disabled>Đang tải...</SelectItem>
+                    ) : (
+                      years.map((year) => (
+                        <SelectItem key={year.id} value={year.id}>
+                          {year.year}
+                        </SelectItem>
+                      ))
+                    )}
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -123,19 +159,33 @@ export const CreateSemesters = () => {
               />
             </div>
 
+            {/* Hạn đăng ký */}
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="registration_deadline" className="text-right">
+                Hạn đăng ký
+              </Label>
+              <Input
+                id="registration_deadline"
+                type="date"
+                className="col-span-3"
+                value={registrationDeadline}
+                onChange={(e) => setRegistrationDeadline(e.target.value)}
+              />
+            </div>
+
             {/* Trạng thái */}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="status" className="text-right">
                 Trạng thái
               </Label>
-              <Select onValueChange={(value) => setStatus(value)} defaultValue="Active">
+              <Select onValueChange={(value) => setStatus(value)} defaultValue="ACTIVE">
                 <SelectTrigger className="w-full col-span-3">
                   <SelectValue placeholder="Chọn trạng thái" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="Active">Active</SelectItem>
-                    <SelectItem value="Inactive">Inactive</SelectItem>
+                    <SelectItem value="ACTIVE">ACTIVE</SelectItem>
+                    <SelectItem value="COMPLETE">COMPLETE</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>

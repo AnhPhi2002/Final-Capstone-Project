@@ -15,7 +15,7 @@ export const YearSemesterPage = () => {
         <div className="flex justify-end mb-4">
           <CreateYearSemesters />
         </div>
-
+{/* <SelectYearSemester/> */}
         <div className="">
           <CardYearSemester />
         </div>

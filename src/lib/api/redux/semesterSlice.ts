@@ -2,65 +2,73 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosClient } from "../config/axios-client";
 import { Semester } from "../types";
 
-interface SemesterState {
-  semesters: Semester[];
-  loading: boolean;
-  error: string | null;
-}
 
-// Thunk để fetch danh sách semester theo yearId
 export const fetchSemesters = createAsyncThunk(
   "semesters/fetchSemesters",
-  async (yearId: string) => {
-    let url = `/semester/?page=1&pageSize=100`; // Lấy tất cả semesters nếu chọn "All Years"
-    if (yearId !== "all") {
-      url = `/semester/${yearId}/?page=1&pageSize=5`;
+  async ({ yearId, page = 1, pageSize = 5}: { yearId: string; page: number; pageSize: number }, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.get(`/semester/${yearId}/?page=${page}&pageSize=${pageSize}`);
+      return {
+        data: response.data.data.data,
+        currentPage: response.data.data.currentPage,
+        totalPages: response.data.data.totalPages,
+      };
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || "Failed to fetch semesters");
     }
-
-    const response = await axiosClient.get(url);
-
-    return response.data.data.data.map((s: any) => ({
-      id: s.id,
-      code: s.code,
-      yearId: s.yearId,
-      startDate: s.startDate,
-      endDate: s.endDate,
-      registrationDeadline: s.registrationDeadline,
-      status: s.status,
-      createdAt: s.createdAt,
-    }));
   }
 );
 
+export const createSemester = createAsyncThunk(
+  "semesters/createSemester",
+  async (newSemester: any, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.post("/semester", newSemester);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || "Failed to create semester");
+    }
+  }
+);
+
+
+interface SemesterState {
+  data: Semester[];
+  loading: boolean;
+  error: string | null;
+  currentPage: number;
+  totalPages: number;
+}
+
 const initialState: SemesterState = {
-  semesters: [],
+  data: [],
   loading: false,
   error: null,
+  currentPage: 1,
+  totalPages: 1,
 };
 
 const semesterSlice = createSlice({
   name: "semesters",
   initialState,
-  reducers: {
-    clearSemesters: (state) => {
-      state.semesters = [];
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchSemesters.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(fetchSemesters.fulfilled, (state, action) => {
         state.loading = false;
-        state.semesters = action.payload;
+        state.data = action.payload.data;
+        state.currentPage = action.payload.currentPage;
+        state.totalPages = action.payload.totalPages;
       })
       .addCase(fetchSemesters.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || "Failed to fetch semesters";
+        state.error = action.payload as string;
       });
   },
 });
 
-export const { clearSemesters } = semesterSlice.actions;
 export default semesterSlice.reducer;
