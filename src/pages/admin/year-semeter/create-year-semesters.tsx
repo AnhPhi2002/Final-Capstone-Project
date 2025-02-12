@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -24,13 +24,15 @@ type FormData = {
 export const CreateYearSemesters: React.FC = () => {
   const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>();
   const dispatch = useDispatch<AppDispatch>();
+  const [open, setOpen] = useState(false);  // State to manage dialog visibility
 
   const onSubmit = async (data: FormData) => {
     try {
       await dispatch(createYear({ year: data.year })).unwrap();
       toast.success("Tạo năm học thành công!");
-      dispatch(fetchYears({ page: 1, pageSize: 5 })); 
+      dispatch(fetchYears());
       reset();
+      setOpen(false);  // Close the dialog on success
     } catch (error: any) {
       console.error("Error creating year:", error);
       toast.error(error.message || "Có lỗi xảy ra khi tạo năm học!");
@@ -39,7 +41,7 @@ export const CreateYearSemesters: React.FC = () => {
 
   return (
     <div>
-      <Dialog>
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button
             variant="outline"

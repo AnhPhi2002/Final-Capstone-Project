@@ -2,89 +2,81 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosClient } from "../config/axios-client";
 import { Year } from "@/lib/api/types/year";
 
+// Thunk để lấy danh sách năm học
 export const fetchYears = createAsyncThunk(
   "years/fetchYears",
-  async ({ page = 1, pageSize = 6 }: { page: number; pageSize: number }, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosClient.get(`/year/?page=${page}&pageSize=${pageSize}`);
-      return {
-        data: response.data.data.data,
-        currentPage: response.data.data.currentPage,
-        totalPages: response.data.data.totalPages,
-      };
+      const response = await axiosClient.get(`/year`); // Lấy danh sách năm học theo yêu cầu bình thường
+      return response.data.data.data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Failed to fetch years");
+      return rejectWithValue(error.response?.data || "Không thể lấy danh sách năm học");
     }
   }
 );
 
+// Thunk để lấy toàn bộ danh sách năm học (không giới hạn hoặc logic khác)
 export const fetchAllYears = createAsyncThunk(
   "years/fetchAllYears",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosClient.get(`/year`);
+      const response = await axiosClient.get(`/year?all=true`); // Giả định có tham số all=true
       return response.data.data.data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Failed to fetch all years");
+      return rejectWithValue(error.response?.data || "Không thể lấy tất cả năm học");
     }
   }
 );
 
+// Thunk để tạo năm học mới
 export const createYear = createAsyncThunk(
   "years/createYear",
   async (newYear: { year: number }, { rejectWithValue }) => {
     try {
       const response = await axiosClient.post("/year", newYear);
-      return response.data;
+      return response.data.data;  // Trả về dữ liệu năm học vừa tạo
     } catch (error: any) {
-      return rejectWithValue(error.response?.data || "Failed to create year");
+      return rejectWithValue(error.response?.data?.message || "Không thể tạo năm học");
     }
   }
 );
 
+// Thunk để xóa năm học
 export const deleteYear = createAsyncThunk(
   "years/deleteYear",
   async (yearId: string, { rejectWithValue }) => {
     try {
       await axiosClient.delete(`/year/${yearId}`);
-      return yearId;
+      return yearId;  // Trả về ID của năm học đã xóa
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Failed to delete year");
+      return rejectWithValue(error.response?.data?.message || "Không thể xóa năm học");
     }
   }
 );
 
+// Thunk để cập nhật năm học
 export const updateYear = createAsyncThunk(
   "years/updateYear",
   async ({ yearId, year }: { yearId: string; year: number }, { rejectWithValue }) => {
     try {
       const response = await axiosClient.put(`/year/${yearId}`, { year });
-      console.log("Response:", response.data);  // Debug response
-      return response.data;
+      return response.data.data;  // Trả về dữ liệu năm học đã cập nhật
     } catch (error: any) {
-      console.error("Update error:", error.response?.data);
-      return rejectWithValue(error.response?.data?.message || "Cập nhật thất bại");
+      return rejectWithValue(error.response?.data?.message || "Không thể cập nhật năm học");
     }
   }
 );
-
-
-
 
 interface YearState {
   data: Year[];
   loading: boolean;
   error: string | null;
-  currentPage: number;
-  totalPages: number;
 }
 
 const initialState: YearState = {
   data: [],
   loading: false,
   error: null,
-  currentPage: 1,
-  totalPages: 1,
 };
 
 const yearSlice = createSlice({
@@ -93,20 +85,21 @@ const yearSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // Xử lý fetchYears
       .addCase(fetchYears.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchYears.fulfilled, (state, action) => {
         state.loading = false;
-        state.data = action.payload.data;
-        state.currentPage = action.payload.currentPage;
-        state.totalPages = action.payload.totalPages;
+        state.data = Array.isArray(action.payload) ? action.payload : [];
       })
       .addCase(fetchYears.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
+
+      // Xử lý fetchAllYears
       .addCase(fetchAllYears.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -119,31 +112,49 @@ const yearSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
+
+      // Xử lý createYear
+      .addCase(createYear.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(createYear.fulfilled, (state, action) => {
+        if (action.payload) {
+          state.data.unshift(action.payload);  // Thêm năm học mới vào đầu danh sách
+          state.loading = false;
+          state.error = null;
+        }
+      })
+      .addCase(createYear.rejected, (state, action) => {
         state.loading = false;
-        state.data.unshift(action.payload); // Thêm mới vào đầu danh sách
+        state.error = action.payload as string;
+      })
+
+      // Xử lý deleteYear
+      .addCase(deleteYear.pending, (state) => {
+        state.loading = true;
+        state.error = null;
       })
       .addCase(deleteYear.fulfilled, (state, action) => {
         state.loading = false;
         state.data = state.data.filter((year) => year.id !== action.payload);
       })
-      .addCase(updateYear.fulfilled, (state, action) => {
-        state.loading = false;
-        const index = state.data.findIndex((year) => year.id === action.payload.id);
-        if (index !== -1) {
-          state.data[index] = action.payload;
-        }
-      })
-      .addCase(deleteYear.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
       .addCase(deleteYear.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
+
+      // Xử lý updateYear
       .addCase(updateYear.pending, (state) => {
         state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateYear.fulfilled, (state, action) => {
+        const index = state.data.findIndex((year) => year.id === action.payload.id);
+        if (index !== -1) {
+          state.data[index] = action.payload;  // Cập nhật thông tin năm học
+        }
+        state.loading = false;
         state.error = null;
       })
       .addCase(updateYear.rejected, (state, action) => {
