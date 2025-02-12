@@ -6,7 +6,6 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { PaginationDashboardPage } from "../pagination";
 import { UpdateYearSemester } from "./update-year-semester";
 import { DeteleYearSemester } from "./detele-year-semester";
-
 export const CardYearSemester: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const {
@@ -29,6 +28,7 @@ export const CardYearSemester: React.FC = () => {
   }, [initialYears]);
 
   const handleUpdateSuccess = (updatedYear: number, yearId: string) => {
+    // Chỉ cập nhật danh sách năm học
     setYears((prevYears) =>
       prevYears.map((year) => (year.id === yearId ? { ...year, year: updatedYear } : year))
     );
@@ -51,7 +51,7 @@ export const CardYearSemester: React.FC = () => {
                 yearId={item.id}
                 currentYear={item.year}
                 existingYears={years.map((y) => y.year)}
-                onUpdateSuccess={handleUpdateSuccess}
+                onUpdateSuccess={handleUpdateSuccess} // Không gọi toast ở đây
               />
             </div>
           </Card>

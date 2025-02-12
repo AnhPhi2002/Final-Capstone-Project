@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/api/redux/store";
 import { updateYear } from "@/lib/api/redux/yearSlice";
-import { Toaster, toast } from "sonner";
+import {  toast } from "sonner";
 
 type UpdateYearSemesterProps = {
   yearId: string;
@@ -36,16 +36,11 @@ export const UpdateYearSemester: React.FC<UpdateYearSemesterProps> = ({
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!year || isNaN(Number(year))) {
-      toast.error("Vui lòng nhập một năm hợp lệ.");
-      return;
-    }
 
     if (existingYears.includes(Number(year))) {
       toast.error("Năm học đã tồn tại! Vui lòng nhập một năm khác.");
       return;
     }
-
     try {
       await dispatch(updateYear({ yearId, year: Number(year) })).unwrap();
       toast.success("Cập nhật năm học thành công!");
@@ -60,7 +55,6 @@ export const UpdateYearSemester: React.FC<UpdateYearSemesterProps> = ({
 
   return (
     <>
-      <Toaster position="top-right" />
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogTrigger asChild>
           <Button size="sm">Cập nhật</Button>
