@@ -56,18 +56,22 @@ const LoginPage = () => {
   };
 
   // **Xử lý đăng nhập Google**
-  const handleGoogleSuccess = async (Response: any) => { // Viết hoa chữ "R"
-    const googleToken = Response.credential; // ✅ Lấy token từ Google
+  const handleGoogleSuccess = async (response: any) => {
+    const googleToken = response.credential;
     console.log("Google Token:", googleToken); // Debug token
-
+  
     const result = await dispatch(loginWithGoogle(googleToken));
-
+  
     if (loginWithGoogle.fulfilled.match(result)) {
+      console.log("Response from backend:", result.payload); // Kiểm tra phản hồi từ backend
       toast.success("Đăng nhập Google thành công!");
+      navigate("/");
     } else {
+      console.error("Error:", result.payload);
       toast.error(result.payload ? String(result.payload) : "Đăng nhập thất bại");
     }
   };
+  
 
   const handleGoogleFailure = () => {
     toast.error("Đăng nhập Google thất bại");

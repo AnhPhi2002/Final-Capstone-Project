@@ -29,7 +29,7 @@ export const CreateYearSemesters: React.FC = () => {
     try {
       await dispatch(createYear({ year: data.year })).unwrap();
       toast.success("Tạo năm học thành công!");
-      dispatch(fetchYears({ page: 1, pageSize: 5 }));  // Cập nhật danh sách với trang 1
+      dispatch(fetchYears({ page: 1, pageSize: 5 })); 
       reset();
     } catch (error: any) {
       console.error("Error creating year:", error);

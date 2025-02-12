@@ -6,16 +6,21 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
-import { flexRender } from "@tanstack/react-table";
+import { flexRender, type Table as TableType } from "@tanstack/react-table";
+import { Semester } from "@/lib/api/types";
 
-export function DataTable({ table }: { table: any }) {
+interface DataTableProps {
+  table: TableType<Semester>;
+}
+
+export function DataTable({ table }: DataTableProps) {
   return (
     <div className="rounded-md border">
       <Table>
         <TableHeader>
-          {table.getHeaderGroups().map((headerGroup: any) => (
+          {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header: any) => (
+              {headerGroup.headers.map((header) => (
                 <TableHead key={header.id}>
                   {header.isPlaceholder
                     ? null
@@ -30,9 +35,9 @@ export function DataTable({ table }: { table: any }) {
         </TableHeader>
         <TableBody>
           {table.getRowModel().rows.length ? (
-            table.getRowModel().rows.map((row: any) => (
+            table.getRowModel().rows.map((row) => (
               <TableRow key={row.id}>
-                {row.getVisibleCells().map((cell: any) => (
+                {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
