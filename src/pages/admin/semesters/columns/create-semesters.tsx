@@ -76,7 +76,7 @@ export const CreateSemesters = () => {
   
 
   return (
-    <div>
+    <div >
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button className="bg-black text-white hover:bg-gray-800">
