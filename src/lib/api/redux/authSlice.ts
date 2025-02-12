@@ -34,7 +34,7 @@ export const loginWithGoogle = createAsyncThunk(
   "auth/loginWithGoogle",
   async (googleToken: string, { rejectWithValue }) => {
     try {
-      const response = await axiosClient.post("/users/google-login", { token: googleToken });
+      const response = await axiosClient.post("/users/google-login", { idToken: googleToken });
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Đăng nhập Google thất bại");
