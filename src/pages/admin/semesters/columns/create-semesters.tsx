@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -23,12 +23,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
 import { createSemester, fetchSemesters } from "@/lib/api/redux/semesterSlice";
 import { fetchAllYears } from "@/lib/api/redux/yearSlice";
+import { Toaster, toast } from "sonner";
 
 export const CreateSemesters = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { data: years, loading: yearLoading } = useSelector((state: RootState) => state.years);
+  const { data: years, loading: yearLoading } = useSelector(
+    (state: RootState) => state.years
+  );
 
-  const [open, setOpen] = useState(false);  // Trạng thái của Dialog
+  const [open, setOpen] = useState(false);
   const [yearId, setYearId] = useState("");
   const [code, setCode] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -42,18 +45,18 @@ export const CreateSemesters = () => {
 
   const handleSave = async () => {
     if (!yearId || !code || !startDate || !endDate || !registrationDeadline || !status) {
-      alert("Vui lòng nhập đầy đủ thông tin!");
+      toast.error("Vui lòng nhập đầy đủ thông tin!");
       return;
     }
-  
+
     const start = new Date(startDate);
     const end = new Date(endDate);
-  
+
     if (end <= start) {
-      alert("Ngày kết thúc phải lớn hơn ngày bắt đầu!");
+      toast.error("Ngày kết thúc phải lớn hơn ngày bắt đầu!");
       return;
     }
-  
+
     const newSemester = {
       yearId,
       code,
@@ -62,26 +65,24 @@ export const CreateSemesters = () => {
       registrationDeadline,
       status,
     };
-  
+
     try {
       await dispatch(createSemester(newSemester)).unwrap();
-      alert("Học kỳ đã được tạo thành công!");
-      setOpen(false); // Đóng dialog sau khi thêm thành công
-      dispatch(fetchSemesters({ yearId, page: 1, pageSize: 5 })); // Fetch lại danh sách semester
+      toast.success("Học kỳ đã được tạo thành công!");
+      setOpen(false);
+      dispatch(fetchSemesters({ yearId }));
     } catch (error: any) {
       console.error("Failed to create semester:", error);
-      alert("Có lỗi xảy ra khi tạo học kỳ!");
+      toast.error("Có lỗi xảy ra khi tạo học kỳ!");
     }
   };
-  
 
   return (
-    <div >
+    <div>
+      <Toaster position="top-right" richColors duration={3000} />
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button className="bg-black text-white hover:bg-gray-800">
-            Tạo học kỳ mới
-          </Button>
+          <Button className="bg-black text-white hover:bg-gray-800">Tạo học kỳ mới</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
@@ -94,9 +95,7 @@ export const CreateSemesters = () => {
           <div className="grid gap-4 py-4">
             {/* Chọn năm học */}
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="year" className="text-right">
-                Năm học
-              </Label>
+              <Label htmlFor="year" className="text-right">Năm học</Label>
               <Select onValueChange={(value) => setYearId(value)}>
                 <SelectTrigger className="w-full col-span-3">
                   <SelectValue placeholder="Chọn năm học" />
@@ -119,9 +118,7 @@ export const CreateSemesters = () => {
 
             {/* Nhập mã học kỳ */}
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="code" className="text-right">
-                Mã học kỳ
-              </Label>
+              <Label htmlFor="code" className="text-right">Mã học kỳ</Label>
               <Input
                 id="code"
                 placeholder="VD: Spring2025"
@@ -133,9 +130,7 @@ export const CreateSemesters = () => {
 
             {/* Ngày bắt đầu */}
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="start_date" className="text-right">
-                Ngày bắt đầu
-              </Label>
+              <Label htmlFor="start_date" className="text-right">Ngày bắt đầu</Label>
               <Input
                 id="start_date"
                 type="date"
@@ -147,9 +142,7 @@ export const CreateSemesters = () => {
 
             {/* Ngày kết thúc */}
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="end_date" className="text-right">
-                Ngày kết thúc
-              </Label>
+              <Label htmlFor="end_date" className="text-right">Ngày kết thúc</Label>
               <Input
                 id="end_date"
                 type="date"
@@ -161,9 +154,7 @@ export const CreateSemesters = () => {
 
             {/* Hạn đăng ký */}
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="registration_deadline" className="text-right">
-                Hạn đăng ký
-              </Label>
+              <Label htmlFor="registration_deadline" className="text-right">Hạn đăng ký</Label>
               <Input
                 id="registration_deadline"
                 type="date"
@@ -175,9 +166,7 @@ export const CreateSemesters = () => {
 
             {/* Trạng thái */}
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="status" className="text-right">
-                Trạng thái
-              </Label>
+              <Label htmlFor="status" className="text-right">Trạng thái</Label>
               <Select onValueChange={(value) => setStatus(value)} defaultValue="ACTIVE">
                 <SelectTrigger className="w-full col-span-3">
                   <SelectValue placeholder="Chọn trạng thái" />

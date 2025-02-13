@@ -56,7 +56,7 @@ export const CardSemester: React.FC<CardSemesterProps> = ({ data }) => {
                   Học kỳ: {semester.code}
                 </CardTitle>
                 <CardDescription>
-                  Year: {getYearById(semester.yearId)}
+                  Năm học: {getYearById(semester.yearId)}
                 </CardDescription>
               </CardHeader>
             </Card>

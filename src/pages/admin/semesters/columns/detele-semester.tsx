@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { deleteSemester } from "@/lib/api/redux/semesterSlice";
 import { AppDispatch } from "@/lib/api/redux/store";
 import { useNavigate } from "react-router";
+import { Toaster, toast } from "sonner";  // Import Toaster và toast
 
 type DeleteSemesterProps = {
   semesterId: string;
@@ -17,14 +18,15 @@ export const DeleteSemester: React.FC<DeleteSemesterProps> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+
   const handleDelete = async () => {
     try {
       await dispatch(deleteSemester(semesterId)).unwrap();
-      alert("Học kỳ đã được xóa thành công!");
+      toast.success("Học kỳ đã được xóa thành công!");
       navigate(`/semester`);
       setOpen(false);
-    } catch (error) {
-      alert(`Xóa thất bại: ${error}`);
+    } catch (error: any) {
+      toast.error(`Xóa thất bại: ${error.message || "Đã xảy ra lỗi"}`);
     }
   };
 
@@ -32,6 +34,7 @@ export const DeleteSemester: React.FC<DeleteSemesterProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <Toaster position="top-right" richColors duration={3000} /> {/* Thêm Toaster */}
       <div className="bg-white rounded-lg p-6 w-full max-w-md">
         <h2 className="text-xl font-bold mb-4">Bạn có chắc chắn muốn xóa học kỳ này?</h2>
         <p className="text-gray-600 mb-6">

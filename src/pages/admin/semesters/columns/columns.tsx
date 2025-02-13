@@ -13,34 +13,29 @@ declare module '@tanstack/table-core' {
 export const columns: ColumnDef<Semester>[] = [
   {
     accessorKey: "year.year",
-    header: "Year",
+    header: "Năm học",
     cell: ({ row }) => (
-      <span>{row.original.year?.year || "Unknown Year"}</span>
+      <span>{row.original.year?.year || "Chưa xác định"}</span>
     ),
   },
   {
     accessorKey: "code",
-    header: "Semester Code",
+    header: "Học kỳ",
     cell: ({ row }) => <span>{row.getValue("code")}</span>,
   },
   {
     accessorKey: "startDate",
-    header: "Start Date",
+    header: "Ngày bắt đầu",
     cell: ({ row }) => new Date(row.getValue("startDate")).toLocaleDateString(),
   },
   {
     accessorKey: "endDate",
-    header: "End Date",
+    header: "Ngày kết thúc",
     cell: ({ row }) => new Date(row.getValue("endDate")).toLocaleDateString(),
   },
   {
-    accessorKey: "registrationDeadline",
-    header: "Registration Deadline",
-    cell: ({ row }) => new Date(row.getValue("registrationDeadline")).toLocaleDateString(),
-  },
-  {
     accessorKey: "status",
-    header: "Status",
+    header: "Trạng thái",
     cell: ({ row }) => {
       const status = row.getValue("status") as string;
       return (
@@ -51,19 +46,20 @@ export const columns: ColumnDef<Semester>[] = [
               : "bg-red-100 text-red-500"
           }
         >
-          {status}
+          {status === "ACTIVE" ? "Đang hoạt động" : "Không hoạt động"}
         </Badge>
       );
     },
   },
   {
     accessorKey: "createdAt",
-    header: "Created At",
+    header: "Ngày tạo",
     cell: ({ row }) =>
       new Date(row.getValue("createdAt")).toLocaleDateString(),
   },
   {
     id: "actions",
+    // header: "Hành động",
     cell: ({ row, table }) => (
       <ActionMenu 
         semesterId={row.original.id} 
