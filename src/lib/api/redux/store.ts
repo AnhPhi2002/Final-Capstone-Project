@@ -4,6 +4,7 @@ import counterReducer from './counterSlice';
 import authReducer from './authSlice';
 import yearReducer from "./yearSlice";
 import semesterReducer from "./semesterSlice";
+import { studentReducer } from './studentSlice';
 
 
 const rootReducer = combineReducers({
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   years: yearReducer,
   semesters: semesterReducer,
+  students: studentReducer,
 });
 
 // const persistedReducer = persistReducer(persistConfig, rootReducer)
