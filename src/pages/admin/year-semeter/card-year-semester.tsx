@@ -35,7 +35,7 @@ export const CardYearSemester: React.FC = () => {
           paginatedYears.map((item) => (
             <Card key={item.id} className="w-full p-4 shadow-md border rounded-lg">
               <CardHeader>
-                <CardTitle className="text-xl font-bold">Năm học {item.year}</CardTitle>
+                <CardTitle className="text-xl font-bold">Năm học: {item.year}</CardTitle>
               </CardHeader>
               <div className="flex justify-end space-x-2">
                 <DeteleYearSemester yearId={item.id} />

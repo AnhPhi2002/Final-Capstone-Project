@@ -37,7 +37,7 @@ export const UpdateYearSemester: React.FC<UpdateYearSemesterProps> = ({
     e.preventDefault();
 
     const newYear = Number(year);
-    
+
     if (isNaN(newYear) || newYear <= 0) {
       toast.error("Vui lòng nhập một năm hợp lệ.");
       return;
@@ -61,7 +61,8 @@ export const UpdateYearSemester: React.FC<UpdateYearSemesterProps> = ({
       setIsDialogOpen(false);
     } catch (error) {
       const errorMessage =
-        (error as { message: string }).message || "Cập nhật thất bại. Vui lòng thử lại!";
+        (error as { message: string }).message ||
+        "Cập nhật thất bại. Vui lòng thử lại!";
       toast.error(errorMessage);
     }
   };
@@ -75,7 +76,9 @@ export const UpdateYearSemester: React.FC<UpdateYearSemesterProps> = ({
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Cập nhật năm học</DialogTitle>
-            <DialogDescription>Sửa đổi thông tin chi tiết cho năm học.</DialogDescription>
+            <DialogDescription>
+              Sửa đổi thông tin chi tiết cho năm học.
+            </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSave}>
             <div className="grid gap-4 py-4">
