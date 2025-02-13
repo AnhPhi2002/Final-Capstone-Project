@@ -17,5 +17,12 @@ export interface Semester {
   semester_detail?: any[]; // Nếu không có `semester_detail`, hãy để kiểu là tùy chọn (`?`)
 }
 
+export interface Student {
+  id: string;             
+  email: string;           
+  major: string;          
+  specialization: string; 
+  status: string;         
+}
 
   
