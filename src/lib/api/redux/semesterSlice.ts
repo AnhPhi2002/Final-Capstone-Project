@@ -48,6 +48,35 @@ export const createSemester = createAsyncThunk(
   }
 );
 
+// Update semester by semesterId
+export const updateSemester = createAsyncThunk(
+  "semesters/updateSemester",
+  async (
+    { semesterId, updatedData }: { semesterId: string; updatedData: Partial<Semester> },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axiosClient.put(`/semester/${semesterId}`, updatedData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Failed to update semester");
+    }
+  }
+);
+
+// Delete semester by semesterId
+export const deleteSemester = createAsyncThunk(
+  "semesters/deleteSemester",
+  async (semesterId: string, { rejectWithValue }) => {
+    try {
+      await axiosClient.delete(`/semester/${semesterId}`);
+      return semesterId;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Failed to delete semester");
+    }
+  }
+);
+
 interface SemesterState {
   data: Semester[];
   semesterDetail: Semester | null;
@@ -112,6 +141,33 @@ const semesterSlice = createSlice({
         state.loading = false;
       })
       .addCase(createSemester.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      // Update semester
+      .addCase(updateSemester.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateSemester.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(updateSemester.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      // Delete semester
+      .addCase(deleteSemester.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteSemester.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = state.data.filter((semester) => semester.id !== action.payload);
+      })
+      .addCase(deleteSemester.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

@@ -1,4 +1,8 @@
 import React from "react";
+import { useDispatch } from "react-redux";
+import { deleteSemester } from "@/lib/api/redux/semesterSlice";
+import { AppDispatch } from "@/lib/api/redux/store";
+import { useNavigate } from "react-router";
 
 type DeleteSemesterProps = {
   semesterId: string;
@@ -11,10 +15,17 @@ export const DeleteSemester: React.FC<DeleteSemesterProps> = ({
   open,
   setOpen,
 }) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const handleDelete = async () => {
-    console.log(`Deleting semester ${semesterId}`);
-    // Thêm logic xóa học kỳ thực tế ở đây
-    setOpen(false);
+    try {
+      await dispatch(deleteSemester(semesterId)).unwrap();
+      alert("Học kỳ đã được xóa thành công!");
+      navigate(`/semester`);
+      setOpen(false);
+    } catch (error) {
+      alert(`Xóa thất bại: ${error}`);
+    }
   };
 
   if (!open) return null;
@@ -35,7 +46,7 @@ export const DeleteSemester: React.FC<DeleteSemesterProps> = ({
           </button>
           <button
             onClick={handleDelete}
-            className="px-4 py-2 bg-black text-white rounded-lg"
+            className="px-4 py-2 bg-red-600 text-white rounded-lg"
           >
             Xác nhận
           </button>
