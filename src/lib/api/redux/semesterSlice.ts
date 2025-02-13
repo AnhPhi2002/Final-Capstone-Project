@@ -2,20 +2,13 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosClient } from "../config/axios-client";
 import { Semester } from "../types";
 
-// Fetch a list of semesters by yearId
+// Fetch a list of semesters by yearId (không có phân trang)
 export const fetchSemesters = createAsyncThunk(
   "semesters/fetchSemesters",
-  async (
-    { yearId, page = 1, pageSize = 5 }: { yearId: string; page: number; pageSize: number },
-    { rejectWithValue }
-  ) => {
+  async ({ yearId }: { yearId: string }, { rejectWithValue }) => {
     try {
-      const response = await axiosClient.get(`/semester/${yearId}/?page=${page}&pageSize=${pageSize}`);
-      return {
-        data: response.data.data.data,
-        currentPage: response.data.data.currentPage,
-        totalPages: response.data.data.totalPages,
-      };
+      const response = await axiosClient.get(`/semester/${yearId}`);
+      return response.data.data.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Failed to fetch semesters");
     }
@@ -82,8 +75,6 @@ interface SemesterState {
   semesterDetail: Semester | null;
   loading: boolean;
   error: string | null;
-  currentPage: number;
-  totalPages: number;
 }
 
 const initialState: SemesterState = {
@@ -91,8 +82,6 @@ const initialState: SemesterState = {
   semesterDetail: null,
   loading: false,
   error: null,
-  currentPage: 1,
-  totalPages: 1,
 };
 
 const semesterSlice = createSlice({
@@ -108,9 +97,7 @@ const semesterSlice = createSlice({
       })
       .addCase(fetchSemesters.fulfilled, (state, action) => {
         state.loading = false;
-        state.data = action.payload.data;
-        state.currentPage = action.payload.currentPage;
-        state.totalPages = action.payload.totalPages;
+        state.data = action.payload;
       })
       .addCase(fetchSemesters.rejected, (state, action) => {
         state.loading = false;
