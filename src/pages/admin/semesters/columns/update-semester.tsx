@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { updateSemester } from "@/lib/api/redux/semesterSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { updateSemester} from "@/lib/api/redux/semesterSlice";
 import { AppDispatch, RootState } from "@/lib/api/redux/store";
-import { useSelector } from "react-redux";
+import { Toaster, toast } from "sonner";  // Import Toaster và toast
 
 type UpdateSemesterProps = {
   open: boolean;
@@ -19,6 +19,7 @@ export const UpdateSemester: React.FC<UpdateSemesterProps> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const semesterDetail = useSelector((state: RootState) => state.semesters.semesterDetail);
+  const allSemesters = useSelector((state: RootState) => state.semesters.data);  // Danh sách tất cả học kỳ
 
   const [formValues, setFormValues] = useState({
     code: "",
@@ -31,7 +32,7 @@ export const UpdateSemester: React.FC<UpdateSemesterProps> = ({
   // Format date to YYYY-MM-DD for input type="date"
   const formatDateForInput = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toISOString().split('T')[0];
+    return date.toISOString().split("T")[0];
   };
 
   // Load current semester data when modal opens
@@ -55,16 +56,36 @@ export const UpdateSemester: React.FC<UpdateSemesterProps> = ({
   };
 
   const handleSave = async () => {
+    if (!formValues.code || !formValues.startDate || !formValues.endDate || !formValues.status) {
+      toast.error("Vui lòng nhập đầy đủ thông tin!");
+      return;
+    }
+
+    const start = new Date(formValues.startDate);
+    const end = new Date(formValues.endDate);
+
+    if (end <= start) {
+      toast.error("Ngày kết thúc phải lớn hơn ngày bắt đầu!");
+      return;
+    }
+
+    // Kiểm tra trùng lặp mã học kỳ (bỏ qua học kỳ hiện tại)
+    const isDuplicateCode = allSemesters.some(
+      (semester) => semester.code === formValues.code && semester.id !== semesterId
+    );
+
+    if (isDuplicateCode) {
+      toast.error("Mã học kỳ đã tồn tại!");
+      return;
+    }
+
     try {
       await dispatch(updateSemester({ semesterId, updatedData: formValues })).unwrap();
-      alert("Cập nhật học kỳ thành công!");
-      // Call refetchData after successful update
-      if (refetchData) {
-        refetchData();
-      }
+      toast.success("Cập nhật học kỳ thành công!");
+      if (refetchData) refetchData();  // Gọi lại refetchData sau khi cập nhật thành công
       setOpen(false);
-    } catch (error) {
-      alert(`Cập nhật thất bại: ${error}`);
+    } catch (error: any) {
+      toast.error(`Cập nhật thất bại: ${error.message || "Đã xảy ra lỗi"}`);
     }
   };
 
@@ -72,6 +93,7 @@ export const UpdateSemester: React.FC<UpdateSemesterProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <Toaster position="top-right" richColors duration={3000} />
       <div className="bg-white rounded-lg p-6 w-full max-w-lg">
         <h2 className="text-xl font-bold mb-4">Cập nhật học kỳ</h2>
         <div className="space-y-4">
@@ -152,4 +174,3 @@ export const UpdateSemester: React.FC<UpdateSemesterProps> = ({
     </div>
   );
 };
-

@@ -15,24 +15,24 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/api/redux/store";
 import { createYear, fetchYears } from "@/lib/api/redux/yearSlice";
-import { Toaster, toast } from "sonner";
+import { toast } from "react-toastify";
 
 type FormData = {
   year: number;
 };
 
 export const CreateYearSemesters: React.FC = () => {
-  const [open, setOpen] = useState(false);
   const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>();
   const dispatch = useDispatch<AppDispatch>();
+  const [open, setOpen] = useState(false);  // State to manage dialog visibility
 
   const onSubmit = async (data: FormData) => {
     try {
       await dispatch(createYear({ year: data.year })).unwrap();
       toast.success("Tạo năm học thành công!");
-      dispatch(fetchYears({ page: 1, pageSize: 5 })); 
+      dispatch(fetchYears());
       reset();
-      setOpen(false);
+      setOpen(false);  // Close the dialog on success
     } catch (error: any) {
       console.error("Error creating year:", error);
       toast.error(error.message || "Có lỗi xảy ra khi tạo năm học!");
@@ -41,7 +41,6 @@ export const CreateYearSemesters: React.FC = () => {
 
   return (
     <div>
-      <Toaster position="top-right" />
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button
