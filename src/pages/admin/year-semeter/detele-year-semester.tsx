@@ -17,16 +17,21 @@ import { Toaster, toast } from "sonner";
 
 type DeteleYearSemesterProps = {
   yearId: string;
+  onDeleteSuccess?: (yearId: string) => void; // Callback để cập nhật state cục bộ nếu cần
 };
 
-export const DeteleYearSemester: React.FC<DeteleYearSemesterProps> = ({ yearId }) => {
+export const DeteleYearSemester: React.FC<DeteleYearSemesterProps> = ({ yearId, onDeleteSuccess }) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const handleDelete = async () => {
     try {
       await dispatch(deleteYear(yearId)).unwrap();
       toast.success("Xóa thành công!");
-      dispatch(fetchYears({ page: 1, pageSize: 9 })); // Reload danh sách
+      if (onDeleteSuccess) {
+        onDeleteSuccess(yearId); // Gọi callback nếu có để cập nhật state cục bộ
+      } else {
+        dispatch(fetchYears()); // Làm mới danh sách nếu không dùng state cục bộ
+      }
     } catch (error) {
       toast.error("Xóa thất bại. Vui lòng thử lại!");
     }
@@ -37,7 +42,7 @@ export const DeteleYearSemester: React.FC<DeteleYearSemesterProps> = ({ yearId }
       <Toaster position="top-right" />
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button size="sm" >
+          <Button size="sm" variant="destructive">
             Xóa
           </Button>
         </AlertDialogTrigger>
