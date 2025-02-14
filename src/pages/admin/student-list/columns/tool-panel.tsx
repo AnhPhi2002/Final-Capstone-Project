@@ -8,10 +8,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Link } from "react-router";
+import { Link, useParams } from "react-router";
 import SendMailButton from "./send-mail-button";
 
 const ToolPanel = () => {
+  const { studentId } = useParams<{ studentId: string }>();
+
   return (
     <div className="grid grid-cols-12 pb-5 gap-5">
       <div className="col-span-4 flex gap-3">
@@ -37,7 +39,7 @@ const ToolPanel = () => {
         </Select>
       </div>
       <div className="col-span-2 flex">
-        <Link to={"/import-student"} className="w-full">
+        <Link to={`/import-student/${studentId}`} className="w-full">
           <Button className="w-full flex gap-3 items-center">Import</Button>
         </Link>
       </div>
