@@ -11,15 +11,32 @@ import excelFormat from "@/assets/images/import-student-excel-format.jpg";
 import { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { Upload } from "lucide-react";
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useParams, useNavigate } from "react-router";
+import { toast } from "sonner"; // Import toast từ sonner
 
 const ImportStudentTab = () => {
+  const { studentId } = useParams<{ studentId: string }>();
+  const navigate = useNavigate();
+
   const onDrop = useCallback((acceptedFiles: File[]) => {
     console.log("Files:", acceptedFiles);
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
+  const handleImport = () => {
+    console.log("Import process...");
+    
+    // Hiển thị toast thành công
+    toast.success("Import thành công!");
+
+    // Sau 2 giây chuyển hướng về trang chi tiết sinh viên
+    setTimeout(() => {
+      navigate(`/student/${studentId}`);
+    }, 2000);
+  };
 
   return (
     <div>
@@ -27,7 +44,7 @@ const ImportStudentTab = () => {
         <CardHeader>
           <CardTitle>Import danh sách sinh viên vào hệ thống</CardTitle>
           <CardDescription>
-            Make changes to your account here. Click save when you're done.
+            Thêm sinh viên vào hệ thống từ file Excel.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-2">
@@ -61,13 +78,13 @@ const ImportStudentTab = () => {
               <div className="text-gray-500 flex items-center flex-col">
                 <Upload className="size-20 py-5" />
                 <p>Kéo và thả tệp ở đây hoặc nhấp để chọn tệp.</p>
-                <p> Định dạng file .excel</p>
+                <p>Định dạng file .excel</p>
               </div>
             )}
           </div>
         </CardContent>
         <CardFooter className="flex justify-end">
-          <Button>Import</Button>
+          <Button onClick={handleImport}>Import</Button>
         </CardFooter>
       </Card>
     </div>
