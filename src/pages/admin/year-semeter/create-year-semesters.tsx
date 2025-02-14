@@ -15,7 +15,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/api/redux/store";
 import { createYear, fetchYears } from "@/lib/api/redux/yearSlice";
-import { toast } from "react-toastify";
+import {  toast } from "sonner";
 
 type FormData = {
   year: number;
