@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateSemester} from "@/lib/api/redux/semesterSlice";
+import { updateSemester } from "@/lib/api/redux/semesterSlice";
 import { AppDispatch, RootState } from "@/lib/api/redux/store";
-import { Toaster, toast } from "sonner";  // Import Toaster và toast
+import { Toaster, toast } from "sonner";
 
 type UpdateSemesterProps = {
   open: boolean;
@@ -19,38 +19,32 @@ export const UpdateSemester: React.FC<UpdateSemesterProps> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const semesterDetail = useSelector((state: RootState) => state.semesters.semesterDetail);
-  const allSemesters = useSelector((state: RootState) => state.semesters.data);  // Danh sách tất cả học kỳ
+  const allSemesters = useSelector((state: RootState) => state.semesters.data);
 
   const [formValues, setFormValues] = useState({
     code: "",
     startDate: "",
     endDate: "",
-    registrationDeadline: "",
     status: "ACTIVE",
   });
 
-  // Format date to YYYY-MM-DD for input type="date"
   const formatDateForInput = (dateString: string) => {
     const date = new Date(dateString);
     return date.toISOString().split("T")[0];
   };
 
-  // Load current semester data when modal opens
   useEffect(() => {
     if (open && semesterDetail) {
       setFormValues({
         code: semesterDetail.code || "",
         startDate: formatDateForInput(semesterDetail.startDate) || "",
         endDate: formatDateForInput(semesterDetail.endDate) || "",
-        registrationDeadline: formatDateForInput(semesterDetail.registrationDeadline) || "",
         status: semesterDetail.status || "ACTIVE",
       });
     }
   }, [open, semesterDetail]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
   };
@@ -69,7 +63,6 @@ export const UpdateSemester: React.FC<UpdateSemesterProps> = ({
       return;
     }
 
-    // Kiểm tra trùng lặp mã học kỳ (bỏ qua học kỳ hiện tại)
     const isDuplicateCode = allSemesters.some(
       (semester) => semester.code === formValues.code && semester.id !== semesterId
     );
@@ -82,7 +75,7 @@ export const UpdateSemester: React.FC<UpdateSemesterProps> = ({
     try {
       await dispatch(updateSemester({ semesterId, updatedData: formValues })).unwrap();
       toast.success("Cập nhật học kỳ thành công!");
-      if (refetchData) refetchData();  // Gọi lại refetchData sau khi cập nhật thành công
+      if (refetchData) refetchData();
       setOpen(false);
     } catch (error: any) {
       toast.error(`Cập nhật thất bại: ${error.message || "Đã xảy ra lỗi"}`);
@@ -126,17 +119,6 @@ export const UpdateSemester: React.FC<UpdateSemesterProps> = ({
               type="date"
               name="endDate"
               value={formValues.endDate}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg p-2"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">Hạn đăng ký</label>
-            <input
-              type="date"
-              name="registrationDeadline"
-              value={formValues.registrationDeadline}
               onChange={handleChange}
               className="w-full border border-gray-300 rounded-lg p-2"
             />
