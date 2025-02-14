@@ -18,6 +18,8 @@ export const SelectSemester: React.FC = () => {
 
   const academicData: Group[] = groupData.map((group) => ({
     ...group,
+    id: group.id.toString(),
+    semester_id: group.semester_id.toString(),
     status: group.status as GroupStatus,
     group_members: group.group_members.map((member) => ({
       ...member,

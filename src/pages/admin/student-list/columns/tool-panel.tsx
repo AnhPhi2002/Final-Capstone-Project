@@ -19,7 +19,7 @@ const ToolPanel = () => {
       <div className="col-span-4 flex gap-3">
         <Input placeholder="Nhập để tìm kiếm" />
         <Button>
-          <Search />
+          Xóa tất cả
         </Button>
       </div>
 

@@ -1,11 +1,14 @@
+
 import Header from "@/components/header";
-import { CardGroupStudent } from "./card-group-student";
-import groupData from "@/data/group-student.json";
+
+import groupData from "@/data/group-student.json"; // Assuming it's valid data
 import SendMailButton from "./send-mail-button";
+import { DataTable } from "./data-table";
+import { columns } from "./columns"; // Ensure the columns file is properly imported
 
 export const GroupStudentCardPage = () => {
-  console.log("Group Data in GroupStudentCardPage:", groupData);
-  
+  console.log("Group Data in GroupStudentCardPage:", groupData); // Optional, remove in production
+
   return (
     <div className="flex flex-col h-screen">
       <Header title="Tổng quan" href="/" currentPage="Danh sách nhóm sinh viên" />
@@ -13,8 +16,7 @@ export const GroupStudentCardPage = () => {
         <div className="flex justify-end mb-4">
           <SendMailButton />
         </div>
-
-        <CardGroupStudent data={groupData} />
+        <DataTable columns={columns} data={groupData} />
       </div>
     </div>
   );

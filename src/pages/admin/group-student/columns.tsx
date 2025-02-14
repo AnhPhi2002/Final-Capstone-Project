@@ -133,7 +133,7 @@ export const columns: ColumnDef<any>[] = [
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link to={`/group-student/${group.id}`}>View Details</Link>
+              <Link to={`/group-student-detail/${group.id}`}>View Details</Link>
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Link to={`/group/${group.id}/edit`}>Edit Group</Link>

@@ -36,7 +36,6 @@ export const CreateSemesters = () => {
   const [code, setCode] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [registrationDeadline, setRegistrationDeadline] = useState("");
   const [status, setStatus] = useState("ACTIVE");
 
   useEffect(() => {
@@ -44,7 +43,7 @@ export const CreateSemesters = () => {
   }, [dispatch]);
 
   const handleSave = async () => {
-    if (!yearId || !code || !startDate || !endDate || !registrationDeadline || !status) {
+    if (!yearId || !code || !startDate || !endDate || !status) {
       toast.error("Vui lòng nhập đầy đủ thông tin!");
       return;
     }
@@ -62,7 +61,6 @@ export const CreateSemesters = () => {
       code,
       startDate,
       endDate,
-      registrationDeadline,
       status,
     };
 
@@ -149,18 +147,6 @@ export const CreateSemesters = () => {
                 className="col-span-3"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-              />
-            </div>
-
-            {/* Hạn đăng ký */}
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="registration_deadline" className="text-right">Hạn đăng ký</Label>
-              <Input
-                id="registration_deadline"
-                type="date"
-                className="col-span-3"
-                value={registrationDeadline}
-                onChange={(e) => setRegistrationDeadline(e.target.value)}
               />
             </div>
 
