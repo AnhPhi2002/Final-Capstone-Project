@@ -5,7 +5,7 @@ import SendMailButton from "./send-mail-button";
 
 export const GroupStudentCardPage = () => {
   console.log("Group Data in GroupStudentCardPage:", groupData);
-
+  
   return (
     <div className="flex flex-col h-screen">
       <Header title="Tổng quan" href="/" currentPage="Danh sách nhóm sinh viên" />
