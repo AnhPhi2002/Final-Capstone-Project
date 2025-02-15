@@ -3,11 +3,7 @@ import { useDropzone } from "react-dropzone";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useParams, useNavigate } from "react-router";
-import { Upload } from "lucide-react";
-import { toast } from "sonner";
-import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
-import { importStudents, resetState } from "@/lib/api/redux/importStudentSlice";
-
+import { toast } from "sonner"; 
 const ImportStudentTab = () => {
   const { semesterId } = useParams<{ semesterId: string }>();
   const navigate = useNavigate();
