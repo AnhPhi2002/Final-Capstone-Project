@@ -1,93 +1,89 @@
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import excelFormat from "@/assets/images/import-student-excel-format.jpg";
-import { useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import { Upload } from "lucide-react";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useParams, useNavigate } from "react-router";
-import { toast } from "sonner"; // Import toast từ sonner
+import { Upload } from "lucide-react";
+import { toast } from "sonner";
+import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
+import { importStudents, resetState } from "@/lib/api/redux/importStudentSlice";
 
 const ImportStudentTab = () => {
-  const { studentId } = useParams<{ studentId: string }>();
+  const { semesterId } = useParams<{ semesterId: string }>();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const { loading, error } = useAppSelector((state) => state.importStudents);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    console.log("Files:", acceptedFiles);
+    if (acceptedFiles.length > 0) {
+      setSelectedFile(acceptedFiles[0]);
+      toast.info(`Đã chọn file: ${acceptedFiles[0].name}`);
+    }
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-  const handleImport = () => {
-    console.log("Import process...");
-    
-    // Hiển thị toast thành công
-    toast.success("Import thành công!");
+  const handleImport = async () => {
+    if (!selectedFile) {
+      toast.error("Vui lòng chọn file để import!");
+      return;
+    }
 
-    // Sau 2 giây chuyển hướng về trang chi tiết sinh viên
-    setTimeout(() => {
-      navigate(`/student/${studentId}`);
-    }, 2000);
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+    formData.append("semesterId", semesterId!);
+    for (let pair of formData.entries()) {
+      console.log(`${pair[0]}: ${pair[1]}`);
+    }
+
+    try {
+      await dispatch(importStudents({ formData })).unwrap();
+      toast.success("Import thành công!");
+      setTimeout(() => {
+        navigate(`/student/${semesterId}`);
+        dispatch(resetState());
+      }, 2000);
+    } catch (err: any) {
+      toast.error(err.message || "Import thất bại!");
+    }
   };
 
   return (
-    <div>
-      <Card>
-        <CardHeader>
-          <CardTitle>Import danh sách sinh viên vào hệ thống</CardTitle>
-          <CardDescription>
-            Thêm sinh viên vào hệ thống từ file Excel.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-2">
-          <h3 className="font-semibold text-lg">Xử lí trùng email đã tồn tại</h3>
-          <RadioGroup defaultValue="option-one">
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="option-one" id="option-one" />
-              <Label htmlFor="option-one">Báo lỗi và không thực hiện</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="option-two" id="option-two" />
-              <Label htmlFor="option-two">Bỏ qua và tiếp tục import các sinh viên khác</Label>
-            </div>
-          </RadioGroup>
-          <h3 className="font-semibold">Định dạng excel</h3>
-          <img src={excelFormat} alt="" />
-          <div
-            {...getRootProps()}
-            style={{
-              border: "2px dashed #888",
-              padding: "20px",
-              textAlign: "center",
-              cursor: "pointer",
-            }}
-            className="rounded-lg"
-          >
-            <input {...getInputProps()} />
-            {isDragActive ? (
-              <p>Thả file vào đây ...</p>
-            ) : (
-              <div className="text-gray-500 flex items-center flex-col">
-                <Upload className="size-20 py-5" />
-                <p>Kéo và thả tệp ở đây hoặc nhấp để chọn tệp.</p>
-                <p>Định dạng file .excel</p>
-              </div>
-            )}
-          </div>
-        </CardContent>
-        <CardFooter className="flex justify-end">
-          <Button onClick={handleImport}>Import</Button>
-        </CardFooter>
-      </Card>
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>Import danh sách sinh viên vào hệ thống</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div
+          {...getRootProps()}
+          style={{
+            border: "2px dashed #888",
+            padding: "20px",
+            textAlign: "center",
+            cursor: "pointer",
+          }}
+        >
+          <input {...getInputProps()} />
+          {selectedFile ? (
+            <p>File đã chọn: <strong>{selectedFile.name}</strong></p>
+          ) : isDragActive ? (
+            <p>Thả file vào đây ...</p>
+          ) : (
+            <p>Kéo và thả tệp hoặc nhấp để chọn tệp.</p>
+          )}
+        </div>
+        {loading && <p>Đang xử lý import...</p>}
+        {error && <p className="text-red-500">Lỗi: {error}</p>}
+      </CardContent>
+
+      <CardFooter className="flex justify-end">
+        <Button onClick={handleImport} disabled={loading}>
+          {loading ? "Đang import..." : "Import"}
+        </Button>
+      </CardFooter>
+    </Card>
   );
 };
 

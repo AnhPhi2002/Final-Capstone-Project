@@ -9,15 +9,15 @@ import Header from "@/components/header";
 import ToolPanel from "./tool-panel";
 
 export const StudentsDetailPage = () => {
-  const { studentId } = useParams<{ studentId: string }>();
+  const { semesterId } = useParams<{ semesterId: string }>();
   const dispatch = useDispatch<AppDispatch>();
   const { students, loading, error } = useSelector((state: RootState) => state.students);
 
   useEffect(() => {
-    if (studentId) {
-      dispatch(fetchStudentsBySemester(studentId));
+    if (semesterId) {
+      dispatch(fetchStudentsBySemester(semesterId));
     }
-  }, [dispatch, studentId]);
+  }, [dispatch, semesterId]);
 
   return (
     <div className="flex flex-col h-screen">
