@@ -28,6 +28,20 @@ export const fetchStudentsBySemester = createAsyncThunk(
   }
 );
 
+// Thunk để gọi API xóa tất cả sinh viên theo semesterId
+export const deleteAllStudentsBySemester = createAsyncThunk(
+  'students/deleteBySemester',
+  async (semesterId: string, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.delete(`/student/semester/${semesterId}`);
+      return response.data; // Trả về kết quả từ response
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to delete students');
+    }
+  }
+);
+
+
 const studentSlice = createSlice({
   name: 'students',
   initialState,
@@ -43,6 +57,18 @@ const studentSlice = createSlice({
         state.students = action.payload;
       })
       .addCase(fetchStudentsBySemester.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(deleteAllStudentsBySemester.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteAllStudentsBySemester.fulfilled, (state) => {
+        state.loading = false;
+        state.students = []; // Xóa danh sách sinh viên trong state
+      })
+      .addCase(deleteAllStudentsBySemester.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });
