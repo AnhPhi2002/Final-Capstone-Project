@@ -16,7 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
+import { PaginationDashboardPage } from '../../pagination';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -25,16 +25,24 @@ interface DataTableProps<TData, TValue> {
 
 export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const itemsPerPage = 10; // Adjust this to control how many rows per page
+  const totalPages = Math.ceil(data.length / itemsPerPage);
 
   const table = useReactTable({
     data,
     columns,
+    state: { sorting },
     getCoreRowModel: getCoreRowModel(),
-    onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    state: { sorting },
+    onSortingChange: setSorting,
   });
+
+  // Sync current page in react-table
+  React.useEffect(() => {
+    table.setPageIndex(currentPage - 1);
+  }, [currentPage, table]);
 
   return (
     <div>
@@ -74,23 +82,12 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
+      <div className="flex justify-end mt-6">
+        <PaginationDashboardPage
+          totalPages={totalPages}
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </div>
   );
