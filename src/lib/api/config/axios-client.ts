@@ -6,7 +6,7 @@ export const BASE_URL = "http://localhost:3000/api";
 export const axiosClient = axios.create({
   baseURL: BASE_URL,
   headers: {
-    'Content-type': 'application/json',
+    // 'Content-type': 'application/json',
   },
   withCredentials: true,
 });
@@ -18,7 +18,7 @@ axiosClient.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
       config.headers.Accept = 'application/json';
-      config.headers['Content-Type'] = 'application/json';
+      // config.headers['Content-Type'] = 'application/json';
     }
     return config;
   },

@@ -12,7 +12,7 @@ import { Link, useParams } from "react-router";
 import SendMailButton from "./send-mail-button";
 
 const ToolPanel = () => {
-  const { studentId } = useParams<{ studentId: string }>();
+  const { semesterId } = useParams<{ semesterId: string }>();
 
   return (
     <div className="grid grid-cols-12 pb-5 gap-5">
@@ -39,7 +39,7 @@ const ToolPanel = () => {
         </Select>
       </div>
       <div className="col-span-2 flex">
-        <Link to={`/import-student/${studentId}`} className="w-full">
+        <Link to={`/import-student/${semesterId}`} className="w-full">
           <Button className="w-full flex gap-3 items-center">Import</Button>
         </Link>
       </div>

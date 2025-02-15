@@ -5,6 +5,8 @@ import authReducer from './authSlice';
 import yearReducer from "./yearSlice";
 import semesterReducer from "./semesterSlice";
 import { studentReducer } from './studentSlice';
+import importStudentReducer from './importStudentSlice';
+import importConditionsReducer from "./importConditionsSlice";
 
 
 const rootReducer = combineReducers({
@@ -13,6 +15,8 @@ const rootReducer = combineReducers({
   years: yearReducer,
   semesters: semesterReducer,
   students: studentReducer,
+  importStudents: importStudentReducer,
+  importConditions: importConditionsReducer,
 });
 
 // const persistedReducer = persistReducer(persistConfig, rootReducer)

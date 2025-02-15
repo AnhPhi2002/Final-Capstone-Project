@@ -40,9 +40,9 @@ const MainContainter = () => {
         <Route path="/council-member/:councilId" element={<CouncilMemberDetail />} />
 
         <Route path="/student" element={<StudentListPage />} />
-        <Route path="/student/:studentId" element={<StudentsDetailPage />} />
+        <Route path="/student/:semesterId" element={<StudentsDetailPage />} />
         <Route path="/import-student" element={<ImportStudentPage />} />
-        <Route path="/import-student/:studentId" element={<ImportStudentPage />} />
+        <Route path="/import-student/:semesterId" element={<ImportStudentPage />} />
 
         <Route path="/review-group-student" element={<ReviewPage />} />
         
@@ -52,7 +52,7 @@ const MainContainter = () => {
         <Route path="/group-student-detail/:Ib" element={<GroupStudentDetail />} />
           
         <Route path="/not-group-student" element={<NotGroupStudentPage />} />
-        <Route path="/not-group-student/:semesterId" element={<StudentsnotGroupDetailPage />} />
+        <Route path="/not-group-studsent/:semeterId" element={<StudentsnotGroupDetailPage />} />
 
         <Route path="/semester" element={<SemestersPage />} />
         <Route path="/semester/:semesterId" element={<SemestersDetailPage />} />
