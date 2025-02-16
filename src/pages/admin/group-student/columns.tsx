@@ -1,18 +1,12 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Link } from "react-router";
+
 import { Badge } from "@/components/ui/badge";
 import { ReactNode } from "react";
-import { toast } from "sonner";
+
+import { Action } from "./action";
+
 
 export const columns: ColumnDef<any>[] = [
   {
@@ -23,23 +17,33 @@ export const columns: ColumnDef<any>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="p-0 m-0 w-full justify-start"
       >
-        Group Code
+        Mã Nhóm
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
   },
   {
-    accessorKey: "semester_id",
+    accessorKey: "topic_code",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="p-0 m-0 w-full justify-start"
       >
-        Semester ID
+        Mã Đề Tài
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
+  },
+  {
+    accessorKey: "mentor_1_id",
+    header: "Giảng Viên 1",
+    cell: ({ row }) => <div>{row.original.mentor_1_id || "N/A"}</div>,
+  },
+  {
+    accessorKey: "mentor_2_id",
+    header: "Giảng Viên 2",
+    cell: ({ row }) => <div>{row.original.mentor_2_id || "N/A"}</div>,
   },
   {
     accessorKey: "status",
@@ -49,7 +53,7 @@ export const columns: ColumnDef<any>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="p-0 m-0 w-full justify-start"
       >
-        Status
+        Trạng Thái
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
@@ -59,19 +63,19 @@ export const columns: ColumnDef<any>[] = [
       if (group.status === "active") {
         badge = (
           <Badge className="bg-green-100 border border-green-500 text-green-500 hover:bg-green-200">
-            Active
+            Đang Hoạt Động
           </Badge>
         );
       } else if (group.status === "pending") {
         badge = (
           <Badge className="bg-yellow-100 border border-yellow-500 text-yellow-500 hover:bg-yellow-200">
-            Pending
+            Chờ Xử Lý
           </Badge>
         );
       } else if (group.status === "inactive") {
         badge = (
           <Badge className="bg-red-100 border border-red-500 text-red-500 hover:bg-red-200">
-            Inactive
+            Ngừng Hoạt Động
           </Badge>
         );
       }
@@ -86,63 +90,46 @@ export const columns: ColumnDef<any>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="p-0 m-0 w-full justify-start"
       >
-        Max Members
+        Thành Viên
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
   },
   {
     accessorKey: "is_multi_major",
-    header: "Multi Major",
-    cell: ({ row }) => (
-      <div>{row.original.is_multi_major ? "Yes" : "No"}</div>
-    ),
+    header: "Liên Ngành",
+    cell: ({ row }) => {
+      const isMultiMajor = row.original.is_multi_major;
+      return (
+        <Badge
+          className={`${
+            isMultiMajor
+              ? "bg-green-100 border border-green-500 text-green-500"
+              : "bg-red-100 border border-red-500 text-red-500"
+          }`}
+        >
+          {isMultiMajor ? "Có" : "Không"}
+        </Badge>
+      );
+    },
   },
   {
     accessorKey: "created_at",
-    header: "Created At",
+    header: "Ngày Tạo",
     cell: ({ row }) => <div>{new Date(row.original.created_at).toLocaleString()}</div>,
   },
   {
     accessorKey: "updated_at",
-    header: "Updated At",
+    header: "Ngày Cập Nhật",
     cell: ({ row }) => <div>{new Date(row.original.updated_at).toLocaleString()}</div>,
   },
   {
     id: "actions",
     cell: ({ row }) => {
       const group = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => {
-                navigator.clipboard.writeText(group.id.toString());
-                toast("Copied Group ID.");
-              }}
-            >
-              Copy Group ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Link to={`/group-student-detail/${group.id}`}>View Details</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Link to={`/group/${group.id}/edit`}>Edit Group</Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-red-500">Delete Group</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+      return <Action group={group} />;
     },
-  },
+  }
 ];
+
+
