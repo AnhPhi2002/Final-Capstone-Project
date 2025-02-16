@@ -159,8 +159,8 @@ export const CreateSemesters = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="ACTIVE">ACTIVE</SelectItem>
-                    <SelectItem value="COMPLETE">COMPLETE</SelectItem>
+                    <SelectItem value="ACTIVE">Hoạt động </SelectItem>
+                    <SelectItem value="COMPLETE">Không hoạt động </SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>

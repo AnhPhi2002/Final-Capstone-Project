@@ -16,7 +16,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { PaginationDashboardPage } from '../../pagination';
+
+;
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -25,9 +26,7 @@ interface DataTableProps<TData, TValue> {
 
 export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [currentPage, setCurrentPage] = React.useState(1);
-  const itemsPerPage = 10; // Adjust this to control how many rows per page
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+
 
   const table = useReactTable({
     data,
@@ -39,10 +38,6 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     onSortingChange: setSorting,
   });
 
-  // Sync current page in react-table
-  React.useEffect(() => {
-    table.setPageIndex(currentPage - 1);
-  }, [currentPage, table]);
 
   return (
     <div>
@@ -82,13 +77,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           </TableBody>
         </Table>
       </div>
-      <div className="flex justify-end mt-6">
-        <PaginationDashboardPage
-          totalPages={totalPages}
-          currentPage={currentPage}
-          onPageChange={setCurrentPage}
-        />
-      </div>
+
     </div>
   );
 }

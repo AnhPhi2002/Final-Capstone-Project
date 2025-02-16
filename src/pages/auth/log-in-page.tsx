@@ -84,7 +84,7 @@ const LoginPage = () => {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSubmit)}>
               <h2 className="text-4xl font-bold mt-5">Đăng Nhập</h2>
-              <p className="py-2">Innovibe Order Management System</p>
+              <p className="py-2">FU FCPRIMS HCM Management System</p>
 
               <FormField control={form.control} name="email" render={({ field }) => (
                 <FormItem>

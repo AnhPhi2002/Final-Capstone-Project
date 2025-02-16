@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchStudentsBySemester } from "@/lib/api/redux/studentSlice";
@@ -7,11 +7,16 @@ import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import Header from "@/components/header";
 import ToolPanel from "./tool-panel";
+import { PaginationDashboardPage } from "../../pagination";
 
 export const StudentsDetailPage = () => {
   const { semesterId } = useParams<{ semesterId: string }>();
   const dispatch = useDispatch<AppDispatch>();
   const { students, loading, error } = useSelector((state: RootState) => state.students);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10; // Set how many students per page
+  const totalPages = Math.ceil(students.length / itemsPerPage);
 
   useEffect(() => {
     if (semesterId) {
@@ -19,9 +24,19 @@ export const StudentsDetailPage = () => {
     }
   }, [dispatch, semesterId]);
 
+  // Slice students for the current page
+  const currentStudents = students.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
   return (
     <div className="flex flex-col h-screen">
-      <Header title="Danh sách sinh viên" href="/" currentPage="Chi tiết danh sách sinh viên trong kỳ" />
+      <Header
+        title="Danh sách sinh viên"
+        href="/"
+        currentPage="Chi tiết danh sách sinh viên trong kỳ"
+      />
       <div className="p-5 flex-1 overflow-auto">
         <ToolPanel />
         {loading ? (
@@ -33,7 +48,20 @@ export const StudentsDetailPage = () => {
             <h1 className="text-xl font-bold">Lỗi: {error}</h1>
           </div>
         ) : (
-          <DataTable columns={columns} data={students.length > 0 ? students : []} />
+          <>
+            <DataTable columns={columns} data={currentStudents} />
+            <div className="flex justify-end mt-6">
+              <PaginationDashboardPage
+                totalPages={totalPages}
+                currentPage={currentPage}
+                onPageChange={(page) => {
+                  if (page >= 1 && page <= totalPages) {
+                    setCurrentPage(page);
+                  }
+                }}
+              />
+            </div>
+          </>
         )}
       </div>
     </div>

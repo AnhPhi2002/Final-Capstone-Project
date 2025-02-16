@@ -132,8 +132,8 @@ export const UpdateSemester: React.FC<UpdateSemesterProps> = ({
               onChange={handleChange}
               className="w-full border border-gray-300 rounded-lg p-2"
             >
-              <option value="ACTIVE">ACTIVE</option>
-              <option value="COMPLETE">COMPLETE</option>
+              <option value="ACTIVE">Hoạt động </option>
+              <option value="COMPLETE">Không hoạt động </option>
             </select>
           </div>
         </div>

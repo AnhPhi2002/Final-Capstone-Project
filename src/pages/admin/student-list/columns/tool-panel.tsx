@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-// import { Search } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -10,35 +9,16 @@ import {
 } from "@/components/ui/select";
 import { Link, useParams } from "react-router";
 import SendMailButton from "./send-mail-button";
-import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
-import { deleteAllStudentsBySemester } from "@/lib/api/redux/studentSlice";
-import { toast } from "sonner";
-
+import { DeleteStudentList } from "./delete-student-list";
 
 const ToolPanel = () => {
   const { semesterId } = useParams<{ semesterId: string }>();
-  const dispatch = useAppDispatch();
-  const { loading } = useAppSelector((state) => state.students);
 
-  const handleDeleteAll = async () => {
-    if (!semesterId) return;
-    const confirmDelete = window.confirm("Bạn có chắc chắn muốn xóa tất cả sinh viên?");
-    if (!confirmDelete) return;
-
-    try {
-      await dispatch(deleteAllStudentsBySemester(semesterId)).unwrap();
-      toast.success("Xóa tất cả sinh viên thành công!");
-    } catch (error: any) {
-      toast.error(error || "Xóa tất cả sinh viên thất bại!");
-    }
-  };
   return (
     <div className="grid grid-cols-12 pb-5 gap-5">
       <div className="col-span-4 flex gap-3">
         <Input placeholder="Nhập để tìm kiếm" />
-        <Button onClick={handleDeleteAll} disabled={loading}>
-          {loading ? "Đang xóa..." : "Xóa tất cả"}
-        </Button>
+        <DeleteStudentList semesterId={semesterId} />
       </div>
 
       <div className="col-span-3">
