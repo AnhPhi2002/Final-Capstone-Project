@@ -24,6 +24,24 @@ export const columns: ColumnDef<Student>[] = [
     cell: ({ row }) => <span>{row.getValue('specialization')}</span>,
   },
   {
+    accessorKey: 'qualificationStatus',
+    header: 'Điều kiện',
+    cell: ({ row }) => {
+      const status = row.getValue('qualificationStatus') as string;
+      return (
+        <Badge
+          className={
+            status === 'qualified'
+              ? 'bg-green-100 text-green-500'
+              : 'bg-red-100 text-red-500'
+          }
+        >
+          {status}
+        </Badge>
+      );
+    },
+  },
+  {
     accessorKey: 'status',
     header: 'Trạng thái',
     cell: ({ row }) => {
