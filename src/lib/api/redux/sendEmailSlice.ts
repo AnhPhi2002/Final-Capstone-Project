@@ -1,42 +1,38 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosClient } from "@/lib/api/config/axios-client";
 
-type SendEmailState = {
-  loading: boolean;
-  success: boolean;
-  error: string | null;
-};
-
-const initialState: SendEmailState = {
-  loading: false,
-  success: false,
-  error: null,
-};
-
-export const sendEmails = createAsyncThunk<
-  any,
-  { semesterId: string; qualificationStatus: string },
-  { rejectValue: string }
->("sendEmail/send", async ({ semesterId, qualificationStatus }, { rejectWithValue }) => {
-  try {
-    const response = await axiosClient.post("/send-emails", {
+// 🛠 Cập nhật kiểu dữ liệu để phản ánh API mới
+export const sendEmails = createAsyncThunk(
+  "emails/send",
+  async (
+    {
       semesterId,
       qualificationStatus,
-    });
-    return response.data;
-  } catch (error: any) {
-    return rejectWithValue(error.response?.data?.message || "Failed to send emails");
-  }
-});
+      emailType,
+    }: { semesterId: string; qualificationStatus: string; emailType: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const payload = {
+        semesterId,
+        qualificationStatus,
+        emailType, // Chỉ gửi emailType (tên template)
+      };
 
+      const response = await axiosClient.post("/send-qualification-emails", payload);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Gửi email thất bại");
+    }
+  }
+);
 
 const sendEmailSlice = createSlice({
   name: "sendEmail",
-  initialState,
+  initialState: { loading: false, error: null as string | null },
   reducers: {
     resetState: (state) => {
       state.loading = false;
-      state.success = false;
       state.error = null;
     },
   },
@@ -45,15 +41,13 @@ const sendEmailSlice = createSlice({
       .addCase(sendEmails.pending, (state) => {
         state.loading = true;
         state.error = null;
-        state.success = false;
       })
       .addCase(sendEmails.fulfilled, (state) => {
         state.loading = false;
-        state.success = true;
       })
       .addCase(sendEmails.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Failed to send emails";
+        state.error = action.payload as string;
       });
   },
 });

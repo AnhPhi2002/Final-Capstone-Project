@@ -8,6 +8,7 @@ import { studentReducer } from './studentSlice';
 import importStudentReducer from './importStudentSlice';
 import importConditionsReducer from "./importConditionsSlice";
 import sendMailReducer from "./sendEmailSlice";
+import emailTemplateReducer from "./emailTemplateSlice";
 
 
 const rootReducer = combineReducers({
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   importStudents: importStudentReducer,
   importConditions: importConditionsReducer,
   sendEmail: sendMailReducer,
+  emailTemplates: emailTemplateReducer,
 });
 
 // const persistedReducer = persistReducer(persistConfig, rootReducer)

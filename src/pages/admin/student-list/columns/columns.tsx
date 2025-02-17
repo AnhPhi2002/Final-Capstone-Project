@@ -23,6 +23,11 @@ export const columns: ColumnDef<Student>[] = [
     header: 'Chuyên ngành',
     cell: ({ row }) => <span>{row.getValue('specialization')}</span>,
   },
+  // {
+  //   accessorKey: 'programming_language',
+  //   header: 'Ngôn ngữ',
+  //   cell: ({ row }) => <span>{row.getValue('programming_language')}</span>,
+  // },
   {
     accessorKey: 'qualificationStatus',
     header: 'Điều kiện',
