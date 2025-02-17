@@ -1,28 +1,40 @@
-// Trạng thái có thể có của sinh viên trong block 3W
-export type Block3wStatusNotGroup = "Active" | "Inactive";
+// Trạng thái của Block 3W
+export enum Block3WStatus {
+  Active = "Active",
+  Completed = "Completed",
+  Pending = "Pending",
+}
 
 // Trạng thái đủ điều kiện của sinh viên
-export type StudentStatusNotGroup = "Qualified" | "Pending" | "Rejected";
+export enum StudentStatus {
+  Qualified = "Qualified",
+  NotQualified = "Not Qualified",
+}
 
-// Định nghĩa thông tin sinh viên
+// Định nghĩa kiểu dữ liệu của sinh viên chưa có nhóm KLTN
 export interface StudentNotGroup {
   id: number;
   email: string;
   major_id: string;
   specialty_id: string;
-  block3w_status: Block3wStatusNotGroup;
-  status: StudentStatusNotGroup;
+  block3w_status: Block3WStatus;
+  status: StudentStatus;
 }
 
 // Định nghĩa học kỳ với danh sách sinh viên
 export interface SemesterNotGroup {
-  id: number;
-  year: string;
   code: string;
   start_date: string;
   end_date: string;
   students: StudentNotGroup[];
 }
 
-// Danh sách các học kỳ
-export type SemesterListNotGroup = SemesterNotGroup[];
+// Định nghĩa năm học với danh sách học kỳ
+export interface AcademicYear {
+  id: number;
+  year: string;
+  semesters: SemesterNotGroup[];
+}
+
+// Định nghĩa danh sách các năm học
+export type AcademicData = AcademicYear[];

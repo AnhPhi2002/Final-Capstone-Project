@@ -17,6 +17,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useNavigate } from "react-router";
+import { useAppSelector } from "@/hooks/reduxHooks";
 
 export function NavUser({
   user,
@@ -29,7 +30,19 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar();
   const navigate = useNavigate();
-  const handleLogout = () => {navigate("/log-in")};
+  const handleLogout = () => {
+    navigate("/log-in");
+  };
+
+  // const currentUser = useAppSelector((state) => state.currentUser.user);
+
+  // const handleNavigate = () => {
+  //   if (currentUser?.id) {
+  //     navigate(`/profile-page/${currentUser.id}`);
+  //   } else {
+  //     navigate("/profile-page");
+  //   }
+  // };
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -70,9 +83,9 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate("/profile-page")}>
                 <BadgeCheck />
-                Tải khoản
+                Tài khoản
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />

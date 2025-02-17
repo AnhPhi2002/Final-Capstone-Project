@@ -2,98 +2,167 @@
   {
     "id": 1,
     "year": "2025",
-    "code": "SpringA2025",
-    "start_date": "2025-01-01",
-    "end_date": "2025-05-31",
-    "students": [
+    "semesters": [
       {
-        "id": 101,
-        "email": "john.doe@fpt.edu.vn",
-        "major_id": "AI",
-        "specialty_id": "DL",
-        "block3w_status": "Active",
-        "status": "Qualified"
+        "code": "SpringA2025",
+        "start_date": "2025-01-01",
+        "end_date": "2025-05-31",
+        "students": [
+          {
+            "id": 4,
+            "email": "john.doe@fpt.edu.vn",
+            "major_id": "AI",
+            "specialty_id": "DL",
+            "block3w_status": "Active",
+            "status": "Qualified"
+          },
+          {
+            "id": 5,
+            "email": "jane.smith@fpt.edu.vn",
+            "major_id": "SE",
+            "specialty_id": "Mobile",
+            "block3w_status": "Completed",
+            "status": "Qualified"
+          }
+        ]
       },
       {
-        "id": 102,
-        "email": "jane.smith@fpt.edu.vn",
-        "major_id": "SE",
-        "specialty_id": "Mobile",
-        "block3w_status": "Inactive",
-        "status": "Qualified"
+        "code": "SummerX2025",
+        "start_date": "2025-06-01",
+        "end_date": "2025-08-31",
+        "students": [
+          {
+            "id": 1,
+            "email": "phi@fpt.edu.vn",
+            "major_id": "SE",
+            "specialty_id": "NJS",
+            "block3w_status": "Active",
+            "status": "Qualified"
+          },
+          {
+            "id": 2,
+            "email": "phi@fpt.edu.vn",
+            "major_id": "SE",
+            "specialty_id": "NJS",
+            "block3w_status": "Pending",
+            "status": "Not Qualified"
+          },
+          {
+            "id": 3,
+            "email": "phi@fpt.edu.vn",
+            "major_id": "SE",
+            "specialty_id": "NJS",
+            "block3w_status": "Completed",
+            "status": "Qualified"
+          }
+        ]
       },
       {
-        "id": 103,
-        "email": "mark.johnson@fpt.edu.vn",
-        "major_id": "ITS",
-        "specialty_id": "Security",
-        "block3w_status": "Active",
-        "status": "Pending"
-      },
-      {
-        "id": 104,
-        "email": "lisa.brown@fpt.edu.vn",
-        "major_id": "IA",
-        "specialty_id": "Network",
-        "block3w_status": "Active",
-        "status": "Rejected"
-      },
-      {
-        "id": 105,
-        "email": "david.wilson@fpt.edu.vn",
-        "major_id": "AI",
-        "specialty_id": "Data Science",
-        "block3w_status": "Active",
-        "status": "Qualified"
+        "code": "AutumnBreeze2025",
+        "start_date": "2025-09-01",
+        "end_date": "2025-12-31",
+        "students": [
+          {
+            "id": 6,
+            "email": "michael.wang@fpt.edu.vn",
+            "major_id": "ITS",
+            "specialty_id": "CyberSec",
+            "block3w_status": "Active",
+            "status": "Qualified"
+          }
+        ]
       }
     ]
   },
   {
     "id": 2,
-    "year": "2025",
-    "code": "SummerB2025",
-    "start_date": "2025-06-01",
-    "end_date": "2025-10-31",
-    "students": [
+    "year": "2026",
+    "semesters": [
       {
-        "id": 106,
-        "email": "emily.davis@fpt.edu.vn",
-        "major_id": "SE",
-        "specialty_id": "Web Development",
-        "block3w_status": "Inactive",
-        "status": "Qualified"
+        "code": "SpringX2026",
+        "start_date": "2026-01-01",
+        "end_date": "2026-05-31",
+        "students": [
+          {
+            "id": 7,
+            "email": "lucas.brown@fpt.edu.vn",
+            "major_id": "IA",
+            "specialty_id": "Embedded",
+            "block3w_status": "Completed",
+            "status": "Qualified"
+          },
+          {
+            "id": 8,
+            "email": "olivia.lee@fpt.edu.vn",
+            "major_id": "AI",
+            "specialty_id": "NLP",
+            "block3w_status": "Pending",
+            "status": "Not Qualified"
+          }
+        ]
       },
       {
-        "id": 107,
-        "email": "michael.miller@fpt.edu.vn",
-        "major_id": "ITS",
-        "specialty_id": "Security",
-        "block3w_status": "Active",
-        "status": "Pending"
+        "code": "SummerB2026",
+        "start_date": "2026-06-01",
+        "end_date": "2026-08-31",
+        "students": []
       },
       {
-        "id": 108,
-        "email": "sarah.martinez@fpt.edu.vn",
-        "major_id": "AI",
-        "specialty_id": "Machine Learning",
-        "block3w_status": "Active",
-        "status": "Qualified"
+        "code": "WinterWave2026",
+        "start_date": "2026-09-01",
+        "end_date": "2026-12-31",
+        "students": [
+          {
+            "id": 9,
+            "email": "david.kim@fpt.edu.vn",
+            "major_id": "SE",
+            "specialty_id": "GameDev",
+            "block3w_status": "Active",
+            "status": "Qualified"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "year": "2027",
+    "semesters": [
+      {
+        "code": "SpringBright2027",
+        "start_date": "2027-01-01",
+        "end_date": "2027-05-31",
+        "students": [
+          {
+            "id": 10,
+            "email": "emma.wilson@fpt.edu.vn",
+            "major_id": "AI",
+            "specialty_id": "Computer Vision",
+            "block3w_status": "Completed",
+            "status": "Qualified"
+          }
+        ]
       },
       {
-        "id": 109,
-        "email": "james.garcia@fpt.edu.vn",
-        "major_id": "IA",
-        "specialty_id": "Cloud Computing",
-        "block3w_status": "Active",
-        "status": "Rejected"
+        "code": "MidSummerDream2027",
+        "start_date": "2027-06-01",
+        "end_date": "2027-08-31",
+        "students": [
+          {
+            "id": 11,
+            "email": "noah.anderson@fpt.edu.vn",
+            "major_id": "SE",
+            "specialty_id": "Blockchain",
+            "block3w_status": "Pending",
+            "status": "Not Qualified"
+          }
+        ]
       },
       {
-        "id": 110,
-        "email": "olivia.rodriguez@fpt.edu.vn",
-        "major_id": "SE",
-        "specialty_id": "Game Development",
-        "block3w_status": "Inactive",
-        "status": "Qualified"
+        "code": "GoldenFall2027",
+        "start_date": "2027-09-01",
+        "end_date": "2027-12-31",
+        "students": []
       }
     ]
   }
