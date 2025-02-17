@@ -1,30 +1,37 @@
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
+import { fetchStudentsWithoutGroup } from "@/lib/api/redux/studentWithoutGroupSlice";
+import { useParams } from "react-router";
 import Header from "@/components/header";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
-import {  useState } from "react";
-import { AcademicData } from "@/types/not-group-student";
 import ToolPanel from "./tool-panel";
 
 export const NotGroupStudentDetailPage = () => {
-    const [data, setData] = useState<AcademicData>([]);
-  fetch("/data/semester.json")
-  .then((res) => {
-    if (!res.ok) {
-      throw new Error(`HTTP error! Status: ${res.status}`);
-    }
-    return res.json();
-  })
-  .then((data) => setData(data))
-  .catch((error) => console.error("Error fetching JSON:", error));
+  const dispatch = useAppDispatch();
+  const { semesterId } = useParams<{ semesterId: string }>();
 
-  
+  const { students, loading, error } = useAppSelector(
+    (state) => state.studentsWithoutGroup
+  );
+  useEffect(() => {
+    if (semesterId) {
+      dispatch(fetchStudentsWithoutGroup(semesterId));
+    }
+  }, [dispatch, semesterId]);
+
+  console.log("Students Data from Redux:", students); // ✅ Kiểm tra Redux có nhận dữ liệu hay không
+
+  if (loading) return <p>Đang tải danh sách sinh viên...</p>;
+  if (error) return <p className="text-red-500">Lỗi: {error}</p>;
+
   return (
     <div className="flex flex-col h-screen">
-    <Header title="Tổng quan" href="/" currentPage="Danh sách sinh viên chưa có nhóm KLTN" />
-    <div className="p-5 flex-1 overflow-auto">
-      <ToolPanel />
-      <DataTable columns={columns} data={data.flatMap(year => year.semesters.flatMap(sem => sem.students))} />
+      <Header title="Tổng quan" href="/" currentPage="Danh sách sinh viên chưa có nhóm KLTN" />
+      <div className="p-5 flex-1 overflow-auto">
+        <ToolPanel />
+        <DataTable columns={columns} data={students} />
+      </div>
     </div>
-  </div>
-  )
-}
+  );
+};

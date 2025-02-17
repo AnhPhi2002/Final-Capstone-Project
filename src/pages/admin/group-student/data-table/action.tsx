@@ -1,4 +1,3 @@
-
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,12 +22,7 @@ export const Action = ({ group }: { group: any }) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Hành Động</DropdownMenuLabel>
-        <DropdownMenuItem
-          onClick={() => {
-            navigator.clipboard.writeText(group.id.toString());
-            toast("Đã sao chép Mã Nhóm.");
-          }}
-        >
+        <DropdownMenuItem onClick={() => navigator.clipboard.writeText(group.id)}>
           Sao Chép Mã Nhóm
         </DropdownMenuItem>
         <DropdownMenuSeparator />

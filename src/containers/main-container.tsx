@@ -48,13 +48,13 @@ const MainContainter = () => {
         <Route path="/group-student" element={<GroupStudentPage />} />
         <Route path="/group-student/:semesterId" element={<GroupStudentCardPage />} />
         <Route path="/group-student-detail" element={<GroupStudentDetail />} />
-        <Route path="/group-student-detail/:Ib" element={<GroupStudentDetail />} />
+        <Route path="/group-student-detail/:groupId" element={<GroupStudentDetail />} />
           
         <Route path="/random-group-student-page" element={<RandomGroupStudentPage />} />
         <Route path="/random-group-student-page/:semesterId" element={<RandomGroupStudentPage />} />
 
         <Route path="/not-group-student" element={<NotGroupStudentPage />} />
-        <Route path="//not-group-student/:semeterId" element={<NotGroupStudentDetailPage />} />
+        <Route path="/not-group-student/:semesterId" element={<NotGroupStudentDetailPage />} />
 
         <Route path="/semester" element={<SemestersPage />} />
         <Route path="/semester/:semesterId" element=  {<SemestersDetailPage />} />

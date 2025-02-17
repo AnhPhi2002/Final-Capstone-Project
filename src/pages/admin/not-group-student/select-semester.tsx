@@ -1,4 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/lib/api/redux/store";
+import { fetchAllYears } from "@/lib/api/redux/yearSlice";
+import { fetchSemesters } from "@/lib/api/redux/semesterSlice";
 import {
   Select,
   SelectContent,
@@ -8,103 +12,64 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import semesterData from "@/data/semester.json";
 import { CardSemester } from "./card-semester";
 
 export const SelectSemester: React.FC = () => {
-  const [selectedYear, setSelectedYear] = useState<string>("all");
-  const [selectedSemester, setSelectedSemester] = useState<string>("all");
+  const dispatch = useDispatch<AppDispatch>();
 
-  const years = [
-    "all",
-    ...new Set(semesterData.map((semester) => semester.year)),
-  ];
+  const { data: years, loading: yearLoading } = useSelector((state: RootState) => state.years);
+  const { data: semesters } = useSelector((state: RootState) => state.semesters);
 
-  const filteredSemesters =
-    selectedYear === "all"
-      ? semesterData
-      : semesterData.filter((semester) => semester.year === selectedYear);
+  const [selectedYear, setSelectedYear] = useState<string>("");
 
-  const handleYearChange = (year: string) => {
-    setSelectedYear(year);
+  useEffect(() => {
+    dispatch(fetchAllYears()); // Lấy danh sách năm học
+  }, [dispatch]);
 
-    const matchingSemester = filteredSemesters.find(
-      (semester) => semester.code === selectedSemester
-    );
-
-    if (!matchingSemester) {
-      setSelectedSemester("all"); 
-    } else {
-      setSelectedSemester(matchingSemester.code); 
+  useEffect(() => {
+    if (selectedYear) {
+      dispatch(fetchSemesters({ yearId: selectedYear })); // Lấy tất cả học kỳ theo năm học (không có phân trang)
     }
+  }, [dispatch, selectedYear]);
+
+  const handleYearChange = (value: string) => {
+    setSelectedYear(value); // Cập nhật năm học được chọn
   };
 
-  const cardData =
-    selectedSemester === "all"
-      ? filteredSemesters.map((semester) => ({
-          id: semester.id,
-          code: semester.code,
-          year: semester.year,
-          start_date: semester.semester_detail[0]?.start_date,
-          end_date: semester.semester_detail[0]?.end_date,
-        }))
-      : filteredSemesters
-          .filter((semester) => semester.code === selectedSemester)
-          .map((semester) => ({
-            id: semester.id,
-            code: semester.code,
-            year: semester.year,
-            start_date: semester.semester_detail[0]?.start_date,
-            end_date: semester.semester_detail[0]?.end_date,
-          }));
+  if (!Array.isArray(years)) {
+    console.error("Years is not an array:", years);
+    return <p>Không tải được danh sách năm học...</p>;
+  }
 
-  const isFiltered = selectedYear !== "all" || selectedSemester !== "all";
+  const cardData = semesters; // Không cần phân trang, truyền toàn bộ dữ liệu học kỳ
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center space-x-4">
+      <div className="flex flex-col md:flex-row md:items-center gap-4">
         <Select onValueChange={(value) => handleYearChange(value)}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select Year" />
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="Chọn năm học" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectLabel>Years</SelectLabel>
-              {years
-                .filter((year) => year !== "all") 
-                .map((year) => (
-                  <SelectItem key={year} value={year}>
-                    {year}
-                  </SelectItem>
-                ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-
-        <Select
-          onValueChange={(value) => setSelectedSemester(value)}
-          disabled={filteredSemesters.length === 0}
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select Semester" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Semesters</SelectLabel>
-              <SelectItem value="all">All Semesters</SelectItem>
-              {filteredSemesters.map((semester) => (
-                <SelectItem key={semester.id} value={semester.code}>
-                  {semester.code}
+              <SelectLabel>Năm học</SelectLabel>
+              {yearLoading ? (
+                <SelectItem value="loading" disabled>
+                  Đang tải...
                 </SelectItem>
-              ))}
+              ) : (
+                years.map((year) => (
+                  <SelectItem key={year.id} value={year.id}>
+                    {year.year}
+                  </SelectItem>
+                ))
+              )}
             </SelectGroup>
           </SelectContent>
         </Select>
       </div>
-      <div className="mt-4 pt-10">
-        {isFiltered && cardData.length > 0 && <CardSemester data={cardData} />}
-      </div>
+
+      {selectedYear && <CardSemester data={cardData} />}
     </div>
   );
 };
-

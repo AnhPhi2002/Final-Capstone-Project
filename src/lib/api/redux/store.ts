@@ -9,6 +9,11 @@ import importStudentReducer from './importStudentSlice';
 import importConditionsReducer from "./importConditionsSlice";
 import sendMailReducer from "./sendEmailSlice";
 import emailTemplateReducer from "./emailTemplateSlice";
+import studentsWithoutGroupReducer from './studentWithoutGroupSlice';
+// import { groupStudentReducer } from './groupStudentSlice';
+import { groupReducer } from './groupSlice';
+import groupDetailReducer from './groupDetailSlice';
+
 
 
 const rootReducer = combineReducers({
@@ -21,6 +26,10 @@ const rootReducer = combineReducers({
   importConditions: importConditionsReducer,
   sendEmail: sendMailReducer,
   emailTemplates: emailTemplateReducer,
+  studentsWithoutGroup: studentsWithoutGroupReducer,
+  // groupStudents: groupStudentReducer,
+  groups: groupReducer,
+  groupDetail:  groupDetailReducer
 });
 
 // const persistedReducer = persistReducer(persistConfig, rootReducer)

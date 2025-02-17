@@ -1,4 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/lib/api/redux/store";
+import { fetchAllYears } from "@/lib/api/redux/yearSlice";
+import { fetchSemesters } from "@/lib/api/redux/semesterSlice";
 import {
   Select,
   SelectContent,
@@ -8,99 +12,64 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import groupData from "@/data/group-student.json"; // Import dữ liệu nhóm
 import { CardSemester } from "./card-semester";
-import { Group, GroupStatus, Role, Status } from "@/types/group-student"; // Import đúng type Group
 
 export const SelectSemester: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const { data: years, loading: yearLoading } = useSelector((state: RootState) => state.years);
+  const { data: semesters } = useSelector((state: RootState) => state.semesters);
+
   const [selectedYear, setSelectedYear] = useState<string>("");
-  const [selectedSemester, setSelectedSemester] = useState<string>("all");
 
-  const academicData: Group[] = groupData.map((group) => ({
-    ...group,
-    id: group.id.toString(),
-    semester_id: group.semester_id.toString(),
-    status: group.status as GroupStatus,
-    group_members: group.group_members.map((member) => ({
-      ...member,
-      role: member.role as Role,
-      status: member.status as Status,
-    })),
-  })); // Ép kiểu dữ liệu JSON sang Group[]
+  useEffect(() => {
+    dispatch(fetchAllYears()); // Lấy danh sách năm học
+  }, [dispatch]);
 
-  // Lấy danh sách các năm học duy nhất
-  const years = [...new Set(academicData.map((group) => group.year))];
+  useEffect(() => {
+    if (selectedYear) {
+      dispatch(fetchSemesters({ yearId: selectedYear })); // Lấy tất cả học kỳ theo năm học (không có phân trang)
+    }
+  }, [dispatch, selectedYear]);
 
-  // Lọc danh sách nhóm theo năm học đã chọn
-  const filteredGroups =
-    selectedYear === ""
-      ? []
-      : academicData.filter((group) => group.year === selectedYear);
-
-  // Lọc danh sách nhóm theo học kỳ đã chọn
-  const filteredBySemester =
-    selectedSemester === "all"
-      ? filteredGroups
-      : filteredGroups.filter((group) => group.code === selectedSemester);
-
-  const handleYearChange = (year: string) => {
-    setSelectedYear(year);
-    setSelectedSemester("all");
+  const handleYearChange = (value: string) => {
+    setSelectedYear(value); // Cập nhật năm học được chọn
   };
+
+  if (!Array.isArray(years)) {
+    console.error("Years is not an array:", years);
+    return <p>Không tải được danh sách năm học...</p>;
+  }
+
+  const cardData = semesters; // Không cần phân trang, truyền toàn bộ dữ liệu học kỳ
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center space-x-4">
-        {/* Dropdown chọn năm học */}
-        <Select onValueChange={handleYearChange} value={selectedYear}>
-          <SelectTrigger className="w-[180px]">
+      <div className="flex flex-col md:flex-row md:items-center gap-4">
+        <Select onValueChange={(value) => handleYearChange(value)}>
+          <SelectTrigger className="w-[200px]">
             <SelectValue placeholder="Chọn năm học" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
               <SelectLabel>Năm học</SelectLabel>
-              {years.map((year) => (
-                <SelectItem key={year} value={year}>
-                  {year}
+              {yearLoading ? (
+                <SelectItem value="loading" disabled>
+                  Đang tải...
                 </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-
-        {/* Dropdown chọn học kỳ */}
-        <Select onValueChange={setSelectedSemester} value={selectedSemester} >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Chọn kỳ học" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Kỳ học</SelectLabel>
-              <SelectItem value="all">Tất cả học kỳ</SelectItem>
-              {filteredGroups.map((group) => (
-                <SelectItem key={group.id} value={group.code}>
-                  {group.code}
-                </SelectItem>
-              ))}
+              ) : (
+                years.map((year) => (
+                  <SelectItem key={year.id} value={year.id}>
+                    {year.year}
+                  </SelectItem>
+                ))
+              )}
             </SelectGroup>
           </SelectContent>
         </Select>
       </div>
 
-      {/* Chỉ hiển thị danh sách nếu đã chọn năm */}
-      {selectedYear !== "" && filteredBySemester.length > 0 && (
-        <div className="mt-4">
-          <CardSemester
-            data={filteredBySemester.map((group) => ({
-              id: group.id.toString(),
-              code: group.code,
-              year: group.year,
-              start_date: group.start_date,
-              end_date: group.end_date,
-            }))}
-          />
-        </div>
-      )}
+      {selectedYear && <CardSemester data={cardData} />}
     </div>
   );
 };
