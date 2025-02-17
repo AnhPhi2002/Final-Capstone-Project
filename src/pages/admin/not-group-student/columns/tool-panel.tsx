@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -8,23 +7,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Link } from "react-router";
+import { Link, useParams } from "react-router";
 
 const ToolPanel = () => {
+  const { semesterId } = useParams<{ semesterId: string }>();
+
   return (
     <div className="grid grid-cols-12 pb-5 gap-5">
       <div className="col-span-4 flex gap-3">
         <Input placeholder="Nhập để tìm kiếm" />
-        <Button>
-          <Search />
-        </Button>
       </div>
 
+      <div className="col-span-3"></div>
+
       <div className="col-span-3">
-      
-      </div>
-      <div className="col-span-3">
-        <Select>
+        {/* <Select>
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Trạng thái sinh viên" />
           </SelectTrigger>
@@ -33,11 +30,17 @@ const ToolPanel = () => {
             <SelectItem value="Qualified">Đạt</SelectItem>
             <SelectItem value="Not Qualified">Không đạt</SelectItem>
           </SelectContent>
-        </Select>
+        </Select> */}
       </div>
+
       <div className="col-span-2 flex">
-        <Link to={"/import-student"} className="w-full">
-          <Button className="w-full flex gap-3 items-center">Import</Button>
+        <Link
+          to={`/random-group-student-page${semesterId ? `/${semesterId}` : ""}`}
+          className="w-full"
+        >
+          <Button className="w-full flex gap-3 items-center">
+            Nhóm ngẫu nhiên
+          </Button>
         </Link>
       </div>
     </div>

@@ -1,24 +1,22 @@
 import NotFound from "@/components/page-not-found";
 import MainLayout from "@/layouts/main-layout";
 import { CouncilMemberDetail } from "@/pages/admin/council-member/council-member-listing/council-member-detail";
-
 import CouncilMemberPage from "@/pages/admin/council-member/council-member-page";
 import DashboardPage from "@/pages/admin/dashboard/dashboard-page";
 import { GroupStudentCardPage } from "@/pages/admin/group-student/group-student-card-page";
 import { GroupStudentDetail } from "@/pages/admin/group-student/group-student-detail/group-student-detail";
-
 import { GroupStudentPage } from "@/pages/admin/group-student/group-student-page";
+import { RandomGroupStudentPage } from "@/pages/admin/group-student/random-group-student/random-group-student-page";
 import ImportStudentPage from "@/pages/admin/import-student/import-student-page";
-import { StudentsnotGroupDetailPage } from "@/pages/admin/not-group-student/columns/students-not-group-detail-page";
+import { NotGroupStudentDetailPage } from "@/pages/admin/not-group-student/columns/not-group-student-detail-page";
 import { NotGroupStudentPage } from "@/pages/admin/not-group-student/not-group-student-page";
+import ProfileUpdateForm from "@/pages/admin/profile-user/components/profile-update";
+import ProfilePage from "@/pages/admin/profile-user/page";
 import { ReviewPage } from "@/pages/admin/review/review-page";
 import { SemestersDetailPage } from "@/pages/admin/semesters/columns/semesters-detail-page";
-
 import { SemestersPage } from "@/pages/admin/semesters/semesters-page";
 import { StudentsDetailPage } from "@/pages/admin/student-list/columns/students-detail-page";
-
 import StudentListPage from "@/pages/admin/student-list/student-list-page";
-
 import Test from "@/pages/admin/test/test-page";
 
 import CreateUserPage from "@/pages/admin/user/create-user-page";
@@ -51,15 +49,20 @@ const MainContainter = () => {
         <Route path="/group-student-detail" element={<GroupStudentDetail />} />
         <Route path="/group-student-detail/:Ib" element={<GroupStudentDetail />} />
           
+        <Route path="/random-group-student-page" element={<RandomGroupStudentPage />} />
+        <Route path="/random-group-student-page/:semesterId" element={<RandomGroupStudentPage />} />
+
         <Route path="/not-group-student" element={<NotGroupStudentPage />} />
-        <Route path="/not-group-studsent/:semeterId" element={<StudentsnotGroupDetailPage />} />
+        <Route path="//not-group-student/:semeterId" element={<NotGroupStudentDetailPage />} />
 
         <Route path="/semester" element={<SemestersPage />} />
-        <Route path="/semester/:semesterId" element={<SemestersDetailPage />} />
+        <Route path="/semester/:semesterId" element=  {<SemestersDetailPage />} />
         {/* <Route path="/semester-detail" element={<SemestersDetailPage />} /> */}
         <Route path="/year-semester" element={<YearSemesterPage />} />
 
-       
+        <Route path="/profile-page" element={<ProfilePage />} />
+        <Route path="/profile-page/:userId" element={<ProfilePage />} />
+        <Route path="/profile-page/update" element={<ProfileUpdateForm />} />
         <Route path="/user" element={<UsersPage />} />
         <Route path="/user/:userId" element={<UserDetail />} />
         <Route path="/create-user" element={<CreateUserPage />} />

@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router"; // Fix import từ "react-router" thành "react-router-dom"
 
 type CardSemesterProps = {
   data: {
@@ -15,11 +15,11 @@ export const CardSemester: React.FC<CardSemesterProps> = ({ data }) => {
   const navigate = useNavigate();
 
   const handleCardClick = (id: string) => {
-    navigate(`/not-group-student/${id}`);
+    navigate(`/not-group-student/${id}`); // ✅ Đảm bảo đường dẫn đúng
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {data.map((semester) => (
         <div
           key={semester.id}

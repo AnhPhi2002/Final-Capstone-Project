@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
-import { StudentNotGroup } from "@/types/not-group-student"; 
+import { StudentNotGroup } from "@/types/not-group-student"; // Đường dẫn đúng với tệp types.ts
 
 export const columns: ColumnDef<StudentNotGroup>[] = [
   {
@@ -20,45 +20,26 @@ export const columns: ColumnDef<StudentNotGroup>[] = [
   },
   {
     accessorKey: "specialty_id",
-    header: "Chuyên ngành",
+    header: "Chuyên ngành hẹp",
     cell: ({ row }) => <span>{row.getValue("specialty_id")}</span>,
   },
   {
-    accessorKey: "block3w_status",
-    header: "Trạng thái Block 3W",
-    cell: ({ row }) => {
-      const status = row.getValue("block3w_status");
-      return (
-        <Badge
-          className={
-            status === "Active"
-              ? "bg-green-100 text-green-500"
-              : "bg-gray-100 text-gray-500"
-          }
-        >
-          {status as string}
-        </Badge>
-      );
-    },
-  },
-  {
     accessorKey: "status",
-    header: "Trạng thái",
+    header: "Điều kiện",
     cell: ({ row }) => {
-      const status = row.getValue("status") as string;
+      const qualificationStatus = row.getValue("status") as string;
       return (
         <Badge
           className={
-            status === "Qualified"
+            qualificationStatus === "Qualified"
               ? "bg-green-100 text-green-500"
-              : status === "Pending"
-              ? "bg-yellow-100 text-yellow-500"
               : "bg-red-100 text-red-500"
           }
         >
-          {status}
+          {qualificationStatus === "Qualified" ? "Đạt" : "Không đạt"}
         </Badge>
       );
     },
   },
+
 ];
