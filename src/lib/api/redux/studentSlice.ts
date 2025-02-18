@@ -1,7 +1,7 @@
 // studentSlice.ts
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { axiosClient } from '@/lib/api/config/axios-client';
-import { Student } from '@/types/students';
+import { Student } from '@/lib/api/types';
 
 type StudentState = {
   students: Student[];

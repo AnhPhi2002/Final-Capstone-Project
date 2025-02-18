@@ -15,7 +15,7 @@ export const StudentsDetailPage = () => {
   const { students, loading, error } = useSelector((state: RootState) => state.students);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; // Set how many students per page
+  const itemsPerPage = 10;
   const totalPages = Math.ceil(students.length / itemsPerPage);
 
   useEffect(() => {
