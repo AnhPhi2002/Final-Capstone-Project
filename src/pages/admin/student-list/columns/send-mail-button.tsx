@@ -13,6 +13,7 @@ import { sendEmails, resetState } from "@/lib/api/redux/sendEmailSlice";
 import { fetchEmailTemplates } from "@/lib/api/redux/emailTemplateSlice";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 
 type SendMailButtonProps = {
   semesterId: string;
@@ -29,6 +30,7 @@ const SendMailButton = ({ semesterId }: SendMailButtonProps) => {
   // const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [emailType, setEmailType] = useState<string | null>(null);
   const [qualificationStatus, setQualificationStatus] = useState<string>("qualified");
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (templates.length === 0) {
@@ -102,7 +104,12 @@ const SendMailButton = ({ semesterId }: SendMailButtonProps) => {
                 </Button>
               </div>
             </div>
-
+            <div className="flex justify-between items-center mb-4">
+              <p className="font-semibold">Chọn mẫu email:</p>
+              <Button variant="outline" onClick={() => navigate("/template-detail")}>
+                Quản lý Templates
+              </Button>
+            </div>
             <div className="mb-4">
               <p className="font-semibold">Chọn mẫu email:</p>
               <Select onValueChange={handleTemplateChange}>

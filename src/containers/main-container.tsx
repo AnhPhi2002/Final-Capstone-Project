@@ -17,6 +17,7 @@ import { SemestersDetailPage } from "@/pages/admin/semesters/columns/semesters-d
 import { SemestersPage } from "@/pages/admin/semesters/semesters-page";
 import { StudentsDetailPage } from "@/pages/admin/student-list/columns/students-detail-page";
 import StudentListPage from "@/pages/admin/student-list/student-list-page";
+import TemplateDetail from "@/pages/admin/templates-mail/TemplateDetail";
 import Test from "@/pages/admin/test/test-page";
 
 import CreateUserPage from "@/pages/admin/user/create-user-page";
@@ -36,7 +37,7 @@ const MainContainter = () => {
 
         <Route path="/council-member" element={<CouncilMemberPage />} />
         <Route path="/council-member/:councilId" element={<CouncilMemberDetail />} />
-
+        <Route path="/template-detail" element={<TemplateDetail />} />
         <Route path="/student" element={<StudentListPage />} />
         <Route path="/student/:semesterId" element={<StudentsDetailPage />} />
         <Route path="/import-student" element={<ImportStudentPage />} />
