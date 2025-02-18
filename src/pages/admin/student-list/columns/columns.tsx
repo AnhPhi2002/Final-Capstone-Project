@@ -14,6 +14,11 @@ export const columns: ColumnDef<Student>[] = [
     cell: ({ row }) => <span>{row.getValue('email')}</span>,
   },
   {
+    accessorKey: 'student_code',
+    header: 'Mã sinh viên', 
+    cell: ({ row }) => <span>{row.getValue('student_code')}</span>,
+  },
+  {
     accessorKey: 'major',
     header: 'Ngành học',
     cell: ({ row }) => <span>{row.getValue('major')}</span>,

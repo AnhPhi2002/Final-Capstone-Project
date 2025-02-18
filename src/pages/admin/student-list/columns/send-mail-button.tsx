@@ -7,7 +7,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { sendEmails, resetState } from "@/lib/api/redux/sendEmailSlice";
 import { fetchEmailTemplates } from "@/lib/api/redux/emailTemplateSlice";
@@ -29,7 +35,8 @@ const SendMailButton = ({ semesterId }: SendMailButtonProps) => {
 
   // const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [emailType, setEmailType] = useState<string | null>(null);
-  const [qualificationStatus, setQualificationStatus] = useState<string>("qualified");
+  const [qualificationStatus, setQualificationStatus] =
+    useState<string>("qualified");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,7 +52,6 @@ const SendMailButton = ({ semesterId }: SendMailButtonProps) => {
       setEmailType(template.name);
     }
   };
-  
 
   const handleSendEmails = async () => {
     if (!emailType) {
@@ -88,37 +94,53 @@ const SendMailButton = ({ semesterId }: SendMailButtonProps) => {
           </DialogTitle>
           <DialogDescription>
             <div className="mb-4">
-              <p className="font-semibold">Chọn loại thông báo:</p>
+              <span className="font-semibold">Chọn loại thông báo:</span>{" "}
+              {/* ✅ Dùng <span> thay vì <p> */}
               <div className="flex gap-4 mt-2">
                 <Button
-                  variant={qualificationStatus === "qualified" ? "default" : "outline"}
+                  variant={
+                    qualificationStatus === "qualified" ? "default" : "outline"
+                  }
                   onClick={() => setQualificationStatus("qualified")}
                 >
                   Đủ điều kiện
                 </Button>
                 <Button
-                  variant={qualificationStatus === "not qualified" ? "default" : "outline"}
+                  variant={
+                    qualificationStatus === "not qualified"
+                      ? "default"
+                      : "outline"
+                  }
                   onClick={() => setQualificationStatus("not qualified")}
                 >
                   Không đủ điều kiện
                 </Button>
               </div>
             </div>
+
             <div className="flex justify-between items-center mb-4">
-              <p className="font-semibold">Chọn mẫu email:</p>
-              <Button variant="outline" onClick={() => navigate("/template-detail")}>
+              <span className="font-semibold">Chọn mẫu email:</span>{" "}
+              {/* ✅ Thay <p> bằng <span> */}
+              <Button
+                variant="outline"
+                onClick={() => navigate("/template-detail")}
+              >
                 Quản lý Templates
               </Button>
             </div>
+
             <div className="mb-4">
-              <p className="font-semibold">Chọn mẫu email:</p>
+              <span className="font-semibold">Chọn mẫu email:</span>{" "}
+              {/* ✅ Thay <p> bằng <span> */}
               <Select onValueChange={handleTemplateChange}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Chọn mẫu email" />
                 </SelectTrigger>
                 <SelectContent>
                   {loadingTemplates ? (
-                    <SelectItem value="" disabled>Đang tải...</SelectItem>
+                    <SelectItem value="" disabled>
+                      Đang tải...
+                    </SelectItem>
                   ) : (
                     templates.map((template) => (
                       <SelectItem key={template.id} value={template.id}>
