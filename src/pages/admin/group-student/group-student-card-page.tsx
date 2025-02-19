@@ -32,7 +32,7 @@ export const GroupStudentCardPage = () => {
       <div className="p-5 flex-1 overflow-auto">
         <div className="flex justify-end mb-4 gap-x-4">
           <ExportExcelGroupStudent />
-          <CreateGroup />
+          <CreateGroup key={groups.length} semesterId={semesterId!}/>
         </div>
         <DataTable columns={columns} data={groups} />
       </div>
