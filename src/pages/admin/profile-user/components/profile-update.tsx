@@ -1,4 +1,4 @@
-import { useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -12,7 +12,6 @@ import {
 import Header from "@/components/header";
 
 export default function ProfileUpdateForm() {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
 
   return (
     <div>

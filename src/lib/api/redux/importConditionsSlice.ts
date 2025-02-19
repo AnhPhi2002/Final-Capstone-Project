@@ -25,7 +25,11 @@ const importConditionsSlice = createSlice({
   name: "importConditions",
   initialState: { loading: false, success: false, error: null as string | null },
   reducers: {
-    resetState: (state) => (state = { loading: false, success: false, error: null }),
+    resetState: (state) => {
+      state.loading = false;
+      state.success = false;
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder

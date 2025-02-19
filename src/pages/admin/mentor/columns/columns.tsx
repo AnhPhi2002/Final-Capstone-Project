@@ -22,8 +22,7 @@ export const columns: ColumnDef<Mentor, unknown>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => {
-      const product = row.original;
+    cell: () => {
 
       return (
         <DropdownMenu>

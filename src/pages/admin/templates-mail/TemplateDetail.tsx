@@ -18,7 +18,7 @@ import Header from "@/components/header";
 const TemplateDetail = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { templates, selectedTemplate, loading } = useAppSelector(
+  const { templates, selectedTemplate } = useAppSelector(
     (state) => state.emailTemplates
   );
 
