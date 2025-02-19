@@ -19,7 +19,7 @@ export const columns: ColumnDef<StudentNotGroup, unknown>[] = [
     cell: ({ row }) => <span>{row.original.major?.name || "N/A"}</span>,
   },
   {
-    accessorKey: "specialization.name", // ✅ Truy cập chuyên ngành hẹp
+    accessorKey: "specialization.name", 
     header: "Chuyên ngành hẹp",
     cell: ({ row }) => <span>{row.original.specialization?.name || "N/A"}</span>,
   },
@@ -29,8 +29,8 @@ export const columns: ColumnDef<StudentNotGroup, unknown>[] = [
     cell: ({ row }) => {
       const status = row.getValue("status") as string;
   
-      let badgeClass = "bg-gray-100 text-gray-500"; // Mặc định màu xám
-      let statusText = "Chưa xác định"; // Mặc định
+      let badgeClass = "bg-gray-100 text-gray-500"; 
+      let statusText = "Chưa xác định"; 
   
       if (status === "PENDING") {
         badgeClass = "bg-yellow-100 text-yellow-500";

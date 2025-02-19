@@ -8,6 +8,8 @@ import { GroupStudentDetail } from "@/pages/admin/group-student/group-student-de
 import { GroupStudentPage } from "@/pages/admin/group-student/group-student-page";
 import { RandomGroupStudentPage } from "@/pages/admin/group-student/random-group-student/random-group-student-page";
 import ImportStudentPage from "@/pages/admin/import-student/import-student-page";
+import { MentorDetail } from "@/pages/admin/mentor/columns/mentor-detail";
+import { MentorPage } from "@/pages/admin/mentor/mentor-page";
 import { NotGroupStudentDetailPage } from "@/pages/admin/not-group-student/columns/not-group-student-detail-page";
 import { NotGroupStudentPage } from "@/pages/admin/not-group-student/not-group-student-page";
 import ProfileUpdateForm from "@/pages/admin/profile-user/components/profile-update";
@@ -19,7 +21,10 @@ import { StudentsDetailPage } from "@/pages/admin/student-list/columns/students-
 import StudentListPage from "@/pages/admin/student-list/student-list-page";
 import TemplateDetail from "@/pages/admin/templates-mail/TemplateDetail";
 import Test from "@/pages/admin/test/test-page";
-
+import TopicEnterpriseDetail from "@/pages/admin/topic-list/topic-enterprise/topic-enterprise-detail";
+import { TopicEnterprisePage } from "@/pages/admin/topic-list/topic-enterprise/topic-enterprise-page";
+import TopicDetail from "@/pages/admin/topic-list/topic-mentor/topic-detail";
+import { TopicPage } from "@/pages/admin/topic-list/topic-mentor/topic-page";
 import CreateUserPage from "@/pages/admin/user/create-user-page";
 import UpdateUserPage from "@/pages/admin/user/update-user-page";
 import UserDetail from "@/pages/admin/user/user-detail-page";
@@ -56,9 +61,21 @@ const MainContainter = () => {
         <Route path="/not-group-student" element={<NotGroupStudentPage />} />
         <Route path="/not-group-student/:semesterId" element={<NotGroupStudentDetailPage />} />
 
+        <Route path="/mentor-page" element={<MentorPage />} />
+        <Route path="/mentor-page/:semesterId" element={<MentorDetail />} />
+        
+        <Route path="topic" element={<TopicPage />}/>
+        <Route path="topic-detail" element={<TopicDetail />}/>
+        <Route path="topic-detail/:semesterId" element={<TopicDetail />}/>
+        
+        <Route path="topic-enterprise" element={<TopicEnterprisePage />}/>
+        <Route path="topic-enterprise-detail" element={<TopicEnterpriseDetail />}/>
+        <Route path="topic-enterprise-detail/:semesterId" element={<TopicEnterpriseDetail />}/>
+
+
         <Route path="/semester" element={<SemestersPage />} />
         <Route path="/semester/:semesterId" element=  {<SemestersDetailPage />} />
-        {/* <Route path="/semester-detail" element={<SemestersDetailPage />} /> */}
+   
         <Route path="/year-semester" element={<YearSemesterPage />} />
 
         <Route path="/profile-page" element={<ProfilePage />} />

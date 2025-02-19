@@ -78,7 +78,10 @@ const data = {
           title: "D.s hội đồng đánh giá ",
           url: "/council-member",
         },
-      
+        {
+          title: "D.s g.v hướng dẫn",
+          url: "/mentor-page",
+        },
       ],
     },
     {
@@ -93,6 +96,24 @@ const data = {
         },
       ],
     },
+    {
+      title: "Đề tài ",
+      url: "/topic",
+      icon: ClipboardList,
+      isActive: true,
+      items: [
+        {
+          title: "Đề tài giảng viên",
+          url: "/topic",
+        },
+        {
+          title: "Đề tài doanh nghiệp",
+          url: "/topic-enterprise",
+        
+        },
+      ],
+    },
+
 
     {
       title: "Người dùng ",

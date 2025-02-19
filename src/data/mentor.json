@@ -1,0 +1,125 @@
+[
+  {
+    "id": 1,
+    "year": "2025",
+    "semesters": [
+      {
+        "code": "SpringA2025",
+        "start_date": "2025-01-01",
+        "end_date": "2025-05-31",
+        "mentors": [
+          {
+            "FullName": "John Doe",
+            "Email": "john.doe@fpt.edu.vn"
+          },
+          {
+            "FullName": "Jane Smith",
+            "Email": "jane.smith@fpt.edu.vn"
+          }
+        ]
+      },
+      {
+        "code": "SummerX2025",
+        "start_date": "2025-06-01",
+        "end_date": "2025-08-31",
+        "mentors": [
+          {
+            "FullName": "Phi Nguyen",
+            "Email": "phi@fpt.edu.vn"
+          },
+          {
+            "FullName": "Phi Nguyen",
+            "Email": "phi@fpt.edu.vn"
+          },
+          {
+            "FullName": "Phi Nguyen",
+            "Email": "phi@fpt.edu.vn"
+          }
+        ]
+      },
+      {
+        "code": "AutumnBreeze2025",
+        "start_date": "2025-09-01",
+        "end_date": "2025-12-31",
+        "mentors": [
+          {
+            "FullName": "Michael Wang",
+            "Email": "michael.wang@fpt.edu.vn"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "year": "2026",
+    "semesters": [
+      {
+        "code": "SpringX2026",
+        "start_date": "2026-01-01",
+        "end_date": "2026-05-31",
+        "mentors": [
+          {
+            "FullName": "Lucas Brown",
+            "Email": "lucas.brown@fpt.edu.vn"
+          },
+          {
+            "FullName": "Olivia Lee",
+            "Email": "olivia.lee@fpt.edu.vn"
+          }
+        ]
+      },
+      {
+        "code": "SummerB2026",
+        "start_date": "2026-06-01",
+        "end_date": "2026-08-31",
+        "mentors": []
+      },
+      {
+        "code": "WinterWave2026",
+        "start_date": "2026-09-01",
+        "end_date": "2026-12-31",
+        "mentors": [
+          {
+            "FullName": "David Kim",
+            "Email": "david.kim@fpt.edu.vn"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "year": "2027",
+    "semesters": [
+      {
+        "code": "SpringBright2027",
+        "start_date": "2027-01-01",
+        "end_date": "2027-05-31",
+        "mentors": [
+          {
+            "FullName": "Emma Wilson",
+            "Email": "emma.wilson@fpt.edu.vn"
+          }
+        ]
+      },
+      {
+        "code": "MidSummerDream2027",
+        "start_date": "2027-06-01",
+        "end_date": "2027-08-31",
+        "mentors": [
+          {
+            "FullName": "Noah Anderson",
+            "Email": "noah.anderson@fpt.edu.vn"
+          }
+        ]
+      },
+      {
+        "code": "GoldenFall2027",
+        "start_date": "2027-09-01",
+        "end_date": "2027-12-31",
+        "mentors": []
+      }
+    ]
+  }
+]
