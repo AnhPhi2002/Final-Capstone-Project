@@ -17,7 +17,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useNavigate } from "react-router";
-import { useAppSelector } from "@/hooks/reduxHooks";
+// import { useAppSelector } from "@/hooks/reduxHooks";
 
 export function NavUser({
   user,

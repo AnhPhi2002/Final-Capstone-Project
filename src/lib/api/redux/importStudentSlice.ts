@@ -17,7 +17,7 @@ export const importStudents = createAsyncThunk<
     const response = await axiosClient.post("/import/import-students", formData, {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data", // Không cần thêm, Axios tự động thêm boundary
+        "Content-Type": "multipart/form-data",
       },
     });
     return response.data;
@@ -27,12 +27,16 @@ export const importStudents = createAsyncThunk<
   }
 });
 
-
-
 const importStudentSlice = createSlice({
   name: "importStudents",
   initialState: { loading: false, success: false, error: null as string | null },
-  reducers: { resetState: (state) => (state = { loading: false, success: false, error: null }) },
+  reducers: {
+    resetState: (state) => {
+      state.loading = false;
+      state.success = false;
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(importStudents.pending, (state) => {

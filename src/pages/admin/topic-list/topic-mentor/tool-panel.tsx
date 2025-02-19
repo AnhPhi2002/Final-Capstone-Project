@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
 
-import { Link, useParams } from "react-router";
+import { useParams } from "react-router";
 
 const ToolPanel = () => {
-  const { semesterId } = useParams<{ semesterId: string }>();
+  const {} = useParams<{ semesterId: string }>();
 
   return (
     <div className="grid grid-cols-12 pb-5 gap-5">

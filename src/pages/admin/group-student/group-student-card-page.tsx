@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useParams, useNavigate } from "react-router";
+import { useParams } from "react-router";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { fetchGroupsBySemester } from "@/lib/api/redux/groupSlice";
 import Header from "@/components/header";
@@ -11,7 +11,6 @@ import { ExportExcelGroupStudent } from "./export-excel-group-student";
 export const GroupStudentCardPage = () => {
   const { semesterId } = useParams<{ semesterId: string }>();
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
   const { groups, loading, error } = useAppSelector((state) => state.groups);
 
