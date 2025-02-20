@@ -13,6 +13,7 @@ import studentsWithoutGroupReducer from './studentWithoutGroupSlice';
 // import { groupStudentReducer } from './groupStudentSlice';
 import { groupReducer } from './groupSlice';
 import groupDetailReducer from './groupDetailSlice';
+import { randomGroupReducer } from "./randomGroupSlice";
 
 
 
@@ -29,7 +30,8 @@ const rootReducer = combineReducers({
   studentsWithoutGroup: studentsWithoutGroupReducer,
   // groupStudents: groupStudentReducer,
   groups: groupReducer,
-  groupDetail:  groupDetailReducer
+  groupDetail:  groupDetailReducer,
+  randomGroups: randomGroupReducer,
 });
 
 // const persistedReducer = persistReducer(persistConfig, rootReducer)

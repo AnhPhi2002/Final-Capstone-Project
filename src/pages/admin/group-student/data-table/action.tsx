@@ -29,6 +29,9 @@ export const Action = ({ group }: { group: any }) => {
         <DropdownMenuItem>
           <Link to={`/group-student-detail/${group.id}`}>Xem Chi Tiết</Link>
         </DropdownMenuItem>
+        {/* <DropdownMenuItem>
+          <Link to={`/group-student-detail/${group.id}`}>Mời vào nhom</Link>
+        </DropdownMenuItem> */}
         <DropdownMenuItem>
           <Link to={`/group/${group.id}/edit`}>Chỉnh Sửa Nhóm</Link>
         </DropdownMenuItem>
