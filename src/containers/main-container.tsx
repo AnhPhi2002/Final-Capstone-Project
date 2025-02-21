@@ -23,6 +23,7 @@ import TemplateDetail from "@/pages/admin/templates-mail/TemplateDetail";
 import Test from "@/pages/admin/test/test-page";
 import TopicEnterpriseDetail from "@/pages/admin/topic-list/topic-enterprise/topic-enterprise-detail";
 import { TopicEnterprisePage } from "@/pages/admin/topic-list/topic-enterprise/topic-enterprise-page";
+import { ImportTopicMentorPage } from "@/pages/admin/topic-list/topic-mentor/import-topic-mentor/import-topic-mentor-page";
 import TopicDetail from "@/pages/admin/topic-list/topic-mentor/topic-detail";
 import { TopicPage } from "@/pages/admin/topic-list/topic-mentor/topic-page";
 import CreateUserPage from "@/pages/admin/user/create-user-page";
@@ -65,9 +66,14 @@ const MainContainter = () => {
         <Route path="/mentor-page/:semesterId" element={<MentorDetail />} />
         
         <Route path="topic" element={<TopicPage />}/>
+        <Route path="topic/:semesterId" element={<TopicPage />}/>
+        
         <Route path="topic-detail" element={<TopicDetail />}/>
         <Route path="topic-detail/:semesterId" element={<TopicDetail />}/>
-        
+
+        <Route path="import-topic-mentor" element={<ImportTopicMentorPage />}/>
+        <Route path="import-topic-mentor/:semesterId" element={<ImportTopicMentorPage />}/>
+
         <Route path="topic-enterprise" element={<TopicEnterprisePage />}/>
         <Route path="topic-enterprise-detail" element={<TopicEnterpriseDetail />}/>
         <Route path="topic-enterprise-detail/:semesterId" element={<TopicEnterpriseDetail />}/>
