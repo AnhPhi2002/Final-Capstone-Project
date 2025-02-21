@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAppDispatch } from "@/hooks/reduxHooks";
 import { createRandomGroup } from "@/lib/api/redux/randomGroupSlice";
+import { fetchGroupsBySemester } from "@/lib/api/redux/groupSlice";
 import { Button } from "@/components/ui/button";
 import { toast, Toaster } from "sonner";
 
@@ -22,6 +23,9 @@ export const CreateRandomGroup: React.FC<CreateRandomGroupProps> = ({ semesterId
     try {
       await dispatch(createRandomGroup(semesterId)).unwrap();
       toast.success("Nhóm ngẫu nhiên đã được tạo thành công!");
+      
+      // **🔹 Fetch lại danh sách nhóm ngay lập tức sau khi tạo nhóm**
+      dispatch(fetchGroupsBySemester(semesterId));
     } catch (error) {
       toast.error("Lỗi khi tạo nhóm: " + error);
     } finally {

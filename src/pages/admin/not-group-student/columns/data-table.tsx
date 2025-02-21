@@ -4,7 +4,6 @@ import {
   SortingState,
   flexRender,
   getCoreRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
@@ -32,7 +31,6 @@ export function DataTable({ columns, data }: DataTableProps) {
     state: { sorting },
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
   });
 
