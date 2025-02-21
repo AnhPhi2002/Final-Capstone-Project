@@ -3,7 +3,7 @@ import { useParams } from "react-router";
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "@/hooks/reduxHooks";
 import { fetchGroupsBySemester} from "@/lib/api/redux/groupSlice";
-import { createRandomGroup } from "@/lib/api/redux/randomGroupSlice";
+// import { createRandomGroup } from "@/lib/api/redux/randomGroupSlice";
 import { RootState } from "@/lib/api/redux/store";
 import Header from "@/components/header";
 import { CreateRandomGroup } from "./create-random-group";

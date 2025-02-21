@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
 
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 
 const ToolPanel = () => {
-  const {} = useParams<{ semesterId: string }>();
+  const { semesterId } = useParams<{ semesterId: string }>();
 
   return (
     <div className="grid grid-cols-12 pb-5 gap-5">
@@ -14,9 +14,9 @@ const ToolPanel = () => {
       <div className="col-span-3"></div>
       <div className="col-span-3"></div>
       <div className="col-span-2 flex">
-     
-          <Button className="w-full flex gap-3 items-center">Tạo đề tài </Button>
-       
+      <Link to={`/import-topic-mentor/${semesterId}`} className="w-full">
+          <Button className="w-full flex gap-3 items-center">Import đề tài </Button>
+        </Link>
       </div>
     </div>
   );

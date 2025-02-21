@@ -1,12 +1,16 @@
 import * as React from "react";
 import Logo from "@/assets/images/img01.jpg";
 import {
+  Calendar,
   ChartPie,
   CircleUserRound,
   
   ClipboardList,
   
-  Store,
+  List,
+  
+  NotebookPen,
+  
 } from "lucide-react";
 
 import { NavMain } from "./nav-main";
@@ -43,7 +47,7 @@ const data = {
     {
       title: "Năm học và kỳ ",
       url: "/semester",
-      icon: Store,
+      icon: Calendar,
       isActive: true,
       items: [
         {
@@ -59,7 +63,7 @@ const data = {
     {
       title: "Cán bộ nghiệp vụ",
       url: "/council-member",
-      icon: Store,
+      icon: List,
       isActive: true,
       items: [
         {
@@ -87,7 +91,7 @@ const data = {
     {
       title: "Review nhóm sinh viên ",
       url: "/review-group-student",
-      icon: ClipboardList,
+      icon: NotebookPen,
       isActive: true,
       items: [
         {
@@ -103,12 +107,12 @@ const data = {
       isActive: true,
       items: [
         {
-          title: "Đề tài giảng viên",
-          url: "/topic",
+          title: "Import đề tài",
+          url: "/import-topic-mentor",
         },
         {
-          title: "Đề tài doanh nghiệp",
-          url: "/topic-enterprise",
+          title: "Đề tài ",
+          url: "/topic",
         
         },
       ],
@@ -143,18 +147,18 @@ const data = {
         },
       ],
     },
-    {
-      title: "test",
-      url: "/columns",
-      icon: CircleUserRound,
-      isActive: true,
-      items: [
-        {
-          title: "D.s hội đồng đánh giá ",
-          url: "/columns",
-        },
-      ],
-    },
+    // {
+    //   title: "test",
+    //   url: "/columns",
+    //   icon: CircleUserRound,
+    //   isActive: true,
+    //   items: [
+    //     {
+    //       title: "D.s hội đồng đánh giá ",
+    //       url: "/columns",
+    //     },
+    //   ],
+    // },
   ],
 };
 
