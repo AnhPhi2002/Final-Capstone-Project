@@ -14,7 +14,7 @@ export const GroupStudentDetail = () => {
   const { groupId } = useParams<{ groupId: string }>();
   const dispatch = useAppDispatch();
   const { group, loading, error } = useAppSelector((state) => state.groupDetail);
-  const [studentId, setStudentId] = useState(""); // State cho input
+  const [email, setEmail] = useState(""); // State cho input email
 
   useEffect(() => {
     if (groupId) {
@@ -23,15 +23,15 @@ export const GroupStudentDetail = () => {
   }, [dispatch, groupId]);
 
   const handleInvite = async () => {
-    if (!studentId.trim()) {
-      toast.error("Vui lòng nhập mã sinh viên!");
+    if (!email.trim()) {
+      toast.error("Vui lòng nhập email!");
       return;
     }
   
     try {
-      await dispatch(inviteMember({ groupId: groupId!, studentId })).unwrap();
+      await dispatch(inviteMember({ groupId: groupId!, email })).unwrap();
       toast.success("Mời thành viên thành công!");
-      setStudentId(""); // Reset input sau khi mời
+      setEmail(""); // Reset input sau khi mời
     } catch (error: any) {
       console.error("Lỗi mời thành viên:", error);
   
@@ -42,7 +42,6 @@ export const GroupStudentDetail = () => {
     }
   };
   
-
   if (loading) return <p>Đang tải thông tin nhóm...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
 
@@ -57,9 +56,9 @@ export const GroupStudentDetail = () => {
             {/* Mời thành viên */}
             <div className="mb-4 flex gap-4">
               <Input
-                placeholder="Nhập mã sinh viên"
-                value={studentId}
-                onChange={(e) => setStudentId(e.target.value)}
+                placeholder="Nhập email thành viên"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <Button onClick={handleInvite} className="bg-blue-500 text-white">
                 Mời thành viên

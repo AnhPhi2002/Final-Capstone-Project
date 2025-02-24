@@ -20,7 +20,7 @@ const ToolPanel = () => {
 
       <div className="col-span-2 flex">
         <Link
-          to={`/random-group-student-page${semesterId ? `/${semesterId}` : ""}`}
+          to={`/import-mentor/${semesterId}`}
           className="w-full"
         >
           <Button className="w-full flex gap-3 items-center">

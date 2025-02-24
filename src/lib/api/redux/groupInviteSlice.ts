@@ -4,9 +4,9 @@ import { axiosClient } from "@/lib/api/config/axios-client";
 // **🔹 Async Thunk để mời thành viên**
 export const inviteMember = createAsyncThunk(
   "group/inviteMember",
-  async ({ groupId, studentId }: { groupId: string; studentId: string }, { rejectWithValue }) => {
+  async ({ groupId, email }: { groupId: string; email: string }, { rejectWithValue }) => {
     try {
-      const response = await axiosClient.post("/groups/invite", { groupId, studentId });
+      const response = await axiosClient.post("/groups/invite", { groupId, email });
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Lỗi khi mời thành viên!");
