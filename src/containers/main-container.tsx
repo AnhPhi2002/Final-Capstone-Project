@@ -1,7 +1,7 @@
 import NotFound from "@/components/page-not-found";
 import MainLayout from "@/layouts/main-layout";
-import { AdminConfigPage } from "@/pages/admin/admin-config/admin-config-page";
-import { AdminConfigUpdate } from "@/pages/admin/admin-config/admin-config-update";
+import { AdminConfigPage } from "@/pages/admin/admin-confix/admin-config-page";
+import { AdminConfigUpdate } from "@/pages/admin/admin-confix/admin-config-update";
 import { CouncilMemberDetail } from "@/pages/admin/council-member/council-member-listing/council-member-detail";
 import CouncilMemberPage from "@/pages/admin/council-member/council-member-page";
 import DashboardPage from "@/pages/admin/dashboard/dashboard-page";
