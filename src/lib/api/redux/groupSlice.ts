@@ -7,14 +7,19 @@ interface Group {
   groupCode: string;
   semesterId: string;
   status: string;
+  isAutoCreated: boolean;
+  createdBy: string;
   maxMembers: number;
   isMultiMajor: boolean;
+  isLocked: boolean;
   createdAt: string;
   updatedAt: string;
-  mentor1Id: string | null;
-  mentor2Id: string | null;
+  topicEnglish: string | null;
+  topicTiengViet: string | null;
+  totalMembers: number;
   members: {
     id: string;
+    groupId: string;
     studentId: string;
     role: string;
     joinedAt: string;
