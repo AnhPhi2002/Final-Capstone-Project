@@ -45,7 +45,7 @@ export const CreateYearSemesters: React.FC = () => {
         <DialogTrigger asChild>
           <Button
             variant="outline"
-            className="bg-black text-white hover:bg-gray-800 hover:text-white focus:ring focus:ring-gray-500 focus:outline-none"
+            className="bg-black text-white "
           >
             Tạo năm học
           </Button>

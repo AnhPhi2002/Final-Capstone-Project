@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -8,122 +7,109 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Card, CardContent } from "@/components/ui/card";
 
 import Header from "@/components/header";
+import { Label } from "@/components/ui/label";
 
 export default function ProfileUpdateForm() {
-
   return (
     <div>
       <Header
         title="Semesters"
         href="/"
-        currentPage="Cập nhật thông tin cá nhân  "
+        currentPage="Cập nhật thông tin cá nhân"
       />
-      <div className="container mx-auto py-8 px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Left Side */}
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium">Email</label>
-              <Input
-                placeholder="phinhase161377@fpt.edu.vn"
-                defaultValue="phinhase161377@fpt.edu.vn"
-              />
+      <div className="container mx-auto p-6 mt-10">
+        <Card className="p-6">
+          <CardContent className="p-0">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-4 ">
+                <div>
+                  <Label className="block text-sm font-medium mb-1">Email</Label>
+                  <Input
+                    placeholder="phinhase161377@fpt.edu.vn"
+                    defaultValue="phinhase161377@fpt.edu.vn"
+                  />
+                </div>
+                <div>
+                  <Label className="block text-sm font-medium mb-1">Phone Number</Label>
+                  <Input placeholder="0123456789" defaultValue="0123456789" />
+                </div>
+                <div>
+                  <Label className="block text-sm font-medium mb-1">Facebook</Label>
+                  <Input
+                    type="url"
+                    placeholder="Enter Facebook URL"
+                    defaultValue="https://www.facebook.com/yourprofile"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <Label className="block text-sm font-medium mb-1">Full Name</Label>
+                  <Input
+                    placeholder="Nguyen Hoang Anh Phi"
+                    defaultValue="Nguyen Hoang Anh Phi"
+                  />
+                </div>
+                <div>
+                  <Label className="block text-sm font-medium mb-1">Gender</Label>
+                  <Select defaultValue="male">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Gender" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="male">Male</SelectItem>
+                      <SelectItem value="female">Female</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="block text-sm font-medium mb-1">Roll Number</Label>
+                  <Input placeholder="SE161377" defaultValue="SE161377" />
+                </div>
+                <div>
+                  <Label className="block text-sm font-medium mb-1">Semester</Label>
+                  <Input placeholder="SPRING 2025" defaultValue="SPRING 2025" />
+                </div>
+                <div>
+                  <Label className="block text-sm font-medium mb-1">Profession</Label>
+                  <Input
+                    placeholder="Information Technology"
+                    defaultValue="Information Technology"
+                  />
+                </div>
+                <div>
+                  <Label className="block text-sm font-medium mb-1">Specialty</Label>
+                  <Input
+                    placeholder="Software Engineering"
+                    defaultValue="Software Engineering"
+                  />
+                </div>
+                <div>
+                  <Label className="block text-sm font-medium mb-1">Expect Role</Label>
+                  <Select defaultValue="Fullstack">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="BE">Backend</SelectItem>
+                      <SelectItem value="FE">Frontend</SelectItem>
+                      <SelectItem value="Fullstack">Fullstack</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium">Phone Number</label>
-              <Input placeholder="0123456789" defaultValue="0123456789" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium">Facebook</label>
-              <Input
-                type="url"
-                placeholder="Enter Facebook URL"
-                defaultValue="https://www.facebook.com/yourprofile"
-              />
-            </div>
+
+            <div className="flex justify-end mt-5">
+            <Button>Cập Nhật</Button>
           </div>
-
-          {/* Right Side */}
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium">Full Name</label>
-              <Input
-                placeholder="Nguyen Hoang Anh Phi"
-                defaultValue="Nguyen Hoang Anh Phi"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium">Gender</label>
-              <Select defaultValue="male">
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Gender" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="male">Male</SelectItem>
-                  <SelectItem value="female">Female</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium">Roll Number</label>
-              <Input placeholder="SE161377" defaultValue="SE161377" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium">Semester</label>
-              <Input placeholder="SPRING 2025" defaultValue="SPRING 2025" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium">Profession</label>
-              <Input
-                placeholder="Information Technology"
-                defaultValue="Information Technology"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium">Specialty</label>
-              <Input
-                placeholder="Software Engineering"
-                defaultValue="Software Engineering"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium">Expect Role</label>
-              <Select defaultValue="Fullstack">
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="BE">Backend</SelectItem>
-                  <SelectItem value="FE">Frontend</SelectItem>
-                  <SelectItem value="Fullstack">Fullstack</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </div>
-
-        {/* Be Grouped */}
-        {/* <div className="mt-6">
-          <h2 className="text-red-500 font-semibold">Be Grouped</h2>
-          <p>Do you want to be grouped in a random group?</p>
-          <div className="flex gap-4 mt-2">
-            <label className="flex items-center gap-2">
-              <input type="radio" name="group" value="yes" className="accent-purple-700" /> Yes
-            </label>
-            <label className="flex items-center gap-2">
-              <input type="radio" name="group" value="no" defaultChecked className="accent-purple-700" /> No
-            </label>
-          </div>
-        </div> */}
-
-        {/* Update Button */}
-        <div className="mt-6">
-          <Button className="w-full">Update Profile</Button>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
