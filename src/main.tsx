@@ -17,7 +17,7 @@ createRoot(document.getElementById("root")!).render(
       <Provider store={store}>
         <BrowserRouter>
           <App />
-          <Toaster closeButton position="top-right" richColors duration={2000} />
+          <Toaster closeButton position="top-right" richColors duration={3000} />
         </BrowserRouter>
       </Provider>
     </GoogleOAuthProvider>

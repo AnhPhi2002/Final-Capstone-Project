@@ -1,10 +1,14 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
-import { ReactNode } from "react";
+import { Action } from "./action"; // Import component Action
 
-interface GroupMember {
+export type RoleType = "leader" | "member";
+
+export interface GroupMember {
   id: string;
-  role: string;
+  groupId: string;
+  studentId: string;
+  role: RoleType;
   joinedAt: string;
   leaveAt: string | null;
   leaveReason: string | null;
@@ -66,17 +70,21 @@ export const columns: ColumnDef<GroupMember>[] = [
     header: "Trạng Thái",
     cell: ({ row }) => {
       const status = row.original.status;
-      let badge: ReactNode = <Badge>{status}</Badge>;
-
-      if (status === "ACTIVE") {
-        badge = <Badge className="bg-green-100 text-green-500">Hoạt Động</Badge>;
-      } else if (status === "INACTIVE") {
-        badge = <Badge className="bg-red-100 text-red-500">Ngừng Hoạt Động</Badge>;
-      } else if (status === "LEFT") {
-        badge = <Badge className="bg-yellow-100 text-yellow-500">Đã Rời Nhóm</Badge>;
-      }
-
-      return <div>{badge}</div>;
+      return (
+        <Badge className={
+          status === "ACTIVE" ? "bg-green-100 text-green-500" :
+          status === "INACTIVE" ? "bg-red-100 text-red-500" :
+          status === "LEFT" ? "bg-yellow-100 text-yellow-500" :
+          "bg-gray-100 text-gray-500"
+        }>
+          {status === "ACTIVE" ? "Hoạt Động" : status === "INACTIVE" ? "Ngừng Hoạt Động" : "Đã Rời Nhóm"}
+        </Badge>
+      );
     },
+  },
+  {
+    id: "actions",
+    header: "Hành Động",
+    cell: ({ row }) => <Action groupId={row.original.groupId} member={row.original} />,
   },
 ];

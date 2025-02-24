@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { fetchGroupDetail } from "@/lib/api/redux/groupDetailSlice";
-import { inviteMember } from "@/lib/api/redux/groupInviteSlice"; // Import API mời
+import { inviteMember } from "@/lib/api/redux/groupInviteSlice";
 import Header from "@/components/header";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
@@ -14,7 +14,7 @@ export const GroupStudentDetail = () => {
   const { groupId } = useParams<{ groupId: string }>();
   const dispatch = useAppDispatch();
   const { group, loading, error } = useAppSelector((state) => state.groupDetail);
-  const [email, setEmail] = useState(""); // State cho input email
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
     if (groupId) {
@@ -27,21 +27,15 @@ export const GroupStudentDetail = () => {
       toast.error("Vui lòng nhập email!");
       return;
     }
-  
     try {
       await dispatch(inviteMember({ groupId: groupId!, email })).unwrap();
       toast.success("Mời thành viên thành công!");
-      setEmail(""); // Reset input sau khi mời
+      setEmail("");
     } catch (error: any) {
-      console.error("Lỗi mời thành viên:", error);
-  
-      // Kiểm tra nếu API trả về thông báo lỗi
-      const errorMessage = typeof error === "string" ? error : error?.message || "Lỗi khi mời thành viên!";
-      
-      toast.error(errorMessage);
+      toast.error(error?.message || "Lỗi khi mời thành viên!");
     }
   };
-  
+
   if (loading) return <p>Đang tải thông tin nhóm...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
 
@@ -52,19 +46,12 @@ export const GroupStudentDetail = () => {
         {group ? (
           <>
             <h2 className="text-xl font-bold mb-4">Mã Nhóm: {group.groupCode}</h2>
-            
-            {/* Mời thành viên */}
             <div className="mb-4 flex gap-4">
-              <Input
-                placeholder="Nhập email thành viên"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+              <Input placeholder="Nhập email thành viên" value={email} onChange={(e) => setEmail(e.target.value)} />
               <Button onClick={handleInvite} className="bg-blue-500 text-white">
                 Mời thành viên
               </Button>
             </div>
-
             <DataTable columns={columns} data={group.members} />
           </>
         ) : (
