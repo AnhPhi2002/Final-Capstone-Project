@@ -15,6 +15,9 @@ import { groupReducer } from './groupSlice';
 import groupDetailReducer from './groupDetailSlice';
 import { randomGroupReducer } from "./randomGroupSlice";
 import groupInviteReducer from "./groupInviteSlice";
+import majorReducer from "./majorSlice";
+import topicReducer from "./topicSlice";
+import topicRegisterReducer from "./topicRegisterSlice";
 
 
 
@@ -34,6 +37,9 @@ const rootReducer = combineReducers({
   groupDetail:  groupDetailReducer,
   randomGroups: randomGroupReducer,
   groupInvite: groupInviteReducer,
+  majors: majorReducer,
+  topics: topicReducer,
+  topicRegister: topicRegisterReducer,
 });
 
 // const persistedReducer = persistReducer(persistConfig, rootReducer)

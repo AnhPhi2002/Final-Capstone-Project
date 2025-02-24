@@ -1,6 +1,5 @@
 import Header from "@/components/header";
-import { TopicList } from "./topic-list";
-import ToolPanel from "./tool-panel";
+import { SelectSemester } from "./select-semester";
 
 export const TopicPage = () => {
   return (
@@ -11,8 +10,7 @@ export const TopicPage = () => {
         currentPage="Danh sách đề tài giảng viên "
       />
       <div className="p-5 flex-1 overflow-auto">
-        <ToolPanel />
-        <TopicList />
+        <SelectSemester />
       </div>
     </div>
   );
