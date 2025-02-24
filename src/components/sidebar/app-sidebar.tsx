@@ -147,18 +147,18 @@ const data = {
         },
       ],
     },
-    // {
-    //   title: "test",
-    //   url: "/columns",
-    //   icon: CircleUserRound,
-    //   isActive: true,
-    //   items: [
-    //     {
-    //       title: "D.s hội đồng đánh giá ",
-    //       url: "/columns",
-    //     },
-    //   ],
-    // },
+    {
+      title: "Admin config",
+      url: "/admin-config",
+      icon: CircleUserRound,
+      isActive: true,
+      items: [
+        {
+          title: "Cấu hình",
+          url: "/admin-config",
+        },
+      ],
+    },
   ],
 };
 

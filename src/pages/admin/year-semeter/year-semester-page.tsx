@@ -10,8 +10,8 @@ export const YearSemesterPage = () => {
         href="/"
         currentPage="Quản lý năm học"
       />
-      <div className="p-5 flex-1 overflow-auto">
-        <div className="flex justify-end mb-4">
+      <div className="px-5 flex-1 overflow-auto">
+        <div className="flex justify-end mt-5">
           <CreateYearSemesters />
         </div>
         <div className="">

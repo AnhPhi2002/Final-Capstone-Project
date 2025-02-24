@@ -80,7 +80,7 @@ export const CreateSemesters = () => {
       <Toaster position="top-right" richColors duration={3000} />
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button className="bg-black text-white hover:bg-gray-800">Tạo học kỳ mới</Button>
+          <Button className="bg-black text-white ">Tạo học kỳ mới</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>

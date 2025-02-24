@@ -1,5 +1,7 @@
 import NotFound from "@/components/page-not-found";
 import MainLayout from "@/layouts/main-layout";
+import { AdminConfigPage } from "@/pages/admin/admin-config/admin-config-page";
+import { AdminConfigUpdate } from "@/pages/admin/admin-config/admin-config-update";
 import { CouncilMemberDetail } from "@/pages/admin/council-member/council-member-listing/council-member-detail";
 import CouncilMemberPage from "@/pages/admin/council-member/council-member-page";
 import DashboardPage from "@/pages/admin/dashboard/dashboard-page";
@@ -87,11 +89,16 @@ const MainContainter = () => {
         <Route path="/profile-page" element={<ProfilePage />} />
         <Route path="/profile-page/:userId" element={<ProfilePage />} />
         <Route path="/profile-page/update" element={<ProfileUpdateForm />} />
+
         <Route path="/user" element={<UsersPage />} />
         <Route path="/user/:userId" element={<UserDetail />} />
         <Route path="/create-user" element={<CreateUserPage />} />
         <Route path="/edit-user/:userId" element={<UpdateUserPage />} />
         <Route path="/columns" element={<Test />} />
+
+        <Route path="/admin-config" element={<AdminConfigPage />} />
+        <Route path="/admin-config/update" element={<AdminConfigUpdate />} /> 
+
         <Route path="/*" element={<NotFound />} />
         <Route path="/login" element={<LoginPage />} />
       </Routes>
