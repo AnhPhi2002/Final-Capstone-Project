@@ -1,77 +1,158 @@
+import { useEffect } from "react";
+import { useParams } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/lib/api/redux/store";
+import { fetchTopicDetail } from "@/lib/api/redux/topicSlice";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Header from "@/components/header";
+import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { UpdateTopic } from "./updateTopic";
 
 export default function TopicDetail() {
+  const { topicId } = useParams(); // Lấy topicId từ URL
+  const dispatch = useDispatch<AppDispatch>();
+
+  const { topicDetails, loading, error } = useSelector((state: RootState) => state.topics);
+
+  useEffect(() => {
+    if (topicId) {
+      dispatch(fetchTopicDetail(topicId));
+    }
+  }, [dispatch, topicId]);
+
+  if (loading) return <p className="text-center text-gray-500">Đang tải dữ liệu...</p>;
+  if (error) {
+    toast.error(error);
+    return <p className="text-center text-red-500">Lỗi khi tải đề tài</p>;
+  }
+  if (!topicDetails) return <p className="text-center text-gray-500">Không tìm thấy đề tài.</p>;
+
   return (
     <div>
-      <Header title="Tổng quan" href="/" currentPage="Danh sách sinh viên " />
-      <div className="p-6 bg-white ">
-
+      <Header title="Tổng quan" href="/topic" currentPage="Chi tiết đề tài" />
+      <div className="p-6 bg-white">
         <Card className="p-6">
-
           {/* Thông tin chung */}
-          <div className="flex items-center mt-4 gap-3">
-            <Avatar className="w-10 h-10">
-              <AvatarImage
-                src="https://github.com/shadcn.png"
-                alt="Group Avatar"
-              />
-              <AvatarFallback>G</AvatarFallback>
+          <div className="flex items-center gap-3">
+            <Avatar className="w-12 h-12">
+              <AvatarImage src={topicDetails.creator?.avatar || "https://github.com/shadcn.png"} alt="Creator Avatar" />
+              <AvatarFallback>{topicDetails.creator?.fullName?.charAt(0)}</AvatarFallback>
             </Avatar>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">
-                Final Capstone Project Register and Information Management
-                System For FPTU HCM
-              </h3>
-              <p className="text-sm text-gray-500 italic">
-                Created at: 02/01/2025
-              </p>
+              <h3 className="text-xl font-semibold text-gray-900">{topicDetails.name}</h3>
+              <p className="text-sm text-gray-500 italic">Mã đề tài: {topicDetails.topicCode}</p>
             </div>
           </div>
 
-          <CardContent className="p-4 space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              {/* Abbreviations */}
-              <div>
-                <p className="text-sm text-gray-500">Abbreviations</p>
-                <p className="font-semibold italic">FPTU HCM FCPRIMS</p>
+          <CardContent className="p-4">
+            {/* Sử dụng grid để chia bố cục thành 2 cột */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Cột 1 */}
+              <div className="space-y-4">
+                {/* Mô tả đề tài */}
+                <div>
+                  <p className="text-sm text-gray-500">Mô tả</p>
+                  <p className="italic text-gray-800">{topicDetails.description || "Chưa có mô tả"}</p>
+                </div>
+
+                {/* Trạng thái */}
+                <div>
+                  <p className="text-sm text-gray-500">Trạng thái</p>
+                  <Badge variant="outline" className="text-sm">{topicDetails.status}</Badge>
+                </div>
+
+                {/* Kỳ học */}
+                <div>
+                  <p className="text-sm text-gray-500">Kỳ học</p>
+                  <p className="font-semibold italic">{topicDetails.semester.code}</p>
+                  <p className="text-sm text-gray-500">
+                    {new Date(topicDetails.semester.startDate).toLocaleDateString()} - {new Date(topicDetails.semester.endDate).toLocaleDateString()}
+                  </p>
+                </div>
+
+                {/* Ngành học */}
+                <div>
+                  <p className="text-sm text-gray-500">Ngành học</p>
+                  <ul className="list-disc pl-4">
+                    {topicDetails.detailMajorTopics.map((detail, index) => (
+                      <li key={index} className="font-semibold italic">{detail.major.name}</li>
+                    ))}
+                  </ul>
+                </div>
               </div>
 
-              {/* Vietnamese Title */}
-              <div>
-                <p className="text-sm text-gray-500">Vietnamese Title</p>
-                <p className="font-semibold italic">
-                  Xây dựng ứng dụng đăng kí và quản lí thông tin liên quan đến
-                  khóa luận tốt nghiệp của trường đại học FPT cơ sở HCM
-                </p>
-              </div>
+              {/* Cột 2 */}
+              <div className="space-y-4">
+                {/* Người tạo */}
+                <div>
+                  <p className="text-sm text-gray-500">Người tạo</p>
+                  <p className="font-semibold">{topicDetails.creator.fullName}</p>
+                  <p className="text-sm text-gray-500">{topicDetails.creator.email}</p>
+                </div>
 
-              {/* Profession */}
-              <div>
-                <p className="text-sm text-gray-500">Profession</p>
-                <p className="font-semibold italic">Information Technology</p>
-              </div>
+                {/* Ngày tạo */}
+                <div>
+                  <p className="text-sm text-gray-500">Ngày tạo</p>
+                  <p className="font-semibold">{new Date(topicDetails.createdAt).toLocaleDateString()}</p>
+                </div>
 
-              {/* Specialty */}
-              <div>
-                <p className="text-sm text-gray-500">Specialty</p>
-                <p className="font-semibold italic">Software Engineering</p>
+                {/* Nguồn đề tài */}
+                <div>
+                  <p className="text-sm text-gray-500">Nguồn đề tài</p>
+                  <p className="font-semibold">
+                    {topicDetails.isBusiness ? `Doanh nghiệp (${topicDetails.businessPartner || "Không rõ"})` : "Nội bộ"}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Trạng Thái</p>
+                  <p className="font-semibold">
+                    {topicDetails.status}
+                  </p>
+                </div>
+
+                {/* Danh sách người đăng ký đề tài */}
+                <div>
+                  <p className="text-sm text-gray-500">Danh sách đăng ký</p>
+                  {topicDetails.topicRegistrations.length > 0 ? (
+                    <ul className="list-disc pl-4">
+                      {topicDetails.topicRegistrations.map((registration, index) => (
+                        <li key={index} className="font-semibold">
+                          {registration.role === "mentor" ? "Mentor" : "Reviewer"}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-gray-500 italic">Chưa có ai đăng ký.</p>
+                  )}
+                </div>
               </div>
             </div>
 
-            {/* Mô tả dự án */}
-            <div>
-              <p className="text-sm text-gray-500">Description</p>
-              <p className="italic text-gray-800">
-                Build a web application to manage the registration and tracking
-                information of the graduation thesis process for students at FPT
-                University, HCMC campus. All stages described in the context
-                section must be recorded and statistical reports provided to the
-                relevant stakeholders involved. This system is applied to IT
-                majors such as SE, ITS, JA, AI and internal users are students,
-                staff, ...
-              </p>
+            {/* Tài liệu đính kèm */}
+            <div className="mt-6">
+              <p className="text-sm text-gray-500">Tài liệu đính kèm</p>
+              {topicDetails.documents.length > 0 ? (
+                <ul className="list-disc pl-4">
+                  {topicDetails.documents.map((doc, index) => (
+                    <li key={index}>
+                      <a href={doc.url} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
+                        {doc.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-gray-500 italic">Không có tài liệu đính kèm.</p>
+              )}
+            </div>
+
+            {/* Nút chỉnh sửa hoặc xóa đề tài */}
+            <div className="flex gap-4 mt-6">
+              <UpdateTopic topicId={topicDetails.id}/>
+              <Button variant="destructive">Xóa đề tài</Button>
             </div>
           </CardContent>
         </Card>

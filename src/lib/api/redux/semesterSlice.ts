@@ -112,8 +112,9 @@ const semesterSlice = createSlice({
       })
       .addCase(fetchSemesterDetail.fulfilled, (state, action) => {
         state.loading = false;
-        state.semesterDetail = action.payload;
+        state.semesterDetail = action.payload; // Lấy đúng phần `data`
       })
+      
       .addCase(fetchSemesterDetail.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;

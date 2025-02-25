@@ -28,6 +28,7 @@ import TopicEnterpriseDetail from "@/pages/admin/topic-list/topic-enterprise/top
 import { TopicEnterprisePage } from "@/pages/admin/topic-list/topic-enterprise/topic-enterprise-page";
 import { ImportTopicMentorPage } from "@/pages/admin/topic-list/topic-mentor/import-topic-mentor/import-topic-mentor-page";
 import TopicDetail from "@/pages/admin/topic-list/topic-mentor/topic-detail";
+import { TopicList } from "@/pages/admin/topic-list/topic-mentor/topic-list";
 import { TopicPage } from "@/pages/admin/topic-list/topic-mentor/topic-page";
 import CreateUserPage from "@/pages/admin/user/create-user-page";
 import UpdateUserPage from "@/pages/admin/user/update-user-page";
@@ -53,12 +54,12 @@ const MainContainter = () => {
         <Route path="/import-student/:semesterId" element={<ImportStudentPage />} />
 
         <Route path="/review-group-student" element={<ReviewPage />} />
-        
+
         <Route path="/group-student" element={<GroupStudentPage />} />
         <Route path="/group-student/:semesterId" element={<GroupStudentCardPage />} />
         <Route path="/group-student-detail" element={<GroupStudentDetail />} />
         <Route path="/group-student-detail/:groupId" element={<GroupStudentDetail />} />
-          
+
         <Route path="/random-group-student-page" element={<RandomGroupStudentPage />} />
         <Route path="/random-group-student-page/:semesterId" element={<RandomGroupStudentPage />} />
 
@@ -67,26 +68,27 @@ const MainContainter = () => {
 
         <Route path="/mentor-page" element={<MentorPage />} />
         <Route path="/mentor-page/:semesterId" element={<MentorDetail />} />
-        
+
         <Route path="/import-mentor/:semesterId" element={<ImportMentorTab />} />
-        
-        <Route path="topic" element={<TopicPage />}/>
-        <Route path="topic/:semesterId" element={<TopicPage />}/>
-        
-        <Route path="topic-detail" element={<TopicDetail />}/>
-        <Route path="topic-detail/:semesterId" element={<TopicDetail />}/>
 
-        <Route path="import-topic-mentor" element={<ImportTopicMentorPage />}/>
-        <Route path="import-topic-mentor/:semesterId" element={<ImportTopicMentorPage />}/>
+        <Route path="topic" element={<TopicPage />} />
+        {/* <Route path="topic/:semesterId" element={<TopicPage />} /> */}
 
-        <Route path="topic-enterprise" element={<TopicEnterprisePage />}/>
-        <Route path="topic-enterprise-detail" element={<TopicEnterpriseDetail />}/>
-        <Route path="topic-enterprise-detail/:semesterId" element={<TopicEnterpriseDetail />}/>
+        <Route path="/topic/:semesterId" element={<TopicList />} />
+        <Route path="/topic-detail/:topicId" element={<TopicDetail />} />
+
+
+        <Route path="import-topic-mentor" element={<ImportTopicMentorPage />} />
+        <Route path="import-topic-mentor/:semesterId" element={<ImportTopicMentorPage />} />
+
+        <Route path="topic-enterprise" element={<TopicEnterprisePage />} />
+        <Route path="topic-enterprise-detail" element={<TopicEnterpriseDetail />} />
+        <Route path="topic-enterprise-detail/:semesterId" element={<TopicEnterpriseDetail />} />
 
 
         <Route path="/semester" element={<SemestersPage />} />
-        <Route path="/semester/:semesterId" element=  {<SemestersDetailPage />} />
-   
+        <Route path="/semester/:semesterId" element={<SemestersDetailPage />} />
+
         <Route path="/year-semester" element={<YearSemesterPage />} />
 
         <Route path="/profile-page" element={<ProfilePage />} />
