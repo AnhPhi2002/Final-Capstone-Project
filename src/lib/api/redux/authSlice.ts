@@ -14,6 +14,13 @@ interface User {
   fullName: string;
   avatar: string | null;
   roles: Role[];
+  gender?: string | null;
+  phone?: string | null;
+  personal_Email?: string | null;
+  profession?: string | null;
+  specialty?: string | null;
+  programming_language?: string | null;
+  updatedAt?: string;
 }
 
 interface AuthState {
@@ -30,13 +37,26 @@ const initialState: AuthState = {
   error: null,
 };
 
+// ** Lấy thông tin hồ sơ người dùng **
+export const fetchUserProfile = createAsyncThunk(
+  "auth/fetchUserProfile",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.get("/users/profile");
+      return response.data.user;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Không thể lấy thông tin người dùng");
+    }
+  }
+);
+
 // ** Đăng nhập bằng Email/Mật khẩu **
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (credentials: { email: string; password: string }, { rejectWithValue }) => {
     try {
       const response = await axiosClient.post("/users/login", credentials);
-      return response.data; // ✅ Trả về toàn bộ dữ liệu
+      return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Đăng nhập thất bại");
     }
@@ -64,11 +84,23 @@ const authSlice = createSlice({
       state.user = null;
       state.token = null;
       localStorage.removeItem("token");
-      localStorage.removeItem("user"); // ✅ Xóa user khỏi localStorage khi logout
+      localStorage.removeItem("user");
     },
   },
   extraReducers: (builder) => {
     builder
+      .addCase(fetchUserProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchUserProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(fetchUserProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -76,12 +108,10 @@ const authSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
         state.token = action.payload.accessToken;
-        state.user = action.payload.user; // ✅ Lưu user vào Redux store
+        state.user = action.payload.user;
 
         localStorage.setItem("token", action.payload.accessToken);
         localStorage.setItem("user", JSON.stringify(action.payload.user));
-        localStorage.setItem("roles", JSON.stringify(action.payload.user.roles.map((role: { name: string }) => role.name)));
-    
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -94,10 +124,10 @@ const authSlice = createSlice({
       .addCase(loginWithGoogle.fulfilled, (state, action) => {
         state.loading = false;
         state.token = action.payload.accessToken;
-        state.user = action.payload.user; // ✅ Lưu user vào Redux store
+        state.user = action.payload.user;
 
         localStorage.setItem("token", action.payload.accessToken);
-        localStorage.setItem("user", JSON.stringify(action.payload.user)); // ✅ Lưu user vào localStorage
+        localStorage.setItem("user", JSON.stringify(action.payload.user));
       })
       .addCase(loginWithGoogle.rejected, (state, action) => {
         state.loading = false;

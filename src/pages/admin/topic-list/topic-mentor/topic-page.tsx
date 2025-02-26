@@ -1,5 +1,5 @@
 import Header from "@/components/header";
-import { SelectSemester } from "./select-semester";
+import { SelectSemester } from "./seclect-semester/select-semester";
 
 export const TopicPage = () => {
   return (

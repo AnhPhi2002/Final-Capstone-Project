@@ -21,7 +21,7 @@ export const SelectMajor: React.FC<SelectMajorProps> = ({ onMajorChange }) => {
     (state: RootState) => state.majors
   );
 
-  // Đảm bảo giá trị mặc định không phải là ""
+
   const [selectedMajor, setSelectedMajor] = useState<string | undefined>(
     undefined
   );
@@ -48,14 +48,12 @@ export const SelectMajor: React.FC<SelectMajorProps> = ({ onMajorChange }) => {
             </SelectItem>
           ) : (
             <>
-              {/* Cách 1: Sử dụng null thay vì "" */}
               <SelectItem key="all" value="all">
                 Tất cả ngành học
               </SelectItem>
 
-              {/* Đảm bảo tất cả items có giá trị hợp lệ */}
               {majors
-                .filter((major) => major.id) // Loại bỏ dữ liệu không hợp lệ
+                .filter((major) => major.id)
                 .map((major) => (
                   <SelectItem key={major.id} value={major.id}>
                     {major.name}

@@ -17,7 +17,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useNavigate } from "react-router";
-// import { useAppSelector } from "@/hooks/reduxHooks";
+
 
 export function NavUser({
   user,
@@ -34,15 +34,6 @@ export function NavUser({
     navigate("/log-in");
   };
 
-  // const currentUser = useAppSelector((state) => state.currentUser.user);
-
-  // const handleNavigate = () => {
-  //   if (currentUser?.id) {
-  //     navigate(`/profile-page/${currentUser.id}`);
-  //   } else {
-  //     navigate("/profile-page");
-  //   }
-  // };
   return (
     <SidebarMenu>
       <SidebarMenuItem>

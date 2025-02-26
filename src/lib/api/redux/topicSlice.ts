@@ -58,7 +58,10 @@ export const fetchTopics = createAsyncThunk(
     try {
       const query = majorId ? `?semesterId=${semesterId}&majorId=${majorId}` : `?semesterId=${semesterId}`;
       const response = await axiosClient.get(`/topics${query}`);
-      return response.data.data.data as Topic[]; // Định dạng đúng kiểu dữ liệu
+      
+      console.log("API Response:", response.data.data.data); // Kiểm tra API trả về
+
+      return response.data.data.data as Topic[];
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         return rejectWithValue(error.response?.data?.message || error.message);

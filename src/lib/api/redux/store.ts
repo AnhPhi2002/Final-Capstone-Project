@@ -18,12 +18,13 @@ import groupInviteReducer from "./groupInviteSlice";
 import majorReducer from "./majorSlice";
 import topicReducer from "./topicSlice";
 import topicRegisterReducer from "./topicRegisterSlice";
-
+// import profileUserReducer from "./profileUserSlice";
 
 
 const rootReducer = combineReducers({
   counter: counterReducer,
   auth: authReducer,
+  // profileUser: profileUserReducer,
   years: yearReducer,
   semesters: semesterReducer,
   students: studentReducer,
