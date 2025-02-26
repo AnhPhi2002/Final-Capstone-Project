@@ -15,6 +15,7 @@ export interface GroupMember {
   isActive: boolean;
   status: string;
   student: {
+    id: string;
     studentCode: string;
     user: {
       username: string;
@@ -44,11 +45,17 @@ export const columns: ColumnDef<GroupMember>[] = [
   {
     accessorKey: "role",
     header: "Vai Trò",
-    cell: ({ row }) => (
-      <Badge className={row.original.role === "leader" ? "bg-blue-100 text-blue-500" : "bg-gray-100 text-gray-500"}>
-        {row.original.role === "leader" ? "Trưởng Nhóm" : "Thành Viên"}
-      </Badge>
-    ),
+    cell: ({ row }) => {
+      const role = row.original.role;
+      return (
+        <Badge className={
+          role === "leader" ? "bg-blue-100 text-blue-600 hover:bg-blue-200" :
+          "bg-gray-100 text-gray-600 hover:bg-gray-200"
+        }>
+          {role === "leader" ? "Trưởng Nhóm" : "Thành Viên"}
+        </Badge>
+      );
+    },
   },
   {
     accessorKey: "student.user.profession",
@@ -72,10 +79,10 @@ export const columns: ColumnDef<GroupMember>[] = [
       const status = row.original.status;
       return (
         <Badge className={
-          status === "ACTIVE" ? "bg-green-100 text-green-500" :
-          status === "INACTIVE" ? "bg-red-100 text-red-500" :
-          status === "LEFT" ? "bg-yellow-100 text-yellow-500" :
-          "bg-gray-100 text-gray-500"
+          status === "ACTIVE" ? "bg-green-100 text-green-600 hover:bg-green-200" :
+          status === "INACTIVE" ? "bg-red-100 text-red-600 hover:bg-red-200" :
+          status === "LEFT" ? "bg-yellow-100 text-yellow-600 hover:bg-yellow-200" :
+          "bg-gray-100 text-gray-600 hover:bg-gray-200"
         }>
           {status === "ACTIVE" ? "Hoạt Động" : status === "INACTIVE" ? "Ngừng Hoạt Động" : "Đã Rời Nhóm"}
         </Badge>

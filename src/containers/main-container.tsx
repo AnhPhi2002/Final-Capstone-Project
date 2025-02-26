@@ -16,7 +16,8 @@ import { MentorPage } from "@/pages/admin/mentor/mentor-page";
 import { NotGroupStudentDetailPage } from "@/pages/admin/not-group-student/columns/not-group-student-detail-page";
 import { NotGroupStudentPage } from "@/pages/admin/not-group-student/not-group-student-page";
 import ProfileUpdateForm from "@/pages/admin/profile-user/components/profile-update";
-import ProfilePage from "@/pages/admin/profile-user/page";
+import { ProfilePage } from "@/pages/admin/profile-user/page";
+
 import { ReviewPage } from "@/pages/admin/review/review-page";
 import { SemestersDetailPage } from "@/pages/admin/semesters/columns/semesters-detail-page";
 import { SemestersPage } from "@/pages/admin/semesters/semesters-page";
@@ -28,7 +29,7 @@ import TopicEnterpriseDetail from "@/pages/admin/topic-list/topic-enterprise/top
 import { TopicEnterprisePage } from "@/pages/admin/topic-list/topic-enterprise/topic-enterprise-page";
 import { ImportTopicMentorPage } from "@/pages/admin/topic-list/topic-mentor/import-topic-mentor/import-topic-mentor-page";
 import TopicDetail from "@/pages/admin/topic-list/topic-mentor/topic-detail";
-import { TopicList } from "@/pages/admin/topic-list/topic-mentor/topic-list";
+import { TopicListPage } from "@/pages/admin/topic-list/topic-mentor/topic-list-page";
 import { TopicPage } from "@/pages/admin/topic-list/topic-mentor/topic-page";
 import CreateUserPage from "@/pages/admin/user/create-user-page";
 import UpdateUserPage from "@/pages/admin/user/update-user-page";
@@ -74,7 +75,9 @@ const MainContainter = () => {
         <Route path="topic" element={<TopicPage />} />
         {/* <Route path="topic/:semesterId" element={<TopicPage />} /> */}
 
-        <Route path="/topic/:semesterId" element={<TopicList />} />
+        <Route path="/topic/:semesterId" element={<TopicPage />} />
+        <Route path="topic-list" element={<TopicListPage />} />
+        <Route path="topic-list/:semesterId" element={<TopicListPage />} />
         <Route path="/topic-detail/:topicId" element={<TopicDetail />} />
 
 
@@ -92,7 +95,7 @@ const MainContainter = () => {
         <Route path="/year-semester" element={<YearSemesterPage />} />
 
         <Route path="/profile-page" element={<ProfilePage />} />
-        <Route path="/profile-page/:userId" element={<ProfilePage />} />
+        <Route path="/profile-page/:profileId" element={<ProfilePage />} />
         <Route path="/profile-page/update" element={<ProfileUpdateForm />} />
 
         <Route path="/user" element={<UsersPage />} />

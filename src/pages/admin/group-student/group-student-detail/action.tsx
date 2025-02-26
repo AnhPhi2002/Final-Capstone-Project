@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/api/redux/store";
-import { changeLeader, removeMemberFromGroup } from "@/lib/api/redux/groupDetailSlice";
+import { changeLeader, fetchGroupDetail, removeMemberFromGroup } from "@/lib/api/redux/groupDetailSlice";
 import { useState } from "react";
 import { toast } from "sonner";
 import { GroupMember } from "@/lib/api/redux/groupDetailSlice";
@@ -28,34 +28,25 @@ export const Action = ({ groupId, member }: ActionProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handleChangeRole = async () => {
-    if (member.role === "leader") {
-      toast.error("Leader không thể bị hạ cấp. Hãy đổi leader trước!");
-      return;
-    }
     setIsProcessing(true);
     try {
-      await dispatch(changeLeader({ groupId, newLeaderId: member.id })).unwrap();
-      toast.success(`Đã đổi ${member.student.user.username} thành Trưởng nhóm! ✅`);
+      await dispatch(changeLeader({ groupId, newLeaderId: member.studentId })).unwrap();
+      toast.success(`Đã đổi ${member.student.user.username} thành Trưởng nhóm!`);
+      dispatch(fetchGroupDetail(groupId));
     } catch (error: any) {
-      const errorMessage = typeof error === "string" ? error : error?.message || "Lỗi khi đổi vai trò!";
-      toast.error(errorMessage);
+      toast.error(error?.message || "Lỗi khi đổi vai trò!");
     } finally {
       setIsProcessing(false);
     }
   };
 
   const handleRemoveMember = async () => {
-    if (member.role === "leader") {
-      toast.error("Leader không thể bị xóa khỏi nhóm! Hãy đổi leader trước.");
-      return;
-    }
     setIsProcessing(true);
     try {
-      await dispatch(removeMemberFromGroup({ groupId, memberId: member.id })).unwrap();
-      toast.success(`Đã xóa ${member.student.user.username} khỏi nhóm! ✅`);
+      await dispatch(removeMemberFromGroup({ groupId, studentId: member.studentId })).unwrap();
+      toast.success(`Đã xóa ${member.student.user.username} khỏi nhóm!`);
     } catch (error: any) {
-      const errorMessage = typeof error === "string" ? error : error?.message || "Lỗi khi xóa thành viên!";
-      toast.error(errorMessage);
+      toast.error(error?.message || "Lỗi khi xóa thành viên!");
     } finally {
       setIsProcessing(false);
     }

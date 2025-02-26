@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { UpdateTopic } from "./updateTopic";
 
 export default function TopicDetail() {
-  const { topicId } = useParams(); // Lấy topicId từ URL
+  const { topicId } = useParams(); 
   const dispatch = useDispatch<AppDispatch>();
 
   const { topicDetails, loading, error } = useSelector((state: RootState) => state.topics);
@@ -48,23 +48,16 @@ export default function TopicDetail() {
           </div>
 
           <CardContent className="p-4">
-            {/* Sử dụng grid để chia bố cục thành 2 cột */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Cột 1 */}
               <div className="space-y-4">
-                {/* Mô tả đề tài */}
                 <div>
                   <p className="text-sm text-gray-500">Mô tả</p>
                   <p className="italic text-gray-800">{topicDetails.description || "Chưa có mô tả"}</p>
                 </div>
-
-                {/* Trạng thái */}
                 <div>
                   <p className="text-sm text-gray-500">Trạng thái</p>
                   <Badge variant="outline" className="text-sm">{topicDetails.status}</Badge>
                 </div>
-
-                {/* Kỳ học */}
                 <div>
                   <p className="text-sm text-gray-500">Kỳ học</p>
                   <p className="font-semibold italic">{topicDetails.semester.code}</p>
@@ -72,8 +65,6 @@ export default function TopicDetail() {
                     {new Date(topicDetails.semester.startDate).toLocaleDateString()} - {new Date(topicDetails.semester.endDate).toLocaleDateString()}
                   </p>
                 </div>
-
-                {/* Ngành học */}
                 <div>
                   <p className="text-sm text-gray-500">Ngành học</p>
                   <ul className="list-disc pl-4">
@@ -83,23 +74,17 @@ export default function TopicDetail() {
                   </ul>
                 </div>
               </div>
-
-              {/* Cột 2 */}
               <div className="space-y-4">
-                {/* Người tạo */}
                 <div>
                   <p className="text-sm text-gray-500">Người tạo</p>
                   <p className="font-semibold">{topicDetails.creator.fullName}</p>
                   <p className="text-sm text-gray-500">{topicDetails.creator.email}</p>
                 </div>
 
-                {/* Ngày tạo */}
                 <div>
                   <p className="text-sm text-gray-500">Ngày tạo</p>
                   <p className="font-semibold">{new Date(topicDetails.createdAt).toLocaleDateString()}</p>
                 </div>
-
-                {/* Nguồn đề tài */}
                 <div>
                   <p className="text-sm text-gray-500">Nguồn đề tài</p>
                   <p className="font-semibold">
@@ -112,8 +97,6 @@ export default function TopicDetail() {
                     {topicDetails.status}
                   </p>
                 </div>
-
-                {/* Danh sách người đăng ký đề tài */}
                 <div>
                   <p className="text-sm text-gray-500">Danh sách đăng ký</p>
                   {topicDetails.topicRegistrations.length > 0 ? (

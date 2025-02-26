@@ -15,6 +15,7 @@ export interface GroupMember {
   isActive: boolean;
   status: string;
   student: {
+    id: string;
     studentCode: string;
     user: {
       username: string;
@@ -66,7 +67,7 @@ export const changeLeader = createAsyncThunk(
   "groupDetail/changeLeader",
   async ({ groupId, newLeaderId }: { groupId: string; newLeaderId: string }, { rejectWithValue }) => {
     try {
-      const response = await axiosClient.put(`/groups/change-leader`, { groupId, newLeaderId });
+      const response = await axiosClient.post(`/groups/change-leader`, { groupId, newLeaderId });
       toast.success("Leader đã được cập nhật!");
       return response.data;
     } catch (error: any) {
@@ -76,92 +77,21 @@ export const changeLeader = createAsyncThunk(
   }
 );
 
-// **🔹 Xóa thành viên**
+// **🔹 Xóa thành viên (Cập nhật sang `POST`)**
 export const removeMemberFromGroup = createAsyncThunk(
   "groupDetail/removeMember",
-  async ({ groupId, memberId }: { groupId: string; memberId: string }, { rejectWithValue }) => {
+  async ({ groupId, studentId }: { groupId: string; studentId: string }, { rejectWithValue }) => {
     try {
-      const response = await axiosClient.delete(`/groups/remove-member/${groupId}/${memberId}`);
+      await axiosClient.post(`/groups/remove-member`, {
+        groupId,
+        memberId: studentId, // ✅ Đảm bảo memberId là studentId
+      });
+
       toast.success("Thành viên đã bị xóa!");
-      return response.data;
+      return { groupId, studentId };
     } catch (error: any) {
       toast.error(error?.message || "Lỗi khi xóa thành viên!");
       return rejectWithValue(error.response?.data?.message || "Lỗi khi xóa thành viên!");
-    }
-  }
-);
-
-// **🔹 Mời thành viên**
-export const inviteMember = createAsyncThunk(
-  "groupDetail/inviteMember",
-  async ({ groupId, email }: { groupId: string; email: string }, { rejectWithValue }) => {
-    try {
-      const response = await axiosClient.post(`/groups/invite`, { groupId, email });
-      toast.success("Lời mời đã được gửi!");
-      return response.data;
-    } catch (error: any) {
-      toast.error(error?.message || "Lỗi khi mời thành viên!");
-      return rejectWithValue(error.response?.data?.message || "Lỗi khi mời thành viên!");
-    }
-  }
-);
-
-// **🔹 Xóa nhóm**
-export const deleteGroup = createAsyncThunk(
-  "groupDetail/deleteGroup",
-  async (groupId: string, { rejectWithValue }) => {
-    try {
-      const response = await axiosClient.delete(`/groups/delete/${groupId}`);
-      toast.success("Nhóm đã được xóa thành công!");
-      return response.data;
-    } catch (error: any) {
-      toast.error(error?.message || "Lỗi khi xóa nhóm!");
-      return rejectWithValue(error.response?.data?.message || "Lỗi khi xóa nhóm!");
-    }
-  }
-);
-
-// **🔹 Rời nhóm**
-export const leaveGroup = createAsyncThunk(
-  "groupDetail/leaveGroup",
-  async (groupId: string, { rejectWithValue }) => {
-    try {
-      const response = await axiosClient.post(`/groups/leave`, { groupId });
-      toast.success("Bạn đã rời nhóm thành công!");
-      return response.data;
-    } catch (error: any) {
-      toast.error(error?.message || "Lỗi khi rời nhóm!");
-      return rejectWithValue(error.response?.data?.message || "Lỗi khi rời nhóm!");
-    }
-  }
-);
-
-// **🔹 Khóa nhóm**
-export const lockGroup = createAsyncThunk(
-  "groupDetail/lockGroup",
-  async (groupId: string, { rejectWithValue }) => {
-    try {
-      const response = await axiosClient.post(`/groups/lock`, { groupId });
-      toast.success("Nhóm đã bị khóa!");
-      return response.data;
-    } catch (error: any) {
-      toast.error(error?.message || "Lỗi khi khóa nhóm!");
-      return rejectWithValue(error.response?.data?.message || "Lỗi khi khóa nhóm!");
-    }
-  }
-);
-
-// **🔹 Mở khóa nhóm**
-export const unlockGroup = createAsyncThunk(
-  "groupDetail/unlockGroup",
-  async (groupId: string, { rejectWithValue }) => {
-    try {
-      const response = await axiosClient.post(`/groups/unlock`, { groupId });
-      toast.success("Nhóm đã được mở khóa!");
-      return response.data;
-    } catch (error: any) {
-      toast.error(error?.message || "Lỗi khi mở khóa nhóm!");
-      return rejectWithValue(error.response?.data?.message || "Lỗi khi mở khóa nhóm!");
     }
   }
 );
@@ -195,18 +125,9 @@ const groupDetailSlice = createSlice({
       .addCase(removeMemberFromGroup.fulfilled, (state, action) => {
         if (state.group) {
           state.group.members = state.group.members.filter(
-            (member) => member.id !== action.payload.memberId
+            (member) => member.studentId !== action.payload.studentId
           );
         }
-      })
-      .addCase(deleteGroup.fulfilled, (state) => {
-        state.group = null;
-      })
-      .addCase(lockGroup.fulfilled, (state) => {
-        if (state.group) state.group.status = "LOCKED";
-      })
-      .addCase(unlockGroup.fulfilled, (state) => {
-        if (state.group) state.group.status = "ACTIVE";
       });
   },
 });
