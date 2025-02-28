@@ -23,7 +23,7 @@ import { GoogleLogin } from "@react-oauth/google";
 
 const formSchema = z.object({
   email: z.string().email("Email không hợp lệ"),
-  password: z.string().min(5, "Mật khẩu phải chứa ít nhất 5 ký tự"),
+  password: z.string().min(5, "Mật khẩu phải chứa ít nhất 7 ký tự"),
 });
 
 const LoginPage = () => {

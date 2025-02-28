@@ -24,13 +24,11 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/api/redux/store";
+
 
 const data = {
-  user: {
-    name: "Admin",
-    email: "admin@gmail.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   navMain: [
     {
       title: "Tổng quan",
@@ -162,29 +160,41 @@ const data = {
   ],
 };
 
+
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  return (
-    <Sidebar collapsible="icon" {...props} className="bg-white">
-      <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem className="flex gap-2">
-            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-zinc-700 text-sidebar-primary-foreground">
-              <img src={Logo} className="size-4" />
-            </div>
-            <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-semibold">FCPRIMS</span>
-              <span className="truncate text-xs">HCMC FU</span>
-            </div>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarHeader>
-      <SidebarContent>
-        <NavMain items={data.navMain} />
-      </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
-      </SidebarFooter>
-      <SidebarRail />
-    </Sidebar>
-  );
-}
+  const user = useSelector((state: RootState) => state.auth.user); 
+
+    const formattedUser = user
+      ? {
+          name: user.fullName || user.username || "Người dùng",
+          email: user.email,
+          avatar: user.avatar || "/default-avatar.png", 
+        }
+      : null;
+  
+    return (
+      <Sidebar collapsible="icon" {...props} className="bg-white">
+        <SidebarHeader>
+          <SidebarMenu>
+            <SidebarMenuItem className="flex gap-2">
+              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-zinc-700 text-sidebar-primary-foreground">
+                <img src={Logo} className="size-4" />
+              </div>
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-semibold">FCPRIMS</span>
+                <span className="truncate text-xs">HCMC FU</span>
+              </div>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarHeader>
+        <SidebarContent>
+          <NavMain items={data.navMain} />
+        </SidebarContent>
+        <SidebarFooter>
+          {formattedUser ? <NavUser user={formattedUser} /> : <p>Đang tải...</p>}
+        </SidebarFooter>
+        <SidebarRail />
+      </Sidebar>
+    );
+  }
