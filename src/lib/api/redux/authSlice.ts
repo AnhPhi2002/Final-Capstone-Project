@@ -28,6 +28,7 @@ interface AuthState {
   token: string | null;
   loading: boolean;
   error: string | null;
+  
 }
 
 const initialState: AuthState = {
@@ -112,6 +113,8 @@ const authSlice = createSlice({
 
         localStorage.setItem("token", action.payload.accessToken);
         localStorage.setItem("user", JSON.stringify(action.payload.user));
+
+        // window.location.reload(); // Reload để React Router nhận token mới
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;

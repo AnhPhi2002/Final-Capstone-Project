@@ -1,4 +1,5 @@
 import React from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface UserProfile {
   id?: string;
@@ -14,7 +15,6 @@ interface UserProfile {
   updatedAt?: string;
 }
 
-
 interface ProfileFormProps {
   user: UserProfile;
 }
@@ -22,14 +22,18 @@ interface ProfileFormProps {
 const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-5">
-      {/* Thẻ chứa Avatar + Thông tin liên hệ */}
+      {/* Avatar + Thông tin liên hệ */}
       <div className="bg-white rounded-lg p-6 border shadow-sm">
         <div className="flex flex-col items-center">
-          <img
-            src={user.avatar || "https://avatar.iran.liara.run/public/boy?username=FAMS"}
-            className="w-24 h-24 bg-gray-300 rounded-full mb-4 shrink-0 object-cover"
-            alt="Avatar"
-          />
+          <Avatar className="w-24 h-24 mb-4">
+            <AvatarImage
+              src={user.avatar || "https://avatar.iran.liara.run/public/boy?username=FAMS"}
+              alt="Avatar"
+            />
+            <AvatarFallback>
+              {user.fullName ? user.fullName.charAt(0).toUpperCase() : "?"}
+            </AvatarFallback>
+          </Avatar>
         </div>
         <h2 className="text-lg font-semibold mt-6">Thông tin liên hệ</h2>
         <div className="mt-4 space-y-2">
@@ -39,7 +43,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
         </div>
       </div>
 
-      {/* Thẻ chứa Thông tin cơ bản */}
+      {/* Thông tin cơ bản */}
       <div className="bg-white rounded-lg p-6 border shadow-sm">
         <h2 className="text-lg font-semibold">Thông tin cơ bản</h2>
         <div className="mt-4 space-y-2">
@@ -51,7 +55,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
         </div>
       </div>
 
-      {/* Thẻ chứa Thông tin bổ sung */}
+      {/* Thông tin bổ sung */}
       <div className="bg-white rounded-lg p-6 border shadow-sm col-span-2">
         <h2 className="text-lg font-semibold">Thông tin bổ sung</h2>
         <div className="mt-4 space-y-2">
