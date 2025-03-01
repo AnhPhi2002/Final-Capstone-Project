@@ -25,8 +25,8 @@ interface ActionProps {
 
 export const Action = ({ groupId, member }: ActionProps) => {
   const dispatch = useDispatch<AppDispatch>();
-  const [isProcessing, setIsProcessing] = useState(false);
-
+  const setIsProcessing = useState(false)[1];
+  // const [isProcessing, setIsProcessing] = useState(false);
   const handleChangeRole = async () => {
     setIsProcessing(true);
     try {
