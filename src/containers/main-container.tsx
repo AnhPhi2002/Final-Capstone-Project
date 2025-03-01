@@ -40,17 +40,21 @@ import UsersPage from "@/pages/admin/user/user-listing/users-page";
 import { YearSemesterPage } from "@/pages/admin/year-semeter/year-semester-page";
 import LoginPage from "@/pages/auth/log-in-page";
 import { Route, Routes } from "react-router";
+import { TopicReviewPage } from "@/pages/examination-officer/topic-review/topic-review-page";
+import { TopicReviewListPage } from "@/pages/examination-officer/topic-review/topic-review-list-page";
+import TopicReviewDetail from "@/pages/examination-officer/topic-review/topic-review-detail";
 
 const MainContainter = () => {
   return (
     <MainLayout>
       <Routes>
         <Route path="/" element={<DashboardPage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
+        {/* <Route path="/dashboard" element={<DashboardPage />} /> */}
 
         <Route path="/council-member" element={<CouncilMemberPage />} />
         <Route path="/council-member/:councilId" element={<CouncilMemberDetail />} />
         <Route path="/template-detail" element={<TemplateDetail />} />
+
         <Route path="/student" element={<StudentListPage />} />
         <Route path="/student/:semesterId" element={<StudentsDetailPage />} />
         <Route path="/import-student" element={<ImportStudentPage />} />
@@ -74,24 +78,33 @@ const MainContainter = () => {
 
         <Route path="/import-mentor/:semesterId" element={<ImportMentorTab />} />
 
-        <Route path="topic" element={<TopicPage />} />
-        <Route path="topic/:semesterId" element={<TopicPage />} />
+        <Route path="/topic" element={<TopicPage />} />
+        <Route path="/topic/:semesterId" element={<TopicPage />} />
 
         <Route path="/topic/:semesterId" element={<TopicPage />} />
-        <Route path="topic-list" element={<TopicListPage />} />
-        <Route path="topic-list/:semesterId" element={<TopicListPage />} />
+        <Route path="/topic-list" element={<TopicListPage />} />
+        <Route path="/topic-list/:semesterId" element={<TopicListPage />} />
         <Route path="/topic-detail/:topicId" element={<TopicDetail />} />
+        
+        <Route path="/topi-review-page" element={<TopicReviewPage />} />
+        <Route path="/topi-review-page/:semesterId" element={<TopicReviewPage />} />
+        <Route path="/topic-review-list" element={<TopicReviewListPage />} />
+        <Route path="/topic-review-list/:semesterId" element={<TopicReviewListPage />} />
+        <Route path="/topic-review-detail/:topicId" element={<TopicReviewDetail />} />
+
 
         <Route path="/timeline" element={<TimelinePage />} />
         <Route path="/timeline-detail/:semesterId" element={<TimelineDetail />} />
 
 
-        <Route path="import-topic-mentor" element={<ImportTopicMentorPage />} />
-        <Route path="import-topic-mentor/:semesterId" element={<ImportTopicMentorPage />} />
+        <Route path="/import-topic-mentor" element={<ImportTopicMentorPage />} />
+        <Route path="/import-topic-mentor/:semesterId" element={<ImportTopicMentorPage />} />
 
         <Route path="topic-enterprise" element={<TopicEnterprisePage />} />
         <Route path="topic-enterprise-detail" element={<TopicEnterpriseDetail />} />
         <Route path="topic-enterprise-detail/:semesterId" element={<TopicEnterpriseDetail />} />
+
+
 
 
         <Route path="/semester" element={<SemestersPage />} />

@@ -16,7 +16,7 @@ import { CardBv } from "./card-semester";
 export const SelectSemester: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState<string>("");
   const [selectedSemester, setSelectedSemester] = useState<string>("all");
-  const [selectedDefense, setSelectedDefense] = useState<string>("all");
+  // const [selectedDefense, setSelectedDefense] = useState<string>("all");
 
   const academicData: AcademicYearCouncil = councilData;
   const years = [...new Set(academicData.map((semester) => semester.year))];
@@ -36,7 +36,7 @@ export const SelectSemester: React.FC = () => {
   const handleYearChange = (year: string) => {
     setSelectedYear(year);
     setSelectedSemester("all");
-    setSelectedDefense("all");
+    // setSelectedDefense("all");
   };
 
   return (
@@ -78,7 +78,7 @@ export const SelectSemester: React.FC = () => {
         </Select>
 
         {/* Select Bảo vệ lần 1 / 2 */}
-        <Select onValueChange={setSelectedDefense} value={selectedDefense}>
+        {/* <Select onValueChange={setSelectedDefense} value={selectedDefense}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Chọn bảo vệ" />
           </SelectTrigger>
@@ -94,11 +94,11 @@ export const SelectSemester: React.FC = () => {
               ))}
             </SelectGroup>
           </SelectContent>
-        </Select>
+        </Select> */}
       </div>
 
       <div className="">
-      {selectedDefense !== "all" && (
+      {selectedSemester !== "all" && (
         <CardBv 
           data={filteredBySemester.map((semester) => ({
             id: semester.id,
