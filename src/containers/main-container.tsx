@@ -43,6 +43,8 @@ import { Route, Routes } from "react-router";
 import { TopicReviewPage } from "@/pages/examination-officer/topic-review/topic-review-page";
 import { TopicReviewListPage } from "@/pages/examination-officer/topic-review/topic-review-list-page";
 import TopicReviewDetail from "@/pages/examination-officer/topic-review/topic-review-detail";
+import { DeadineTopicPage } from "@/pages/admin/deadline-topic/deadine-topic-page";
+import { DeadineTopicDetailPage } from "@/pages/admin/deadline-topic/columns/deadine-topic-detail-page";
 
 const MainContainter = () => {
   return (
@@ -53,6 +55,7 @@ const MainContainter = () => {
 
         <Route path="/council-member" element={<CouncilMemberPage />} />
         <Route path="/council-member/:councilId" element={<CouncilMemberDetail />} />
+        
         <Route path="/template-detail" element={<TemplateDetail />} />
 
         <Route path="/student" element={<StudentListPage />} />
@@ -103,9 +106,12 @@ const MainContainter = () => {
         <Route path="topic-enterprise" element={<TopicEnterprisePage />} />
         <Route path="topic-enterprise-detail" element={<TopicEnterpriseDetail />} />
         <Route path="topic-enterprise-detail/:semesterId" element={<TopicEnterpriseDetail />} />
+    
 
 
-
+        <Route path="deadine-topic" element={<DeadineTopicPage />} />
+        <Route path="deadine-topic/:semesterId" element={<DeadineTopicDetailPage />} />
+        <Route path="/deadine-topic/:semesterId/round/:roundNumber" element={<DeadineTopicDetailPage />} />
 
         <Route path="/semester" element={<SemestersPage />} />
         <Route path="/semester/:semesterId" element={<SemestersDetailPage />} />
