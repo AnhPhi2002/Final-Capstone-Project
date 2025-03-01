@@ -5,6 +5,14 @@
     "code": "Spring2025",
     "start_date": "2025-01-01",
     "end_date": "2025-05-31",
+    "bv_1": "Bảo vệ lần 1",
+    "bv_2": "Bảo vệ lần 2",
+    "start_time_bv1": "08:00",
+    "end_time_bv1": "17:00",
+    "start_date_bv1": "28/02/2025",
+    "start_date_bv2": "28/03/2025",
+    "start_time_bv2": "08:00",
+    "end_time_bv2": "17:00",
     "councilMember": [
       {
         "id": 101,
@@ -64,6 +72,14 @@
     "code": "Summer2025",
     "start_date": "2025-01-01",
     "end_date": "2025-05-31",
+    "bv_1": "Bảo vệ lần 1",
+    "bv_2": "Bảo vệ lần 2",
+    "start_time_bv1": "08:00",
+    "end_time_bv1": "17:00",
+    "start_date_bv1": "28/02/2025",
+    "start_date_bv2": "28/03/2025",
+    "start_time_bv2": "08:00",
+    "end_time_bv2": "17:00",
     "councilMember": [
       {
         "id": 106,
@@ -93,6 +109,14 @@
     "code": "Fall2025",
     "start_date": "2025-01-01",
     "end_date": "2025-05-31",
+    "bv_1": "Bảo vệ lần 1",
+    "bv_2": "Bảo vệ lần 2",
+    "start_time_bv1": "08:00",
+    "end_time_bv1": "17:00",
+    "start_date_bv1": "28/02/2025",
+    "start_date_bv2": "28/03/2025",
+    "start_time_bv2": "08:00",
+    "end_time_bv2": "17:00",
     "councilMember": [
       {
         "id": 108,

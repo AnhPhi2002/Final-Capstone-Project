@@ -45,7 +45,7 @@ export const SelectSemester: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col md:flex-row md:items-center gap-4">
+      <div className="flex flex-col md:flex-row md:items-center gap-4 mb-10 ">
         <Select onValueChange={(value) => handleYearChange(value)}>
           <SelectTrigger className="w-[200px]">
             <SelectValue placeholder="Chọn năm học" />
