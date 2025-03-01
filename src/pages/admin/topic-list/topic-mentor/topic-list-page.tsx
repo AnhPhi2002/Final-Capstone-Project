@@ -12,7 +12,7 @@ import { AppDispatch } from "@/lib/api/redux/store";
 import { toast } from "sonner";
 
 export const TopicListPage = () => {
-  const { semesterId } = useParams(); // Lấy semesterId từ URL
+  const { semesterId } = useParams(); 
   const dispatch = useDispatch<AppDispatch>();
   const [selectedMajor, setSelectedMajor] = useState<string | undefined>();
 
