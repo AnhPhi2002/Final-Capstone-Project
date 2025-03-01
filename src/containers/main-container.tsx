@@ -25,6 +25,8 @@ import { StudentsDetailPage } from "@/pages/admin/student-list/columns/students-
 import StudentListPage from "@/pages/admin/student-list/student-list-page";
 import TemplateDetail from "@/pages/admin/templates-mail/TemplateDetail";
 import Test from "@/pages/admin/test/test-page";
+import TimelineDetail from "@/pages/admin/timeline-register/timeline-detail";
+import TimelinePage from "@/pages/admin/timeline-register/timeline-page";
 import TopicEnterpriseDetail from "@/pages/admin/topic-list/topic-enterprise/topic-enterprise-detail";
 import { TopicEnterprisePage } from "@/pages/admin/topic-list/topic-enterprise/topic-enterprise-page";
 import { ImportTopicMentorPage } from "@/pages/admin/topic-list/topic-mentor/import-topic-mentor/import-topic-mentor-page";
@@ -73,12 +75,15 @@ const MainContainter = () => {
         <Route path="/import-mentor/:semesterId" element={<ImportMentorTab />} />
 
         <Route path="topic" element={<TopicPage />} />
-        {/* <Route path="topic/:semesterId" element={<TopicPage />} /> */}
+        <Route path="topic/:semesterId" element={<TopicPage />} />
 
         <Route path="/topic/:semesterId" element={<TopicPage />} />
         <Route path="topic-list" element={<TopicListPage />} />
         <Route path="topic-list/:semesterId" element={<TopicListPage />} />
         <Route path="/topic-detail/:topicId" element={<TopicDetail />} />
+
+        <Route path="/timeline" element={<TimelinePage />} />
+        <Route path="/timeline-detail/:semesterId" element={<TimelineDetail />} />
 
 
         <Route path="import-topic-mentor" element={<ImportTopicMentorPage />} />
