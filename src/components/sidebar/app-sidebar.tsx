@@ -73,15 +73,15 @@ const data = {
           url: "/group-student",
         },
         {
-          title: "D.s chưa nhóm KLTN",
+          title: "D.s chưa có nhóm KLTN",
           url: "/not-group-student",
         },
         {
-          title: "D.s hội đồng đánh giá ",
+          title: "D.s hội chấm KLTN",
           url: "/council-member",
         },
         {
-          title: "D.s g.v hướng dẫn",
+          title: "D.s g.v hướng dẫn KLTN",
           url: "/mentor-page",
         },
       ],
@@ -115,7 +115,19 @@ const data = {
         },
       ],
     },
-
+    {
+      title: "Xét duyệt đề tài",
+      url: "/topi-review-page",
+      icon: ClipboardList,
+      isActive: true,
+      items: [
+        {
+          title: "Xét duyệt đề tài ",
+          url: "/topi-review-page",
+        },
+      
+      ],
+    },
 
     {
       title: "Người dùng ",
