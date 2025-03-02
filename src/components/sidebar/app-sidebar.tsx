@@ -58,7 +58,7 @@ const data = {
         },
         {
           title: "D.s hạn nộp đề tài",
-          url: "/deadine-topic",
+          url: "/deadline-topic",
         },
         {
           title: "D.s review ",

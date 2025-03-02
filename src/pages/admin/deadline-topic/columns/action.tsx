@@ -1,9 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
 import { MoreHorizontal } from "lucide-react";
-import { toast } from "sonner";
-import { deleteSubmissionRound } from "@/lib/api/redux/submissionRoundSlice";
-import { AppDispatch } from "@/lib/api/redux/store";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,19 +24,8 @@ type ActionMenuProps = {
 };
 
 export const Action: React.FC<ActionMenuProps> = ({ round }) => {
-  const dispatch = useDispatch<AppDispatch>();
   const [openUpdate, setOpenUpdate] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
-
-  const handleDelete = async () => {
-    try {
-      await dispatch(deleteSubmissionRound(round.id)).unwrap();
-      toast.success("Vòng nộp đã được xóa thành công!");
-      setOpenDelete(false);
-    } catch (error: any) {
-      toast.error(`Xóa thất bại: ${error.message || "Đã xảy ra lỗi"}`);
-    }
-  };
 
   return (
     <>

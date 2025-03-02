@@ -3,6 +3,9 @@ import { useDispatch } from "react-redux";
 import { updateSubmissionRound, fetchSubmissionRounds } from "@/lib/api/redux/submissionRoundSlice";
 import { AppDispatch } from "@/lib/api/redux/store";
 import { Toaster, toast } from "sonner";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 type UpdateDeadlineTopicProps = {
   open: boolean;
@@ -23,8 +26,8 @@ export const UpdateDeadlineTopic: React.FC<UpdateDeadlineTopicProps> = ({ open, 
 
   const [formValues, setFormValues] = useState({
     roundNumber: round.roundNumber,
-    startDate: round.startDate.split("T")[0], // ✅ Lấy đúng phần "YYYY-MM-DD"
-    endDate: round.endDate.split("T")[0], // ✅ Lấy đúng phần "YYYY-MM-DD"
+    startDate: round.startDate.split("T")[0], // Lấy đúng phần YYYY-MM-DD
+    endDate: round.endDate.split("T")[0], // Lấy đúng phần YYYY-MM-DD
     description: round.description,
   });
 
@@ -39,7 +42,6 @@ export const UpdateDeadlineTopic: React.FC<UpdateDeadlineTopicProps> = ({ open, 
     }
   }, [open, round]);
 
-  // ✅ Chuyển đổi ngày thành định dạng "YYYY-MM-DDTHH:MM:SS.SSSZ"
   const convertToISODate = (dateString: string, isEndDate = false) => {
     return isEndDate 
       ? `${dateString}T23:59:59.999Z` 
@@ -72,20 +74,25 @@ export const UpdateDeadlineTopic: React.FC<UpdateDeadlineTopicProps> = ({ open, 
             roundNumber: Number(formValues.roundNumber),
             description: formValues.description,
             semesterId: round.semesterId,
-            startDate: convertToISODate(formValues.startDate), // ✅ Fix lỗi định dạng ngày
-            endDate: convertToISODate(formValues.endDate, true), // ✅ Fix lỗi định dạng ngày kết thúc
+            startDate: convertToISODate(formValues.startDate),
+            endDate: convertToISODate(formValues.endDate, true),
           },
         })
-      ).unwrap();
+      );
 
-      if (resultAction.success) {
+      console.log("API Response:", resultAction);
+
+      // Kiểm tra kết quả
+      if (updateSubmissionRound.fulfilled.match(resultAction)) {
         toast.success("Cập nhật vòng nộp thành công!");
-        setOpen(false); // ✅ Đóng modal ngay sau khi update
-        dispatch(fetchSubmissionRounds(round.semesterId)); // ✅ Cập nhật dữ liệu mới ngay lập tức
+        setOpen(false);
+        dispatch(fetchSubmissionRounds(round.semesterId));
       } else {
-        throw new Error(resultAction.message || "Cập nhật thất bại!");
+        const errorMessage = (resultAction.payload as { message?: string })?.message || "Cập nhật thất bại!";
+        throw new Error(errorMessage);
       }
     } catch (error: any) {
+      console.error("Lỗi cập nhật vòng nộp:", error);
       toast.error(`Cập nhật thất bại: ${error.message || "Đã xảy ra lỗi"}`);
     } finally {
       setUpdating(false);
@@ -102,8 +109,8 @@ export const UpdateDeadlineTopic: React.FC<UpdateDeadlineTopicProps> = ({ open, 
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Lần nộp</label>
-            <input
+            <Label className="block text-sm font-medium mb-1">Lần nộp</Label>
+            <Input
               type="number"
               name="roundNumber"
               value={formValues.roundNumber}
@@ -113,8 +120,8 @@ export const UpdateDeadlineTopic: React.FC<UpdateDeadlineTopicProps> = ({ open, 
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Tên vòng nộp</label>
-            <input
+            <Label className="block text-sm font-medium mb-1">Tên vòng nộp</Label>
+            <Input
               type="text"
               name="description"
               value={formValues.description}
@@ -124,8 +131,8 @@ export const UpdateDeadlineTopic: React.FC<UpdateDeadlineTopicProps> = ({ open, 
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Ngày bắt đầu</label>
-            <input
+            <Label className="block text-sm font-medium mb-1">Ngày bắt đầu</Label>
+            <Input
               type="date"
               name="startDate"
               value={formValues.startDate}
@@ -135,8 +142,8 @@ export const UpdateDeadlineTopic: React.FC<UpdateDeadlineTopicProps> = ({ open, 
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Ngày kết thúc</label>
-            <input
+            <Label className="block text-sm font-medium mb-1">Ngày kết thúc</Label>
+            <Input
               type="date"
               name="endDate"
               value={formValues.endDate}
@@ -147,16 +154,16 @@ export const UpdateDeadlineTopic: React.FC<UpdateDeadlineTopicProps> = ({ open, 
         </div>
 
         <div className="mt-6 flex justify-end space-x-4">
-          <button onClick={() => setOpen(false)} className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg">
+          <Button onClick={() => setOpen(false)} className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg">
             Hủy
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={handleSave}
             disabled={updating}
             className={`px-4 py-2 rounded-lg ${updating ? "bg-gray-400" : "bg-black text-white"}`}
           >
             {updating ? "Đang cập nhật..." : "Lưu cập nhật"}
-          </button>
+          </Button>
         </div>
       </div>
     </div>
