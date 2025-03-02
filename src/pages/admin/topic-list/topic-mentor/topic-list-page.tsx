@@ -1,73 +1,42 @@
-import Header from "@/components/header";
-import { TopicList } from "./topic-list";
-import { SelectMajor } from "./SelectMajor";
-import { CreateTopic } from "./CreateTopic";
-import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router";
-
-import { fetchTopics, exportTopicsToExcel } from "@/lib/api/redux/topicSlice";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/lib/api/redux/store";
-import { toast } from "sonner";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/lib/api/redux/store";
+import { fetchTopics } from "@/lib/api/redux/topicSlice";
+import { useNavigate, useParams } from "react-router";
 
 export const TopicListPage = () => {
-  const { semesterId } = useParams(); 
+  const { semesterId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
-  const [selectedMajor, setSelectedMajor] = useState<string | undefined>();
+  const navigate = useNavigate();
+  const { data: topics, loading } = useSelector((state: RootState) => state.topics);
+
+  console.log("Redux topics state:", topics);
 
   useEffect(() => {
-    if (semesterId) {
-      dispatch(fetchTopics({ semesterId, majorId: selectedMajor })); // Fetch topics theo bộ lọc
+    if (semesterId && topics.length === 0) { // ✅ Chỉ fetch API nếu chưa có dữ liệu
+      dispatch(fetchTopics(semesterId));
     }
-  }, [dispatch, semesterId, selectedMajor]);
+  }, [dispatch, semesterId, topics.length]);
 
-  const handleExportExcel = async () => {
-    if (!semesterId) {
-      toast.error("Không tìm thấy học kỳ.");
-      return;
-    }
-
-    try {
-      await dispatch(exportTopicsToExcel(semesterId)).unwrap();
-      toast.success("Xuất danh sách đề tài thành công!");
-    } catch (error: any) {
-      toast.error(error || "Xuất danh sách thất bại!");
-    }
-  };
+  console.log("Rendering Parent Component");
 
   return (
-    <div>
-       <Header
-        title="Tổng quan"
-        href="/"
-        currentPage="Danh sách đề tài giảng viên"
-      />
-      <div className="flex flex-col h-screen p-6 space-y-6">
-     
-  
-      <div className="flex items-center justify-between">
-
-        <SelectMajor onMajorChange={setSelectedMajor} />
-
-        {/* Các nút nằm bên phải */}
-        <div className="flex items-center gap-4 justify-end">
-          <Button onClick={handleExportExcel} variant="outline">
-            Export danh sách đề tài
-          </Button>
-
-          <CreateTopic semesterId={semesterId!} />
-
-          <Link to={`/import-topic-mentor/${semesterId}`}>
-            <Button className="flex gap-3 items-center">
-              Import đề tài
-            </Button>
-          </Link>
-        </div>
-      </div>
-      <TopicList selectedMajor={selectedMajor} />
+    <div className="p-6">
+      <h1 className="text-xl font-bold mb-4">Danh sách Đề Tài</h1>
+      {loading ? (
+        <p>Đang tải dữ liệu...</p>
+      ) : (
+        topics.map((topic) => (
+          <div
+            key={topic.id}
+            onClick={() => navigate(`/topic-detail/${topic.id}`)}
+            className="border p-4 mb-2 rounded-lg hover:bg-gray-100 cursor-pointer"
+          >
+            <h2 className="font-semibold text-lg">{topic.nameVi} ({topic.nameEn})</h2>
+            <p className="text-gray-500">{topic.description}</p>
+          </div>
+        ))
+      )}
     </div>
-    </div>
-    
   );
 };

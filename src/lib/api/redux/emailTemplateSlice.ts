@@ -7,7 +7,7 @@ export const fetchEmailTemplates = createAsyncThunk(
   "emailTemplates/fetchAll",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosClient.get("/email-templates");
+      const response = await axiosClient.get("/email-templates/templates");
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Không thể tải danh sách templates");
@@ -20,7 +20,7 @@ export const fetchEmailTemplateById = createAsyncThunk(
   "emailTemplates/fetchById",
   async (id: string, { rejectWithValue }) => {
     try {
-      const response = await axiosClient.get(`/email-templates/${id}`);
+      const response = await axiosClient.get(`/email-templates/templates/${id}`);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Không thể tải chi tiết template");
@@ -61,7 +61,7 @@ export const createEmailTemplate = createAsyncThunk(
   "emailTemplates/create",
   async (data: any, { rejectWithValue }) => {
     try {
-      const response = await axiosClient.post("/email-templates", data);
+      const response = await axiosClient.post("/email-templates/templates", data);
       toast.success("Tạo template mới thành công!");
       return response.data;
     } catch (error: any) {

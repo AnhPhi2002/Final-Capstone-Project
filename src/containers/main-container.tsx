@@ -42,7 +42,9 @@ import LoginPage from "@/pages/auth/log-in-page";
 import { Route, Routes } from "react-router";
 
 const MainContainter = () => {
+  
   return (
+    
     <MainLayout>
       <Routes>
         <Route path="/" element={<DashboardPage />} />
@@ -114,6 +116,7 @@ const MainContainter = () => {
 
         <Route path="/*" element={<NotFound />} />
         <Route path="/login" element={<LoginPage />} />
+        
       </Routes>
     </MainLayout>
   );
