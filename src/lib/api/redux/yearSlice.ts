@@ -7,7 +7,7 @@ export const fetchYears = createAsyncThunk(
   "years/fetchYears",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosClient.get(`/year`); // Lấy danh sách năm học theo yêu cầu bình thường
+      const response = await axiosClient.get(`/year`); 
       return response.data.data.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || "Không thể lấy danh sách năm học");

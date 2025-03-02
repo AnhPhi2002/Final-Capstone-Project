@@ -87,7 +87,11 @@ const initialState: SemesterState = {
 const semesterSlice = createSlice({
   name: "semesters",
   initialState,
-  reducers: {},
+  reducers: {
+    clearSemesters: (state) => {
+      state.data = [];
+    },
+  },
   extraReducers: (builder) => {
     builder
       // Fetch semesters list
@@ -161,5 +165,5 @@ const semesterSlice = createSlice({
       });
   },
 });
-
+export const { clearSemesters } = semesterSlice.actions;
 export default semesterSlice.reducer;
