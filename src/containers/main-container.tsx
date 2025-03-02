@@ -45,6 +45,7 @@ import { TopicReviewPage } from "@/pages/examination-officer/topic-review/topic-
 // import TopicReviewDetail from "@/pages/examination-officer/topic-review/topic-review-detail";
 import { DeadineTopicPage } from "@/pages/admin/deadline-topic/deadine-topic-page";
 import { DeadineTopicDetailPage } from "@/pages/admin/deadline-topic/columns/deadine-topic-detail-page";
+import { ReviewSemesterPage } from "@/pages/admin/review-semester/review-semester-page";
 
 const MainContainter = () => {
   
@@ -110,6 +111,7 @@ const MainContainter = () => {
         <Route path="topic-enterprise-detail/:semesterId" element={<TopicEnterpriseDetail />} />
     
 
+        <Route path="review-semester" element={<ReviewSemesterPage />} />
 
         <Route path="deadine-topic" element={<DeadineTopicPage />} />
         <Route path="deadine-topic/:semesterId" element={<DeadineTopicDetailPage />} />

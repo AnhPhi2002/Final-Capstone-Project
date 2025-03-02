@@ -60,6 +60,10 @@ const data = {
           title: "D.s hạn nộp đề tài",
           url: "/deadine-topic",
         },
+        {
+          title: "D.s review ",
+          url: "/review-semester",
+        },
       ],
     },
     {
