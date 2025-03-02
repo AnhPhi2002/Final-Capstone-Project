@@ -87,7 +87,7 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button className="absolute top-0 right-0 m-4">Tạo Đề Tài</Button>
+        <Button>Tạo Đề Tài</Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

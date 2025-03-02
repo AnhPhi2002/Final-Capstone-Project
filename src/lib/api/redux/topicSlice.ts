@@ -29,15 +29,50 @@ interface Topic {
 // Fetch danh sách topic theo semesterId
 export const fetchTopics = createAsyncThunk(
   "topics/fetchTopics",
-  async (semesterId: string, { rejectWithValue }) => {
+  async (
+    { semesterId, majorId }: { semesterId: string; majorId?: string },
+    { rejectWithValue }
+  ) => {
     try {
-      const response = await axiosClient.get(`/topics/semester/${semesterId}`);
+      const response = await axiosClient.get(`/topics/semester/${semesterId}`, {
+        params: { majorId }, // Thêm `majorId` vào params nếu có
+      });
       return response.data.data as Topic[];
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         return rejectWithValue(error.response?.data?.message || error.message);
       }
       return rejectWithValue("An unknown error occurred");
+    }
+  }
+);
+
+export const exportTopicsToExcel = createAsyncThunk(
+  "topics/exportExcel",
+  async (semesterId: string, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.get(
+        `/topics/export/excel?semesterId=${semesterId}`,
+        { responseType: "blob" } // API trả về file
+      );
+
+      // Xử lý tải file về máy
+      const blob = new Blob([response.data], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `Danh_sach_de_tai_${semesterId}.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      return true; // Thành công
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Xuất danh sách thất bại!"
+      );
     }
   }
 );
@@ -50,7 +85,9 @@ export const fetchTopicDetail = createAsyncThunk(
       const response = await axiosClient.get(`/topics/${topicId}`);
       return response.data.data as Topic;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Không thể tải chi tiết đề tài.");
+      return rejectWithValue(
+        error.response?.data?.message || "Không thể tải chi tiết đề tài."
+      );
     }
   }
 );
@@ -63,7 +100,9 @@ export const createTopic = createAsyncThunk(
       const response = await axiosClient.post(`/topics`, newTopic);
       return response.data.data as Topic;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Không thể tạo đề tài.");
+      return rejectWithValue(
+        error.response?.data?.message || "Không thể tạo đề tài."
+      );
     }
   }
 );
@@ -83,10 +122,13 @@ const topicSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchTopics.fulfilled, (state, action: PayloadAction<Topic[]>) => {
-        state.loading = false;
-        state.data = action.payload;
-      })
+      .addCase(
+        fetchTopics.fulfilled,
+        (state, action: PayloadAction<Topic[]>) => {
+          state.loading = false;
+          state.data = action.payload;
+        }
+      )
       .addCase(fetchTopics.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
@@ -95,10 +137,13 @@ const topicSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchTopicDetail.fulfilled, (state, action: PayloadAction<Topic>) => {
-        state.topicDetails = action.payload;
-        state.loading = false;
-      })
+      .addCase(
+        fetchTopicDetail.fulfilled,
+        (state, action: PayloadAction<Topic>) => {
+          state.topicDetails = action.payload;
+          state.loading = false;
+        }
+      )
       .addCase(fetchTopicDetail.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
