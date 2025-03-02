@@ -1,10 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { SubmissionRound } from "@/types/deadline-topic";
-import { useNavigate } from "react-router";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { MoreHorizontal } from "lucide-react";
-import { toast } from "sonner";
+
+import { Action } from "./action";
 
 export const columns: ColumnDef<SubmissionRound>[] = [
   {
@@ -32,42 +29,6 @@ export const columns: ColumnDef<SubmissionRound>[] = [
   {
     id: "actions",
     header: "Thao tác",
-    cell: ({ row }) => {
-      const navigate = useNavigate();
-      const round = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => {
-                navigator.clipboard.writeText(round.id.toString());
-                toast.success("Đã sao chép ID vòng nộp.");
-              }}
-            >
-              Sao chép ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => navigate(`/deadine-topic/${round.semester_id}/round/${round.round_number}`)}>
-              Xem chi tiết
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate(`/deadine-topic/${round.semester_id}/round/${round.round_number}/edit`)} >
-              Chỉnh sửa
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-red-500" onClick={() => toast.error("Xóa vòng nộp chưa được hỗ trợ")}>
-              Xóa vòng nộp
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
+    cell: ({ row }) => <Action round={row.original} />,
   },
 ];

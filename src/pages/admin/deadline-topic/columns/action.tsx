@@ -1,72 +1,102 @@
-// import React, { useState } from "react";
-// import { MoreHorizontal } from "lucide-react";
-// import { UpdateSemester } from "./update-semester";
-// import { DeleteSemester } from "./detele-semester"; // Chỉnh lại đường dẫn nếu cần
-// import {
-//   DropdownMenu,
-//   DropdownMenuContent,
-//   DropdownMenuItem,
-//   DropdownMenuLabel,
-//   DropdownMenuTrigger,
-// } from "@/components/ui/dropdown-menu"; // Thư viện shadcn/ui
+import React, { useState } from "react";
+import { useNavigate } from "react-router"; // ✅ Sửa lỗi import từ react-router
+import { MoreHorizontal } from "lucide-react";
+import { toast } from "sonner";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { UpdateDeadlineTopic } from "./update-deadline-topic";
+import { DeleteDeadlineTopic } from "./delete-deadline-topic";
 
-// type ActionProps = {
-//   semesterId: string;
-//   refetchData?: () => void;
-// };
 
-// export const ActionMenu: React.FC<ActionProps> = ({ semesterId, refetchData }) => {
-//   const [openUpdate, setOpenUpdate] = useState(false);
-//   const [openDelete, setOpenDelete] = useState(false);
+type SubmissionRound = {
+  id: string;
+  semester_id: string;
+  round_number: number;
+};
 
-//   const handleCopySemesterId = async () => {
-//     try {
-//       await navigator.clipboard.writeText(semesterId);
-//       alert("Đã sao chép mã học kỳ vào clipboard!");
-//     } catch {
-//       alert("Sao chép mã học kỳ thất bại.");
-//     }
-//   };
+type ActionMenuProps = {
+  round: SubmissionRound;
+  refetchData?: () => void;
+};
 
-//   return (
-//     <>
-//       <DropdownMenu>
-//         <DropdownMenuTrigger asChild>
-//           <button className="h-8 w-8 flex items-center justify-center rounded-full hover:bg-gray-200">
-//             <MoreHorizontal className="w-5 h-5" />
-//           </button>
-//         </DropdownMenuTrigger>
-//         <DropdownMenuContent align="end" className="w-48">
-//           <DropdownMenuLabel>Tùy chọn</DropdownMenuLabel>
-//           <DropdownMenuItem onClick={handleCopySemesterId}>
-//             Sao chép mã học kỳ
-//           </DropdownMenuItem>
-//           <DropdownMenuItem onClick={() => setOpenUpdate(true)}>
-//             Cập nhật học kỳ
-//           </DropdownMenuItem>
-//           <DropdownMenuItem onClick={() => setOpenDelete(true)} className="text-red-600">
-//             Xóa học kỳ
-//           </DropdownMenuItem>
-//         </DropdownMenuContent>
-//       </DropdownMenu>
+export const Action: React.FC<ActionMenuProps> = ({ round, refetchData }) => {
+  const navigate = useNavigate();
+  const [openUpdate, setOpenUpdate] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
 
-//       {openUpdate && (
-//         <UpdateSemester
-//           open={openUpdate}
-//           setOpen={setOpenUpdate}
-//           semesterId={semesterId}
-//           refetchData={refetchData}
-//         />
-//       )}
+  const handleCopyId = async () => {
+    try {
+      if (!round?.id) throw new Error("Không tìm thấy ID");
+      await navigator.clipboard.writeText(round.id);
+      toast.success("Đã sao chép ID vòng nộp.");
+    } catch {
+      toast.error("Sao chép ID thất bại.");
+    }
+  };
 
-//       {openDelete && (
-//         <DeleteSemester
-//           open={openDelete}
-//           setOpen={setOpenDelete}
-//           semesterId={semesterId}
-//         />
-//       )}
-//     </>
-//   );
-// };
+  const handleCopySemesterId = async () => {
+    try {
+      if (!round?.semester_id) throw new Error("Không tìm thấy mã học kỳ");
+      await navigator.clipboard.writeText(round.semester_id);
+      toast.success("Đã sao chép mã học kỳ.");
+    } catch {
+      toast.error("Sao chép mã học kỳ thất bại.");
+    }
+  };
 
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
+          <DropdownMenuItem onClick={handleCopyId}>Sao chép ID</DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={handleCopySemesterId}>
+            Sao chép mã học kỳ
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setOpenUpdate(true)}>
+            Cập nhật hạn nộp
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => setOpenDelete(true)}
+            className="text-red-600"
+          >
+            Xóa hạn nộp
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      {/* Hiển thị UpdateDeadlineTopic khi openUpdate = true */}
+      {openUpdate && (
+        <UpdateDeadlineTopic
+          open={openUpdate}
+          setOpen={setOpenUpdate}
+          topicId={round.id} // ✅ Đảm bảo đúng topicId
+          refetchData={refetchData}
+        />
+      )}
+
+      {/* Hiển thị DeleteDeadlineTopic khi openDelete = true */}
+      {openDelete && (
+        <DeleteDeadlineTopic
+          open={openDelete}
+          setOpen={setOpenDelete}
+          topicId={round.id} // ✅ Đảm bảo đúng topicId
+        />
+      )}
+    </>
+  );
+};
