@@ -1,19 +1,20 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { SubmissionRound } from "@/lib/api/types"; // Đúng đường dẫn import
+import { SubmissionRound } from "@/lib/api/types";
 import { Action } from "./action";
-import { Badge } from "@/components/ui/badge"; // Dùng Badge để hiển thị trạng thái
+import { Badge } from "@/components/ui/badge";
 
-export const columns: ColumnDef<SubmissionRound>[] = [
+export const columns: ColumnDef<SubmissionRound, any>[] = [ 
   {
-    accessorKey: "id", // Đảm bảo đúng với API trả về
+    accessorKey: "id",
     header: "ID",
+    cell: ({ row }) => <span>{row.index + 1}</span>, 
   },
   {
     accessorKey: "description",
     header: "Mô tả",
   },
   {
-    accessorKey: "startDate",
+    accessorFn: (row) => row.startDate, 
     header: "Ngày bắt đầu",
     cell: ({ getValue }) => {
       const date = getValue<string>();
@@ -21,7 +22,7 @@ export const columns: ColumnDef<SubmissionRound>[] = [
     },
   },
   {
-    accessorKey: "endDate",
+    accessorFn: (row) => row.endDate,
     header: "Ngày kết thúc",
     cell: ({ getValue }) => {
       const date = getValue<string>();
@@ -29,22 +30,28 @@ export const columns: ColumnDef<SubmissionRound>[] = [
     },
   },
   {
-    accessorKey: "status",
+    accessorFn: (row) => row.status, 
     header: "Trạng thái",
     cell: ({ getValue }) => {
-      const status = getValue<string>();
-
-      let color = "gray";
-      if (status === "ACTIVE") color = "green";
-      else if (status === "PENDING") color = "yellow";
-      else if (status === "COMPLETE") color = "red";
-
-      return <Badge className={`bg-${color}-500 text-white px-2 py-1 rounded-md`}>{status}</Badge>;
+      const status = getValue<string>() as "ACTIVE" | "COMPLETE" | "PENDING";
+  
+      const statusClasses: { [key in "ACTIVE" | "COMPLETE" | "PENDING"]: string } = {
+        "ACTIVE": "bg-green-100 text-green-600 hover:bg-green-200",
+        "COMPLETE": "bg-blue-100 text-blue-600 hover:bg-blue-200",
+        "PENDING": "bg-gray-100 text-gray-600 hover:bg-gray-200",
+      };
+  
+      return (
+        <Badge className={`${statusClasses[status] || "bg-gray-100 text-gray-600 hover:bg-gray-200"} px-2 py-1 rounded-md`}>
+          {status}
+        </Badge>
+      );
     },
   },
+  
   {
     id: "actions",
     header: "Thao tác",
-    cell: ({ row }) => <Action round={row.original} />, // ✅ Truyền toàn bộ `round`
+    cell: ({ row }) => <Action round={row.original} />,
   },
 ];

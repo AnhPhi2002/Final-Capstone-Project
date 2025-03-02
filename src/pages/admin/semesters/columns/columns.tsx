@@ -12,6 +12,11 @@ declare module '@tanstack/table-core' {
 
 export const columns: ColumnDef<Semester>[] = [
   {
+    accessorKey: "id",
+    header: "ID",
+    cell: ({ row }) => <span>{row.index + 1}</span>, // Dùng index thay vì id từ JSON
+  },
+  {
     accessorKey: "year.year",
     header: "Năm học",
     cell: ({ row }) => (

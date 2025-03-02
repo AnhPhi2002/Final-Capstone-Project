@@ -113,9 +113,9 @@ const MainContainter = () => {
 
         <Route path="review-semester" element={<ReviewSemesterPage />} />
 
-        <Route path="deadine-topic" element={<DeadineTopicPage />} />
-        <Route path="deadine-topic/:semesterId" element={<DeadineTopicDetailPage />} />
-        <Route path="/deadine-topic/:semesterId/round/:roundNumber" element={<DeadineTopicDetailPage />} />
+        <Route path="deadline-topic" element={<DeadineTopicPage />} />
+        <Route path="deadline-topic/:semesterId" element={<DeadineTopicDetailPage />} />
+        <Route path="deadline-topic/:semesterId/submission/:submissionId" element={<DeadineTopicDetailPage />} />
 
         <Route path="/semester" element={<SemestersPage />} />
         <Route path="/semester/:semesterId" element={<SemestersDetailPage />} />
