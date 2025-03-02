@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchYears } from "@/lib/api/redux/yearSlice";
 import { fetchSemesters, clearSemesters } from "@/lib/api/redux/semesterSlice";
-import { fetchSubmissionRounds, clearSubmissionRoundDetail } from "@/lib/api/redux/submissionRoundSlice";
+import {
+  fetchSubmissionRounds,
+  clearSubmissionRoundDetail,
+} from "@/lib/api/redux/submissionRoundSlice";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
 
 import {
@@ -19,9 +22,15 @@ import { CardDeadlineTopic } from "./card-deadline-topic";
 export const SelectSemester: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const { data: years, loading: loadingYears } = useSelector((state: RootState) => state.years);
-  const { data: semesters, loading: loadingSemesters } = useSelector((state: RootState) => state.semesters);
-  const { data: submissionRounds, loading: loadingRounds } = useSelector((state: RootState) => state.submissionRounds);
+  const { data: years, loading: loadingYears } = useSelector(
+    (state: RootState) => state.years
+  );
+  const { data: semesters, loading: loadingSemesters } = useSelector(
+    (state: RootState) => state.semesters
+  );
+  const { data: submissionRounds, loading: loadingRounds } = useSelector(
+    (state: RootState) => state.submissionRounds
+  );
 
   const [selectedYear, setSelectedYear] = useState<string>("");
   const [selectedSemester, setSelectedSemester] = useState<string>("all");
@@ -60,7 +69,9 @@ export const SelectSemester: React.FC = () => {
             <SelectGroup>
               <SelectLabel>Chọn năm học</SelectLabel>
               {loadingYears ? (
-                <SelectItem value="loading" disabled>Đang tải...</SelectItem>
+                <SelectItem value="loading" disabled>
+                  Đang tải...
+                </SelectItem>
               ) : (
                 years.map((year) => (
                   <SelectItem key={year.id} value={year.id}>
@@ -72,7 +83,7 @@ export const SelectSemester: React.FC = () => {
           </SelectContent>
         </Select>
 
-        <Select onValueChange={setSelectedSemester} value={selectedSemester} >
+        <Select onValueChange={setSelectedSemester} value={selectedSemester}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Chọn học kỳ" />
           </SelectTrigger>
@@ -81,7 +92,9 @@ export const SelectSemester: React.FC = () => {
               <SelectLabel>Kỳ học</SelectLabel>
               <SelectItem value="all">Chưa chọn kỳ</SelectItem>
               {loadingSemesters ? (
-                <SelectItem value="loading" disabled>Đang tải...</SelectItem>
+                <SelectItem value="loading" disabled>
+                  Đang tải...
+                </SelectItem>
               ) : (
                 semesters.map((semester) => (
                   <SelectItem key={semester.id} value={semester.id}>
@@ -93,7 +106,11 @@ export const SelectSemester: React.FC = () => {
           </SelectContent>
         </Select>
       </div>
-      <CardDeadlineTopic data={submissionRounds} loading={loadingRounds} selectedSemester={selectedSemester} />
+      <CardDeadlineTopic
+        data={submissionRounds}
+        loading={loadingRounds}
+        selectedSemester={selectedSemester}
+      />
     </div>
   );
 };
