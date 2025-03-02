@@ -17,7 +17,7 @@ import { randomGroupReducer } from "./randomGroupSlice";
 import groupInviteReducer from "./groupInviteSlice";
 import majorReducer from "./majorSlice";
 import topicReducer from "./topicSlice";
-import topicRegisterReducer from "./topicRegisterSlice";
+// import topicRegisterReducer from "./topicRegisterSlice";
 // import profileUserReducer from "./profileUserSlice";
 
 
@@ -40,7 +40,7 @@ const rootReducer = combineReducers({
   groupInvite: groupInviteReducer,
   majors: majorReducer,
   topics: topicReducer,
-  topicRegister: topicRegisterReducer,
+  // topicRegister: topicRegisterReducer,
 });
 
 // const persistedReducer = persistReducer(persistConfig, rootReducer)

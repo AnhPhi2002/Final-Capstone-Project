@@ -47,7 +47,9 @@ import { DeadineTopicPage } from "@/pages/admin/deadline-topic/deadine-topic-pag
 import { DeadineTopicDetailPage } from "@/pages/admin/deadline-topic/columns/deadine-topic-detail-page";
 
 const MainContainter = () => {
+  
   return (
+    
     <MainLayout>
       <Routes>
         <Route path="/" element={<DashboardPage />} />
@@ -133,6 +135,7 @@ const MainContainter = () => {
 
         <Route path="/*" element={<NotFound />} />
         <Route path="/login" element={<LoginPage />} />
+        
       </Routes>
     </MainLayout>
   );
