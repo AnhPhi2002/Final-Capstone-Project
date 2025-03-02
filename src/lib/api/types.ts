@@ -47,5 +47,14 @@ export interface Student {
 //   };
 // };
 
+export interface SubmissionRound {
+  id: string;
+  semesterId: string;
+  roundNumber: number;
+  startDate: string;
+  endDate: string;
+  description: string;
+  status: "PENDING" | "ACTIVE" | "COMPLETE";
+}
 
   

@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router"; // ✅ Sửa lỗi import từ react-router
+import { useDispatch } from "react-redux";
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
+import { deleteSubmissionRound } from "@/lib/api/redux/submissionRoundSlice";
+import { AppDispatch } from "@/lib/api/redux/store";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,40 +16,29 @@ import { Button } from "@/components/ui/button";
 import { UpdateDeadlineTopic } from "./update-deadline-topic";
 import { DeleteDeadlineTopic } from "./delete-deadline-topic";
 
-
-type SubmissionRound = {
-  id: string;
-  semester_id: string;
-  round_number: number;
-};
-
 type ActionMenuProps = {
-  round: SubmissionRound;
-  refetchData?: () => void;
+  round: {
+    id: string;
+    semesterId: string;
+    roundNumber: number;
+    description: string;
+    startDate: string;
+    endDate: string;
+  };
 };
 
-export const Action: React.FC<ActionMenuProps> = ({ round, refetchData }) => {
-  const navigate = useNavigate();
+export const Action: React.FC<ActionMenuProps> = ({ round }) => {
+  const dispatch = useDispatch<AppDispatch>();
   const [openUpdate, setOpenUpdate] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
 
-  const handleCopyId = async () => {
+  const handleDelete = async () => {
     try {
-      if (!round?.id) throw new Error("Không tìm thấy ID");
-      await navigator.clipboard.writeText(round.id);
-      toast.success("Đã sao chép ID vòng nộp.");
-    } catch {
-      toast.error("Sao chép ID thất bại.");
-    }
-  };
-
-  const handleCopySemesterId = async () => {
-    try {
-      if (!round?.semester_id) throw new Error("Không tìm thấy mã học kỳ");
-      await navigator.clipboard.writeText(round.semester_id);
-      toast.success("Đã sao chép mã học kỳ.");
-    } catch {
-      toast.error("Sao chép mã học kỳ thất bại.");
+      await dispatch(deleteSubmissionRound(round.id)).unwrap();
+      toast.success("Vòng nộp đã được xóa thành công!");
+      setOpenDelete(false);
+    } catch (error: any) {
+      toast.error(`Xóa thất bại: ${error.message || "Đã xảy ra lỗi"}`);
     }
   };
 
@@ -56,47 +47,21 @@ export const Action: React.FC<ActionMenuProps> = ({ round, refetchData }) => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
-          <DropdownMenuItem onClick={handleCopyId}>Sao chép ID</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleCopySemesterId}>
-            Sao chép mã học kỳ
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpenUpdate(true)}>
-            Cập nhật hạn nộp
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => setOpenDelete(true)}
-            className="text-red-600"
-          >
-            Xóa hạn nộp
+          <DropdownMenuItem onClick={() => setOpenUpdate(true)}>Cập nhật vòng nộp</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setOpenDelete(true)} className="text-red-600">
+            Xóa vòng nộp
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* Hiển thị UpdateDeadlineTopic khi openUpdate = true */}
-      {openUpdate && (
-        <UpdateDeadlineTopic
-          open={openUpdate}
-          setOpen={setOpenUpdate}
-          topicId={round.id} // ✅ Đảm bảo đúng topicId
-          refetchData={refetchData}
-        />
-      )}
-
-      {/* Hiển thị DeleteDeadlineTopic khi openDelete = true */}
-      {openDelete && (
-        <DeleteDeadlineTopic
-          open={openDelete}
-          setOpen={setOpenDelete}
-          topicId={round.id} // ✅ Đảm bảo đúng topicId
-        />
-      )}
+      {openUpdate && <UpdateDeadlineTopic open={openUpdate} setOpen={setOpenUpdate} round={round} />}
+      {openDelete && <DeleteDeadlineTopic open={openDelete} setOpen={setOpenDelete} roundId={round.id} />}
     </>
   );
 };

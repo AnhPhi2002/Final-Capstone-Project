@@ -19,6 +19,7 @@ import majorReducer from "./majorSlice";
 import topicReducer from "./topicSlice";
 // import topicRegisterReducer from "./topicRegisterSlice";
 // import profileUserReducer from "./profileUserSlice";
+import submissionRoundReducer from "./submissionRoundSlice";
 
 
 const rootReducer = combineReducers({
@@ -41,6 +42,7 @@ const rootReducer = combineReducers({
   majors: majorReducer,
   topics: topicReducer,
   // topicRegister: topicRegisterReducer,
+  submissionRounds: submissionRoundReducer,
 });
 
 // const persistedReducer = persistReducer(persistConfig, rootReducer)

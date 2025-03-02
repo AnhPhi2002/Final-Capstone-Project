@@ -41,7 +41,6 @@ export function DeadineTopicDetailPage() {
 
   return (
     <div className="flex flex-col h-screen">
-      <Header title={`Chi tiết vòng nộp: ${selectedSemester.code}`} href={`/deadine-topic/${semesterId}`} currentPage="Round Detail" />
       <div className="p-5 flex-1 overflow-auto">
         <DataTable table={table} />
       </div>

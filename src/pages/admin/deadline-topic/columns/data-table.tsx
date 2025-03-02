@@ -7,7 +7,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { flexRender, type Table as TableType } from "@tanstack/react-table";
-import { SubmissionRound } from "@/types/deadline-topic";
+import { SubmissionRound } from "@/lib/api/types";
 
 interface DataTableProps {
   table: TableType<SubmissionRound>;
