@@ -1,27 +1,28 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
 import { axiosClient } from "../config/axios-client";
 
-// Action fetch danh sách major
+// Fetch danh sách ngành học (Major)
 export const fetchMajors = createAsyncThunk(
   "majors/fetchMajors",
   async (_, { rejectWithValue }) => {
     try {
       const response = await axiosClient.get("/majors");
-      return response.data.data; // Lấy danh sách major từ API
-    } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        return rejectWithValue(error.response?.data?.message || error.message);
-      }
-      return rejectWithValue("An unknown error occurred");
+      return response.data.data; // Trả về danh sách major
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Không thể tải danh sách ngành.");
     }
   }
 );
 
+type Major = {
+  id: string;
+  name: string;
+};
+
 type MajorState = {
-  data: any[]; // Thay bằng kiểu dữ liệu chính xác nếu bạn có type
+  data: Major[];
   loading: boolean;
-  error: string | null; // Sửa lỗi Type 'string' is not assignable to type 'null'
+  error: string | null;
 };
 
 const initialState: MajorState = {
@@ -38,9 +39,8 @@ const majorSlice = createSlice({
     builder
       .addCase(fetchMajors.pending, (state) => {
         state.loading = true;
-        state.error = null; // Reset lỗi khi bắt đầu request
       })
-      .addCase(fetchMajors.fulfilled, (state, action: PayloadAction<any[]>) => {
+      .addCase(fetchMajors.fulfilled, (state, action: PayloadAction<Major[]>) => {
         state.loading = false;
         state.data = action.payload;
       })

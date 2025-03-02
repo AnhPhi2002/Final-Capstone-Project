@@ -6,7 +6,7 @@ import { fetchTopicDetail } from "@/lib/api/redux/topicSlice";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { UpdateTopic } from "./updateTopic";
+// import { UpdateTopic } from "./updateTopic";
 import { toast } from "sonner";
 
 export default function TopicDetail() {
@@ -55,7 +55,7 @@ export default function TopicDetail() {
         )}
 
         <div className="flex gap-4 mt-6">
-          <UpdateTopic topicId={topicDetails.id} />
+          {/* <UpdateTopic topicId={topicDetails.id} /> */}
           <Button variant="destructive">Xóa đề tài</Button>
         </div>
       </Card>

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
 import { fetchTopics } from "@/lib/api/redux/topicSlice";
 import { useNavigate, useParams } from "react-router";
+import { CreateTopic } from "./CreateTopic";
 
 export const TopicListPage = () => {
   const { semesterId } = useParams();
@@ -21,7 +22,10 @@ export const TopicListPage = () => {
   console.log("Rendering Parent Component");
 
   return (
-    <div className="p-6">
+    <div className="p-6 relative">
+      {/* Nút tạo đề tài */}
+      <CreateTopic semesterId={semesterId || ""} />
+
       <h1 className="text-xl font-bold mb-4">Danh sách Đề Tài</h1>
       {loading ? (
         <p>Đang tải dữ liệu...</p>
