@@ -41,8 +41,8 @@ import { YearSemesterPage } from "@/pages/admin/year-semeter/year-semester-page"
 import LoginPage from "@/pages/auth/log-in-page";
 import { Route, Routes } from "react-router";
 import { TopicReviewPage } from "@/pages/examination-officer/topic-review/topic-review-page";
-import { TopicReviewListPage } from "@/pages/examination-officer/topic-review/topic-review-list-page";
-import TopicReviewDetail from "@/pages/examination-officer/topic-review/topic-review-detail";
+// import { TopicReviewListPage } from "@/pages/examination-officer/topic-review/topic-review-list-page";
+// import TopicReviewDetail from "@/pages/examination-officer/topic-review/topic-review-detail";
 import { DeadineTopicPage } from "@/pages/admin/deadline-topic/deadine-topic-page";
 import { DeadineTopicDetailPage } from "@/pages/admin/deadline-topic/columns/deadine-topic-detail-page";
 
@@ -93,9 +93,9 @@ const MainContainter = () => {
         
         <Route path="/topi-review-page" element={<TopicReviewPage />} />
         <Route path="/topi-review-page/:semesterId" element={<TopicReviewPage />} />
-        <Route path="/topic-review-list" element={<TopicReviewListPage />} />
+        {/* <Route path="/topic-review-list" element={<TopicReviewListPage />} />
         <Route path="/topic-review-list/:semesterId" element={<TopicReviewListPage />} />
-        <Route path="/topic-review-detail/:topicId" element={<TopicReviewDetail />} />
+        <Route path="/topic-review-detail/:topicId" element={<TopicReviewDetail />} /> */}
 
 
         <Route path="/timeline" element={<TimelinePage />} />
