@@ -31,8 +31,15 @@ export function NavUser({
   const { isMobile } = useSidebar();
   const navigate = useNavigate();
   const handleLogout = () => {
+    // Xóa dữ liệu khỏi localStorage
+    localStorage.removeItem("token");
+    localStorage.removeItem("roles");
+    localStorage.removeItem("user");
+  
+    // Điều hướng về trang đăng nhập
     navigate("/log-in");
   };
+  
 
   return (
     <SidebarMenu>
