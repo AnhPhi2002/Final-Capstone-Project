@@ -104,8 +104,6 @@ export const CardDeadlineTopic: React.FC<CardDeadlineTopicProps> = ({
           </div>
         )}
       </div>
-
-   
         <div className="flex justify-end mt-6">
           <PaginationDashboardPage
             totalPages={totalPages}

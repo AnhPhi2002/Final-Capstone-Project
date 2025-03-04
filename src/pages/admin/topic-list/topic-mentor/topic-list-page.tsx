@@ -22,7 +22,6 @@ export const TopicListPage = () => {
     }
   }, [dispatch, semesterId, topics.length]);
 
-
   const [selectedMajor, setSelectedMajor] = useState<string | undefined>();
 
   useEffect(() => {
@@ -45,40 +44,40 @@ export const TopicListPage = () => {
     }
   };
   return (
-    // <div className="flex flex-col h-screen">
-    //   <Header title="Tổng quan" href="/" currentPage="Danh sách đề tài" />
-    //   <div className="p-5 flex-1 overflow-auto">
-    //     <CreateTopic semesterId={semesterId || ""} />
-    //
-    //   </div>
-    // </div>
-    <div>
-      <Header
-        title="Tổng quan"
-        href="/"
-        currentPage="Danh sách đề tài giảng viên"
-      />
-      <div className="flex flex-col h-screen p-6 space-y-6">
-        <div className="flex items-center justify-between">
-          <SelectMajor onMajorChange={setSelectedMajor} />
 
-          {/* Các nút nằm bên phải */}
-          <div className="flex items-center gap-4 justify-end">
-            <Button onClick={handleExportExcel} variant="outline">
-        Export danh sách đề tài
-      </Button>
-
-            <CreateTopic semesterId={semesterId!} />
-
-            <Link to={`/import-topic-mentor/${semesterId}`}>
-        <Button className="flex gap-3 items-center">
-          Import đề tài
-        </Button>
-      </Link>
+      <div className="flex flex-col h-screen">
+        <Header
+          title="Tổng quan"
+          href="/"
+          currentPage="Danh sách đề tài giảng viên"
+        />
+    
+        {/* Wrapper nội dung */}
+        <div className="flex flex-col flex-1">
+          
+          {/* Phần lọc (SelectMajor + Button) cố định */}
+          <div className="sticky top-16 bg-white z-40 p-6 rounded-md ">
+            <div className="flex items-center justify-between">
+              <SelectMajor onMajorChange={setSelectedMajor} />
+              <div className="flex items-center gap-4 justify-end">
+                <Button onClick={handleExportExcel} variant="outline">
+                  Export danh sách đề tài
+                </Button>
+                <CreateTopic semesterId={semesterId!} />
+                <Link to={`/import-topic-mentor/${semesterId}`}>
+                  <Button className="flex gap-3 items-center">Import đề tài</Button>
+                </Link>
+              </div>
+            </div>
           </div>
+    
+          {/* Danh sách Topic cuộn riêng */}
+          <div className="flex-1 overflow-y-auto p-6 ">
+            <TopicList />
+          </div>
+          
         </div>
-        <TopicList />
       </div>
-    </div>
-  );
+    );
+    
 };
