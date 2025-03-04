@@ -5,13 +5,36 @@ import { createTopic } from "@/lib/api/redux/topicSlice";
 import { fetchMajors } from "@/lib/api/redux/majorSlice";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 
-export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) => {
+import { Switch } from "@/components/ui/switch";
+
+export const CreateTopic: React.FC<{ semesterId: string }> = ({
+  semesterId,
+}) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { data: majors, loading: majorLoading } = useSelector((state: RootState) => state.majors);
+  const { data: majors, loading: majorLoading } = useSelector(
+    (state: RootState) => state.majors
+  );
 
   const [open, setOpen] = useState(false);
   const [nameVi, setNameVi] = useState("");
@@ -21,15 +44,26 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
   const [isBusiness, setIsBusiness] = useState(false);
   const [businessPartner, setBusinessPartner] = useState<string | null>(null);
   const [majorId, setMajorId] = useState<string | null>(null);
-  const [subSupervisorEmail, setSubSupervisorEmail] = useState<string | null>(null);
+  const [subSupervisorEmail, setSubSupervisorEmail] = useState<string | null>(
+    null
+  );
   const [groupCode, setGroupCode] = useState("");
   const [documentUrl, setDocumentUrl] = useState("");
-  const [documents, setDocuments] = useState<{ fileName: string; fileUrl: string; fileType: string }[]>([]);
+  const [documents, setDocuments] = useState<
+    { fileName: string; fileUrl: string; fileType: string }[]
+  >([]);
 
-  // Fetch danh sách majors khi mở modal
   useEffect(() => {
     dispatch(fetchMajors());
   }, [dispatch]);
+
+  // Xử lý thay đổi trạng thái của isBusiness
+  const handleBusinessToggle = (checked: boolean) => {
+    setIsBusiness(checked);
+    if (!checked) {
+      setBusinessPartner(null); // Nếu tắt, đặt businessPartner về null
+    }
+  };
 
   // Xử lý thêm tài liệu
   const handleAddDocument = () => {
@@ -47,12 +81,19 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
 
   // Xử lý tạo đề tài
   const handleCreateTopic = async () => {
-    if (!nameVi || !nameEn || !name || !description || !semesterId || !majorId || !groupCode) {
+    if (
+      !nameVi ||
+      !nameEn ||
+      !name ||
+      !description ||
+      !semesterId ||
+      !majorId
+    ) {
       toast.error("Vui lòng nhập đầy đủ thông tin!");
       return;
     }
 
-    const newTopic = {
+    const newTopic: Record<string, any> = {
       nameVi,
       nameEn,
       name,
@@ -61,11 +102,17 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
       majorId,
       isBusiness,
       businessPartner: isBusiness ? businessPartner : null,
-      subSupervisorEmail,
-      groupCode,
       source: "Tự đề xuất",
       documents,
     };
+
+    // Chỉ thêm các trường nếu chúng có giá trị hợp lệ
+    if (subSupervisorEmail?.trim()) {
+      newTopic.subSupervisorEmail = subSupervisorEmail.trim();
+    }
+    if (groupCode?.trim()) {
+      newTopic.groupCode = groupCode.trim();
+    }
 
     try {
       await dispatch(createTopic(newTopic)).unwrap();
@@ -79,6 +126,8 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
       setSubSupervisorEmail(null);
       setGroupCode("");
       setDocuments([]);
+      setIsBusiness(false);
+      setBusinessPartner(null);
     } catch (error: any) {
       toast.error(error?.message || "Tạo đề tài thất bại!");
     }
@@ -92,25 +141,54 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Tạo Đề Tài Mới</AlertDialogTitle>
-          <AlertDialogDescription>Nhập thông tin đề tài mới.</AlertDialogDescription>
+          <AlertDialogDescription>
+            Nhập thông tin đề tài mới.
+          </AlertDialogDescription>
         </AlertDialogHeader>
 
         <div className="space-y-3">
-          <Input value={nameVi} onChange={(e) => setNameVi(e.target.value)} placeholder="Tên đề tài (Tiếng Việt)" />
-          <Input value={nameEn} onChange={(e) => setNameEn(e.target.value)} placeholder="Tên đề tài (Tiếng Anh)" />
-          <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Tên dự án" />
-          <Input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Mô tả đề tài" />
+          <Input
+            value={nameVi}
+            onChange={(e) => setNameVi(e.target.value)}
+            placeholder="Tên đề tài (Tiếng Việt)"
+          />
+          <Input
+            value={nameEn}
+            onChange={(e) => setNameEn(e.target.value)}
+            placeholder="Tên đề tài (Tiếng Anh)"
+          />
+          <Input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Tên dự án"
+          />
+          <Input
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Mô tả đề tài"
+          />
 
           {/* Chọn ngành học */}
-          <Select onValueChange={(value) => setMajorId(value)} value={majorId || ""}>
+          <Select
+            onValueChange={(value) => setMajorId(value)}
+            value={majorId || ""}
+          >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Chọn ngành học" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                {majorLoading ? <SelectItem value="loading" disabled>Đang tải...</SelectItem> : majors.map((major) => (
-                  <SelectItem key={major.id} value={major.id}>{major.name}</SelectItem>
-                ))}
+                {majorLoading ? (
+                  <SelectItem value="loading" disabled>
+                    Đang tải...
+                  </SelectItem>
+                ) : (
+                  majors.map((major) => (
+                    <SelectItem key={major.id} value={major.id}>
+                      {major.name}
+                    </SelectItem>
+                  ))
+                )}
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -122,14 +200,18 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
             placeholder="Email Giảng viên hướng dẫn phụ (nếu có)"
           />
 
-          <Input value={groupCode} onChange={(e) => setGroupCode(e.target.value)} placeholder="Mã nhóm" />
+          <Input
+            value={groupCode}
+            onChange={(e) => setGroupCode(e.target.value)}
+            placeholder="Mã nhóm"
+          />
 
           {/* Thêm file tài liệu */}
           <div className="flex items-center gap-2">
             <Input
               value={documentUrl}
               onChange={(e) => setDocumentUrl(e.target.value)}
-              placeholder="URL tài liệu (Cloudinary)"
+              placeholder="URL tài liệu"
             />
             <Button onClick={handleAddDocument}>Thêm</Button>
           </div>
@@ -143,7 +225,22 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
             </ul>
           )}
         </div>
+        {/* Bật/tắt Doanh Nghiệp */}
+        <div className="flex items-center justify-between">
+          <label className="text-sm font-medium">
+            Đề tài có liên quan đến doanh nghiệp?
+          </label>
+          <Switch checked={isBusiness} onCheckedChange={handleBusinessToggle} />
+        </div>
 
+        {/* Nhập thông tin doanh nghiệp nếu bật */}
+        {isBusiness && (
+          <Input
+            value={businessPartner || ""}
+            onChange={(e) => setBusinessPartner(e.target.value)}
+            placeholder="Tên doanh nghiệp"
+          />
+        )}
         <AlertDialogFooter>
           <AlertDialogCancel>Hủy</AlertDialogCancel>
           <AlertDialogAction asChild>

@@ -89,7 +89,6 @@ const MainContainter = () => {
         <Route path="/topic-list" element={<TopicListPage />} />  
         <Route path="/topic-list/:semesterId" element={<TopicListPage />} />
         {/* <Route path="/topic-list/:semesterId/submission/:submissionId" element={<TopicDetail />} /> */}
-
         <Route path="/topic-detail/:topicId" element={<TopicDetail />} /> 
         
         <Route path="/topi-review-page" element={<TopicReviewPage />} />

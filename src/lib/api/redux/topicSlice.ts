@@ -107,6 +107,23 @@ export const createTopic = createAsyncThunk(
   }
 );
 
+export const updateTopic = createAsyncThunk(
+  "topics/updateTopic",
+  async (
+    { topicId, updatedData }: { topicId: string; updatedData: Partial<Topic> },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axiosClient.put(`/topics/${topicId}`, updatedData);
+      return response.data.data as Topic;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Không thể cập nhật đề tài."
+      );
+    }
+  }
+);
+
 const topicSlice = createSlice({
   name: "topics",
   initialState: {
@@ -153,9 +170,28 @@ const topicSlice = createSlice({
       })
       .addCase(createTopic.fulfilled, (state, action: PayloadAction<Topic>) => {
         state.loading = false;
-        state.data.unshift(action.payload); // Thêm topic vào danh sách hiện có
+        const newTopic = action.payload;
+        if (!newTopic.creator) {
+          const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+          newTopic.creator = {
+            fullName: currentUser.fullName,
+            email: currentUser.email,
+          };
+        }
+        state.data.unshift(newTopic);
       })
       .addCase(createTopic.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(updateTopic.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateTopic.fulfilled, (state, action: PayloadAction<Topic>) => {
+        state.loading = false;
+        state.topicDetails = action.payload; // Cập nhật thông tin trong Redux store
+      })
+      .addCase(updateTopic.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });
