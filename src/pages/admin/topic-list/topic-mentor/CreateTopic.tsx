@@ -9,6 +9,8 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 
+import { Switch } from "@/components/ui/switch";
+
 export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { data: majors, loading: majorLoading } = useSelector((state: RootState) => state.majors);
@@ -26,10 +28,17 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
   const [documentUrl, setDocumentUrl] = useState("");
   const [documents, setDocuments] = useState<{ fileName: string; fileUrl: string; fileType: string }[]>([]);
 
-  // Fetch danh sách majors khi mở modal
   useEffect(() => {
     dispatch(fetchMajors());
   }, [dispatch]);
+
+  // Xử lý thay đổi trạng thái của isBusiness
+  const handleBusinessToggle = (checked: boolean) => {
+    setIsBusiness(checked);
+    if (!checked) {
+      setBusinessPartner(null); // Nếu tắt, đặt businessPartner về null
+    }
+  };
 
   // Xử lý thêm tài liệu
   const handleAddDocument = () => {
@@ -47,12 +56,12 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
 
   // Xử lý tạo đề tài
   const handleCreateTopic = async () => {
-    if (!nameVi || !nameEn || !name || !description || !semesterId || !majorId || !groupCode) {
+    if (!nameVi || !nameEn || !name || !description || !semesterId || !majorId) {
       toast.error("Vui lòng nhập đầy đủ thông tin!");
       return;
     }
 
-    const newTopic = {
+    const newTopic: Record<string, any> = {
       nameVi,
       nameEn,
       name,
@@ -61,11 +70,17 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
       majorId,
       isBusiness,
       businessPartner: isBusiness ? businessPartner : null,
-      subSupervisorEmail,
-      groupCode,
       source: "Tự đề xuất",
       documents,
     };
+
+    // Chỉ thêm các trường nếu chúng có giá trị hợp lệ
+    if (subSupervisorEmail?.trim()) {
+      newTopic.subSupervisorEmail = subSupervisorEmail.trim();
+    }
+    if (groupCode?.trim()) {
+      newTopic.groupCode = groupCode.trim();
+    }
 
     try {
       await dispatch(createTopic(newTopic)).unwrap();
@@ -79,6 +94,8 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
       setSubSupervisorEmail(null);
       setGroupCode("");
       setDocuments([]);
+      setIsBusiness(false);
+      setBusinessPartner(null);
     } catch (error: any) {
       toast.error(error?.message || "Tạo đề tài thất bại!");
     }
@@ -108,12 +125,35 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                {majorLoading ? <SelectItem value="loading" disabled>Đang tải...</SelectItem> : majors.map((major) => (
-                  <SelectItem key={major.id} value={major.id}>{major.name}</SelectItem>
-                ))}
+                {majorLoading ? (
+                  <SelectItem value="loading" disabled>
+                    Đang tải...
+                  </SelectItem>
+                ) : (
+                  majors.map((major) => (
+                    <SelectItem key={major.id} value={major.id}>
+                      {major.name}
+                    </SelectItem>
+                  ))
+                )}
               </SelectGroup>
             </SelectContent>
           </Select>
+
+          {/* Bật/tắt Doanh Nghiệp */}
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium">Đề tài có liên quan đến doanh nghiệp?</label>
+            <Switch checked={isBusiness} onCheckedChange={handleBusinessToggle} />
+          </div>
+
+          {/* Nhập thông tin doanh nghiệp nếu bật */}
+          {isBusiness && (
+            <Input
+              value={businessPartner || ""}
+              onChange={(e) => setBusinessPartner(e.target.value)}
+              placeholder="Tên doanh nghiệp"
+            />
+          )}
 
           {/* Nhập Email của Giảng viên hướng dẫn phụ */}
           <Input
@@ -126,11 +166,7 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
 
           {/* Thêm file tài liệu */}
           <div className="flex items-center gap-2">
-            <Input
-              value={documentUrl}
-              onChange={(e) => setDocumentUrl(e.target.value)}
-              placeholder="URL tài liệu (Cloudinary)"
-            />
+            <Input value={documentUrl} onChange={(e) => setDocumentUrl(e.target.value)} placeholder="URL tài liệu" />
             <Button onClick={handleAddDocument}>Thêm</Button>
           </div>
 

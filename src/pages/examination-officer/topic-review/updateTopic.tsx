@@ -2,7 +2,7 @@
 // import { useDispatch, useSelector } from "react-redux";
 // import { RootState, AppDispatch } from "@/lib/api/redux/store";
 // import { fetchMajors } from "@/lib/api/redux/majorSlice";
-// import { updateTopic } from "@/lib/api/redux/topicSlice";
+// // import { updateTopic } from "@/lib/api/redux/topicSlice";
 // import { Button } from "@/components/ui/button";
 // import { Input } from "@/components/ui/input";
 // import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog";

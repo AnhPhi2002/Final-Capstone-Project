@@ -125,13 +125,13 @@ const data = {
     },
     {
       title: "Xét duyệt đề tài",
-      url: "/topi-review-page",
+      url: "/topic-review-page",
       icon: ClipboardList,
       isActive: true,
       items: [
         {
           title: "Xét duyệt đề tài ",
-          url: "/topi-review-page",
+          url: "/topic-review-page",
         },
       
       ],
