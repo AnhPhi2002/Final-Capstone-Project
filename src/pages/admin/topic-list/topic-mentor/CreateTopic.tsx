@@ -193,6 +193,21 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({
             </SelectContent>
           </Select>
 
+          {/* Bật/tắt Doanh Nghiệp */}
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium">Đề tài có liên quan đến doanh nghiệp?</label>
+            <Switch checked={isBusiness} onCheckedChange={handleBusinessToggle} />
+          </div>
+
+          {/* Nhập thông tin doanh nghiệp nếu bật */}
+          {isBusiness && (
+            <Input
+              value={businessPartner || ""}
+              onChange={(e) => setBusinessPartner(e.target.value)}
+              placeholder="Tên doanh nghiệp"
+            />
+          )}
+
           {/* Nhập Email của Giảng viên hướng dẫn phụ */}
           <Input
             value={subSupervisorEmail || ""}
