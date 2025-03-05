@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import {
   Dialog,
   DialogContent,
@@ -9,7 +12,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -19,10 +21,40 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Toaster } from "sonner";
+import { Toaster, toast } from "sonner";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
+
+// ✅ Xây dựng schema validation với Zod
+const formSchema = z.object({
+  councilName: z.string().min(3, "Tên hội đồng phải có ít nhất 3 ký tự"),
+  year: z.string().min(4, "Vui lòng chọn năm học"),
+  semester: z.string().min(1, "Vui lòng chọn kỳ học"),
+});
 
 export const AddReviewTopicCouncil = () => {
   const [open, setOpen] = useState(false);
+
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      councilName: "",
+      year: "",
+      semester: "",
+    },
+  });
+
+  const onSubmit = (data: any) => {
+    console.log("Dữ liệu hội đồng xét duyệt:", data);
+    toast.success("Thêm hội đồng xét duyệt thành công!");
+    setOpen(false);
+  };
 
   return (
     <div>
@@ -39,49 +71,79 @@ export const AddReviewTopicCouncil = () => {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="grid gap-4 py-4">
-            {/* Nhập tên hội đồng */}
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="councilName" className="text-right">Tên hội đồng</Label>
-              <Input id="councilName" placeholder="VD: Hội đồng xét duyệt 1" className="col-span-3" />
-            </div>
+          {/* Form */}
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              {/* Nhập tên hội đồng */}
+              <FormField
+                control={form.control}
+                name="councilName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tên hội đồng</FormLabel>
+                    <FormControl>
+                      <Input placeholder="VD: Hội đồng xét duyệt 1" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            {/* Chọn năm học */}
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="year" className="text-right">Năm học</Label>
-              <Select>
-                <SelectTrigger className="w-full col-span-3">
-                  <SelectValue placeholder="Chọn năm học" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="2023">2023</SelectItem>
-                    <SelectItem value="2024">2024</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
+              {/* Chọn năm học */}
+              <FormField
+                control={form.control}
+                name="year"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Năm học</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Chọn năm học" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value="2023">2023</SelectItem>
+                          <SelectItem value="2024">2024</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            {/* Chọn kỳ học */}
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="semester" className="text-right">Kỳ học</Label>
-              <Select>
-                <SelectTrigger className="w-full col-span-3">
-                  <SelectValue placeholder="Chọn kỳ học" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="1">Học kỳ 1</SelectItem>
-                    <SelectItem value="2">Học kỳ 2</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+              {/* Chọn kỳ học */}
+              <FormField
+                control={form.control}
+                name="semester"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Kỳ học</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Chọn kỳ học" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value="1">Học kỳ 1</SelectItem>
+                          <SelectItem value="2">Học kỳ 2</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <DialogFooter>
-            <Button>Lưu hội đồng</Button>
-          </DialogFooter>
+              {/* Footer */}
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+                  Hủy
+                </Button>
+                <Button type="submit">Lưu hội đồng</Button>
+              </DialogFooter>
+            </form>
+          </Form>
         </DialogContent>
       </Dialog>
     </div>

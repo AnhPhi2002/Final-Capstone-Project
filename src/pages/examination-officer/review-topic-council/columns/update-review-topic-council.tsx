@@ -1,7 +1,35 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { Toaster, toast } from "sonner";
 import { X } from "lucide-react";
 import { Lecturer } from "@/types/Lecturer";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+// ✅ Schema validation với Zod
+const formSchema = z.object({
+  fullName: z.string().min(3, "Tên giảng viên phải có ít nhất 3 ký tự"),
+  email: z.string().email("Email không hợp lệ"),
+  lecturerCode: z.string().min(2, "Mã giảng viên không được để trống"),
+  isActive: z.enum(["ACTIVE", "INACTIVE"]),
+});
 
 interface UpdateReviewTopicCouncilProps {
   open: boolean;
@@ -16,41 +44,30 @@ export const UpdateReviewTopicCouncil: React.FC<UpdateReviewTopicCouncilProps> =
   lecturer,
   refetchData,
 }) => {
-  const [formValues, setFormValues] = useState({
-    fullName: lecturer.fullName,
-    email: lecturer.email,
-    lecturerCode: lecturer.lecturerCode,
-    isActive: lecturer.isActive,
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      fullName: lecturer.fullName || "",
+      email: lecturer.email || "",
+      lecturerCode: lecturer.lecturerCode || "",
+      isActive: lecturer.isActive ? "ACTIVE" : "INACTIVE",
+    },
   });
 
   useEffect(() => {
     if (open) {
-      setFormValues({
-        fullName: lecturer.fullName,
-        email: lecturer.email,
-        lecturerCode: lecturer.lecturerCode,
-        isActive: lecturer.isActive,
+      form.reset({
+        fullName: lecturer.fullName || "",
+        email: lecturer.email || "",
+        lecturerCode: lecturer.lecturerCode || "",
+        isActive: lecturer.isActive ? "ACTIVE" : "INACTIVE",
       });
     }
-  }, [open, lecturer]);
+  }, [open, lecturer, form]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormValues((prev) => ({
-      ...prev,
-      [name]: name === "isActive" ? value === "ACTIVE" : value,
-    }));
-  };
-
-  const handleSave = () => {
-    if (!formValues.fullName || !formValues.email || !formValues.lecturerCode) {
-      toast.error("Vui lòng nhập đầy đủ thông tin!");
-      return;
-    }
-
-    console.log("Dữ liệu giảng viên cập nhật:", formValues);
+  const onSubmit = (data: any) => {
+    console.log("Dữ liệu giảng viên cập nhật:", data);
     toast.success("Cập nhật giảng viên thành công!");
-
     if (refetchData) refetchData();
     setOpen(false);
   };
@@ -61,69 +78,101 @@ export const UpdateReviewTopicCouncil: React.FC<UpdateReviewTopicCouncilProps> =
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <Toaster position="top-right" richColors duration={3000} />
       <div className="bg-white rounded-lg p-6 w-full max-w-lg shadow-lg">
-        <div className="flex justify-between items-center">
-          <h2 className="text-xl font-bold">Cập nhật giảng viên</h2>
-          <button onClick={() => setOpen(false)} className="text-gray-500 hover:text-gray-800">
-            <X className="w-5 h-5" />
-          </button>
+        {/* ✅ Header có thêm Description */}
+        <div className="flex flex-col space-y-1">
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl font-bold">Cập nhật giảng viên</h2>
+            <button onClick={() => setOpen(false)} className="text-gray-500 hover:text-gray-800">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          <p className="text-gray-500 text-sm">
+            Nhập thông tin giảng viên bên dưới. Nhấn "Lưu" để xác nhận.
+          </p>
         </div>
 
-        <div className="space-y-4 mt-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Tên giảng viên</label>
-            <input
-              type="text"
+        {/* ✅ Form */}
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
+            {/* Tên giảng viên */}
+            <FormField
+              control={form.control}
               name="fullName"
-              value={formValues.fullName}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg p-2"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tên giảng viên</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Nhập tên giảng viên" {...field} />
+                  </FormControl>
+           
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
-            <input
-              type="email"
+            {/* Email */}
+            <FormField
+              control={form.control}
               name="email"
-              value={formValues.email}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg p-2"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input type="email" placeholder="Nhập email" {...field} />
+                  </FormControl>
+                 
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Mã giảng viên</label>
-            <input
-              type="text"
+            {/* Mã giảng viên */}
+            <FormField
+              control={form.control}
               name="lecturerCode"
-              value={formValues.lecturerCode}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg p-2"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Mã giảng viên</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Nhập mã giảng viên" {...field} />
+                  </FormControl>
+              
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Trạng thái</label>
-            <select
+            {/* Trạng thái */}
+            <FormField
+              control={form.control}
               name="isActive"
-              value={formValues.isActive ? "ACTIVE" : "INACTIVE"}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg p-2"
-            >
-              <option value="ACTIVE">Hoạt động</option>
-              <option value="INACTIVE">Không hoạt động</option>
-            </select>
-          </div>
-        </div>
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Trạng thái</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Chọn trạng thái" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="ACTIVE">Hoạt động</SelectItem>
+                      <SelectItem value="INACTIVE">Không hoạt động</SelectItem>
+                    </SelectContent>
+                  </Select>
+               
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <div className="mt-6 flex justify-end space-x-4">
-          <button onClick={() => setOpen(false)} className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg">
-            Hủy
-          </button>
-          <button onClick={handleSave} className="px-4 py-2 bg-black text-white rounded-lg">
-            Lưu cập nhật
-          </button>
-        </div>
+            {/* ✅ Footer */}
+            <div className="mt-6 flex justify-end space-x-4">
+              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+                Hủy
+              </Button>
+              <Button type="submit">Lưu cập nhật</Button>
+            </div>
+          </form>
+        </Form>
       </div>
     </div>
   );
