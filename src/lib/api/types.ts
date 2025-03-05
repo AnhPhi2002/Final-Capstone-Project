@@ -24,6 +24,16 @@ export interface Student {
   status: string;         
 }
 
+export interface Mentor {
+  id: string;             
+  email: string;           
+  username: string;          
+  lecturerCode: string; 
+  fullName: string;     
+  isActive: boolean;
+  role: string;    
+}
+
 // export type StudentNotGroup = {
 //   id: string;
 //   studentCode: string;

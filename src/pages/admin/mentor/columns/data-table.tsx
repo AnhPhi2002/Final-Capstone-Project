@@ -16,7 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Mentor } from "@/types/mentor";
+import { Mentor } from '@/lib/api/types';
 
 interface DataTableProps {
   columns: ColumnDef<Mentor, unknown>[];
