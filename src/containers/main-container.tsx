@@ -30,7 +30,6 @@ import TimelinePage from "@/pages/admin/timeline-register/timeline-page";
 import TopicEnterpriseDetail from "@/pages/admin/topic-list/topic-enterprise/topic-enterprise-detail";
 import { TopicEnterprisePage } from "@/pages/admin/topic-list/topic-enterprise/topic-enterprise-page";
 import { ImportTopicMentorPage } from "@/pages/admin/topic-list/topic-mentor/import-topic-mentor/import-topic-mentor-page";
-import TopicDetail from "@/pages/admin/topic-list/topic-mentor/topic-detail/topic-detail";
 import { TopicListPage } from "@/pages/admin/topic-list/topic-mentor/topic-list-page";
 import { TopicPage } from "@/pages/admin/topic-list/topic-mentor/topic-page";
 import CreateUserPage from "@/pages/admin/user/create-user-page";
