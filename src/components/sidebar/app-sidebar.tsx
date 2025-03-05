@@ -92,6 +92,10 @@ const data = {
           title: "D.s g.v hướng dẫn KLTN",
           url: "/mentor-page",
         },
+        {
+          title: "D.s xét duyệt đề tài",
+          url: "/review-topic-council",
+        },
       ],
     },
     {

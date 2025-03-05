@@ -48,6 +48,8 @@ import { ReviewSemesterPage } from "@/pages/admin/review-semester/review-semeste
 import { TopicDetailPage } from "@/pages/admin/topic-list/topic-mentor/topic-detail/topic-detail-page";
 import UpdateTopicDetail from "@/pages/admin/topic-list/topic-mentor/topic-detail/update-topic-detail";
 import ImportMentorPage from "@/pages/admin/import-mentor/import-mentor-page";
+import { ReviewTopicCouncilPage } from "@/pages/examination-officer/review-topic-council/review-topic-council-page";
+import { ReviewTopicCouncilDetail } from "@/pages/examination-officer/review-topic-council/columns/review-topic-council-detail";
 
 const MainContainter = () => {
   
@@ -120,7 +122,11 @@ const MainContainter = () => {
         <Route path="deadline-topic" element={<DeadineTopicPage />} />
         <Route path="deadline-topic/:semesterId" element={<DeadineTopicDetailPage />} />
         <Route path="deadline-topic/:semesterId/submission/:submissionId" element={<DeadineTopicDetailPage />} />
+        
 
+        <Route path="review-topic-council" element={<ReviewTopicCouncilPage />} />
+        <Route path="review-topic-council-detail" element={<ReviewTopicCouncilDetail />} />
+         
         <Route path="/semester" element={<SemestersPage />} />
         <Route path="/semester/:semesterId" element={<SemestersDetailPage />} />
 
