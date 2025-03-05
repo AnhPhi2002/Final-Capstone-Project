@@ -77,6 +77,18 @@ export const loginWithGoogle = createAsyncThunk(
   }
 );
 
+export const updateUserProfile = createAsyncThunk(
+  "auth/updateUserProfile",
+  async (updatedData: Partial<User>, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.put("/users/profile", updatedData);
+      return response.data.user; // Giả sử API trả về user đã cập nhật
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Không thể cập nhật thông tin");
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -134,6 +146,16 @@ const authSlice = createSlice({
       })
       .addCase(loginWithGoogle.rejected, (state, action) => {
         state.loading = false;
+        state.error = action.payload as string;
+      })
+      // .addCase(fetchUserProfile.fulfilled, (state, action) => {
+      //   state.user = action.payload;
+      // })
+      .addCase(updateUserProfile.fulfilled, (state, action) => {
+        state.user = action.payload;
+        localStorage.setItem("user", JSON.stringify(action.payload)); // Lưu lại user sau khi update
+      })
+      .addCase(updateUserProfile.rejected, (state, action) => {
         state.error = action.payload as string;
       });
   },

@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { deleteSubmissionRound } from "@/lib/api/redux/submissionRoundSlice";
 import { AppDispatch } from "@/lib/api/redux/store";
 import { Toaster, toast } from "sonner";
+import { useNavigate } from "react-router";
 
 type DeleteDeadlineTopicProps = {
   roundId: string;
@@ -13,7 +14,7 @@ type DeleteDeadlineTopicProps = {
 export const DeleteDeadlineTopic: React.FC<DeleteDeadlineTopicProps> = ({ roundId, open, setOpen }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [deleting, setDeleting] = useState(false);
-
+  const navigate = useNavigate();
   if (!open) return null; // ✅ Ngăn render nếu `open === false`
 
   const handleDelete = async () => {
@@ -23,7 +24,8 @@ export const DeleteDeadlineTopic: React.FC<DeleteDeadlineTopicProps> = ({ roundI
   
       if (deleteSubmissionRound.fulfilled.match(resultAction)) {
         toast.success("Vòng nộp đã được xóa thành công!");
-        setOpen(false); // ✅ Đóng modal ngay lập tức
+        setOpen(false); 
+        navigate(`/deadline-topic`);
       } else {
         throw new Error("Xóa thất bại!");
       }
