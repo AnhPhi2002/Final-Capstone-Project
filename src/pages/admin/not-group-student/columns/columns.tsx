@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
-import { StudentNotGroup } from "@/lib/api/types/not-group-student"; 
+import { StudentNotGroup } from "@/lib/api/redux/types/not-group-student"; 
 
 export const columns: ColumnDef<StudentNotGroup, unknown>[] = [
   {

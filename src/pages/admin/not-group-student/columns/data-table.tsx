@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { StudentNotGroup } from "@/lib/api/types/not-group-student"; // Đường dẫn đúng
+import { StudentNotGroup } from "@/lib/api/redux/types/not-group-student"; // Đường dẫn đúng
 
 interface DataTableProps {
   columns: ColumnDef<StudentNotGroup, unknown>[];

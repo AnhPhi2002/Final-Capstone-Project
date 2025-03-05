@@ -30,7 +30,7 @@ import TimelinePage from "@/pages/admin/timeline-register/timeline-page";
 import TopicEnterpriseDetail from "@/pages/admin/topic-list/topic-enterprise/topic-enterprise-detail";
 import { TopicEnterprisePage } from "@/pages/admin/topic-list/topic-enterprise/topic-enterprise-page";
 import { ImportTopicMentorPage } from "@/pages/admin/topic-list/topic-mentor/import-topic-mentor/import-topic-mentor-page";
-import TopicDetail from "@/pages/admin/topic-list/topic-mentor/topic-detail";
+import TopicDetail from "@/pages/admin/topic-list/topic-mentor/topic-detail/topic-detail";
 import { TopicListPage } from "@/pages/admin/topic-list/topic-mentor/topic-list-page";
 import { TopicPage } from "@/pages/admin/topic-list/topic-mentor/topic-page";
 import CreateUserPage from "@/pages/admin/user/create-user-page";
@@ -46,6 +46,8 @@ import TopicReviewDetail from "@/pages/examination-officer/topic-review/topic-re
 import { DeadineTopicPage } from "@/pages/admin/deadline-topic/deadine-topic-page";
 import { DeadineTopicDetailPage } from "@/pages/admin/deadline-topic/columns/deadine-topic-detail-page";
 import { ReviewSemesterPage } from "@/pages/admin/review-semester/review-semester-page";
+import { TopicDetailPage } from "@/pages/admin/topic-list/topic-mentor/topic-detail/topic-detail-page";
+import UpdateTopicDetail from "@/pages/admin/topic-list/topic-mentor/topic-detail/update-topic-detail";
 
 const MainContainter = () => {
   
@@ -86,11 +88,15 @@ const MainContainter = () => {
 
         <Route path="/topic" element={<TopicPage />} />
         <Route path="/topic/:semesterId" element={<TopicPage />} />
-        <Route path="/topic-list" element={<TopicListPage />} />  
-        <Route path="/topic-list/:semesterId" element={<TopicListPage />} />
+        <Route path="/topic-list" element={<TopicListPage />} /> 
+        <Route path="/topic-list/:semesterId/submission/:submissionPeriodId" element={<TopicListPage />} />
+
+
         {/* <Route path="/topic-list/:semesterId/submission/:submissionId" element={<TopicDetail />} /> */}
-        <Route path="/topic-detail/:topicId" element={<TopicDetail />} /> 
-        
+        {/* <Route path="/topic-detail/:topicId" element={<TopicDetail />} />  */}
+        <Route path="/topic-detail/:topicId" element={<TopicDetailPage />} /> 
+        <Route path="/topic-detail/:topicId/update" element={<UpdateTopicDetail />} /> 
+
         <Route path="/topic-review-page" element={<TopicReviewPage />} />
         <Route path="/topic-review-page/:semesterId" element={<TopicReviewPage />} />
         <Route path="/topic-review-list" element={<TopicReviewListPage />} />
@@ -108,8 +114,7 @@ const MainContainter = () => {
         <Route path="topic-enterprise" element={<TopicEnterprisePage />} />
         <Route path="topic-enterprise-detail" element={<TopicEnterpriseDetail />} />
         <Route path="topic-enterprise-detail/:semesterId" element={<TopicEnterpriseDetail />} />
-    
-
+  
         <Route path="review-semester" element={<ReviewSemesterPage />} />
 
         <Route path="deadline-topic" element={<DeadineTopicPage />} />

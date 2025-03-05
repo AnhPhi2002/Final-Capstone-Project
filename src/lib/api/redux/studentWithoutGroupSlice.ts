@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { axiosClient } from "@/lib/api/config/axios-client";
-import { StudentNotGroup } from "@/lib/api/types/not-group-student";
+import { StudentNotGroup } from "@/lib/api/redux/types/not-group-student";
 
 type StudentWithoutGroupState = {
   students: StudentNotGroup[];

@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosClient } from "../config/axios-client";
-import { Year } from "@/lib/api/types/year";
+import { Year } from "@/lib/api/redux/types/year";
 
 // Thunk để lấy danh sách năm học
 export const fetchYears = createAsyncThunk(
