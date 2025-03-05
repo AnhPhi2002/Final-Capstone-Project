@@ -9,7 +9,7 @@ import { GroupStudentCardPage } from "@/pages/admin/group-student/group-student-
 import { GroupStudentDetail } from "@/pages/admin/group-student/group-student-detail/group-student-detail";
 import { GroupStudentPage } from "@/pages/admin/group-student/group-student-page";
 import { RandomGroupStudentPage } from "@/pages/admin/group-student/random-group-student/random-group-student-page";
-import ImportMentorTab from "@/pages/admin/import-mentor/import-mentor-tab";
+// import ImportMentorTab from "@/pages/admin/import-mentor/import-mentor-tab";
 import ImportStudentPage from "@/pages/admin/import-student/import-student-page";
 import { MentorDetail } from "@/pages/admin/mentor/columns/mentor-detail";
 import { MentorPage } from "@/pages/admin/mentor/mentor-page";
@@ -47,6 +47,7 @@ import { DeadineTopicDetailPage } from "@/pages/admin/deadline-topic/columns/dea
 import { ReviewSemesterPage } from "@/pages/admin/review-semester/review-semester-page";
 import { TopicDetailPage } from "@/pages/admin/topic-list/topic-mentor/topic-detail/topic-detail-page";
 import UpdateTopicDetail from "@/pages/admin/topic-list/topic-mentor/topic-detail/update-topic-detail";
+import ImportMentorPage from "@/pages/admin/import-mentor/import-mentor-page";
 
 const MainContainter = () => {
   
@@ -83,7 +84,7 @@ const MainContainter = () => {
         <Route path="/mentor-page" element={<MentorPage />} />
         <Route path="/mentor-page/:semesterId" element={<MentorDetail />} />
 
-        <Route path="/import-mentor/:semesterId" element={<ImportMentorTab />} />
+        <Route path="/import-mentor/:semesterId" element={<ImportMentorPage />} />
 
         <Route path="/topic" element={<TopicPage />} />
         <Route path="/topic/:semesterId" element={<TopicPage />} />

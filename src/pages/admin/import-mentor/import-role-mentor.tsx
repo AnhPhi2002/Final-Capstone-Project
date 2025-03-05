@@ -1,20 +1,26 @@
 import { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { useParams, useNavigate } from "react-router";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Upload } from "lucide-react";
 import { toast } from "sonner";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
-// import { importStudents, resetState } from "@/lib/api/redux/importStudentSlice";
-import { importMentors, resetState } from "@/lib/api/redux/importMentor";
+import { importConditions, resetState } from "@/lib/api/redux/importConditionsSlice";
+import { useNavigate, useParams } from "react-router";
 
-const ImportMentorTab = () => {
+const ImportRoleMentor = () => {
   const { semesterId } = useParams<{ semesterId: string }>();
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
-  const { loading, error } = useAppSelector((state) => state.importStudents);
+  const { loading, error } = useAppSelector((state) => state.importConditions);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
@@ -30,32 +36,39 @@ const ImportMentorTab = () => {
       toast.error("Vui lòng chọn file để import!");
       return;
     }
-
+  
     const formData = new FormData();
     formData.append("file", selectedFile);
-    formData.append("semesterId", semesterId!);
+    formData.append("semesterId", semesterId!); // Thêm semesterId nếu cần
+  
+    // Kiểm tra dữ liệu trong FormData
     for (let pair of formData.entries()) {
-      console.log(`${pair[0]}: ${pair[1]}`);
+      console.log(`${pair[0]}:`, pair[1]);
     }
-
+  
     try {
-      await dispatch(importMentors({ formData })).unwrap();
-      toast.success("Import thành công!");
+      await dispatch(importConditions({ formData })).unwrap();
+      toast.success("Import danh sách đủ điều kiện thành công!");
       setTimeout(() => {
-        navigate(`/mentor-page/${semesterId}`);
-        dispatch(resetState());
-      }, 2000);
+              navigate(`/mentor-page/${semesterId}`);
+              dispatch(resetState());
+            }, 2000);
     } catch (err: any) {
+      console.error("API Error:", err);
       toast.error(err.message || "Import thất bại!");
     }
   };
+  
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Import danh sách mentor</CardTitle>
+        <CardTitle>Import chức vụ giáo viên</CardTitle>
+        <CardDescription>Import role GV trong kỳ</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-2">
+        <h3 className="font-semibold">Định dạng excel</h3>
+        <img alt="Excel Format Example" />
         <div
           {...getRootProps()}
           style={{
@@ -64,6 +77,7 @@ const ImportMentorTab = () => {
             textAlign: "center",
             cursor: "pointer",
           }}
+          className="rounded-lg"
         >
           <input {...getInputProps()} />
           {selectedFile ? (
@@ -71,13 +85,16 @@ const ImportMentorTab = () => {
           ) : isDragActive ? (
             <p>Thả file vào đây ...</p>
           ) : (
-            <p>Kéo và thả tệp hoặc nhấp để chọn tệp.</p>
+            <div className="text-gray-500 flex items-center flex-col">
+              <Upload className="size-20 py-5" />
+              <p>Kéo và thả tệp ở đây hoặc nhấp để chọn tệp.</p>
+              <p>Định dạng file: .xlsx hoặc .xls</p>
+            </div>
           )}
         </div>
-        {loading && <p>Đang xử lý import...</p>}
+        {loading && <p className="text-blue-500">Đang xử lý import...</p>}
         {error && <p className="text-red-500">Lỗi: {error}</p>}
       </CardContent>
-
       <CardFooter className="flex justify-end">
         <Button onClick={handleImport} disabled={loading}>
           {loading ? "Đang import..." : "Import"}
@@ -87,4 +104,4 @@ const ImportMentorTab = () => {
   );
 };
 
-export default ImportMentorTab;
+export default ImportRoleMentor;
