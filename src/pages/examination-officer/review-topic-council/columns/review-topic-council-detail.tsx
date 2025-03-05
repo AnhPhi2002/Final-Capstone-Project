@@ -2,10 +2,11 @@ import Header from "@/components/header";
 import { DataTable } from "./data-table";
 import { useMemo } from "react";
 import { useParams } from "react-router";
-import { useReactTable, getCoreRowModel, getPaginationRowModel, getFilteredRowModel, ColumnDef } from "@tanstack/react-table";
-import { columns } from "./columns";
-import { Lecturer } from "@/types/Lecturer";
+import { useReactTable, getCoreRowModel, getPaginationRowModel, getFilteredRowModel } from "@tanstack/react-table";
 
+import { Lecturer } from "@/types/Lecturer";
+import { ToolPanel } from "./tool-panel";
+import { columnsLecturer } from "./columns";
 
 const mockLecturers: Lecturer[] = [
   {
@@ -48,7 +49,6 @@ const mockLecturers: Lecturer[] = [
 export const ReviewTopicCouncilDetail = () => {
   const { submissionId } = useParams();
 
-  // Lọc dữ liệu mẫu theo submissionId (nếu có)
   const filteredLecturers = useMemo(() => {
     if (!submissionId) return mockLecturers;
     return mockLecturers.filter((lecturer) => lecturer.id === submissionId);
@@ -56,7 +56,7 @@ export const ReviewTopicCouncilDetail = () => {
 
   const table = useReactTable<Lecturer>({
     data: filteredLecturers,
-    columns: columns as ColumnDef<Lecturer, any>[],
+    columns: columnsLecturer, 
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -66,6 +66,7 @@ export const ReviewTopicCouncilDetail = () => {
     <div className="flex flex-col h-screen">
       <Header title="Chi tiết hội đồng xét duyệt" href="/review-topic" currentPage="Quản lý giảng viên" />
       <div className="p-5 flex-1 overflow-auto">
+        <ToolPanel table={table} />
         <DataTable table={table} />
       </div>
     </div>

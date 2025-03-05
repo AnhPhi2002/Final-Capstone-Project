@@ -1,4 +1,3 @@
-
 import {
   Select,
   SelectContent,
@@ -8,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
+import { AddReviewTopicCouncil } from "./add-review-topic-council";
 
 export function ToolPanel({ table }: { table: any }) {
   const handleSemesterFilter = (value: string) => {
@@ -17,7 +16,12 @@ export function ToolPanel({ table }: { table: any }) {
 
   return (
     <div className="flex items-center py-4">
-      <div className="ml-auto flex items-center space-x-4">
+      <div className="ml-auto flex items-center space-x-4"> 
+        <div> 
+        <AddReviewTopicCouncil />
+        </div>
+        
+        <div> 
         <Select onValueChange={handleSemesterFilter}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Select a semester" />
@@ -32,7 +36,8 @@ export function ToolPanel({ table }: { table: any }) {
             </SelectGroup>
           </SelectContent>
         </Select>
-
+        </div>
+   
       </div>
     </div>
   );

@@ -6,13 +6,4 @@ export type Lecturer = {
   isActive: boolean;
 };
 
-export type SubmissionRound = {
-  id: string;
-  semesterId: string;
-  roundNumber: number;
-  description: string;
-  startDate: string;
-  endDate: string;
-};
-
 export type TableData = Lecturer; 

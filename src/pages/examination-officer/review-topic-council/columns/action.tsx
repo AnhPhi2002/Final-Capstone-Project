@@ -9,23 +9,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-// import { UpdateDeadlineTopic } from "./update-deadline-topic";
-// import { DeleteDeadlineTopic } from "./delete-deadline-topic";
+import { Lecturer } from "@/types/Lecturer";
+import { DeleteReviewTopicCouncil } from "./delete-review-topic-council";
+import { UpdateReviewTopicCouncil } from "./update-review-topic-council";
 
 type ActionMenuProps = {
-  round: {
-    id: string;
-    semesterId: string;
-    roundNumber: number;
-    description: string;
-    startDate: string;
-    endDate: string;
-  };
+  lecturer: Lecturer;
 };
 
-export const Action: React.FC<ActionMenuProps> = ({ round }) => {
-  const [openUpdate, setOpenUpdate] = useState(false);
-  const [openDelete, setOpenDelete] = useState(false);
+export const ActionMenu: React.FC<ActionMenuProps> = ({ lecturer }) => {
+  const [openDelete, setOpenDelete] = useState<boolean>(false);
+  const [openUpdate, setOpenUpdate] = useState<boolean>(false);
 
   return (
     <>
@@ -38,15 +32,15 @@ export const Action: React.FC<ActionMenuProps> = ({ round }) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => setOpenUpdate(true)}>Cập nhật vòng nộp</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setOpenUpdate(true)}>Cập nhật giảng viên</DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpenDelete(true)} className="text-red-600">
-            Xóa vòng nộp
+            Xóa giảng viên
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* {openUpdate && <UpdateDeadlineTopic open={openUpdate} setOpen={setOpenUpdate} round={round} />}
-      {openDelete && <DeleteDeadlineTopic open={openDelete} setOpen={setOpenDelete} roundId={round.id} />} */}
+      <DeleteReviewTopicCouncil open={openDelete} setOpen={setOpenDelete} lecturerId={lecturer.id} />
+      <UpdateReviewTopicCouncil open={openUpdate} setOpen={setOpenUpdate} lecturer={lecturer} />
     </>
   );
 };

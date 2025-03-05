@@ -1,19 +1,15 @@
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableHead,
-  TableCell,
-} from "@/components/ui/table";
+
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import { flexRender, type Table as TableType } from "@tanstack/react-table";
 import { Lecturer } from "@/types/Lecturer";
+
 
 interface DataTableProps {
   table: TableType<Lecturer>;
 }
 
 export function DataTable({ table }: DataTableProps) {
+
   return (
     <div className="rounded-md border">
       <Table>
@@ -24,8 +20,7 @@ export function DataTable({ table }: DataTableProps) {
                 <TableHead key={header.id}>
                   {header.isPlaceholder
                     ? null
-                    : flexRender(header.column.columnDef.header, header.getContext())
-                  }
+                    : flexRender(header.column.columnDef.header, header.getContext())}
                 </TableHead>
               ))}
             </TableRow>
@@ -40,6 +35,8 @@ export function DataTable({ table }: DataTableProps) {
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
+                <TableCell>
+                </TableCell>
               </TableRow>
             ))
           ) : (
@@ -51,6 +48,8 @@ export function DataTable({ table }: DataTableProps) {
           )}
         </TableBody>
       </Table>
+
+  
     </div>
   );
 }

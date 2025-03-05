@@ -1,16 +1,16 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { Badge } from "@/components/ui/badge";
-import { Lecturer } from "@/types/Lecturer"; // Import kiểu dữ liệu Lecturer
+import { Lecturer } from "@/types/Lecturer";
+import { ActionMenu } from "./action";
 
-export const columns: ColumnDef<Lecturer, any>[] = [
+
+export const columnsLecturer: ColumnDef<Lecturer, any>[] = [
   {
     accessorKey: "id",
     header: "ID",
-    cell: ({ row }) => <span>{row.index + 1}</span>,
   },
   {
     accessorKey: "lecturerCode",
-    header: "Mã GV",
+    header: "Mã giảng viên",
   },
   {
     accessorKey: "email",
@@ -18,18 +18,20 @@ export const columns: ColumnDef<Lecturer, any>[] = [
   },
   {
     accessorKey: "fullName",
-    header: "Tên giảng viên",
+    header: "Họ và tên",
   },
   {
     accessorKey: "isActive",
     header: "Trạng thái",
-    cell: ({ row }) => {
-      const isActive = row.getValue("isActive") as boolean;
-      return (
-        <Badge className={isActive ? "bg-green-100 text-green-500" : "bg-red-100 text-red-500"}>
-          {isActive ? "Hoạt động" : "Không hoạt động"}
-        </Badge>
-      );
-    },
+    cell: ({ row }) => (
+      <span className={row.original.isActive ? "text-green-600" : "text-red-600"}>
+        {row.original.isActive ? "Hoạt động" : "Không hoạt động"}
+      </span>
+    ),
+  },
+  {
+    id: "actions",
+    header: "Thao tác",
+    cell: ({ row }) => <ActionMenu lecturer={row.original} />, // Truyền lecturer vào Action
   },
 ];

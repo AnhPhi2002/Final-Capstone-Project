@@ -126,7 +126,9 @@ const MainContainter = () => {
 
         <Route path="review-topic-council" element={<ReviewTopicCouncilPage />} />
         <Route path="review-topic-council-detail" element={<ReviewTopicCouncilDetail />} />
-         
+        {/* <Route path="review-topic-council-detail" element={<ReviewTopicCouncilDetail />} /> */}
+
+
         <Route path="/semester" element={<SemestersPage />} />
         <Route path="/semester/:semesterId" element={<SemestersDetailPage />} />
 
