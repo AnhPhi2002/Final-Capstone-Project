@@ -111,6 +111,18 @@ const data = {
       ],
     },
     {
+      title: "Sinh viên",
+      url: "/topic-student",
+      icon: NotebookPen,
+      isActive: true,
+      items: [
+        {
+          title: "D.s đề tài sinh viên",
+          url: "/topic-student",
+        },
+      ],
+    },
+    {
       title: "Đề tài ",
       url: "/topic",
       icon: ClipboardList,
