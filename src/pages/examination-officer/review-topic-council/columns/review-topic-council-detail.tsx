@@ -65,7 +65,7 @@ export const ReviewTopicCouncilDetail = () => {
   return (
     <div className="flex flex-col h-screen">
       <Header title="Chi tiết hội đồng xét duyệt" href="/review-topic" currentPage="Quản lý giảng viên" />
-      <div className="p-5 flex-1 overflow-auto">
+      <div className="p-6 flex-1 overflow-auto">
         <ToolPanel table={table} />
         <DataTable table={table} />
       </div>

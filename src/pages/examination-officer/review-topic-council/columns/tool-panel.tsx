@@ -15,7 +15,7 @@ export function ToolPanel({ table }: { table: any }) {
   };
 
   return (
-    <div className="flex items-center py-4">
+    <div className=" mb-6 flex items-center">
       <div className="ml-auto flex items-center space-x-4"> 
         <div> 
         <AddReviewTopicCouncil />
