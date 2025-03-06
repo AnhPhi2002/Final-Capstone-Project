@@ -45,7 +45,7 @@ export default function TopicReviewDetail() {
         <p>Người tạo: {topicDetails.creator?.fullName || "Không xác định"} ({topicDetails.creator?.email || "Không có email"})</p>
         
         <div className="flex gap-4 mt-6">
-          {/* <UpdateTopic topicId={topicDetails.id} /> */}
+       
           <Button variant="destructive">Xóa đề tài</Button>
         </div>
       </Card>

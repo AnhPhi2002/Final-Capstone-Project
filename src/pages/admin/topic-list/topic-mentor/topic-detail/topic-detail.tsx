@@ -101,7 +101,7 @@ export default function TopicDetail() {
               </p>
             </div>
           </CardContent>
-
+           
           <div className="flex justify-end gap-4 mt-6">
             <Button variant="destructive">Xóa đề tài</Button>
           </div>
