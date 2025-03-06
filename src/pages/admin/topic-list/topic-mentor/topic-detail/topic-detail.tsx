@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { DataTableGroupTopic } from "./data-table-group-topic";
 
 export default function TopicDetail() {
   const { topicId } = useParams();
@@ -87,6 +88,12 @@ export default function TopicDetail() {
                 </p>
               </div>
               <div>
+                <p className="text-sm text-gray-500 mb-1">Group</p>
+                <p className="font-semibold italic">
+                  {topicDetails.group?.groupCode || "Không có url"}
+                </p>
+              </div>
+              <div>
                 <p className="text-sm text-gray-500 mb-1">Status</p>
                 <Badge>
                   {topicDetails.status || "Chưa cập nhật trạng thái"}
@@ -100,8 +107,12 @@ export default function TopicDetail() {
                 {topicDetails.description || "Chưa có mô tả"}
               </p>
             </div>
-          </CardContent>
-           
+          </CardContent> 
+
+          <div>
+          <DataTableGroupTopic  />
+          </div>
+
           <div className="flex justify-end gap-4 mt-6">
             <Button variant="destructive">Xóa đề tài</Button>
           </div>

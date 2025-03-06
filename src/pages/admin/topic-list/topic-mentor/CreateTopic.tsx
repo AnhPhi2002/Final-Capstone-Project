@@ -44,9 +44,7 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({
   const [majorId, setMajorId] = useState<string | null>(null);
   const [groupCode, setGroupCode] = useState("");
   const [documentUrl, setDocumentUrl] = useState("");
-  const [documents, setDocuments] = useState<
-    { fileName: string; fileUrl: string; fileType: string }[]
-  >([]);
+  const [documents, setDocuments] = useState<{ fileName: string; draftFileUrl: string; fileType: string }[]>([]);
 
   useEffect(() => {
     dispatch(fetchMajors());
@@ -62,9 +60,11 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({
       toast.error("Vui lòng nhập đường dẫn tài liệu!");
       return;
     }
+
     const fileName = documentUrl.split("/").pop() || "Tài liệu";
     const fileType = fileName.split(".").pop() || "unknown";
-    setDocuments([...documents, { fileName, fileUrl: documentUrl, fileType }]);
+
+    setDocuments([...documents, { fileName, draftFileUrl: documentUrl, fileType }]);
     setDocumentUrl("");
   };
 
@@ -90,8 +90,9 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({
       majorId,
       isBusiness,
       businessPartner: isBusiness ? businessPartner : null,
+      groupCode: groupCode,
       source: "Tự đề xuất",
-      documents,
+      draftFileUrl: documents.length > 0 ? documents[0].draftFileUrl : null, // Chỉ gửi file đầu tiên nếu có
     };
 
     try {
@@ -139,13 +140,12 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({
             onChange={(e) => setName(e.target.value)}
             placeholder="Tên dự án"
           />
-      <Textarea
-  value={description}
-  onChange={(e) => setDescription(e.target.value)}
-  placeholder="Mô tả đề tài"
-  className="h-24" // Đặt chiều cao trực tiếp nếu `rows` không hoạt động
-/>
-
+          <Textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Mô tả đề tài"
+            className="h-24"
+          />
 
           <Select onValueChange={setMajorId} value={majorId || ""}>
             <SelectTrigger className="w-full">
@@ -208,7 +208,11 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({
           {documents.length > 0 && (
             <ul className="text-sm text-gray-600">
               {documents.map((doc, index) => (
-                <li key={index}>📄 {doc.fileName}</li>
+                <li key={index}>
+                  📄 <a href={doc.draftFileUrl} target="_blank" rel="noopener noreferrer">
+                    {doc.fileName}
+                  </a>
+                </li>
               ))}
             </ul>
           )}

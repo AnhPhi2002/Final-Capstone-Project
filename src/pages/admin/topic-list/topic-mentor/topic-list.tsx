@@ -11,13 +11,19 @@ const truncateText = (text: string, maxLength: number) => {
 };
 
 // ✅ Hàm format ngày tháng năm
-const formatDate = (dateString: string) => {
-  return new Intl.DateTimeFormat("vi-VN", {
-    day: "2-digit",
-    month: "2-digit",
+const formatDate = (dateString?: string) => {
+  if (!dateString) return "Không có ngày"; // Trả về giá trị mặc định nếu null
+
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return "Ngày không hợp lệ"; // Kiểm tra nếu `date` không hợp lệ
+
+  return date.toLocaleDateString("vi-VN", {
     year: "numeric",
-  }).format(new Date(dateString));
+    month: "2-digit",
+    day: "2-digit",
+  });
 };
+
 
 // ✅ Cập nhật class cho Badge theo trạng thái
 const statusClasses: { [key in "ACTIVE" | "COMPLETE" | "PENDING"]: string } = {
