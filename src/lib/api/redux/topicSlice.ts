@@ -18,11 +18,11 @@ interface Topic {
     fullName: string;
     email: string;
   };
-  documents: {
-    fileName: string;
-    fileUrl: string;
-    fileType: string;
-  }[];
+  draftFileUrl: string;
+  group?: {
+    "id": string;
+    "groupCode": string;
+  };
   createdAt: string;
 }
 
