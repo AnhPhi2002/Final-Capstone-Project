@@ -52,6 +52,8 @@ import { ReviewTopicCouncilPage } from "@/pages/examination-officer/review-topic
 import { ReviewTopicCouncilDetail } from "@/pages/examination-officer/review-topic-council/columns/review-topic-council-detail";
 import { TopicStudentPage } from "@/pages/student/topic-student/topic-student-page";
 import TopicStudentListDetail from "@/pages/student/topic-student/topic-student-list-detail";
+import { ApproveTopicPage } from "@/pages/mentor/approve-topic/approve-topic-page";
+import { ApproveTopicDetail } from "@/pages/mentor/approve-topic/columns/approve-topic-detail";
 
 
 const MainContainter = () => {
@@ -135,6 +137,10 @@ const MainContainter = () => {
         <Route path="/topic-student/:semesterId" element={<TopicStudentPage />} />
         <Route path="/topic-student-detail" element={<TopicStudentListDetail />} /> 
         <Route path="/topic-student-detail/:topicId" element={<TopicStudentListDetail />} /> 
+
+        <Route path="/approve-topic" element={<ApproveTopicPage />} />
+        <Route path="/approve-topic-detail" element={<ApproveTopicDetail />} />
+
 
         <Route path="/semester" element={<SemestersPage />} />
         <Route path="/semester/:semesterId" element={<SemestersDetailPage />} />
