@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
 import { fetchYears } from "@/lib/api/redux/yearSlice";
 import { fetchSemesters, clearSemesters } from "@/lib/api/redux/semesterSlice";
+import { fetchCouncils, clearCouncils } from "@/lib/api/redux/councilSlice";
 import {
   fetchSubmissionRounds,
   clearSubmissionRounds,
@@ -18,7 +19,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { CardSemester } from "./card-semester";
+// import { CardSemester } from "./card-semester";
+import { CardCouncil } from "./card-council";
 
 export const SelectSemester: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -33,6 +35,8 @@ export const SelectSemester: React.FC = () => {
   const { data: submissionRounds, loading: loadingRounds } = useSelector(
     (state: RootState) => state.submissionRounds
   );
+  const { data: councils} = useSelector(
+    (state: RootState) => state.councils);
 
   // State lưu năm học, học kỳ và vòng nộp được chọn
   const [selectedYear, setSelectedYear] = useState<string>("");
@@ -66,6 +70,14 @@ export const SelectSemester: React.FC = () => {
       dispatch(clearSubmissionRounds());
     }
   }, [selectedSemester, dispatch]);
+
+  useEffect(() => {
+    if (selectedSubmissionRound) {
+      dispatch(fetchCouncils(selectedSubmissionRound));
+    } else {
+      dispatch(clearCouncils());
+    }
+  }, [selectedSubmissionRound, dispatch]);
 
   return (
     <div className="space-y-4">
@@ -150,9 +162,7 @@ export const SelectSemester: React.FC = () => {
       </div>
 
 
-      {selectedSubmissionRound && (
-        <CardSemester data={semesters} submissionRounds={submissionRounds} />
-      )}
+      {selectedSubmissionRound && <CardCouncil councils={councils} />}
     </div>
   );
 };

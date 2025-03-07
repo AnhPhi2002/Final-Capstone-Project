@@ -1,37 +1,47 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { Lecturer } from "@/types/Lecturer";
+import { Council } from "@/lib/api/types";
 import { ActionMenu } from "./action";
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("vi-VN"); // Format: DD/MM/YYYY
+};
 
-
-export const columnsLecturer: ColumnDef<Lecturer, any>[] = [
+export const columnsCouncils: ColumnDef<Council, any>[] = [
   {
-    accessorKey: "id",
-    header: "ID",
+    accessorKey: "name",
+    header: "Tên hội đồng",
   },
   {
-    accessorKey: "lecturerCode",
-    header: "Mã giảng viên",
+    accessorKey: "round",
+    header: "Vòng xét duyệt",
   },
   {
-    accessorKey: "email",
-    header: "Email",
+    accessorKey: "councilStartDate",
+    header: "Ngày bắt đầu",
+    cell: ({ row }) => formatDate(row.original.councilStartDate),
   },
   {
-    accessorKey: "fullName",
-    header: "Họ và tên",
+    accessorKey: "councilEndDate",
+    header: "Ngày kết thúc",
+    cell: ({ row }) => formatDate(row.original.councilEndDate),
   },
   {
-    accessorKey: "isActive",
+    accessorKey: "status",
     header: "Trạng thái",
-    cell: ({ row }) => (
-      <span className={row.original.isActive ? "text-green-600" : "text-red-600"}>
-        {row.original.isActive ? "Hoạt động" : "Không hoạt động"}
-      </span>
-    ),
+    cell: ({ row }) => {
+      const status = row.original.status;
+      if (status === "ACTIVE") {
+        return <span className="text-green-600">Đang hoạt động</span>;
+      } else if (status === "INACTIVE") {
+        return <span className="text-red-600">Không hoạt động</span>;
+      } else {
+        return <span className="text-gray-600">Không xác định</span>;
+      }
+    },
   },
   {
     id: "actions",
-    header: "Thao tác",
-    cell: ({ row }) => <ActionMenu lecturer={row.original} />, // Truyền lecturer vào Action
+    header: "Hành động",
+    cell: ({ row }) => <ActionMenu council={row.original} />, // Gọi component Action
   },
 ];

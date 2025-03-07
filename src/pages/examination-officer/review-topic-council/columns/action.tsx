@@ -9,15 +9,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Lecturer } from "@/types/Lecturer";
+import { Council } from "@/lib/api/types";
 import { DeleteReviewTopicCouncil } from "./delete-review-topic-council";
 import { UpdateReviewTopicCouncil } from "./update-review-topic-council";
+import { useNavigate } from "react-router"; // Import hook điều hướng
 
 type ActionMenuProps = {
-  lecturer: Lecturer;
+  council: Council;
 };
 
-export const ActionMenu: React.FC<ActionMenuProps> = ({ lecturer }) => {
+export const ActionMenu: React.FC<ActionMenuProps> = ({ council }) => {
+  const navigate = useNavigate();
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [openUpdate, setOpenUpdate] = useState<boolean>(false);
 
@@ -32,15 +34,16 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({ lecturer }) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => setOpenUpdate(true)}>Cập nhật giảng viên</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setOpenUpdate(true)}>Cập nhật Hội đồng</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate(`/review-topic-council-member/${council.id}`)}>Thành viên hội đồng</DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpenDelete(true)} className="text-red-600">
-            Xóa giảng viên
+            Xóa Hội đồng
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <DeleteReviewTopicCouncil open={openDelete} setOpen={setOpenDelete} lecturerId={lecturer.id} />
-      <UpdateReviewTopicCouncil open={openUpdate} setOpen={setOpenUpdate} lecturer={lecturer} />
+      {/* <DeleteReviewTopicCouncil open={openDelete} setOpen={setOpenDelete} councilId={council.id} /> */}
+      <UpdateReviewTopicCouncil open={openUpdate} setOpen={setOpenUpdate} council={council} />
     </>
   );
 };
