@@ -13,6 +13,7 @@ interface Topic {
   source: string | null;
   semesterId: string;
   majorId: string;
+  createdBy: string | null;
   status: string;
   creator?: {
     fullName: string;
@@ -49,10 +50,10 @@ export const fetchTopics = createAsyncThunk(
 
 export const exportTopicsToExcel = createAsyncThunk(
   "topics/exportExcel",
-  async (semesterId: string, { rejectWithValue }) => {
+  async (submissionPeriodId: string, { rejectWithValue }) => {
     try {
       const response = await axiosClient.get(
-        `/topics/export/excel?semesterId=${semesterId}`,
+        `/export-topic?submissionPeriodId=${submissionPeriodId}`,
         { responseType: "blob" } // API trả về file
       );
 
@@ -63,7 +64,7 @@ export const exportTopicsToExcel = createAsyncThunk(
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `Danh_sach_de_tai_${semesterId}.xlsx`;
+      a.download = `Danh_sach_de_tai_${submissionPeriodId}.xlsx`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);

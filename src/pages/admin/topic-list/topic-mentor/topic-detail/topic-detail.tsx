@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { DataTableGroupTopic } from "./data-table-group-topic";
+import { fetchUserById } from "@/lib/api/redux/authSlice";
 
 export default function TopicDetail() {
   const { topicId } = useParams();
@@ -16,12 +17,19 @@ export default function TopicDetail() {
   const { topicDetails, loading, error } = useSelector(
     (state: RootState) => state.topics
   );
+  const { author } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     if (topicId && (!topicDetails || topicDetails.id !== topicId)) {
       dispatch(fetchTopicDetail(topicId));
     }
   }, [dispatch, topicId, topicDetails]);
+
+  useEffect(() => {
+    if (topicDetails?.createdBy && topicDetails?.semesterId) {
+      dispatch(fetchUserById({ userId: topicDetails.createdBy, semesterId: topicDetails.semesterId }));
+    }
+  }, [dispatch, topicDetails?.createdBy, topicDetails?.semesterId]);
 
   if (loading)
     return <p className="text-center text-gray-500">Đang tải dữ liệu...</p>;
@@ -62,7 +70,8 @@ export default function TopicDetail() {
                 Created at:{" "}
                 {topicDetails.createdAt
                   ? new Date(topicDetails.createdAt).toLocaleDateString()
-                  : "Không xác định"}
+                  : "Không xác định"}{" "}
+                  by {author?.fullName || "không có tác giả"}
               </p>
             </div>
           </div>
@@ -88,12 +97,6 @@ export default function TopicDetail() {
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">Group</p>
-                <p className="font-semibold italic">
-                  {topicDetails.group?.groupCode || "Không có url"}
-                </p>
-              </div>
-              <div>
                 <p className="text-sm text-gray-500 mb-1">Status</p>
                 <Badge>
                   {topicDetails.status || "Chưa cập nhật trạng thái"}
@@ -110,7 +113,7 @@ export default function TopicDetail() {
           </CardContent> 
 
           <div>
-          <DataTableGroupTopic  />
+          <DataTableGroupTopic groupId={topicDetails.group?.id}/>
           </div>
 
           <div className="flex justify-end gap-4 mt-6">

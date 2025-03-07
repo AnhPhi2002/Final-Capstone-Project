@@ -21,6 +21,7 @@ import topicReducer from "./topicSlice";
 // import profileUserReducer from "./profileUserSlice";
 import submissionRoundReducer from "./submissionRoundSlice";
 import { mentorReducer } from './mentorSlice';
+import councilReducer from "./councilSlice"
 
 
 const rootReducer = combineReducers({
@@ -45,6 +46,7 @@ const rootReducer = combineReducers({
   // topicRegister: topicRegisterReducer,
   submissionRounds: submissionRoundReducer,
   mentors: mentorReducer,
+  councils: councilReducer,
 });
 
 // const persistedReducer = persistReducer(persistConfig, rootReducer)

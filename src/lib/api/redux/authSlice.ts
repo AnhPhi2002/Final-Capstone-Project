@@ -28,7 +28,7 @@ interface AuthState {
   token: string | null;
   loading: boolean;
   error: string | null;
-  
+  author: User | null;
 }
 
 const initialState: AuthState = {
@@ -36,6 +36,7 @@ const initialState: AuthState = {
   token: localStorage.getItem("token") || null,
   loading: false,
   error: null,
+  author: null
 };
 
 // ** Lấy thông tin hồ sơ người dùng **
@@ -60,6 +61,18 @@ export const loginUser = createAsyncThunk(
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Đăng nhập thất bại");
+    }
+  }
+);
+
+export const fetchUserById = createAsyncThunk(
+  "auth/fetchUserById",
+  async ({ userId, semesterId }: { userId: string; semesterId: string }, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.get(`/users/users/${userId}?semesterId=${semesterId}`);
+      return response.data.user;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Không thể lấy thông tin người dùng");
     }
   }
 );
@@ -98,6 +111,7 @@ const authSlice = createSlice({
       state.token = null;
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+      
     },
   },
   extraReducers: (builder) => {
@@ -156,6 +170,18 @@ const authSlice = createSlice({
         localStorage.setItem("user", JSON.stringify(action.payload)); // Lưu lại user sau khi update
       })
       .addCase(updateUserProfile.rejected, (state, action) => {
+        state.error = action.payload as string;
+      })
+      .addCase(fetchUserById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchUserById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.author = action.payload;
+      })
+      .addCase(fetchUserById.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.payload as string;
       });
   },

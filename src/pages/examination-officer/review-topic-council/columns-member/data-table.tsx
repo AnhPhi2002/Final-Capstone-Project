@@ -1,8 +1,8 @@
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import { flexRender, type Table as TableType } from "@tanstack/react-table";
-import { Council } from "@/lib/api/types"
+import { CouncilMember } from "@/lib/api/types"
 interface DataTableProps {
-  table: TableType<Council>;
+  table: TableType<CouncilMember>;
 }
 
 export function DataTable({ table }: DataTableProps) {
