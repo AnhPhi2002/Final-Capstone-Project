@@ -93,7 +93,7 @@ const data = {
           url: "/mentor-page",
         },
         {
-          title: "D.s xét duyệt đề tài",
+          title: "D.s đợt đề tài",
           url: "/review-topic-council",
         },
       ],
@@ -137,6 +137,19 @@ const data = {
           url: "/topic",
         
         },
+      ],
+    },
+    {
+      title: "Phê duyệt đề tài nhóm ",
+      url: "/topic",
+      icon: ClipboardList,
+      isActive: true,
+      items: [
+        {
+          title: "Phê duyệt",
+          url: "/approve-topic",
+        },
+    
       ],
     },
     {
