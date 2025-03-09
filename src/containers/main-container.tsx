@@ -56,6 +56,10 @@ import TopicStudentListDetail from "@/pages/student/topic-student/topic-student-
 import { CouncilMembersPage } from "@/pages/examination-officer/review-topic-council/columns-member/CouncilMembersPage";
 import { ApproveTopicPage } from "@/pages/mentor/approve-topic/approve-topic-page";
 import { ApproveTopicDetail } from "@/pages/mentor/approve-topic/columns/approve-topic-detail";
+import { ApproveTopicPage } from "@/pages/mentor/approve-topic/approve-topic-page";
+import { ApproveTopicDetail } from "@/pages/mentor/approve-topic/columns/approve-topic-detail";
+import { CouncilMembersPage } from "@/pages/examination-officer/review-topic-council/columns-member/CouncilMembersPage";
+
 const MainContainter = () => {
   
   return (
