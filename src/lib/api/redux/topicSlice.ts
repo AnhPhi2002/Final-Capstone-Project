@@ -18,6 +18,7 @@ interface Topic {
   creator?: {
     fullName: string;
     email: string;
+    createdAt?: string;
   };
   draftFileUrl: string;
   group?: {
@@ -171,10 +172,13 @@ const topicSlice = createSlice({
       })
       .addCase(createTopic.fulfilled, (state, action: PayloadAction<Topic>) => {
         state.loading = false;
+        state.data.unshift(action.payload);
         const newTopic = action.payload;
+        
         if (!newTopic.creator) {
           const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
           newTopic.creator = {
+            
             fullName: currentUser.fullName,
             email: currentUser.email,
           };

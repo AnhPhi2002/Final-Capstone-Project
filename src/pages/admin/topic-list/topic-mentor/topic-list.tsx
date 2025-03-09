@@ -45,7 +45,8 @@ export const TopicList = ({ selectedMajor }: { selectedMajor?: string }) => {
     if (semesterId) {
       dispatch(fetchTopics({ semesterId, majorId: selectedMajor } as any));
     }
-  }, [dispatch, semesterId, selectedMajor]);
+  }, [dispatch, semesterId, selectedMajor, topics.length]); // Theo dõi topics.length
+  
 
   return (
     <div className="bg-background text-foreground min-h-scree">
@@ -90,10 +91,10 @@ export const TopicList = ({ selectedMajor }: { selectedMajor?: string }) => {
                     <span className="font-medium">{formatDate(topic.createdAt)}</span>
                   </p>
 
-                  <p>
-                    Được tạo bởi:{" "}
-                    <span className="font-medium">{topic.creator?.fullName || "Không xác định"}</span>
-                  </p>
+                    <p>
+                      Được tạo bởi:{" "}
+                      <span className="font-medium">{topic.creator?.fullName || "Không xác định"}</span>
+                    </p>
                 </div>
               </div>
             </div>
