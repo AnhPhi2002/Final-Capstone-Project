@@ -1,6 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Council } from "@/lib/api/types";
 import { ActionMenu } from "./action";
+
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
   return date.toLocaleDateString("vi-VN"); // Format: DD/MM/YYYY
@@ -42,6 +43,9 @@ export const columnsCouncils: ColumnDef<Council, any>[] = [
   {
     id: "actions",
     header: "Hành động",
-    cell: ({ row }) => <ActionMenu council={row.original} />, // Gọi component Action
+    cell: ({ row, table }) => <ActionMenu 
+    council={row.original}
+    refetchData={table.options.meta?.refetchData} />, 
+
   },
 ];

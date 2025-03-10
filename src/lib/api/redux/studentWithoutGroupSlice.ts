@@ -25,7 +25,7 @@ export const fetchStudentsWithoutGroup = createAsyncThunk(
   async (semesterId: string, { rejectWithValue }) => {
     try {
       const response = await axiosClient.get<ApiResponse>(
-        `/groups/students-without-group/${semesterId}`
+        `/groups/students-without-group/${semesterId}?semesterId=${semesterId}`
       );
       
       console.log("Full API Response:", response);
