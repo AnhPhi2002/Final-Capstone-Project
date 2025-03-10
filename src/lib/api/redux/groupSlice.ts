@@ -45,7 +45,7 @@ interface Group {
         specialty: string;
       };
     };
-  }[];
+  }[]
 }
 
 // Fetch danh sách nhóm theo `semesterId`

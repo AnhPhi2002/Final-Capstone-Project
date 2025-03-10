@@ -8,7 +8,7 @@ export interface GroupMember {
   id: string;
   groupId: string;
   studentId: string;
-  role: RoleType;
+  // role: RoleType;
   joinedAt: string;
   leaveAt: string | null;
   leaveReason: string | null;
@@ -23,6 +23,10 @@ export interface GroupMember {
       profession: string;
       specialty: string;
     };
+  };
+  role: {
+    id: string;
+    name: RoleType;
   };
 }
 
@@ -114,10 +118,10 @@ const groupDetailSlice = createSlice({
       .addCase(changeLeader.fulfilled, (state, action) => {
         if (state.group) {
           state.group.members = state.group.members.map((member) =>
-            member.studentId === action.payload.newLeaderId
-              ? { ...member, role: "leader" }
-              : member.role === "leader"
-              ? { ...member, role: "member" }
+            member.role.name === action.payload.newLeaderId
+              ? { ...member, role: {...member.role, name: "leader"} }
+              : member.role.name === "leader"
+              ? { ...member, role: {...member.role, name: "member"} }
               : member
           );
         }

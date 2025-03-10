@@ -15,6 +15,7 @@ interface Topic {
   majorId: string;
   createdBy: string | null;
   status: string;
+  reviewReason: string | null;
   creator?: {
     fullName: string;
     email: string;
@@ -126,15 +127,53 @@ export const updateTopic = createAsyncThunk(
   }
 );
 
+export const fetchApprovalTopics = createAsyncThunk(
+  "topics/fetchApprovalTopics",
+  async ({ semesterId, round }: { semesterId: string; round: number }, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.get(`/topics/approval`, {
+        params: { semesterId, round },
+      });
+      return response.data.data;
+    } catch (error: any) {
+      if (error.response?.status === 404) {
+        return rejectWithValue("Không có đề tài nào trong vòng này.");
+      }
+      return rejectWithValue(error.response?.data?.message || "Không thể tải danh sách đề tài cần duyệt.");
+    }
+  }
+);
+
+export const updateTopicStatus = createAsyncThunk(
+  "topics/updateTopicStatus",
+  async ({ topicId, updatedData }: { topicId: string; updatedData: { status: string; reviewReason: string } }, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.post(`/topics/${topicId}/status`, updatedData); // ✅ Đảm bảo topicId đúng
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Không thể cập nhật trạng thái.");
+    }
+  }
+);
+
+
+
 const topicSlice = createSlice({
   name: "topics",
   initialState: {
     data: [] as Topic[],
     topicDetails: null as Topic | null,
+    approvalTopics: [] as Topic[],
     loading: false,
     error: null as string | null,
   },
-  reducers: {},
+  reducers: {
+    // ✅ Reset danh sách topic khi round thay đổi
+    resetApprovalTopics: (state) => {
+      state.approvalTopics = [];
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchTopics.pending, (state) => {
@@ -190,17 +229,39 @@ const topicSlice = createSlice({
         state.error = action.payload as string;
       })
       .addCase(updateTopic.pending, (state) => {
+
         state.loading = true;
       })
       .addCase(updateTopic.fulfilled, (state, action: PayloadAction<Topic>) => {
         state.loading = false;
-        state.topicDetails = action.payload; // Cập nhật thông tin trong Redux store
+        state.topicDetails = action.payload; 
       })
       .addCase(updateTopic.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
-      });
+      })
+      .addCase(fetchApprovalTopics.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchApprovalTopics.fulfilled, (state, action) => {
+        state.loading = false;
+        state.approvalTopics = action.payload; // ✅ Cập nhật danh sách mới
+      })
+      .addCase(fetchApprovalTopics.rejected, (state, action) => {
+        state.loading = false;
+        state.approvalTopics = []; // ✅ Xóa danh sách cũ khi có lỗi
+        state.error = action.payload as string;
+      })
+      .addCase(updateTopicStatus.fulfilled, (state, action) => {
+        if (state.topicDetails) {
+          state.topicDetails = { ...state.topicDetails, ...action.payload }; // ✅ Cập nhật dữ liệu mới ngay lập tức
+        }
+        state.loading = false;
+      })
+      
+      ;
   },
 });
-
+export const { resetApprovalTopics } = topicSlice.actions;
 export default topicSlice.reducer;

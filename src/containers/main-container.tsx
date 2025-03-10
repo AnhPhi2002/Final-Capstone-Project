@@ -39,9 +39,9 @@ import UsersPage from "@/pages/admin/user/user-listing/users-page";
 import { YearSemesterPage } from "@/pages/admin/year-semeter/year-semester-page";
 import LoginPage from "@/pages/auth/log-in-page";
 import { Route, Routes } from "react-router";
-import { TopicReviewPage } from "@/pages/examination-officer/topic-review/topic-review-page";
-import { TopicReviewListPage } from "@/pages/examination-officer/topic-review/topic-review-list-page";
-import TopicReviewDetail from "@/pages/examination-officer/topic-review/topic-review-detail";
+import { ReviewTopicPage } from "@/pages/examination-officer/topic-review/review-topic-page";
+import { ReviewTopicListPage } from "@/pages/examination-officer/topic-review/review-topic-list-page";
+import {ReviewTopicDetailPage} from "@/pages/examination-officer/topic-review/topic-detail/topic-detail-page";
 import { DeadineTopicPage } from "@/pages/admin/deadline-topic/deadine-topic-page";
 import { DeadineTopicDetailPage } from "@/pages/admin/deadline-topic/columns/deadine-topic-detail-page";
 import { ReviewSemesterPage } from "@/pages/admin/review-semester/review-semester-page";
@@ -56,9 +56,11 @@ import TopicStudentListDetail from "@/pages/student/topic-student/topic-student-
 import { CouncilMembersPage } from "@/pages/examination-officer/review-topic-council/columns-member/CouncilMembersPage";
 import { ApproveTopicPage } from "@/pages/mentor/approve-topic/approve-topic-page";
 import { ApproveTopicDetail } from "@/pages/mentor/approve-topic/columns/approve-topic-detail";
-import { ApproveTopicPage } from "@/pages/mentor/approve-topic/approve-topic-page";
-import { ApproveTopicDetail } from "@/pages/mentor/approve-topic/columns/approve-topic-detail";
-import { CouncilMembersPage } from "@/pages/examination-officer/review-topic-council/columns-member/CouncilMembersPage";
+import UpdateReviewTopicDetail from "@/pages/examination-officer/topic-review/topic-detail/update-topic-detail";
+// import { ApproveTopicPage } from "@/pages/mentor/approve-topic/approve-topic-page";
+// import { ApproveTopicDetail } from "@/pages/mentor/approve-topic/columns/approve-topic-detail";
+// import { CouncilMembersPage } from "@/pages/examination-officer/review-topic-council/columns-member/CouncilMembersPage";
+
 
 const MainContainter = () => {
   
@@ -101,18 +103,22 @@ const MainContainter = () => {
         <Route path="/topic/:semesterId" element={<TopicPage />} />
         <Route path="/topic-list" element={<TopicListPage />} /> 
         <Route path="/topic-list/:semesterId/submission/:submissionPeriodId" element={<TopicListPage />} />
+        <Route path="/topic-detail/:topicId" element={<TopicDetailPage />} />
+        <Route path="/topic-detail/:topicId/update" element={<UpdateTopicDetail />} /> 
+
 
 
         {/* <Route path="/topic-list/:semesterId/submission/:submissionId" element={<TopicDetail />} /> */}
         {/* <Route path="/topic-detail/:topicId" element={<TopicDetail />} />  */}
-        <Route path="/topic-detail/:topicId" element={<TopicDetailPage />} /> 
-        <Route path="/topic-detail/:topicId/update" element={<UpdateTopicDetail />} /> 
+        {/* <Route path="/review-topic-detail/:topicId" element={<TopicDetailPage />} />  */}
+        <Route path="/review-topic-detail/:topicId/update" element={<UpdateReviewTopicDetail />} /> 
 
-        <Route path="/topic-review-page" element={<TopicReviewPage />} />
-        <Route path="/topic-review-page/:semesterId" element={<TopicReviewPage />} />
-        <Route path="/topic-review-list" element={<TopicReviewListPage />} />
-        <Route path="/topic-review-list/:semesterId" element={<TopicReviewListPage />} />
-        <Route path="/topic-review-detail/:topicId" element={<TopicReviewDetail />} />
+        <Route path="/review-topic-page" element={<ReviewTopicPage />} />
+        <Route path="/review-topic-page/:semesterId" element={<ReviewTopicPage />} />
+        <Route path="/review-topic-list" element={<ReviewTopicListPage />} />
+        <Route path="/review-topic-list/:semesterId/submission/:submissionPeriodId" element={<ReviewTopicListPage />} />
+        <Route path="/review-topic-detail/:topicId" element={<ReviewTopicDetailPage />} />
+        
 
 
         <Route path="/timeline" element={<TimelinePage />} />

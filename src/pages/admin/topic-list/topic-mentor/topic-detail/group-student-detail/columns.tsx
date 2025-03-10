@@ -8,7 +8,6 @@ export interface GroupMember {
   id: string;
   groupId: string;
   studentId: string;
-  role: RoleType;
   joinedAt: string;
   leaveAt: string | null;
   leaveReason: string | null;
@@ -24,6 +23,10 @@ export interface GroupMember {
       specialty: string;
     };
   };
+  role:{
+    id: string;
+    name: RoleType;
+  }
 }
 
 export const columns: ColumnDef<GroupMember>[] = [
@@ -43,16 +46,16 @@ export const columns: ColumnDef<GroupMember>[] = [
     cell: ({ row }) => <div>{row.original.student.user.email}</div>,
   },
   {
-    accessorKey: "role",
+    accessorKey: "role.name",
     header: "Vai Trò",
     cell: ({ row }) => {
       const role = row.original.role;
       return (
         <Badge className={
-          role === "leader" ? "bg-blue-100 text-blue-600 hover:bg-blue-200" :
+          role.name === "leader" ? "bg-blue-100 text-blue-600 hover:bg-blue-200" :
           "bg-gray-100 text-gray-600 hover:bg-gray-200"
         }>
-          {role === "leader" ? "Trưởng Nhóm" : "Thành Viên"}
+          {role.name === "leader" ? "Trưởng Nhóm" : "Thành Viên"}
         </Badge>
       );
     },

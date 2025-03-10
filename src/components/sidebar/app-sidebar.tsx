@@ -154,13 +154,13 @@ const data = {
     },
     {
       title: "Xét duyệt đề tài",
-      url: "/topic-review-page",
+      url: "/review-topic-page",
       icon: ClipboardList,
       isActive: true,
       items: [
         {
           title: "Xét duyệt đề tài ",
-          url: "/topic-review-page",
+          url: "/review-topic-page",
         },
       
       ],
