@@ -10,18 +10,23 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Council } from "@/lib/api/types";
+import { useNavigate } from "react-router";
 import { DeleteReviewTopicCouncil } from "./delete-review-topic-council";
+
 import { UpdateReviewTopicCouncil } from "./update-review-topic-council";
-import { useNavigate } from "react-router"; // Import hook điều hướng
 
 type ActionMenuProps = {
   council: Council;
+  refetchData?: () => void;
 };
 
-export const ActionMenu: React.FC<ActionMenuProps> = ({ council }) => {
+export const ActionMenu: React.FC<ActionMenuProps> = ({
+  council,
+  refetchData,
+}) => {
   const navigate = useNavigate();
-  const [openDelete, setOpenDelete] = useState<boolean>(false);
-  const [openUpdate, setOpenUpdate] = useState<boolean>(false);
+  const [openUpdate, setOpenUpdate] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
 
   return (
     <>
@@ -34,16 +39,41 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({ council }) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => setOpenUpdate(true)}>Cập nhật Hội đồng</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate(`/review-topic-council-member/${council.id}`)}>Thành viên hội đồng</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpenDelete(true)} className="text-red-600">
+          <DropdownMenuItem onClick={() => setOpenUpdate(true)}>
+            Cập nhật Hội đồng
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() =>
+              navigate(`/review-topic-council-member/${council.id}`)
+            }
+          >
+            Thành viên hội đồng
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => setOpenDelete(true)}
+            className="text-red-600"
+          >
             Xóa Hội đồng
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* <DeleteReviewTopicCouncil open={openDelete} setOpen={setOpenDelete} councilId={council.id} /> */}
-      <UpdateReviewTopicCouncil open={openUpdate} setOpen={setOpenUpdate} council={council} />
+      {openDelete && (
+        <DeleteReviewTopicCouncil
+          open={openDelete}
+          setOpen={setOpenDelete}
+          lecturerId={council.id} // hoặc giá trị tương ứng nếu không phải là council.id
+        />
+      )}
+
+       {openUpdate && (
+        <UpdateReviewTopicCouncil
+          open={openUpdate}
+          setOpen={setOpenUpdate}
+          council={council}
+          refetchData={refetchData}
+        />
+      )}
     </>
   );
 };

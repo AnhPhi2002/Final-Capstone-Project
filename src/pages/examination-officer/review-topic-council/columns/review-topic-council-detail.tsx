@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Council } from "@/lib/api/types"; // Adjust the import path as necessary
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
@@ -20,9 +21,8 @@ export const ReviewTopicCouncilDetail = () => {
     }
   }, [dispatch, councilId]);
 
-  // const members = councilDetail?.members || [];
 
-  const table = useReactTable({
+  const table = useReactTable <Council>({
     data: councilDetail ? [councilDetail] : [],
     columns: columnsCouncils,
     getCoreRowModel: getCoreRowModel(),
@@ -38,12 +38,7 @@ export const ReviewTopicCouncilDetail = () => {
     <div className="flex flex-col h-screen">
       <Header title="Chi tiết hội đồng xét duyệt" href="/review-topic" currentPage="Quản lý hội đồng" />
       <div className="p-6 flex-1 overflow-auto">
-        {/* <ToolPanel table={table}/> */}
-        {councilDetail ? (
           <DataTable table={table} />
-        ) : (
-          <p className="text-center text-gray-500">Hội đồng chưa có thành viên.</p>
-        )}
       </div>
     </div>
   );

@@ -2,29 +2,11 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Toaster, toast } from "sonner";
-import { X } from "lucide-react";
+import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/api/redux/store";
 import { updateCouncil } from "@/lib/api/redux/councilSlice";
 import { Council } from "@/lib/api/types";
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 // ✅ Schema validation với Zod
 const formSchema = z.object({
@@ -54,8 +36,12 @@ export const UpdateReviewTopicCouncil: React.FC<UpdateReviewTopicCouncilProps> =
     defaultValues: {
       name: council.name || "",
       status: council.status || "INACTIVE",
-      councilStartDate: council.councilStartDate ? new Date(council.councilStartDate).toISOString().split("T")[0] : "",
-      councilEndDate: council.councilEndDate ? new Date(council.councilEndDate).toISOString().split("T")[0] : "",
+      councilStartDate: council.councilStartDate
+        ? new Date(council.councilStartDate).toISOString().split("T")[0]
+        : "",
+      councilEndDate: council.councilEndDate
+        ? new Date(council.councilEndDate).toISOString().split("T")[0]
+        : "",
     },
   });
 
@@ -64,16 +50,25 @@ export const UpdateReviewTopicCouncil: React.FC<UpdateReviewTopicCouncilProps> =
       form.reset({
         name: council.name || "",
         status: council.status || "INACTIVE",
-        councilStartDate: council.councilStartDate ? new Date(council.councilStartDate).toISOString().split("T")[0] : "",
-        councilEndDate: council.councilEndDate ? new Date(council.councilEndDate).toISOString().split("T")[0] : "",
+        councilStartDate: council.councilStartDate
+          ? new Date(council.councilStartDate).toISOString().split("T")[0]
+          : "",
+        councilEndDate: council.councilEndDate
+          ? new Date(council.councilEndDate).toISOString().split("T")[0]
+          : "",
       });
     }
   }, [open, council, form]);
 
   const onSubmit = async (data: any) => {
+    if (new Date(data.councilEndDate) <= new Date(data.councilStartDate)) {
+      toast.error("Ngày kết thúc phải lớn hơn ngày bắt đầu!");
+      return;
+    }
+
     const formattedData = {
       ...data,
-      councilStartDate: new Date(data.councilStartDate).toISOString(), // Format ISO
+      councilStartDate: new Date(data.councilStartDate).toISOString(),
       councilEndDate: new Date(data.councilEndDate).toISOString(),
     };
 
@@ -91,92 +86,82 @@ export const UpdateReviewTopicCouncil: React.FC<UpdateReviewTopicCouncilProps> =
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <Toaster position="top-right" richColors duration={3000} />
       <div className="bg-white rounded-lg p-6 w-full max-w-lg shadow-lg">
-        <div className="flex flex-col space-y-1">
-          <div className="flex justify-between items-center">
-            <h2 className="text-xl font-bold">Cập nhật hội đồng</h2>
-            <button onClick={() => setOpen(false)} className="text-gray-500 hover:text-gray-800">
-              <X className="w-5 h-5" />
+        <div className="flex justify-between items-center">
+          <h2 className="text-xl font-bold">Cập nhật hội đồng</h2>
+          <button onClick={() => setOpen(false)} className="text-gray-500 hover:text-gray-800">
+            ✖
+          </button>
+        </div>
+        <p className="text-gray-500 text-sm mb-4">
+          Nhập thông tin hội đồng bên dưới. Nhấn "Lưu" để xác nhận.
+        </p>
+
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          {/* Tên hội đồng */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Tên hội đồng</label>
+            <input
+              type="text"
+              {...form.register("name")}
+              className="w-full border border-gray-300 rounded-lg p-2"
+            />
+            {form.formState.errors.name && (
+              <p className="text-red-500 text-sm mt-1">{form.formState.errors.name.message}</p>
+            )}
+          </div>
+
+          {/* Trạng thái */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Trạng thái</label>
+            <select
+              {...form.register("status")}
+              className="w-full border border-gray-300 rounded-lg p-2"
+            >
+              <option value="ACTIVE">Hoạt động</option>
+              <option value="INACTIVE">Không hoạt động</option>
+            </select>
+          </div>
+
+          {/* Ngày bắt đầu */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Ngày bắt đầu</label>
+            <input
+              type="date"
+              {...form.register("councilStartDate")}
+              className="w-full border border-gray-300 rounded-lg p-2"
+            />
+            {form.formState.errors.councilStartDate && (
+              <p className="text-red-500 text-sm mt-1">{form.formState.errors.councilStartDate.message}</p>
+            )}
+          </div>
+
+          {/* Ngày kết thúc */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Ngày kết thúc</label>
+            <input
+              type="date"
+              {...form.register("councilEndDate")}
+              className="w-full border border-gray-300 rounded-lg p-2"
+            />
+            {form.formState.errors.councilEndDate && (
+              <p className="text-red-500 text-sm mt-1">{form.formState.errors.councilEndDate.message}</p>
+            )}
+          </div>
+
+          <div className="mt-6 flex justify-end space-x-4">
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg"
+            >
+              Hủy
+            </button>
+            <button type="submit" className="px-4 py-2 bg-black text-white rounded-lg">
+              Lưu cập nhật
             </button>
           </div>
-          <p className="text-gray-500 text-sm">Nhập thông tin hội đồng bên dưới. Nhấn "Lưu" để xác nhận.</p>
-        </div>
-
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
-            {/* Tên hội đồng */}
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tên hội đồng</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Nhập tên hội đồng" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Trạng thái */}
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Trạng thái</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Chọn trạng thái" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="ACTIVE">Hoạt động</SelectItem>
-                      <SelectItem value="INACTIVE">Không hoạt động</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Ngày bắt đầu */}
-            <FormField
-              control={form.control}
-              name="councilStartDate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Ngày bắt đầu</FormLabel>
-                  <FormControl>
-                    <Input type="date" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Ngày kết thúc */}
-            <FormField
-              control={form.control}
-              name="councilEndDate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Ngày kết thúc</FormLabel>
-                  <FormControl>
-                    <Input type="date" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="mt-6 flex justify-end space-x-4">
-              <Button type="button" variant="outline" onClick={() => setOpen(false)}>Hủy</Button>
-              <Button type="submit">Lưu cập nhật</Button>
-            </div>
-          </form>
-        </Form>
+        </form>
       </div>
     </div>
   );

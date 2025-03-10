@@ -4,7 +4,6 @@ import { Council } from "@/lib/api/types"
 interface DataTableProps {
   table: TableType<Council>;
 }
-
 export function DataTable({ table }: DataTableProps) {
   return (
     <div className="rounded-md border">
