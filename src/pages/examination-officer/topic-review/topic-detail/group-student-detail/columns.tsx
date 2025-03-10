@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
-import { Action } from "./action"; // Import component Action
+// import { Action } from "./action"; // Import component Action
 
 export type RoleType = "leader" | "member";
 
@@ -8,7 +8,6 @@ export interface GroupMember {
   id: string;
   groupId: string;
   studentId: string;
-  // role: RoleType;
   joinedAt: string;
   leaveAt: string | null;
   leaveReason: string | null;
@@ -24,10 +23,10 @@ export interface GroupMember {
       specialty: string;
     };
   };
-    role:{
-      id: string;
-      name: RoleType;
-    }
+  role:{
+    id: string;
+    name: RoleType;
+  }
 }
 
 export const columns: ColumnDef<GroupMember>[] = [
@@ -66,16 +65,7 @@ export const columns: ColumnDef<GroupMember>[] = [
     header: "Ngành Học",
     cell: ({ row }) => <div>{row.original.student.user.profession}</div>,
   },
-  {
-    accessorKey: "student.user.specialty",
-    header: "Chuyên Ngành",
-    cell: ({ row }) => <div>{row.original.student.user.specialty}</div>,
-  },
-  {
-    accessorKey: "joinedAt",
-    header: "Ngày Tham Gia",
-    cell: ({ row }) => <div>{new Date(row.original.joinedAt).toLocaleString()}</div>,
-  },
+
   {
     accessorKey: "status",
     header: "Trạng Thái",
@@ -92,10 +82,5 @@ export const columns: ColumnDef<GroupMember>[] = [
         </Badge>
       );
     },
-  },
-  {
-    id: "actions",
-    header: "Hành Động",
-    cell: ({ row }) => <Action groupId={row.original.groupId} member={row.original} />,
   },
 ];

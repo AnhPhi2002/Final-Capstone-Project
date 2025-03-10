@@ -37,9 +37,17 @@ export const CardSemester: React.FC<CardSemesterProps> = ({ data, submissionRoun
     return foundYear ? foundYear.year : "Unknown Year";
   };
 
-  const handleCardClick = (id: string) => {
-    navigate(`/topic-review-list/${id}`);
+  const handleCardClick = (semesterId: string) => {
+    // Tìm vòng nộp có `semesterId` tương ứng
+    const submissionRound = submissionRounds.find(
+      (round) => round.semesterId === semesterId
+    );
+  
+    if (submissionRound) {
+      navigate(`/review-topic-list/${semesterId}/submission/${submissionRound.id}`);
+    }
   };
+  
 
   const paginatedData = filteredSemesters.slice(
     (currentPage - 1) * itemsPerPage,
