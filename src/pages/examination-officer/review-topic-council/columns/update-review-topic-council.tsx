@@ -58,7 +58,7 @@ export const UpdateReviewTopicCouncil: React.FC<UpdateReviewTopicCouncilProps> =
           : "",
       });
     }
-  }, [open, council, form]);
+  }, []);
 
   const onSubmit = async (data: any) => {
     if (new Date(data.councilEndDate) <= new Date(data.councilStartDate)) {
