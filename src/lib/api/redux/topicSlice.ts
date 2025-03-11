@@ -37,7 +37,7 @@ export const fetchTopics = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosClient.get(`/topics/semester/${semesterId}`, {
+      const response = await axiosClient.get(`/topics/semester/${semesterId}?semesterId=${semesterId}`, {
         params: { majorId }, // Thêm `majorId` vào params nếu có
       });
       return response.data.data as Topic[];

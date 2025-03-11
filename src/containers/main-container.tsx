@@ -57,6 +57,7 @@ import { CouncilMembersPage } from "@/pages/examination-officer/review-topic-cou
 import { ApproveTopicPage } from "@/pages/mentor/approve-topic/approve-topic-page";
 import { ApproveTopicDetail } from "@/pages/mentor/approve-topic/columns/approve-topic-detail";
 import UpdateReviewTopicDetail from "@/pages/examination-officer/topic-review/topic-detail/update-topic-detail";
+import { TopicStudentList } from "@/pages/student/topic-student/topic-student-list";
 // import { ApproveTopicPage } from "@/pages/mentor/approve-topic/approve-topic-page";
 // import { ApproveTopicDetail } from "@/pages/mentor/approve-topic/columns/approve-topic-detail";
 // import { CouncilMembersPage } from "@/pages/examination-officer/review-topic-council/columns-member/CouncilMembersPage";
@@ -147,7 +148,8 @@ const MainContainter = () => {
         <Route path="/topic-student" element={<TopicStudentPage />} />
         <Route path="/topic-student/:semesterId" element={<TopicStudentPage />} />
         <Route path="/topic-student-detail" element={<TopicStudentListDetail />} /> 
-        <Route path="/topic-student-detail/:topicId" element={<TopicStudentListDetail />} /> 
+        <Route path="/topic-student-detail/:semesterId/:topicId" element={<TopicStudentListDetail />} /> 
+        <Route path="/topic-student-list/:semesterId" element={<TopicStudentList />} />
 
         <Route path="/approve-topic" element={<ApproveTopicPage />} />
         <Route path="/approve-topic-detail" element={<ApproveTopicDetail />} />
