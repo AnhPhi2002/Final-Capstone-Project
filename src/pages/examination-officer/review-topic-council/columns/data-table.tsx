@@ -1,10 +1,14 @@
+import { memo } from "react";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import { flexRender, type Table as TableType } from "@tanstack/react-table";
-import { Council } from "@/lib/api/types"
+import { Council } from "@/lib/api/types";
+
 interface DataTableProps {
   table: TableType<Council>;
 }
-export function DataTable({ table }: DataTableProps) {
+
+export const DataTable = memo(function DataTable({ table }: DataTableProps) {
+  console.log("DataTable re-rendered"); // Debug
   return (
     <div className="rounded-md border">
       <Table>
@@ -39,4 +43,4 @@ export function DataTable({ table }: DataTableProps) {
       </Table>
     </div>
   );
-}
+});

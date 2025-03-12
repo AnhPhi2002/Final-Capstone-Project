@@ -44,7 +44,7 @@ import { ReviewTopicListPage } from "@/pages/examination-officer/topic-review/re
 import {ReviewTopicDetailPage} from "@/pages/examination-officer/topic-review/topic-detail/topic-detail-page";
 import { DeadineTopicPage } from "@/pages/admin/deadline-topic/deadine-topic-page";
 import { DeadineTopicDetailPage } from "@/pages/admin/deadline-topic/columns/deadine-topic-detail-page";
-import { ReviewSemesterPage } from "@/pages/admin/review-semester/review-semester-page";
+import { ReviewSemesterPage } from "@/pages/admin/semesters/review-semester/review-semester-page";
 import { TopicDetailPage } from "@/pages/admin/topic-list/topic-mentor/topic-detail/topic-detail-page";
 import UpdateTopicDetail from "@/pages/admin/topic-list/topic-mentor/topic-detail/update-topic-detail";
 import ImportMentorPage from "@/pages/admin/import-mentor/import-mentor-page";

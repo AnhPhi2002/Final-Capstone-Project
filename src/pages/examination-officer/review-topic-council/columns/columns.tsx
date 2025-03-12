@@ -1,3 +1,4 @@
+// src/components/columns.tsx
 import { ColumnDef } from "@tanstack/react-table";
 import { Council } from "@/lib/api/types";
 import { ActionMenu } from "./action";
@@ -43,9 +44,8 @@ export const columnsCouncils: ColumnDef<Council, any>[] = [
   {
     id: "actions",
     header: "Hành động",
-    cell: ({ row, table }) => <ActionMenu 
-    council={row.original}
-    refetchData={table.options.meta?.refetchData} />, 
-
+    cell: ({ row, table }) => (
+      <ActionMenu council={row.original} refetchData={table.options.meta?.refetchData} />
+    ),
   },
 ];

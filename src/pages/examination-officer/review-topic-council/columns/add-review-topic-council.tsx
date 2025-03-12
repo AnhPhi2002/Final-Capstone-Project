@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -40,6 +40,7 @@ const formSchema = z.object({
 
 export const AddReviewTopicCouncil = () => {
   const [open, setOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null); // Tham chiếu đến nút mở modal
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -56,12 +57,22 @@ export const AddReviewTopicCouncil = () => {
     setOpen(false);
   };
 
+  // Trả focus về nút mở modal khi đóng
+  const handleOpenChange = (isOpen: boolean) => {
+    if (!isOpen && triggerRef.current) {
+      triggerRef.current.focus();
+    }
+    setOpen(isOpen);
+  };
+
   return (
     <div>
       <Toaster position="top-right" richColors duration={3000} />
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogTrigger asChild>
-          <Button className="bg-black text-white">Thêm hội đồng xét duyệt</Button>
+          <Button ref={triggerRef} className="bg-black text-white">
+            Thêm hội đồng xét duyệt
+          </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
@@ -71,10 +82,8 @@ export const AddReviewTopicCouncil = () => {
             </DialogDescription>
           </DialogHeader>
 
-          {/* Form */}
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              {/* Nhập tên hội đồng */}
               <FormField
                 control={form.control}
                 name="councilName"
@@ -89,7 +98,6 @@ export const AddReviewTopicCouncil = () => {
                 )}
               />
 
-              {/* Chọn năm học */}
               <FormField
                 control={form.control}
                 name="year"
@@ -112,7 +120,6 @@ export const AddReviewTopicCouncil = () => {
                 )}
               />
 
-              {/* Chọn kỳ học */}
               <FormField
                 control={form.control}
                 name="semester"
@@ -135,7 +142,6 @@ export const AddReviewTopicCouncil = () => {
                 )}
               />
 
-              {/* Footer */}
               <DialogFooter>
                 <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                   Hủy

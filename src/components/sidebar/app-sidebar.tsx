@@ -93,7 +93,7 @@ const data = {
           url: "/mentor-page",
         },
         {
-          title: "D.s đợt đề tài",
+          title: "D.s h.đ xét duyệt đề tài",
           url: "/review-topic-council",
         },
       ],

@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosClient } from "@/lib/api/config/axios-client";
-import { Council } from "../types";
+import { Council, CouncilMember } from "../types";
 
 interface CouncilState {
   data: Council[];
@@ -18,7 +18,6 @@ const initialState: CouncilState = {
   error: null,
 };
 
-// ✅ Fetch danh sách hội đồng theo submissionPeriodId
 export const fetchCouncils = createAsyncThunk(
   "councils/fetchCouncils",
   async (submissionPeriodId: string, { rejectWithValue }) => {
@@ -33,7 +32,6 @@ export const fetchCouncils = createAsyncThunk(
   }
 );
 
-// ✅ Fetch chi tiết hội đồng theo councilId
 export const fetchCouncilDetail = createAsyncThunk(
   "council/fetchCouncilDetail",
   async (councilId: string, { rejectWithValue }) => {
@@ -48,7 +46,7 @@ export const fetchCouncilDetail = createAsyncThunk(
 
 export const createCouncil = createAsyncThunk(
   "councils/createCouncil",
-  async (newCouncil: Record<string, any>, { rejectWithValue }) => {
+  async (newCouncil: Partial<Council>, { rejectWithValue }) => {
     try {
       const response = await axiosClient.post(`/council-topic`, newCouncil);
       return response.data.data;
@@ -60,33 +58,51 @@ export const createCouncil = createAsyncThunk(
 
 export const updateCouncil = createAsyncThunk(
   "councils/updateCouncil",
-  async ({ councilId, updatedData }: { councilId: string; updatedData: Partial<Council> }, { rejectWithValue }) => {
+  async (
+    { councilId, updatedData }: { councilId: string; updatedData: Partial<Council> },
+    { rejectWithValue }
+  ) => {
     try {
+      console.log("Updating council with data:", updatedData);
       const response = await axiosClient.put(`/council-topic/${councilId}`, updatedData);
+      console.log("API response:", response.data);
       return response.data.data as Council;
     } catch (error: any) {
+      console.error("Update council error:", error);
       return rejectWithValue(error.response?.data?.message || "Không thể cập nhật hội đồng!");
+    }
+  }
+);
+
+export const deleteCouncil = createAsyncThunk(
+  "councils/deleteCouncil",
+  async (councilId: string, { rejectWithValue }) => {
+    try {
+      await axiosClient.delete(`/council-topic/${councilId}`);
+      return councilId;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Không thể xóa hội đồng!");
     }
   }
 );
 
 export const addCouncilMember = createAsyncThunk(
   "councils/addCouncilMember",
-  async ({ councilId, email }: { councilId: string; email: string }, { rejectWithValue }) => {
+  async (
+    { councilId, email }: { councilId: string; email: string },
+    { rejectWithValue }
+  ) => {
     try {
-      const response = await axiosClient.post(`/council-topic/members?councilId=${councilId}`, {
-        email,
-        role: "reviewer", // Chỉ có 1 role
-      });
-      return response.data;
+      const response = await axiosClient.post(
+        `/council-topic/members?councilId=${councilId}`,
+        { email, role: "reviewer" }
+      );
+      return response.data.data as CouncilMember;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Không thể thêm thành viên vào hội đồng!");
     }
   }
 );
-
-
-
 
 const councilSlice = createSlice({
   name: "councils",
@@ -117,7 +133,10 @@ const councilSlice = createSlice({
       })
       .addCase(fetchCouncilDetail.fulfilled, (state, action) => {
         state.loadingDetail = false;
-        state.councilDetail = action.payload;
+        console.log("CouncilDetail updated with:", action.payload); // Debug
+        if (!state.councilDetail || JSON.stringify(state.councilDetail) !== JSON.stringify(action.payload)) {
+          state.councilDetail = action.payload;
+        }
       })
       .addCase(fetchCouncilDetail.rejected, (state, action) => {
         state.loadingDetail = false;
@@ -129,7 +148,7 @@ const councilSlice = createSlice({
       })
       .addCase(createCouncil.fulfilled, (state, action) => {
         state.loading = false;
-        state.data.push(action.payload); // Thêm hội đồng mới vào danh sách
+        state.data.push(action.payload);
       })
       .addCase(createCouncil.rejected, (state, action) => {
         state.loading = false;
@@ -141,12 +160,44 @@ const councilSlice = createSlice({
       })
       .addCase(updateCouncil.fulfilled, (state, action) => {
         state.loading = false;
-        state.councilDetail = action.payload;
+        const updatedCouncil = action.payload;
+        console.log("Council updated with:", updatedCouncil); // Debug
         state.data = state.data.map((council) =>
-          council.id === action.payload.id ? action.payload : council
+          council.id === updatedCouncil.id ? updatedCouncil : council
         );
+        if (state.councilDetail?.id === updatedCouncil.id) {
+          if (JSON.stringify(state.councilDetail) !== JSON.stringify(updatedCouncil)) {
+            state.councilDetail = updatedCouncil;
+          }
+        }
       })
       .addCase(updateCouncil.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(deleteCouncil.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteCouncil.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = state.data.filter((council) => council.id !== action.payload);
+      })
+      .addCase(deleteCouncil.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(addCouncilMember.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addCouncilMember.fulfilled, (state, action) => {
+        state.loading = false;
+        if (state.councilDetail) {
+          state.councilDetail.members.push(action.payload);
+        }
+      })
+      .addCase(addCouncilMember.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });
