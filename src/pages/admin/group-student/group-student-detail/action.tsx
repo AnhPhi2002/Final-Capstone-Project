@@ -21,9 +21,10 @@ import { GroupMember } from "@/lib/api/redux/groupDetailSlice";
 interface ActionProps {
   groupId: string;
   member: GroupMember;
+  semesterId: string;
 }
 
-export const Action = ({ groupId, member }: ActionProps) => {
+export const Action = ({ groupId, semesterId, member }: ActionProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const setIsProcessing = useState(false)[1];
   // const [isProcessing, setIsProcessing] = useState(false);
@@ -32,7 +33,7 @@ export const Action = ({ groupId, member }: ActionProps) => {
     try {
       await dispatch(changeLeader({ groupId, newLeaderId: member.studentId })).unwrap();
       toast.success(`Đã đổi ${member.student.user.username} thành Trưởng nhóm!`);
-      dispatch(fetchGroupDetail(groupId));
+      dispatch(fetchGroupDetail({ groupId, semesterId }));
     } catch (error: any) {
       toast.error(error?.message || "Lỗi khi đổi vai trò!");
     } finally {
@@ -65,7 +66,7 @@ export const Action = ({ groupId, member }: ActionProps) => {
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>Thay đổi vai trò</DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
-            {member.role !== "leader" && <DropdownMenuItem onClick={handleChangeRole}>Trưởng nhóm</DropdownMenuItem>}
+            {member.role.name !== "leader" && <DropdownMenuItem onClick={handleChangeRole}>Trưởng nhóm</DropdownMenuItem>}
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSeparator />

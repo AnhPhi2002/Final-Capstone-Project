@@ -11,16 +11,16 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 export const GroupStudentDetail = () => {
-  const { groupId } = useParams<{ groupId: string }>();
+  const { groupId, semesterId } = useParams<{ groupId: string; semesterId: string }>();
   const dispatch = useAppDispatch();
   const { group, loading, error } = useAppSelector((state) => state.groupDetail);
   const [email, setEmail] = useState("");
 
   useEffect(() => {
-    if (groupId) {
-      dispatch(fetchGroupDetail(groupId));
+    if (groupId && semesterId) {
+      dispatch(fetchGroupDetail({ groupId, semesterId }));
     }
-  }, [dispatch, groupId]);
+  }, [dispatch, groupId, semesterId]);
 
   const handleInvite = async () => {
     if (!email.trim()) {

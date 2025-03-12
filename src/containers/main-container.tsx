@@ -87,7 +87,7 @@ const MainContainter = () => {
         <Route path="/group-student" element={<GroupStudentPage />} />
         <Route path="/group-student/:semesterId" element={<GroupStudentCardPage />} />
         <Route path="/group-student-detail" element={<GroupStudentDetail />} />
-        <Route path="/group-student-detail/:groupId" element={<GroupStudentDetail />} />
+        <Route path="/group-student-detail/:groupId/:semesterId" element={<GroupStudentDetail />} />
 
         <Route path="/random-group-student-page" element={<RandomGroupStudentPage />} />
         <Route path="/random-group-student-page/:semesterId" element={<RandomGroupStudentPage />} />

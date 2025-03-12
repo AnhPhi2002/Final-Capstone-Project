@@ -56,9 +56,16 @@ const initialState: GroupDetailState = {
 // **🔹 Fetch nhóm theo ID**
 export const fetchGroupDetail = createAsyncThunk(
   "groupDetail/fetchGroupDetail",
-  async (groupId: string, { rejectWithValue }) => {
+  async ({ groupId, semesterId }: { groupId: string; semesterId: string }, { rejectWithValue }) => {
     try {
-      const response = await axiosClient.get(`/groups/info/${groupId}`);
+      const response = await axiosClient({
+        url: `/groups/info/${groupId}`,
+        method: "GET", // ✅ Ghi đè phương thức thành GET
+        data: { semesterId }, // 🚀 Truyền body dù là GET request
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Lỗi khi tải dữ liệu nhóm!");

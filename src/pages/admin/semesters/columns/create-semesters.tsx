@@ -161,6 +161,7 @@ export const CreateSemesters = () => {
                   <SelectGroup>
                     <SelectItem value="ACTIVE">Hoạt động </SelectItem>
                     <SelectItem value="COMPLETE">Không hoạt động </SelectItem>
+                    <SelectItem value="UPCOMING">Chờ đợi</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>

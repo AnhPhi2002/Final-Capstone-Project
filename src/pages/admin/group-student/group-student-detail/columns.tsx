@@ -1,6 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Action } from "./action"; // Import component Action
+import { useParams } from "react-router";
 
 export type RoleType = "leader" | "member";
 
@@ -96,6 +97,9 @@ export const columns: ColumnDef<GroupMember>[] = [
   {
     id: "actions",
     header: "Hành Động",
-    cell: ({ row }) => <Action groupId={row.original.groupId} member={row.original} />,
+    cell: ({ row }) => {
+      const { semesterId } = useParams(); // ✅ Lấy semesterId từ URL
+      return <Action groupId={row.original.groupId} semesterId={semesterId || ""} member={row.original} />;
+    },
   },
 ];

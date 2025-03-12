@@ -134,6 +134,7 @@ export const UpdateSemester: React.FC<UpdateSemesterProps> = ({
             >
               <option value="ACTIVE">Hoạt động </option>
               <option value="COMPLETE">Không hoạt động </option>
+              <option value="UPCOMING">Chờ đợi </option>
             </select>
           </div>
         </div>
