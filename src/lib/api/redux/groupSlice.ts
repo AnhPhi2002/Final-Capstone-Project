@@ -53,7 +53,7 @@ export const fetchGroupsBySemester = createAsyncThunk(
   "groups/fetchBySemester",
   async (semesterId: string, { rejectWithValue }) => {
     try {
-      const response = await axiosClient.get(`/groups/semester?semesterId=${semesterId}`);
+      const response = await axiosClient.get(`/groups/semester/${semesterId}`);
       return response.data.groups; // Trả về danh sách nhóm
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Lỗi khi lấy danh sách nhóm!");
@@ -66,7 +66,7 @@ export const createGroup = createAsyncThunk(
   "groups/create",
   async (semesterId: string, { rejectWithValue }) => {
     try {
-      const response = await axiosClient.post("/groups/create", { semesterId });
+      const response = await axiosClient.post(`/groups/create?semesterId=${semesterId}`, { semesterId });
       return response.data.group; // Trả về nhóm mới được tạo
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Lỗi khi tạo nhóm!");

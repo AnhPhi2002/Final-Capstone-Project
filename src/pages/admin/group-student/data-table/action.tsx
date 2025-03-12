@@ -27,7 +27,7 @@ export const Action = ({ group }: { group: any }) => {
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <Link to={`/group-student-detail/${group.id}`}>Xem Chi Tiết</Link>
+          <Link to={`/group-student-detail/${group.id}/${group.semesterId}`}>Xem Chi Tiết</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="text-red-500">Xóa Nhóm</DropdownMenuItem>
