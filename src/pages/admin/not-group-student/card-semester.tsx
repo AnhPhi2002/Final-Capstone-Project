@@ -30,7 +30,7 @@ export const CardSemester: React.FC<CardSemesterProps> = ({ data }) => {
 
   const handleCardClick = (id: string) => {
 
-    navigate(`/not-group-student/${id}`); // ✅ Đảm bảo đường dẫn đúng
+    navigate(`/academic/not-group-student/${id}`); // ✅ Đảm bảo đường dẫn đúng
   };
 
   const paginatedData = data.slice(

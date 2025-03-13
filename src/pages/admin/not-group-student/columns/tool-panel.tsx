@@ -15,21 +15,12 @@ const ToolPanel = () => {
       <div className="col-span-3"></div>
 
       <div className="col-span-3">
-        {/* <Select>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Trạng thái sinh viên" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="*">Tất cả</SelectItem>
-            <SelectItem value="Qualified">Đạt</SelectItem>
-            <SelectItem value="Not Qualified">Không đạt</SelectItem>
-          </SelectContent>
-        </Select> */}
+ 
       </div>
 
       <div className="col-span-2 flex">
         <Link
-          to={`/random-group-student-page${semesterId ? `/${semesterId}` : ""}`}
+          to={`/academic/random-group-student-page${semesterId ? `/${semesterId}` : ""}`}
           className="w-full"
         >
           <Button className="w-full flex gap-3 items-center">

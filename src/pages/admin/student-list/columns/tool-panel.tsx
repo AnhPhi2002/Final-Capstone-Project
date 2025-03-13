@@ -37,7 +37,7 @@ const ToolPanel = () => {
         </Select>
       </div>
       <div className="col-span-2 flex">
-        <Link to={`/import-student/${semesterId}`} className="w-full">
+        <Link to={`/academic/import-student/${semesterId}`} className="w-full">
           <Button className="w-full flex gap-3 items-center">Import</Button>
         </Link>
       </div>

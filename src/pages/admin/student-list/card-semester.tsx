@@ -29,7 +29,7 @@ export const CardSemester: React.FC<CardSemesterProps> = ({ data }) => {
   };
 
   const handleCardClick = (id: string) => {
-    navigate(`/student/${id}`);
+    navigate(`/academic/student/${id}`);
   };
 
   const paginatedData = data.slice(

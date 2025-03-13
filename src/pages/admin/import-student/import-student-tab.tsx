@@ -41,7 +41,7 @@ const ImportStudentTab = () => {
       await dispatch(importStudents({ formData })).unwrap();
       toast.success("Import thành công!");
       setTimeout(() => {
-        navigate(`/student/${semesterId}`);
+        navigate(`/academic/student/${semesterId}`);
         dispatch(resetState());
       }, 2000);
     } catch (err: any) {

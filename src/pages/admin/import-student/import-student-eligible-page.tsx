@@ -50,7 +50,7 @@ const ImportStudentEligibleTab = () => {
       await dispatch(importConditions({ formData })).unwrap();
       toast.success("Import danh sách đủ điều kiện thành công!");
       setTimeout(() => {
-              navigate(`/student/${semesterId}`);
+              navigate(`/academic/student/${semesterId}`);
               dispatch(resetState());
             }, 2000);
     } catch (err: any) {
