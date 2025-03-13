@@ -4,13 +4,9 @@ import {
   Calendar,
   ChartPie,
   CircleUserRound,
-  
   ClipboardList,
-  
   List,
-  
   NotebookPen,
-  
 } from "lucide-react";
 
 import { NavMain } from "./nav-main";
@@ -26,7 +22,6 @@ import {
 } from "@/components/ui/sidebar";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/api/redux/store";
-
 
 const data = {
   navMain: [
@@ -135,7 +130,6 @@ const data = {
         {
           title: "Đề tài ",
           url: "/topic",
-        
         },
       ],
     },
@@ -149,7 +143,6 @@ const data = {
           title: "Phê duyệt",
           url: "/approve-topic",
         },
-    
       ],
     },
     {
@@ -162,7 +155,6 @@ const data = {
           title: "Xét duyệt đề tài ",
           url: "/review-topic-page",
         },
-      
       ],
     },
 
@@ -172,7 +164,7 @@ const data = {
       icon: CircleUserRound,
       isActive: true,
       items: [
-       {
+        {
           title: "Tài khoản",
           url: "/user",
         },
@@ -208,42 +200,156 @@ const data = {
     },
   ],
 };
+const adminMenu = {
+  navMain: [
+    {
+      title: "Admin config",
+      url: "/admin/admin-config",
+      icon: CircleUserRound,
+      isActive: true,
+      items: [
+        {
+          title: "Cấu hình",
+          url: "/admin/admin-config",
+        },
+      ],
+    },
+    {
+      title: "Người dùng ",
+      url: "/admin/user",
+      icon: CircleUserRound,
+      isActive: true,
+      items: [
+        {
+          title: "Tài khoản",
+          url: "/admin/user",
+        },
+        {
+          title: "Hội đồng xét duyệt",
+          url: "",
+        },
+        {
+          title: "Hội đồng review",
+          url: "",
+        },
+        {
+          title: "Giảng viên hướng dẫn",
+          url: "",
+        },
+        {
+          title: "Sinh viên",
+          url: "",
+        },
+      ],
+    },
+  ],
+};
+const academicMenu = {
+  navMain: [
+    {
+      title: "Năm học và kỳ ",
+      url: "/academic/semester",
+      icon: Calendar,
+      isActive: true,
+      items: [
+        {
+          title: "D.s năm học ",
+          url: "/academic/year-semester",
+        },
+        {
+          title: "D.s học kỳ ",
+          url: "/academic/semester",
+        },
+      ],
+    },
+    {
+      title: "Danh sách sinh viên ",
+      url: "/academic/council-member",
+      icon: List,
+      isActive: true,
+      items: [
+        {
+          title: "D.s sinh viên KLTN ",
+          url: "/academic/student",
+        },
+        {
+          title: "D.s nhóm KLTN",
+          url: "/academic/group-student",
+        },
+        {
+          title: "D.s chưa có nhóm KLTN",
+          url: "/academic/not-group-student",
+        },
 
-
+      ],
+    },
+  ],
+};
+const graduationThesisMenu = {
+  navMain: [
+    {
+      title: "Năm học và kỳ ",
+      url: "/academic/semester",
+      icon: Calendar,
+      isActive: true,
+      items: [
+        {
+          title: "D.s năm học ",
+          url: "/academic/year-semester",
+        },
+        {
+          title: "D.s học kỳ ",
+          url: "/academic/semester",
+        },
+      ],
+    },
+  ],
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const user = useSelector((state: RootState) => state.auth.user); 
+  const user = useSelector((state: RootState) => state.auth.user);
+  console.log("user", user);
+  const formattedUser = user
+    ? {
+        name: user.fullName || user.username || "Người dùng",
+        email: user.email,
+        avatar: user.avatar || "/default-avatar.png",
+      }
+    : null;
 
-    const formattedUser = user
-      ? {
-          name: user.fullName || user.username || "Người dùng",
-          email: user.email,
-          avatar: user.avatar || "/default-avatar.png", 
-        }
-      : null;
-  
-    return (
-      <Sidebar collapsible="icon" {...props} className="bg-white">
-        <SidebarHeader>
-          <SidebarMenu>
-            <SidebarMenuItem className="flex gap-2">
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-zinc-700 text-sidebar-primary-foreground">
-                <img src={Logo} className="size-4" />
-              </div>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">FCPRIMS</span>
-                <span className="truncate text-xs">HCMC FU</span>
-              </div>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarHeader>
-        <SidebarContent>
-          <NavMain items={data.navMain} />
-        </SidebarContent>
-        <SidebarFooter>
-          {formattedUser ? <NavUser user={formattedUser} /> : <p>Đang tải...</p>}
-        </SidebarFooter>
-        <SidebarRail />
-      </Sidebar>
-    );
-  }
+  return (
+    <Sidebar collapsible="icon" {...props} className="bg-white">
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem className="flex gap-2">
+            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-zinc-700 text-sidebar-primary-foreground">
+              <img src={Logo} className="size-4" />
+            </div>
+            <div className="grid flex-1 text-left text-sm leading-tight">
+              <span className="truncate font-semibold">FCPRIMS</span>
+              <span className="truncate text-xs">HCMC FU</span>
+            </div>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+      <SidebarContent>
+        {user?.roles.find((role) => role.name === "admin") ? (
+          <NavMain items={adminMenu.navMain} />
+        ) : null}
+        {user?.roles.find((role) => role.name === "academic_officer") ? (
+          <NavMain items={academicMenu.navMain} />
+        ) 
+        : null}
+          {user?.roles.find((role) => role.name === "graduation_thesis_manager") ? (
+          <NavMain items={graduationThesisMenu.navMain} />
+        ) 
+        : null}
+        {/* <NavMain items={data.navMain} /> */}
+      </SidebarContent>
+      <SidebarFooter>
+        {formattedUser ? <NavUser user={formattedUser} /> : <p>Đang tải...</p>}
+      </SidebarFooter>
+      <SidebarRail />
+    </Sidebar>
+  );
+}

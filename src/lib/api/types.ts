@@ -62,30 +62,6 @@ export interface Council {
 }
 
 
-
-// export type StudentNotGroup = {
-//   id: string;
-//   studentCode: string;
-//   majorId: string;
-//   specializationId: string;
-//   isEligible: boolean;
-//   personalEmail?: string | null;
-//   status: string;
-//   user: {
-//     id: string;
-//     username: string;
-//     email: string;
-//   };
-//   major: {
-//     id: string;
-//     name: string;
-//   };
-//   specialization: {
-//     id: string;
-//     name: string;
-//   };
-// };
-
 export interface SubmissionRound {
   id: string;
   semesterId: string;
