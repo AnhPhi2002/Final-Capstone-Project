@@ -19,7 +19,7 @@ export const fetchMentorsBySemesterId = createAsyncThunk(
     async (semesterId: string, { rejectWithValue }) => {
       try {
         const response = await axiosClient.get(`/import/lecturers?semesterId=${semesterId}`);
-        console.log("API response:", response.data); // Kiểm tra API trả về gì
+
         return response.data; 
       } catch (error: any) {
         return rejectWithValue(error.response?.data?.message || "Không thể lấy danh sách mentor");

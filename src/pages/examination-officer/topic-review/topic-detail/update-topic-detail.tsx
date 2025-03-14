@@ -12,7 +12,7 @@ import { fetchTopicDetail, updateTopicStatus } from "@/lib/api/redux/topicSlice"
 import { toast } from "sonner";
 
 export default function UpdateReviewTopicDetail() {
-  const { topicId } = useParams();
+  const { topicId, semesterId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
@@ -29,10 +29,10 @@ export default function UpdateReviewTopicDetail() {
   const statusOptions = ["PENDING", "APPROVED", "REJECTED"];
 
   useEffect(() => {
-    if (topicId) {
-      dispatch(fetchTopicDetail(topicId));
+    if (topicId && semesterId) {
+      dispatch(fetchTopicDetail({topicId, semesterId}));
     }
-  }, [dispatch, topicId]);
+  }, [dispatch, topicId, semesterId]);
 
   useEffect(() => {
     if (topicDetails) {
@@ -54,19 +54,19 @@ export default function UpdateReviewTopicDetail() {
   };
 
   const handleUpdate = async () => {
-    if (!topicId || topicId === ":topicId") {
+    if (!topicId || topicId === ":topicId" || !semesterId) {
       toast.error("Lỗi: topicId không hợp lệ!");
       return;
     }
   
     try {
-      await dispatch(updateTopicStatus({ topicId, updatedData: formData })).unwrap();
+      await dispatch(updateTopicStatus({ topicId, updatedData: formData})).unwrap();
       toast.success("Cập nhật trạng thái thành công!");
   
 
-      dispatch(fetchTopicDetail(topicId));
+      dispatch(fetchTopicDetail({topicId, semesterId})).unwrap();;
   
-      navigate(`/review-topic-detail/${topicId}`); 
+      navigate(`/examination/review-topic-detail/${topicId}/${semesterId}`); 
     } catch (err: any) {
       toast.error(err || "Có lỗi xảy ra khi cập nhật trạng thái.");
     }

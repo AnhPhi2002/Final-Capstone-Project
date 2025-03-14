@@ -13,7 +13,7 @@ import { fetchTopicDetail, updateTopic } from "@/lib/api/redux/topicSlice";
 import { toast } from "sonner";
 
 export default function UpdateTopicDetail() {
-  const { topicId } = useParams();
+  const { topicId, semesterId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
@@ -32,13 +32,11 @@ export default function UpdateTopicDetail() {
 
   // Khi component mount, fetch topic detail nếu chưa có dữ liệu
   useEffect(() => {
-    if (topicId) {
-      console.log("📌 Fetching topicDetail với topicId:", topicId);
-      dispatch(fetchTopicDetail(topicId));
-    } else {
-      console.error("❌ Không có topicId, không thể fetch dữ liệu!");
+    if (topicId && semesterId) {
+      console.log("📡 Fetching topic detail:", topicId, semesterId);
+      dispatch(fetchTopicDetail({ topicId, semesterId }));
     }
-  }, [dispatch, topicId]);
+  }, [dispatch, topicId, semesterId]);
 
   // Cập nhật state khi topicDetails thay đổi
   useEffect(() => {
@@ -55,25 +53,24 @@ export default function UpdateTopicDetail() {
   }, [topicDetails]);
 
   // Xử lý nhập liệu
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Xử lý cập nhật đề tài
   const handleUpdate = async () => {
-    if (!topicId) {
-      console.error("❌ Không có topicId, không thể cập nhật!");
+    if (!topicId || !semesterId) {
+      console.error("❌ Không có topicId hoặc semesterId, không thể cập nhật!");
+      toast.error("Thiếu thông tin cần thiết!");
       return;
     }
 
-    console.log("🟢 Bắt đầu cập nhật đề tài...");
-    console.log("🔍 Dữ liệu gửi lên API:", formData); // Kiểm tra dữ liệu trước khi gửi
+    console.log("🚀 Cập nhật đề tài:", { topicId, semesterId, formData });
 
     try {
-      await dispatch(updateTopic({ topicId, updatedData: formData })).unwrap();
-      toast.success("Cập nhật đề tài thành công!");
-      navigate(`/topic-detail/${topicId}`);
+      await dispatch(updateTopic({ topicId, updatedData: formData, semesterId })).unwrap();
+      toast.success("✅ Cập nhật đề tài thành công!");
+      navigate(`/lecturer/topic-detail/${topicId}/${semesterId}`);
     } catch (err: any) {
       console.error("❌ Lỗi khi cập nhật:", err);
       toast.error(err || "Có lỗi xảy ra khi cập nhật đề tài.");
@@ -85,24 +82,14 @@ export default function UpdateTopicDetail() {
       <Header title="" href="/" currentPage="Cập nhật đề tài" />
       <div className="p-6 mt-10 bg-white">
         <Card className="p-6">
-          {/* Header với Avatar giống TopicDetail */}
           <div className="flex items-center mt-4 gap-3">
             <Avatar className="w-10 h-10">
-              <AvatarImage
-                src="https://github.com/shadcn.png"
-                alt="Topic Avatar"
-              />
+              <AvatarImage src="https://github.com/shadcn.png" alt="Topic Avatar" />
               <AvatarFallback>T</AvatarFallback>
             </Avatar>
             <div className="w-full">
-              <Input
-                name="nameEn"
-                value={formData.nameEn}
-                onChange={handleChange}
-              />
-              <p className="text-sm text-gray-500 italic mb-1">
-                Last updated: {new Date().toLocaleDateString()}
-              </p>
+              <Input name="nameEn" value={formData.nameEn} onChange={handleChange} />
+              <p className="text-sm text-gray-500 italic mb-1">Last updated: {new Date().toLocaleDateString()}</p>
             </div>
           </div>
 
@@ -110,27 +97,15 @@ export default function UpdateTopicDetail() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-sm text-gray-500 mb-1">Abbreviations</p>
-                <Input
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                />
+                <Input name="name" value={formData.name} onChange={handleChange} />
               </div>
               <div>
                 <p className="text-sm text-gray-500 mb-1">Vietnamese Title</p>
-                <Input
-                  name="nameVi"
-                  value={formData.nameVi}
-                  onChange={handleChange}
-                />
+                <Input name="nameVi" value={formData.nameVi} onChange={handleChange} />
               </div>
               <div>
                 <p className="text-sm text-gray-500 mb-1">Profession</p>
-                <Input
-                  name="majorId"
-                  value={formData.majorId}
-                  onChange={handleChange}
-                />
+                <Input name="majorId" value={formData.majorId} onChange={handleChange} />
               </div>
               <div>
                 <p className="text-sm text-gray-500 mb-1">Status</p>
@@ -150,14 +125,7 @@ export default function UpdateTopicDetail() {
           </CardContent>
 
           <div className="flex justify-end gap-4 mt-6">
-            <Button
-              type="button"
-              onClick={() => {
-                console.log("🟢 Đã bấm vào nút Lưu");
-                handleUpdate();
-              }}
-              disabled={loading}
-            >
+            <Button type="button" onClick={handleUpdate} disabled={loading}>
               {loading ? "Đang lưu..." : "Lưu thay đổi"}
             </Button>
           </div>
@@ -166,3 +134,4 @@ export default function UpdateTopicDetail() {
     </div>
   );
 }
+

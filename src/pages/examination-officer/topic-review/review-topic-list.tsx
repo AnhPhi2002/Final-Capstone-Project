@@ -41,7 +41,7 @@ export const ReviewTopicList = ({ selectedMajor }: { selectedMajor?: string }) =
           topics.map((topic) => (
             <div
               key={topic.id}
-              onClick={() => navigate(`/review-topic-detail/${topic.id}`)}
+              onClick={() => navigate(`/examination/review-topic-detail/${topic.id}/${semesterId}`)}
               className="relative min-h-[130px] w-full rounded-lg bg-muted/50 flex items-center p-4 gap-x-6 cursor-pointer hover:bg-muted transition-all"
             >
               <Badge className="absolute top-4 right-6 px-2 py-1 rounded-md text-xs">

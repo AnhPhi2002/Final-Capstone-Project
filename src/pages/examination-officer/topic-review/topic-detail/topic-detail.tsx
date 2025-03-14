@@ -12,7 +12,7 @@ import { DataTableGroupTopic } from "./data-table-group-topic";
 import { fetchUserById } from "@/lib/api/redux/authSlice";
 
 export default function ReviewTopicDetail() {
-  const { topicId } = useParams();
+  const { topicId, semesterId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const { topicDetails, loading, error } = useSelector(
     (state: RootState) => state.topics
@@ -20,10 +20,10 @@ export default function ReviewTopicDetail() {
   const { author } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    if (topicId && (!topicDetails || topicDetails.id !== topicId)) {
-      dispatch(fetchTopicDetail(topicId));
+    if (topicId && (!topicDetails || topicDetails.id !== topicId) && semesterId) {
+      dispatch(fetchTopicDetail({topicId, semesterId}));
     }
-  }, [dispatch, topicId, topicDetails]);
+  }, [dispatch, topicId, topicDetails, semesterId]);
 
   useEffect(() => {
     if (topicDetails?.createdBy && topicDetails?.semesterId) {
@@ -114,10 +114,6 @@ export default function ReviewTopicDetail() {
 
           <div>
           <DataTableGroupTopic groupId={topicDetails.group?.id}/>
-          </div>
-
-          <div className="flex justify-end gap-4 mt-6">
-            <Button variant="destructive">Xóa đề tài</Button>
           </div>
         </Card>
       </div>

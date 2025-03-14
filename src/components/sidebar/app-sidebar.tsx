@@ -253,16 +253,8 @@ const lecturerMenu = {
       isActive: true,
       items: [
         {
-          title: "D.s sinh viên KLTN ",
-          url: "/lecturer/student",
-        },
-        {
           title: "D.s nhóm KLTN",
           url: "/lecturer/group-student",
-        },
-        {
-          title: "D.s chưa có nhóm KLTN",
-          url: "/lecturer/not-group-student",
         }
       ],
     },
@@ -283,22 +275,14 @@ const lecturerMenu = {
 const examinationMenu = {
   navMain: [
     {
-      title: "Danh sách sinh viên ",
-      url: "/lecturer/council-member",
+      title: "Xét duyệt",
+      url: "/examination/council-member",
       icon: List,
       isActive: true,
       items: [
         {
-          title: "D.s sinh viên KLTN ",
-          url: "/lecturer/student",
-        },
-        {
-          title: "D.s nhóm KLTN",
-          url: "/lecturer/group-student",
-        },
-        {
-          title: "D.s chưa có nhóm KLTN",
-          url: "/lecturer/not-group-student",
+          title: "Đề tài chờ xét duyệt",
+          url: "/examination/review-topic-page",
         }
       ],
     },
@@ -462,6 +446,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         ) : null}
         {user?.roles.find((role) => role.name === "lecturer") ? (
           <NavMain items={lecturerMenu.navMain} />
+        ) : null}
+        {user?.roles.find((role) => role.name === "examination_officer") ? (
+          <NavMain items={examinationMenu.navMain} />
         ) : null}
         {/* <NavMain items={data.navMain} /> */}
       </SidebarContent>

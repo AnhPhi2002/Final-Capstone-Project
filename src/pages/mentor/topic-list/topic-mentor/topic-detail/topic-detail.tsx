@@ -10,9 +10,10 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { DataTableGroupTopic } from "./data-table-group-topic";
 import { fetchUserById } from "@/lib/api/redux/authSlice";
+import { resetGroupDetail } from "@/lib/api/redux/groupDetailSlice";
 
 export default function TopicDetail() {
-  const { topicId } = useParams();
+  const { topicId, semesterId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const { topicDetails, loading, error } = useSelector(
     (state: RootState) => state.topics
@@ -20,10 +21,13 @@ export default function TopicDetail() {
   const { author } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    if (topicId && (!topicDetails || topicDetails.id !== topicId)) {
-      dispatch(fetchTopicDetail(topicId));
+    dispatch(resetGroupDetail());
+    if (topicId && (!topicDetails || topicDetails.id !== topicId) && semesterId) {
+      dispatch(fetchTopicDetail({topicId, semesterId}));
     }
-  }, [dispatch, topicId, topicDetails]);
+  }, [dispatch, topicId, topicDetails, semesterId]);
+
+  console.log(topicId, semesterId);
 
   useEffect(() => {
     if (topicDetails?.createdBy && topicDetails?.semesterId) {
