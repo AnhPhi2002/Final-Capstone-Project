@@ -44,7 +44,7 @@ export const Action = ({ groupId, member, semesterId }: ActionProps) => {
   const handleRemoveMember = async () => {
     setIsProcessing(true);
     try {
-      await dispatch(removeMemberFromGroup({ groupId, studentId: member.studentId })).unwrap();
+      await dispatch(removeMemberFromGroup({ groupId, studentId: member.studentId, semesterId })).unwrap();
       toast.success(`Đã xóa ${member.student.user.username} khỏi nhóm!`);
     } catch (error: any) {
       toast.error(error?.message || "Lỗi khi xóa thành viên!");

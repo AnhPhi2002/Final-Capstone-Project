@@ -31,7 +31,7 @@ export const Action = ({ groupId, semesterId, member }: ActionProps) => {
   const handleChangeRole = async () => {
     setIsProcessing(true);
     try {
-      await dispatch(changeLeader({ groupId, newLeaderId: member.studentId })).unwrap();
+      await dispatch(changeLeader({ groupId, newLeaderId: member.studentId , semesterId})).unwrap();
       toast.success(`Đã đổi ${member.student.user.username} thành Trưởng nhóm!`);
       dispatch(fetchGroupDetail({ groupId, semesterId }));
     } catch (error: any) {
@@ -44,7 +44,7 @@ export const Action = ({ groupId, semesterId, member }: ActionProps) => {
   const handleRemoveMember = async () => {
     setIsProcessing(true);
     try {
-      await dispatch(removeMemberFromGroup({ groupId, studentId: member.studentId })).unwrap();
+      await dispatch(removeMemberFromGroup({ groupId, studentId: member.studentId, semesterId })).unwrap();
       toast.success(`Đã xóa ${member.student.user.username} khỏi nhóm!`);
     } catch (error: any) {
       toast.error(error?.message || "Lỗi khi xóa thành viên!");

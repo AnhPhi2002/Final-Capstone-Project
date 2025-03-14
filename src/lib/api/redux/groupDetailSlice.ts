@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk} from "@reduxjs/toolkit";
 import { axiosClient } from "@/lib/api/config/axios-client";
 import { toast } from "sonner";
 

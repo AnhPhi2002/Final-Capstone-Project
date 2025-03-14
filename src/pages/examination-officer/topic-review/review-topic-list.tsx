@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { SelectRound } from "./select-round";
 
-export const ReviewTopicList = ({ selectedMajor }: { selectedMajor?: string }) => {
+export const ReviewTopicList = () => {
   const { semesterId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();

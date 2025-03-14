@@ -2,11 +2,11 @@ import * as React from "react";
 import Logo from "@/assets/images/img01.jpg";
 import {
   Calendar,
-  ChartPie,
+  // ChartPie,
   CircleUserRound,
-  ClipboardList,
+  // ClipboardList,
   List,
-  NotebookPen,
+  // NotebookPen,
 } from "lucide-react";
 
 import { NavMain } from "./nav-main";
@@ -23,183 +23,183 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/api/redux/store";
 
-const data = {
-  navMain: [
-    {
-      title: "Tổng quan",
-      url: "/dashboard",
-      icon: ChartPie,
-      isActive: true,
-      items: [
-        {
-          title: "Dashboard",
-          url: "/dashboard",
-        },
-      ],
-    },
-    {
-      title: "Năm học và kỳ ",
-      url: "/semester",
-      icon: Calendar,
-      isActive: true,
-      items: [
-        {
-          title: "D.s năm học ",
-          url: "/year-semester",
-        },
-        {
-          title: "D.s học kỳ ",
-          url: "/semester",
-        },
-        {
-          title: "D.s hạn nộp đề tài",
-          url: "/deadline-topic",
-        },
-        {
-          title: "D.s review ",
-          url: "/review-semester",
-        },
-      ],
-    },
-    {
-      title: "Cán bộ nghiệp vụ",
-      url: "/council-member",
-      icon: List,
-      isActive: true,
-      items: [
-        {
-          title: "D.s sinh viên KLTN ",
-          url: "/student",
-        },
-        {
-          title: "D.s nhóm KLTN",
-          url: "/group-student",
-        },
-        {
-          title: "D.s chưa có nhóm KLTN",
-          url: "/not-group-student",
-        },
-        {
-          title: "D.s hội chấm KLTN",
-          url: "/council-member",
-        },
-        {
-          title: "D.s g.v hướng dẫn KLTN",
-          url: "/mentor-page",
-        },
-        {
-          title: "D.s h.đ xét duyệt đề tài",
-          url: "/review-topic-council",
-        },
-      ],
-    },
-    {
-      title: "Review nhóm sinh viên ",
-      url: "/review-group-student",
-      icon: NotebookPen,
-      isActive: true,
-      items: [
-        {
-          title: "Review ",
-          url: "/review-group-student",
-        },
-      ],
-    },
-    {
-      title: "Sinh viên",
-      url: "/topic-student",
-      icon: NotebookPen,
-      isActive: true,
-      items: [
-        {
-          title: "D.s đề tài sinh viên",
-          url: "/topic-student",
-        },
-      ],
-    },
-    {
-      title: "Đề tài ",
-      url: "/topic",
-      icon: ClipboardList,
-      isActive: true,
-      items: [
-        {
-          title: "Import đề tài",
-          url: "/import-topic-mentor",
-        },
-        {
-          title: "Đề tài ",
-          url: "/topic",
-        },
-      ],
-    },
-    {
-      title: "Phê duyệt đề tài nhóm ",
-      url: "/topic",
-      icon: ClipboardList,
-      isActive: true,
-      items: [
-        {
-          title: "Phê duyệt",
-          url: "/approve-topic",
-        },
-      ],
-    },
-    {
-      title: "Xét duyệt đề tài",
-      url: "/review-topic-page",
-      icon: ClipboardList,
-      isActive: true,
-      items: [
-        {
-          title: "Xét duyệt đề tài ",
-          url: "/review-topic-page",
-        },
-      ],
-    },
+// const data = {
+//   navMain: [
+//     {
+//       title: "Tổng quan",
+//       url: "/dashboard",
+//       icon: ChartPie,
+//       isActive: true,
+//       items: [
+//         {
+//           title: "Dashboard",
+//           url: "/dashboard",
+//         },
+//       ],
+//     },
+//     {
+//       title: "Năm học và kỳ ",
+//       url: "/semester",
+//       icon: Calendar,
+//       isActive: true,
+//       items: [
+//         {
+//           title: "D.s năm học ",
+//           url: "/year-semester",
+//         },
+//         {
+//           title: "D.s học kỳ ",
+//           url: "/semester",
+//         },
+//         {
+//           title: "D.s hạn nộp đề tài",
+//           url: "/deadline-topic",
+//         },
+//         {
+//           title: "D.s review ",
+//           url: "/review-semester",
+//         },
+//       ],
+//     },
+//     {
+//       title: "Cán bộ nghiệp vụ",
+//       url: "/council-member",
+//       icon: List,
+//       isActive: true,
+//       items: [
+//         {
+//           title: "D.s sinh viên KLTN ",
+//           url: "/student",
+//         },
+//         {
+//           title: "D.s nhóm KLTN",
+//           url: "/group-student",
+//         },
+//         {
+//           title: "D.s chưa có nhóm KLTN",
+//           url: "/not-group-student",
+//         },
+//         {
+//           title: "D.s hội chấm KLTN",
+//           url: "/council-member",
+//         },
+//         {
+//           title: "D.s g.v hướng dẫn KLTN",
+//           url: "/mentor-page",
+//         },
+//         {
+//           title: "D.s h.đ xét duyệt đề tài",
+//           url: "/review-topic-council",
+//         },
+//       ],
+//     },
+//     {
+//       title: "Review nhóm sinh viên ",
+//       url: "/review-group-student",
+//       icon: NotebookPen,
+//       isActive: true,
+//       items: [
+//         {
+//           title: "Review ",
+//           url: "/review-group-student",
+//         },
+//       ],
+//     },
+//     {
+//       title: "Sinh viên",
+//       url: "/topic-student",
+//       icon: NotebookPen,
+//       isActive: true,
+//       items: [
+//         {
+//           title: "D.s đề tài sinh viên",
+//           url: "/topic-student",
+//         },
+//       ],
+//     },
+//     {
+//       title: "Đề tài ",
+//       url: "/topic",
+//       icon: ClipboardList,
+//       isActive: true,
+//       items: [
+//         {
+//           title: "Import đề tài",
+//           url: "/import-topic-mentor",
+//         },
+//         {
+//           title: "Đề tài ",
+//           url: "/topic",
+//         },
+//       ],
+//     },
+//     {
+//       title: "Phê duyệt đề tài nhóm ",
+//       url: "/topic",
+//       icon: ClipboardList,
+//       isActive: true,
+//       items: [
+//         {
+//           title: "Phê duyệt",
+//           url: "/approve-topic",
+//         },
+//       ],
+//     },
+//     {
+//       title: "Xét duyệt đề tài",
+//       url: "/review-topic-page",
+//       icon: ClipboardList,
+//       isActive: true,
+//       items: [
+//         {
+//           title: "Xét duyệt đề tài ",
+//           url: "/review-topic-page",
+//         },
+//       ],
+//     },
 
-    {
-      title: "Người dùng ",
-      url: "/user",
-      icon: CircleUserRound,
-      isActive: true,
-      items: [
-        {
-          title: "Tài khoản",
-          url: "/user",
-        },
-        {
-          title: "Hội đồng xét duyệt",
-          url: "",
-        },
-        {
-          title: "Hội đồng review",
-          url: "",
-        },
-        {
-          title: "Giảng viên hướng dẫn",
-          url: "",
-        },
-        {
-          title: "Sinh viên",
-          url: "",
-        },
-      ],
-    },
-    {
-      title: "Admin config",
-      url: "/admin-config",
-      icon: CircleUserRound,
-      isActive: true,
-      items: [
-        {
-          title: "Cấu hình",
-          url: "/admin-config",
-        },
-      ],
-    },
-  ],
-};
+//     {
+//       title: "Người dùng ",
+//       url: "/user",
+//       icon: CircleUserRound,
+//       isActive: true,
+//       items: [
+//         {
+//           title: "Tài khoản",
+//           url: "/user",
+//         },
+//         {
+//           title: "Hội đồng xét duyệt",
+//           url: "",
+//         },
+//         {
+//           title: "Hội đồng review",
+//           url: "",
+//         },
+//         {
+//           title: "Giảng viên hướng dẫn",
+//           url: "",
+//         },
+//         {
+//           title: "Sinh viên",
+//           url: "",
+//         },
+//       ],
+//     },
+//     {
+//       title: "Admin config",
+//       url: "/admin-config",
+//       icon: CircleUserRound,
+//       isActive: true,
+//       items: [
+//         {
+//           title: "Cấu hình",
+//           url: "/admin-config",
+//         },
+//       ],
+//     },
+//   ],
+// };
 const adminMenu = {
   navMain: [
     {
