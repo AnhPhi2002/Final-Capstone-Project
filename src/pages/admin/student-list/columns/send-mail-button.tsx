@@ -123,7 +123,7 @@ const SendMailButton = ({ semesterId }: SendMailButtonProps) => {
               {/* ✅ Thay <p> bằng <span> */}
               <Button
                 variant="outline"
-                onClick={() => navigate("/template-detail")}
+                onClick={() => navigate("/academic/template-detail")}
               >
                 Quản lý Templates
               </Button>

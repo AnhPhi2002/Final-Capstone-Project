@@ -44,7 +44,7 @@ export const CardSemester: React.FC<CardSemesterProps> = ({ data, submissionRoun
     );
   
     if (submissionRound) {
-      navigate(`/topic-list/${semesterId}/submission/${submissionRound.id}`);
+      navigate(`/academic/topic-list/${semesterId}/submission/${submissionRound.id}`);
     }
   };
   

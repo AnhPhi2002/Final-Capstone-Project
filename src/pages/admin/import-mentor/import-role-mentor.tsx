@@ -50,7 +50,7 @@ const ImportRoleMentor = () => {
       await dispatch(importConditions({ formData })).unwrap();
       toast.success("Import danh sách đủ điều kiện thành công!");
       setTimeout(() => {
-              navigate(`/mentor-page/${semesterId}`);
+              navigate(`/academic/mentor-page/${semesterId}`);
               dispatch(resetState());
             }, 2000);
     } catch (err: any) {

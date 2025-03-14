@@ -15,7 +15,7 @@ export const TopicDetailPage = () => {
       <Header title="Hồ sơ" href="/" currentPage="Thông tin cá nhân" />
       <div className="container mx-auto px-6">
         <div className="flex justify-end mt-5">
-          <Link to={`/topic-detail/${topicId}/update`}>
+          <Link to={`/academic/topic-detail/${topicId}/update`}>
             <Button className="text-sm">Chỉnh sửa đề tài</Button>
           </Link>
         </div>

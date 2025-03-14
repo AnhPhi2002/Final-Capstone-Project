@@ -20,7 +20,7 @@ const ToolPanel = () => {
 
       <div className="col-span-2 flex">
         <Link
-          to={`/import-mentor/${semesterId}`}
+          to={`/academic/import-mentor/${semesterId}`}
           className="w-full"
         >
           <Button className="w-full flex gap-3 items-center">
