@@ -9,10 +9,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Link } from "react-router";
+import { Link, useParams } from "react-router";
 import { toast } from "sonner";
 
 export const Action = ({ group }: { group: any }) => {
+  const {semesterId} = useParams();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -33,7 +34,7 @@ export const Action = ({ group }: { group: any }) => {
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <Link to={`/academic/group-student-detail/${group.id}`}>Xem Chi Tiết</Link>
+          <Link to={`/academic/group-student-detail/${group.id}/${semesterId}`}>Xem Chi Tiết</Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Link to={`/academic/group/${group.id}/edit`}>Chỉnh Sửa Nhóm</Link>
