@@ -42,7 +42,7 @@ const ImportMentorTab = () => {
       await dispatch(importMentors({ formData })).unwrap();
       toast.success("Import thành công!");
       setTimeout(() => {
-        navigate(`/mentor-page/${semesterId}`);
+        navigate(`/academic/mentor-page/${semesterId}`);
         dispatch(resetState());
       }, 2000);
     } catch (err: any) {

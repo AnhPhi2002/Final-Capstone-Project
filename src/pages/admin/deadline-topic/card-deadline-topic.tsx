@@ -54,7 +54,7 @@ export const CardDeadlineTopic: React.FC<CardDeadlineTopicProps> = ({
   );
 
   const handleCardClick = (submissionId: string, Id: string) => {
-    navigate(`/deadline-topic/${Id}/submission/${submissionId}`);
+    navigate(`/academic/deadline-topic/${Id}/submission/${submissionId}`);
   };
 
   console.log("🚀 Submission Rounds Data:", data);

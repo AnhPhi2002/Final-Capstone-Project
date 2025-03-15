@@ -1,7 +1,6 @@
 import Header from "@/components/header";
-import { TopicStudentList } from "./topic-student-list";
-import { CardSemester } from "./seclect-semester/card-semester";
-import { SelectSemester } from "./seclect-semester/select-semester";
+
+import { SelectSemester } from "./select-semester/select-semester";
 
 
 export const TopicStudentPage = () => {

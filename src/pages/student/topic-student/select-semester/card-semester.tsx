@@ -44,7 +44,7 @@ export const CardSemester: React.FC<CardSemesterProps> = ({ data, submissionRoun
     );
   
     if (submissionRound) {
-      navigate(`/topic-student-list/${semesterId}`);
+      navigate(`/student/topic-student-list/${semesterId}`);
     }
   };
   

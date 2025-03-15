@@ -59,7 +59,7 @@ export const TopicList = ({ selectedMajor }: { selectedMajor?: string }) => {
           topics.map((topic) => (
             <div
               key={topic.id}
-              onClick={() => navigate(`/topic-detail/${topic.id}`)}
+              onClick={() => navigate(`/academic/topic-detail/${topic.id}`)}
               className="relative min-h-[130px] w-full rounded-lg bg-muted/50 flex items-center p-4 gap-x-6 cursor-pointer hover:bg-muted transition-all"
             >
               <Badge className={`${statusClasses[topic.status as "ACTIVE" | "COMPLETE" | "PENDING"] || "bg-gray-100 text-gray-600 hover:bg-gray-200"} absolute top-4 right-6 px-2 py-1 rounded-md text-xs`}>
