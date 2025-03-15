@@ -36,7 +36,7 @@ export const CreateSemesters = () => {
   const [code, setCode] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [status, setStatus] = useState("ACTIVE");
+  // const [status, setStatus] = useState("ACTIVE");
 
   useEffect(() => {
     dispatch(fetchAllYears());
@@ -61,7 +61,7 @@ export const CreateSemesters = () => {
       code,
       startDate,
       endDate,
-      status,
+      // status,
     };
 
     try {
@@ -148,23 +148,6 @@ export const CreateSemesters = () => {
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
               />
-            </div>
-
-            {/* Trạng thái */}
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="status" className="text-right">Trạng thái</Label>
-              <Select onValueChange={(value) => setStatus(value)} defaultValue="ACTIVE">
-                <SelectTrigger className="w-full col-span-3">
-                  <SelectValue placeholder="Chọn trạng thái" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="ACTIVE">Hoạt động </SelectItem>
-                    <SelectItem value="COMPLETE">Không hoạt động </SelectItem>
-                    <SelectItem value="UPCOMING">Chờ đợi</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
             </div>
           </div>
 
