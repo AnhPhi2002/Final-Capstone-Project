@@ -16,6 +16,8 @@ import { TopicPage } from "@/pages/mentor/topic-list/topic-mentor/topic-page";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Route, Routes, useNavigate } from "react-router";
+import { ApproveTopicPage } from "@/pages/mentor/approve-topic/approve-topic-page";
+import { ApproveTopicDetail } from "@/pages/mentor/approve-topic/columns/approve-topic-detail";
 
 export const LecturerContainer = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -33,14 +35,9 @@ export const LecturerContainer = () => {
         <Route path="/topic" element={<TopicPage />} />
         <Route path="/topic/:semesterId" element={<TopicPage />} />
         <Route path="/topic-list" element={<TopicListPage />} />
-        <Route
-          path="/topic-list/:semesterId/submission/:submissionPeriodId"
-          element={<TopicListPage />}
-        />
+        <Route path="/topic-list/:semesterId/submission/:submissionPeriodId" element={<TopicListPage />}/>
         <Route path="/topic-detail/:topicId/:semesterId" element={<TopicDetailPage />} />
-        <Route
-          path="/topic-detail/:topicId/:semesterId/update"
-          element={<UpdateTopicDetail />}
+        <Route path="/topic-detail/:topicId/:semesterId/update" element={<UpdateTopicDetail />}
         />
         <Route path="/not-group-student" element={<NotGroupStudentPage />} />
         <Route path="/not-group-student/:semesterId" element={<NotGroupStudentDetailPage />} />
@@ -50,6 +47,13 @@ export const LecturerContainer = () => {
         <Route path="/group-student/:semesterId" element={<GroupStudentCardPage />} />
         <Route path="/group-student-detail" element={<GroupStudentDetail />} />
         <Route path="/group-student-detail/:groupId" element={<GroupStudentDetail />} />
+
+        
+
+        <Route path="/approve-topic" element={<ApproveTopicPage />} />
+        <Route path="/approve-topic-detail" element={<ApproveTopicDetail />} />
+        
+        
         
         <Route path="/*" element={<NotFound />} />
       </Routes>

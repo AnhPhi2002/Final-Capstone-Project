@@ -80,7 +80,7 @@ export const AcademicOfficerContainer = () => {
         <Route path="/mentor-page" element={<MentorPage />} />
         <Route path="/mentor-page/:semesterId" element={<MentorDetail />} />
         <Route path="/import-mentor/:semesterId" element={<ImportMentorPage />} />
-        
+
         <Route path="/*" element={<NotFound />} />
       </Routes>
     </MainLayout>

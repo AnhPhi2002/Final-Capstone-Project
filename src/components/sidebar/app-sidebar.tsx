@@ -259,14 +259,18 @@ const lecturerMenu = {
       ],
     },
     {
-      title: "Topic",
+      title: "Quản lý Topic",
       url: "/lecturer/council-member",
       icon: List,
       isActive: true,
       items: [
         {
-          title: "Manage Topic",
+          title: "Ds. topic ",
           url: "/lecturer/topic",
+        },
+        {
+          title: "Ds. phê duyệt topic",
+          url: "/lecturer/approve-topic",
         },
       ],
     },
