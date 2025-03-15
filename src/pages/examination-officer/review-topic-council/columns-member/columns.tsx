@@ -1,5 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { CouncilMember } from "@/lib/api/types";
+import { ActionMenuMember } from "./action";
 
 export const columnsCouncilMembers: ColumnDef<CouncilMember, any>[] = [
   {
@@ -25,6 +26,16 @@ export const columnsCouncilMembers: ColumnDef<CouncilMember, any>[] = [
       <span className={row.original.status === "ACTIVE" ? "text-green-600" : "text-red-600"}>
         {row.original.status === "ACTIVE" ? "Hoạt động" : "Không hoạt động"}
       </span>
+    ),
+  },
+  {
+    id: "actions",
+    header: "Thao tác",
+    cell: ({ row }) => (
+      <ActionMenuMember
+        data={row.original} // Change 'council' to 'data' to match ActionMenuProps
+        refetchData={() => {}} // Hàm refetchData nếu cần
+      />
     ),
   },
 ];

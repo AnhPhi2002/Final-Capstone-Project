@@ -23,7 +23,7 @@ export const CardCouncil: React.FC<CardCouncilProps> = ({ councils }) => {
   const totalPages = Math.ceil(councils.length / itemsPerPage);
 
   const handleCardClick = (councilId: string) => {
-    navigate(`/review-topic-council-detail/${councilId}`);
+    navigate(`/examination/review-topic-council-detail/${councilId}`);
     // navigate(`/review-topic-council-detail`);
   };
 
