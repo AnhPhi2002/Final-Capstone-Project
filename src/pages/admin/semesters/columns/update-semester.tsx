@@ -25,7 +25,6 @@ export const UpdateSemester: React.FC<UpdateSemesterProps> = ({
     code: "",
     startDate: "",
     endDate: "",
-    status: "ACTIVE",
   });
 
   const formatDateForInput = (dateString: string) => {
@@ -39,7 +38,6 @@ export const UpdateSemester: React.FC<UpdateSemesterProps> = ({
         code: semesterDetail.code || "",
         startDate: formatDateForInput(semesterDetail.startDate) || "",
         endDate: formatDateForInput(semesterDetail.endDate) || "",
-        status: semesterDetail.status || "ACTIVE",
       });
     }
   }, [open, semesterDetail]);
@@ -50,7 +48,7 @@ export const UpdateSemester: React.FC<UpdateSemesterProps> = ({
   };
 
   const handleSave = async () => {
-    if (!formValues.code || !formValues.startDate || !formValues.endDate || !formValues.status) {
+    if (!formValues.code || !formValues.startDate || !formValues.endDate) {
       toast.error("Vui lòng nhập đầy đủ thông tin!");
       return;
     }
@@ -124,7 +122,7 @@ export const UpdateSemester: React.FC<UpdateSemesterProps> = ({
             />
           </div>
 
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium mb-1">Trạng thái</label>
             <select
               name="status"
@@ -136,7 +134,7 @@ export const UpdateSemester: React.FC<UpdateSemesterProps> = ({
               <option value="COMPLETE">Không hoạt động </option>
               <option value="UPCOMING">Chờ đợi </option>
             </select>
-          </div>
+          </div> */}
         </div>
 
         <div className="mt-6 flex justify-end space-x-4">
