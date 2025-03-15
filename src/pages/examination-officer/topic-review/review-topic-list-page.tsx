@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState, AppDispatch } from "@/lib/api/redux/store";
+import { useDispatch } from "react-redux";
+import {  AppDispatch } from "@/lib/api/redux/store";
 import { fetchTopics, exportTopicsToExcel } from "@/lib/api/redux/topicSlice";
 import { Link, useParams } from "react-router";
 // import { CreateTopic } from "./CreateTopic";
@@ -9,13 +9,13 @@ import { ReviewTopicList } from "./review-topic-list";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { SelectMajor } from "./SelectMajor";
-import ReviewTopicDetail from "./topic-detail/topic-detail";
+
 
 export const ReviewTopicListPage = () => {
   const { semesterId, submissionPeriodId } = useParams(); // Lấy cả semesterId và submissionPeriodId từ URL
   const dispatch = useDispatch<AppDispatch>();
 
-  const { data: topics } = useSelector((state: RootState) => state.topics);
+  // const { data: topics } = useSelector((state: RootState) => state.topics);
   const [selectedMajor, setSelectedMajor] = useState<string | undefined>();
 
   useEffect(() => {

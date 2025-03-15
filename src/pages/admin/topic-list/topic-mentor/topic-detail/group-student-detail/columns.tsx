@@ -1,6 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
-import { Action } from "./action"; // Import component Action
 
 export type RoleType = "leader" | "member";
 

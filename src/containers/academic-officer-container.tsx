@@ -24,7 +24,7 @@ import { TopicDetailPage } from "@/pages/admin/topic-list/topic-mentor/topic-det
 import { TopicListPage } from "@/pages/admin/topic-list/topic-mentor/topic-list-page";
 import { TopicPage } from "@/pages/admin/topic-list/topic-mentor/topic-page";
 import { YearSemesterPage } from "@/pages/admin/year-semeter/year-semester-page";
-import UpdateTopicDetail from "@/pages/examination-officer/topic-review/topic-detail/update-topic-detail";
+import UpdateTopicDetail from "@/pages/admin/topic-list/topic-mentor/topic-detail/update-topic-detail";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Route, Routes, useNavigate } from "react-router";
@@ -58,7 +58,7 @@ export const AcademicOfficerContainer = () => {
         <Route path="/group-student" element={<GroupStudentPage />} />
         <Route path="/group-student/:semesterId" element={<GroupStudentCardPage />} />
         <Route path="/group-student-detail" element={<GroupStudentDetail />} />
-        <Route path="/group-student-detail/:groupId" element={<GroupStudentDetail />} />
+        <Route path="/group-student-detail/:groupId/:semesterId" element={<GroupStudentDetail />} />
 
         <Route path="/random-group-student-page" element={<RandomGroupStudentPage />} />
         <Route path="/random-group-student-page/:semesterId" element={<RandomGroupStudentPage />} />
@@ -74,8 +74,8 @@ export const AcademicOfficerContainer = () => {
         <Route path="/topic/:semesterId" element={<TopicPage />} />
         <Route path="/topic-list" element={<TopicListPage />} />
         <Route path="/topic-list/:semesterId/submission/:submissionPeriodId" element={<TopicListPage />} />
-        <Route path="/topic-detail/:topicId" element={<TopicDetailPage />} />
-        <Route path="/topic-detail/:topicId/update" element={<UpdateTopicDetail />} />
+        <Route path="/topic-detail/:topicId/:semesterId" element={<TopicDetailPage />} />
+        <Route path="/topic-detail/:topicId/:semesterId/update" element={<UpdateTopicDetail />} />
 
         <Route path="/mentor-page" element={<MentorPage />} />
         <Route path="/mentor-page/:semesterId" element={<MentorDetail />} />

@@ -16,6 +16,7 @@ interface Topic {
   createdBy: string | null;
   status: string;
   reviewReason: string | null;
+  subSupervisorEmail: string | null;
   creator?: {
     fullName: string;
     email: string;
@@ -83,9 +84,11 @@ export const exportTopicsToExcel = createAsyncThunk(
 // Fetch chi tiết topic theo topicId
 export const fetchTopicDetail = createAsyncThunk(
   "topics/fetchTopicDetail",
-  async (topicId: string, { rejectWithValue }) => {
+  async ({ topicId, semesterId }: { topicId: string, semesterId: string }, { rejectWithValue }) => {
     try {
-      const response = await axiosClient.get(`/topics/${topicId}`);
+      const response = await axiosClient.get(`/topics/${topicId}`, {
+        params: { semesterId }, // Thêm `semesterId` vào params
+      });
       return response.data.data as Topic;
     } catch (error: any) {
       return rejectWithValue(
@@ -113,19 +116,26 @@ export const createTopic = createAsyncThunk(
 export const updateTopic = createAsyncThunk(
   "topics/updateTopic",
   async (
-    { topicId, updatedData }: { topicId: string; updatedData: Partial<Topic> },
+    { topicId, updatedData, semesterId }: { topicId: string; updatedData: Partial<Topic>; semesterId: string },
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosClient.put(`/topics/${topicId}`, updatedData);
+      console.log("📡 Gửi API cập nhật đề tài:", { topicId, updatedData, semesterId });
+
+      const response = await axiosClient.put(
+        `/topics/${topicId}`,
+        { ...updatedData, semesterId } // ✅ Thêm `semesterId` vào body
+      );
+
+      console.log("✅ API Response:", response.data);
       return response.data.data as Topic;
     } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data?.message || "Không thể cập nhật đề tài."
-      );
+      console.error("❌ API Error:", error.response?.data);
+      return rejectWithValue(error.response?.data?.message || "Không thể cập nhật đề tài.");
     }
   }
 );
+
 
 export const fetchApprovalTopics = createAsyncThunk(
   "topics/fetchApprovalTopics",
@@ -146,9 +156,9 @@ export const fetchApprovalTopics = createAsyncThunk(
 
 export const updateTopicStatus = createAsyncThunk(
   "topics/updateTopicStatus",
-  async ({ topicId, updatedData }: { topicId: string; updatedData: { status: string; reviewReason: string } }, { rejectWithValue }) => {
+  async ({ topicId, updatedData}: { topicId: string; updatedData: { status: string; reviewReason: string }}, { rejectWithValue }) => {
     try {
-      const response = await axiosClient.post(`/topics/${topicId}/status`, updatedData); // ✅ Đảm bảo topicId đúng
+      const response = await axiosClient.put(`/topics/${topicId}/status`, updatedData); // ✅ Đảm bảo topicId đúng
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Không thể cập nhật trạng thái.");
@@ -213,11 +223,11 @@ const topicSlice = createSlice({
         state.loading = false;
         state.data.unshift(action.payload);
         const newTopic = action.payload;
-        
+
         if (!newTopic.creator) {
           const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
           newTopic.creator = {
-            
+
             fullName: currentUser.fullName,
             email: currentUser.email,
           };
@@ -234,7 +244,7 @@ const topicSlice = createSlice({
       })
       .addCase(updateTopic.fulfilled, (state, action: PayloadAction<Topic>) => {
         state.loading = false;
-        state.topicDetails = action.payload; 
+        state.topicDetails = action.payload;
       })
       .addCase(updateTopic.rejected, (state, action) => {
         state.loading = false;
@@ -259,7 +269,7 @@ const topicSlice = createSlice({
         }
         state.loading = false;
       })
-      
+
       ;
   },
 });

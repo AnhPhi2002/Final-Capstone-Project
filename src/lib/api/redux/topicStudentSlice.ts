@@ -31,7 +31,7 @@ export const fetchAvailableTopics = createAsyncThunk(
 // 🟢 Fetch chi tiết đề tài từ danh sách đề tài đã tải
 export const fetchTopicDetailFromList = createAsyncThunk(
   "topics/fetchTopicDetailFromList",
-  async ({ topicId, semesterId }: { topicId: string; semesterId: string }, { getState, rejectWithValue }) => {
+  async ({ topicId}: { topicId: string; semesterId: string }, { getState, rejectWithValue }) => {
     const state: any = getState();
     const topicList = state.topicStudents.availableTopics;
 

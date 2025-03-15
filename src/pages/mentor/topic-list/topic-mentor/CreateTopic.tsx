@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/api/redux/store";
 import { createTopic } from "@/lib/api/redux/topicSlice";
 import { fetchMajors } from "@/lib/api/redux/majorSlice";
+import { fetchMentorsBySemesterId } from "@/lib/api/redux/mentorSlice"; // ✅ Thêm import
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -26,29 +27,55 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export const CreateTopic: React.FC<{ semesterId: string }> = ({
-  semesterId,
-}) => {
+export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { data: majors, loading: majorLoading } = useSelector(
     (state: RootState) => state.majors
   );
+  const { mentors, loading: mentorLoading } = useSelector(
+    (state: RootState) => state.mentors
+  ); // ✅ Lấy danh sách mentors từ Redux
 
   const [open, setOpen] = useState(false);
   const [nameVi, setNameVi] = useState("");
   const [nameEn, setNameEn] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [subSupervisorEmail, setSubSupervisorEmail] = useState("");
+  const [filteredEmails, setFilteredEmails] = useState<string[]>([]); // ✅ Danh sách gợi ý email
   const [isBusiness, setIsBusiness] = useState(false);
   const [businessPartner, setBusinessPartner] = useState<string | null>(null);
   const [majorId, setMajorId] = useState<string | null>(null);
   const [groupCode, setGroupCode] = useState("");
   const [documentUrl, setDocumentUrl] = useState("");
-  const [documents, setDocuments] = useState<{ fileName: string; draftFileUrl: string; fileType: string }[]>([]);
+  const [documents, setDocuments] = useState<
+    { fileName: string; draftFileUrl: string; fileType: string }[]
+  >([]);
 
+  // Fetch majors và mentors khi component mount
   useEffect(() => {
     dispatch(fetchMajors());
-  }, [dispatch]);
+    dispatch(fetchMentorsBySemesterId(semesterId)); // ✅ Gọi API fetch mentors
+  }, [dispatch, semesterId]);
+
+  console.log("Mentors from Redux:", mentors);
+  console.log("Mentor loading:", mentorLoading);
+
+  // Lọc email dựa trên input subSupervisorEmail
+  useEffect(() => {
+    console.log("subSupervisorEmail:", subSupervisorEmail);
+    if (subSupervisorEmail.trim() === "") {
+      setFilteredEmails([]); // Không hiển thị gợi ý khi input trống
+    } else {
+      const filtered = mentors
+        .map((mentor) => mentor.email)
+        .filter((email) =>
+          email.toLowerCase().startsWith(subSupervisorEmail.toLowerCase())
+        );
+        console.log("Filtered emails:", filtered);
+      setFilteredEmails(filtered);
+    }
+  }, [subSupervisorEmail, mentors]);
 
   const handleBusinessToggle = (checked: boolean) => {
     setIsBusiness(checked);
@@ -69,14 +96,7 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({
   };
 
   const handleCreateTopic = async () => {
-    if (
-      !nameVi ||
-      !nameEn ||
-      !name ||
-      !description ||
-      !semesterId ||
-      !majorId
-    ) {
+    if (!nameVi || !nameEn || !name || !description || !semesterId || !majorId) {
       toast.error("Vui lòng nhập đầy đủ thông tin!");
       return;
     }
@@ -88,11 +108,12 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({
       description,
       semesterId,
       majorId,
+      subSupervisorEmail,
       isBusiness,
       businessPartner: isBusiness ? businessPartner : null,
       groupCode: groupCode,
       source: "Tự đề xuất",
-      draftFileUrl: documents.length > 0 ? documents[0].draftFileUrl : null, // Chỉ gửi file đầu tiên nếu có
+      draftFileUrl: documents.length > 0 ? documents[0].draftFileUrl : null,
     };
 
     try {
@@ -103,6 +124,7 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({
       setNameEn("");
       setName("");
       setDescription("");
+      setSubSupervisorEmail("");
       setMajorId(null);
       setGroupCode("");
       setDocuments([]);
@@ -111,6 +133,12 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({
     } catch (error: any) {
       toast.error(error?.message || "Tạo đề tài thất bại!");
     }
+  };
+
+  // Xử lý khi chọn email từ danh sách gợi ý
+  const handleSelectEmail = (email: string) => {
+    setSubSupervisorEmail(email);
+    setFilteredEmails([]); // Ẩn danh sách gợi ý sau khi chọn
   };
 
   return (
@@ -146,6 +174,28 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({
             placeholder="Mô tả đề tài"
             className="h-24"
           />
+
+          {/* Input với gợi ý email */}
+          <div className="relative">
+            <Input
+              value={subSupervisorEmail}
+              onChange={(e) => setSubSupervisorEmail(e.target.value)}
+              placeholder="Email giảng viên phụ trách"
+            />
+            {filteredEmails.length > 0 && (
+              <ul className="absolute z-10 w-full bg-white border rounded-md shadow-lg max-h-40 overflow-y-auto">
+                {filteredEmails.map((email) => (
+                  <li
+                    key={email}
+                    className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => handleSelectEmail(email)}
+                  >
+                    {email}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
 
           <Select onValueChange={setMajorId} value={majorId || ""}>
             <SelectTrigger className="w-full">
@@ -209,7 +259,8 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({
             <ul className="text-sm text-gray-600">
               {documents.map((doc, index) => (
                 <li key={index}>
-                  📄 <a href={doc.draftFileUrl} target="_blank" rel="noopener noreferrer">
+                  📄{" "}
+                  <a href={doc.draftFileUrl} target="_blank" rel="noopener noreferrer">
                     {doc.fileName}
                   </a>
                 </li>
@@ -222,7 +273,7 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({
           <Button variant="outline" onClick={() => setOpen(false)}>
             Hủy
           </Button>
-          <Button onClick={handleCreateTopic} disabled={majorLoading}>
+          <Button onClick={handleCreateTopic} disabled={majorLoading || mentorLoading}>
             Tạo
           </Button>
         </DialogFooter>

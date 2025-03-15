@@ -68,7 +68,7 @@ export const TopicStudentList = () => {
           availableTopics.map((topic) => (
             <div
               key={topic.id}
-              onClick={() => navigate(`/topic-student-detail/${semesterId}/${topic.id}`)}
+              onClick={() => navigate(`/student/topic-student-detail/${semesterId}/${topic.id}`)}
               className="relative min-h-[130px] w-full rounded-lg bg-muted/50 flex items-center p-4 gap-x-6 cursor-pointer hover:bg-muted transition-all"
             >
               {/* Avatar */}

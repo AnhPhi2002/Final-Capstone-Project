@@ -37,9 +37,9 @@ export const LecturerContainer = () => {
           path="/topic-list/:semesterId/submission/:submissionPeriodId"
           element={<TopicListPage />}
         />
-        <Route path="/topic-detail/:topicId" element={<TopicDetailPage />} />
+        <Route path="/topic-detail/:topicId/:semesterId" element={<TopicDetailPage />} />
         <Route
-          path="/topic-detail/:topicId/update"
+          path="/topic-detail/:topicId/:semesterId/update"
           element={<UpdateTopicDetail />}
         />
         <Route path="/not-group-student" element={<NotGroupStudentPage />} />

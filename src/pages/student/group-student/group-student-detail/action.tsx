@@ -26,12 +26,12 @@ interface ActionProps {
 
 export const Action = ({ groupId, semesterId, member }: ActionProps) => {
   const dispatch = useDispatch<AppDispatch>();
-  const setIsProcessing = useState(false)[1];
-  // const [isProcessing, setIsProcessing] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+
   const handleChangeRole = async () => {
     setIsProcessing(true);
     try {
-      await dispatch(changeLeader({ groupId, newLeaderId: member.studentId })).unwrap();
+      await dispatch(changeLeader({ groupId, newLeaderId: member.studentId, semesterId })).unwrap();
       toast.success(`Đã đổi ${member.student.user.username} thành Trưởng nhóm!`);
       dispatch(fetchGroupDetail({ groupId, semesterId }));
     } catch (error: any) {
@@ -42,10 +42,16 @@ export const Action = ({ groupId, semesterId, member }: ActionProps) => {
   };
 
   const handleRemoveMember = async () => {
+    console.log("handleRemoveMember - Input:", { groupId, studentId: member.studentId, semesterId });
     setIsProcessing(true);
     try {
-      await dispatch(removeMemberFromGroup({ groupId, studentId: member.studentId })).unwrap();
+      await dispatch(removeMemberFromGroup({ 
+        groupId, 
+        studentId: member.studentId, 
+        semesterId,
+      })).unwrap();
       toast.success(`Đã xóa ${member.student.user.username} khỏi nhóm!`);
+      dispatch(fetchGroupDetail({ groupId, semesterId })); // Cập nhật lại danh sách sau khi xóa
     } catch (error: any) {
       toast.error(error?.message || "Lỗi khi xóa thành viên!");
     } finally {
@@ -56,7 +62,7 @@ export const Action = ({ groupId, semesterId, member }: ActionProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 min-w-8 p-0 flex items-center justify-center">
+        <Button variant="ghost" className="h-8 min-w-8 p-0 flex items-center justify-center" disabled={isProcessing}>
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
@@ -66,7 +72,9 @@ export const Action = ({ groupId, semesterId, member }: ActionProps) => {
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>Thay đổi vai trò</DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
-            {member.role.name !== "leader" && <DropdownMenuItem onClick={handleChangeRole}>Trưởng nhóm</DropdownMenuItem>}
+            {member.role.name !== "leader" && (
+              <DropdownMenuItem onClick={handleChangeRole}>Trưởng nhóm</DropdownMenuItem>
+            )}
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSeparator />
