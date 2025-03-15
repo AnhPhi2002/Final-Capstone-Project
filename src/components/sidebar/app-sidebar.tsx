@@ -255,7 +255,7 @@ const lecturerMenu = {
         {
           title: "D.s nhóm KLTN",
           url: "/lecturer/group-student",
-        }
+        },
       ],
     },
     {
@@ -287,9 +287,22 @@ const examinationMenu = {
         {
           title: "Đề tài chờ xét duyệt",
           url: "/examination/review-topic-page",
-        }
+        },
       ],
     },
+    {
+      title: "Quản lý hội chấm KLTN",
+      url: "/examination/review-topic-council",
+      icon: List,
+      isActive: true,
+      items: [
+        {
+          title: "D.s hội chấm KLTN",
+          url: "/examination/review-topic-council",
+        },
+      ],
+    },
+    
   ],
 };
 const academicMenu = {
@@ -309,7 +322,7 @@ const academicMenu = {
           url: "/academic/semester",
         },
         {
-          title: "Đợt đăng kí ",
+          title: "Thời gian đăng kí đề tài",
           url: "/academic/deadline-topic",
         },
       ],
@@ -336,7 +349,6 @@ const academicMenu = {
           title: "D.s giáo viên",
           url: "/academic/mentor-page",
         },
-
       ],
     },
     {
@@ -351,6 +363,18 @@ const academicMenu = {
         },
       ],
     },
+    {
+      title: "Qlý. phân công đề tài",
+      url: "/academic/topic-assignment-decision",
+      icon: List,
+      isActive: true,
+      items: [
+        {
+          title: "Ds. quyết định",
+          url: "/academic/topic-assignment-decision",
+        },
+      ],
+    },
   ],
 };
 const studentMenu = {
@@ -360,7 +384,7 @@ const studentMenu = {
       url: "/student/council-member",
       icon: List,
       isActive: true,
-      items: [  
+      items: [
         {
           title: "D.s nhóm KLTN",
           url: "/student/group-student",
@@ -369,7 +393,6 @@ const studentMenu = {
           title: "D.s chưa có nhóm KLTN",
           url: "/student/not-group-student",
         },
-
       ],
     },
     {
@@ -377,30 +400,30 @@ const studentMenu = {
       url: "/student/council-student",
       icon: List,
       isActive: true,
-      items: [  
+      items: [
         {
           title: "Danh sách",
           url: "/student/topic-student",
-        }
+        },
       ],
-    }
+    },
   ],
 };
 const graduationThesisMenu = {
   navMain: [
     {
-      title: "Năm học và kỳ ",
-      url: "/academic/semester",
-      icon: Calendar,
+      title: "Danh sách sinh viên ",
+      url: "/student/council-member",
+      icon: List,
       isActive: true,
       items: [
         {
-          title: "D.s năm học ",
-          url: "/academic/year-semester",
+          title: "D.s hội chấm KLTN",
+          url: "/council-member",
         },
         {
-          title: "D.s học kỳ ",
-          url: "/academic/semester",
+          title: "D.s g.v hướng dẫn KLTN",
+          url: "/mentor-page",
         },
       ],
     },
@@ -439,12 +462,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         ) : null}
         {user?.roles.find((role) => role.name === "academic_officer") ? (
           <NavMain items={academicMenu.navMain} />
-        ) 
-        : null}
-          {user?.roles.find((role) => role.name === "graduation_thesis_manager") ? (
+        ) : null}
+        {user?.roles.find(
+          (role) => role.name === "graduation_thesis_manager"
+        ) ? (
           <NavMain items={graduationThesisMenu.navMain} />
-        ) 
-        : null}
+        ) : null}
         {user?.roles.find((role) => role.name === "student") ? (
           <NavMain items={studentMenu.navMain} />
         ) : null}

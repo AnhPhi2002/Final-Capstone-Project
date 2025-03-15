@@ -34,9 +34,10 @@ const formSchema = z.object({
 interface AddReviewMemberTopicCouncilProps {
   councilId: string;
   refetchData?: () => void;
+  semesterId: string;
 }
 
-export const AddReviewMemberTopicCouncil: React.FC<AddReviewMemberTopicCouncilProps> = ({ councilId, refetchData }) => {
+export const AddReviewMemberTopicCouncil: React.FC<AddReviewMemberTopicCouncilProps> = ({ councilId, refetchData, semesterId }) => {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
 
@@ -49,7 +50,7 @@ export const AddReviewMemberTopicCouncil: React.FC<AddReviewMemberTopicCouncilPr
 
   const onSubmit = async (data: any) => {
     try {
-      await dispatch(addCouncilMember({ councilId, email: data.email })).unwrap();
+      await dispatch(addCouncilMember({ councilId, email: data.email, semesterId })).unwrap();
       toast.success("Thêm thành viên vào hội đồng thành công!");
       setOpen(false);
       form.reset();
@@ -99,7 +100,7 @@ export const AddReviewMemberTopicCouncil: React.FC<AddReviewMemberTopicCouncilPr
               {/* Role (Chỉ có 1 lựa chọn reviewer) */}
               <FormItem>
                 <FormLabel>Vai trò</FormLabel>
-                <Input value="Reviewer" disabled />
+                <Input value="council_member" disabled />
               </FormItem>
 
               {/* Footer */}

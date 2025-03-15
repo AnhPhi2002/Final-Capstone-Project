@@ -1,6 +1,8 @@
 import NotFound from "@/components/page-not-found";
 import MainLayout from "@/layouts/main-layout";
 import { RootState } from "@/lib/api/redux/store";
+import { CouncilMemberDetail } from "@/pages/admin/council-member/council-member-listing/council-member-detail";
+import CouncilMemberPage from "@/pages/admin/council-member/council-member-page";
 import DashboardPage from "@/pages/admin/dashboard/dashboard-page";
 import { DeadineTopicDetailPage } from "@/pages/admin/deadline-topic/columns/deadine-topic-detail-page";
 import { DeadineTopicPage } from "@/pages/admin/deadline-topic/deadine-topic-page";
@@ -42,6 +44,8 @@ export const GraduationThesisManagerContainer = () => {
           path="/review-topic-council-detail/:councilId"
           element={<ReviewTopicCouncilDetail />}
         />
+             <Route path="/council-member" element={<CouncilMemberPage />} />
+             <Route path="/council-member/:councilId" element={<CouncilMemberDetail />} />
         <Route path="/*" element={<NotFound />} />
       </Routes>
     </MainLayout>

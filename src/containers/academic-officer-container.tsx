@@ -28,6 +28,8 @@ import UpdateTopicDetail from "@/pages/admin/topic-list/topic-mentor/topic-detai
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Route, Routes, useNavigate } from "react-router";
+import { TopicAssignmentDecisionPage } from "@/pages/academic/topic-assignment-decision/TopicAssignmentDecisionPage";
+import { TopicAssignmentDecisionDetail } from "@/pages/academic/topic-assignment-decision/topic-assignment-decision-detail/TopicAssignmentDecisionDetail";
 
 export const AcademicOfficerContainer = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -81,6 +83,8 @@ export const AcademicOfficerContainer = () => {
         <Route path="/mentor-page/:semesterId" element={<MentorDetail />} />
         <Route path="/import-mentor/:semesterId" element={<ImportMentorPage />} />
 
+        <Route path="/topic-assignment-decision" element={<TopicAssignmentDecisionPage />} />
+        <Route path="/topic-assignment-decision-detail" element={<TopicAssignmentDecisionDetail />} />
         <Route path="/*" element={<NotFound />} />
       </Routes>
     </MainLayout>

@@ -89,13 +89,13 @@ export const deleteCouncil = createAsyncThunk(
 export const addCouncilMember = createAsyncThunk(
   "councils/addCouncilMember",
   async (
-    { councilId, email }: { councilId: string; email: string },
+    { councilId, email, semesterId }: { councilId: string; email: string; semesterId:string },
     { rejectWithValue }
   ) => {
     try {
       const response = await axiosClient.post(
-        `/council-topic/members?councilId=${councilId}`,
-        { email, role: "reviewer" }
+        `/council-topic/members`,
+        { email, role: "council_member"},{params: {semesterId, councilId}}
       );
       return response.data.data as CouncilMember;
     } catch (error: any) {
