@@ -31,22 +31,11 @@ export const StudentContainer = () => {
 
         <Route path="/profile-page" element={<ProfilePage />} />
         <Route path="/topic-student" element={<TopicStudentPage />} />
-        <Route
-          path="/topic-student/:semesterId"
-          element={<TopicStudentPage />}
-        />
-        <Route
-          path="/topic-student-detail"
-          element={<TopicStudentListDetail />}
-        />
-        <Route
-          path="/topic-student-detail/:semesterId/:topicId"
-          element={<TopicStudentListDetail />}
-        />
-        <Route
-          path="/topic-student-list/:semesterId"
-          element={<TopicStudentList />}
-        />
+        <Route path="/topic-student/:semesterId" element={<TopicStudentPage />}/>
+        <Route path="/topic-student-detail" element={<TopicStudentListDetail />}/>
+        
+        <Route path="/topic-student-detail/:semesterId/:topicId" element={<TopicStudentListDetail />}/>
+        <Route path="/topic-student-list/:semesterId" element={<TopicStudentList />}/>
         <Route path="/group-student" element={<GroupStudentWithStudentPage />} />
         <Route path="/group-student/:semesterId" element={<GroupStudentCardPage />} />
         <Route path="/group-student-detail" element={<GroupStudentDetail />} />

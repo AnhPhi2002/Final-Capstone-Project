@@ -285,6 +285,10 @@ const examinationMenu = {
       isActive: true,
       items: [
         {
+          title: "Thời gian đăng kí đề tài",
+          url: "/examination/deadline-topic",
+        },
+        {
           title: "Đề tài chờ xét duyệt",
           url: "/examination/review-topic-page",
         },
@@ -321,10 +325,7 @@ const academicMenu = {
           title: "D.s học kỳ ",
           url: "/academic/semester",
         },
-        {
-          title: "Thời gian đăng kí đề tài",
-          url: "/academic/deadline-topic",
-        },
+     
       ],
     },
     {

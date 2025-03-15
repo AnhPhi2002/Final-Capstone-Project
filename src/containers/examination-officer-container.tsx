@@ -4,6 +4,8 @@ import { RootState } from "@/lib/api/redux/store";
 import { CouncilMemberDetail } from "@/pages/admin/council-member/council-member-listing/council-member-detail";
 import CouncilMemberPage from "@/pages/admin/council-member/council-member-page";
 import DashboardPage from "@/pages/admin/dashboard/dashboard-page";
+import { DeadineTopicDetailPage } from "@/pages/admin/deadline-topic/columns/deadine-topic-detail-page";
+import { DeadineTopicPage } from "@/pages/admin/deadline-topic/deadine-topic-page";
 import { ProfilePage } from "@/pages/admin/profile-user/page";
 import { CouncilMembersPage } from "@/pages/examination-officer/review-topic-council/columns-member/CouncilMembersPage";
 import { ReviewTopicCouncilDetail } from "@/pages/examination-officer/review-topic-council/columns/review-topic-council-detail";
@@ -40,6 +42,11 @@ export const ExaminationOfficerContainer = () => {
         
         <Route path="/council-member" element={<CouncilMemberPage />} />
         <Route path="/council-member/:councilId" element={<CouncilMemberDetail />} />
+
+        <Route path="deadline-topic" element={<DeadineTopicPage />} />
+        <Route path="deadline-topic/:semesterId" element={<DeadineTopicDetailPage />} />
+        <Route path="deadline-topic/:semesterId/submission/:submissionId" element={<DeadineTopicDetailPage />} />
+        
 
         <Route path="review-topic-council" element={<ReviewTopicCouncilPage />} />
         <Route path="/review-topic-council-detail/:councilId" element={<ReviewTopicCouncilDetail />} />

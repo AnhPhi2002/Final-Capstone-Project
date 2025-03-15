@@ -44,9 +44,10 @@ export const CardSemester: React.FC<CardSemesterProps> = ({ data, submissionRoun
     );
   
     if (submissionRound) {
-      navigate(`/academic//topic-assignment-decision-detail ${semesterId}`);
+      navigate(`/academic/topic-assignment-decision-detail`);
     }
   };
+  
   
 
   const paginatedData = filteredSemesters.slice(
