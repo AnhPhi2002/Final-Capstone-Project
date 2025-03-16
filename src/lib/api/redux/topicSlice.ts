@@ -1,6 +1,23 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { axiosClient } from "../config/axios-client";
+import { ApproveTopic } from "../types";
+
+interface User {
+  id: string;
+  fullName: string | null;
+  email: string;
+}
+
+interface TopicRegistration {
+  id: string;
+  status: string;
+  registeredAt: string;
+  userId: string;
+  topicId: string;
+  user: User;
+  group: { id: string; groupCode: string } | null;
+}
 
 interface Topic {
   id: string;
@@ -28,6 +45,7 @@ interface Topic {
     "groupCode": string;
   };
   createdAt: string;
+  topicRegistrations: TopicRegistration[];
 }
 
 // Fetch danh sách topic theo semesterId
@@ -166,11 +184,56 @@ export const updateTopicStatus = createAsyncThunk(
   }
 );
 
+export const fetchRegisteredTopics = createAsyncThunk(
+  "topics/fetchRegisteredTopics",
+  async ({ semesterId }: { semesterId: string }, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.get(`/topics/registered-topics`, {
+        params: { semesterId },
+      });
+      return response.data.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Không thể tải danh sách đề tài.");
+    }
+  }
+);
 
+export const fetchTopicRegistrations = createAsyncThunk(
+  "topics/fetchTopicRegistrations",
+  async ({ topicId, semesterId }: { topicId: string; semesterId: string }, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.get(`/topics/topic/${topicId}/registrations`, {
+        params: { semesterId },
+      });
+
+      return response.data.data as ApproveTopic[];
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Không thể tải danh sách đăng ký.");
+    }
+  }
+);
+
+export const updateTopicRegistrationStatus = createAsyncThunk(
+  "topics/updateTopicRegistrationStatus",
+  async ({ registrationId, status, semesterId }: { registrationId: string; status: "APPROVED" | "REJECTED"; semesterId: string }, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.put(`/topics/topic-registrations/${registrationId}/approve`, {
+        status,
+        semesterId, 
+      });
+
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Không thể cập nhật trạng thái.");
+    }
+  }
+);
 
 const topicSlice = createSlice({
   name: "topics",
   initialState: {
+    topicRegistrations: [] as ApproveTopic[],
+    registeredTopics: [] as Topic[],
     data: [] as Topic[],
     topicDetails: null as Topic | null,
     approvalTopics: [] as Topic[],
@@ -269,7 +332,45 @@ const topicSlice = createSlice({
         }
         state.loading = false;
       })
-
+      .addCase(fetchRegisteredTopics.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchRegisteredTopics.fulfilled, (state, action) => {
+        state.loading = false;
+        state.registeredTopics = action.payload;
+      })
+      .addCase(fetchRegisteredTopics.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(fetchTopicRegistrations.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchTopicRegistrations.fulfilled, (state, action: PayloadAction<ApproveTopic[]>) => {
+        state.loading = false;
+        state.topicRegistrations = action.payload;
+      })
+      .addCase(fetchTopicRegistrations.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(updateTopicRegistrationStatus.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateTopicRegistrationStatus.fulfilled, (state, action) => {
+        state.loading = false;
+        const { registrationId, status } = action.payload;
+        state.registeredTopics = state.registeredTopics.map((topic: any) =>
+          topic.registrationId === registrationId ? { ...topic, registrationStatus: status } : topic
+        );
+      })
+      .addCase(updateTopicRegistrationStatus.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
       ;
   },
 });

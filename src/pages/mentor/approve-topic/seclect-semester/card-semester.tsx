@@ -38,7 +38,7 @@ export const CardSemester: React.FC<CardSemesterProps> = ({ data, submissionRoun
   };
 
   const handleCardClick = (id: string) => {
-    navigate(`/lecturer/approve-topic-detail`);
+    navigate(`/lecturer/approve-topic-list/${id}`);
   };
 
   const paginatedData = filteredSemesters.slice(

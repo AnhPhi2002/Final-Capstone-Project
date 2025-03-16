@@ -43,7 +43,7 @@ export const CreateSemesters = () => {
   }, [dispatch]);
 
   const handleSave = async () => {
-    if (!yearId || !code || !startDate || !endDate || !status) {
+    if (!yearId || !code || !startDate || !endDate) {
       toast.error("Vui lòng nhập đầy đủ thông tin!");
       return;
     }
