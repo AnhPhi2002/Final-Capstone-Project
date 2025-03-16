@@ -16,7 +16,7 @@ export const columnsCouncilMembers: ColumnDef<CouncilMember, any>[] = [
     header: "Email",
   },
   {
-    accessorKey: "roleId",
+    accessorKey: "roleName",
     header: "Vai trò",
   },
   {
