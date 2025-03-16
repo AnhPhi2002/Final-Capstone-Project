@@ -72,3 +72,21 @@ export interface SubmissionRound {
   status: "PENDING" | "ACTIVE" | "COMPLETE";
 }
 
+export type ApproveTopic = {
+  registrationId: string;
+  topicId: string; // ✅ Thêm topicId
+  semesterId: string; // ✅ Thêm semesterId
+  topicCode: string;
+  nameEn: string;
+  description: string;
+  registrationStatus: "PENDING" | "APPROVED" | "REJECTED";
+  registeredAt: string;
+  userId: string;
+  userFullName: string | null;
+  userEmail: string;
+  groupId: string | null;
+  groupCode: string | null;
+  leaderRole: string;
+};
+
+

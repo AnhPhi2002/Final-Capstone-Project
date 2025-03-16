@@ -18,6 +18,7 @@ import { useSelector } from "react-redux";
 import { Route, Routes, useNavigate } from "react-router";
 import { ApproveTopicPage } from "@/pages/mentor/approve-topic/approve-topic-page";
 import { ApproveTopicDetail } from "@/pages/mentor/approve-topic/columns/approve-topic-detail";
+import { ApproveTopicList } from "@/pages/mentor/approve-topic/columns/approve-topic-list";
 
 export const LecturerContainer = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -48,10 +49,10 @@ export const LecturerContainer = () => {
         <Route path="/group-student-detail" element={<GroupStudentDetail />} />
         <Route path="/group-student-detail/:groupId" element={<GroupStudentDetail />} />
 
-        
+        <Route path="/approve-topic-list/:semesterId" element={<ApproveTopicList />} />
 
         <Route path="/approve-topic" element={<ApproveTopicPage />} />
-        <Route path="/approve-topic-detail" element={<ApproveTopicDetail />} />
+        <Route path="/approve-topic-detail/:topicId/:semesterId" element={<ApproveTopicDetail />} />
         
         
         
