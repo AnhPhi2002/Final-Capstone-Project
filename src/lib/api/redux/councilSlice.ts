@@ -74,28 +74,28 @@ export const updateCouncil = createAsyncThunk(
   }
 );
 
-export const deleteCouncil = createAsyncThunk(
-  "councils/deleteCouncil",
-  async (councilId: string, { rejectWithValue }) => {
-    try {
-      await axiosClient.delete(`/council-topic/${councilId}`);
-      return councilId;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Không thể xóa hội đồng!");
-    }
-  }
-);
+// export const deleteCouncil = createAsyncThunk(
+//   "councils/deleteCouncil",
+//   async (councilId: string, { rejectWithValue }) => {
+//     try {
+//       await axiosClient.delete(`/council-topic/${councilId}`);
+//       return councilId;
+//     } catch (error: any) {
+//       return rejectWithValue(error.response?.data?.message || "Không thể xóa hội đồng!");
+//     }
+//   }
+// );
 
 export const addCouncilMember = createAsyncThunk(
   "councils/addCouncilMember",
   async (
-    { councilId, email, semesterId }: { councilId: string; email: string; semesterId:string },
+    { councilId, email}: { councilId: string; email: string; semesterId:string },
     { rejectWithValue }
   ) => {
     try {
       const response = await axiosClient.post(
-        `/council-topic/members`,
-        { email, role: "council_member"},{params: {semesterId, councilId}}
+        `/council-topic/members/${councilId}`,
+        { email, role: "council_member"}
       );
       return response.data.data as CouncilMember;
     } catch (error: any) {
@@ -103,6 +103,49 @@ export const addCouncilMember = createAsyncThunk(
     }
   }
 );
+// Xóa hội đồng
+export const deleteCouncil = createAsyncThunk(
+  "councils/deleteCouncil",
+  async (councilId: string, { rejectWithValue }) => {
+    console.log("🔴 Xóa hội đồng ID:", councilId); // Debug
+    try {
+      const response = await axiosClient.delete(`/council-topic/${councilId}`);
+      console.log("✅ API Response:", response); // Debug response
+      return councilId;
+    } catch (error: any) {
+      console.error("❌ Lỗi xóa hội đồng:", error.response?.data || error.message);
+      
+      // Nếu API trả về 404 nhưng hội đồng đã bị xóa, vẫn cập nhật Redux
+      if (error.response?.status === 404) {
+        return councilId; // Trả về ID để Redux cập nhật state
+      }
+
+      return rejectWithValue(error.response?.data?.message || "Không thể xóa hội đồng!");
+    }
+  }
+);
+
+// Xóa thành viên khỏi hội đồng
+
+export const deleteCouncilMember = createAsyncThunk(
+  "councils/deleteCouncilMember",
+  async ({ councilId, userId }: { councilId: string; userId: string }, { rejectWithValue }) => {
+    try {
+      console.log(`🔴 Deleting member ${userId} from council ${councilId}`);
+
+      // Sửa lại đường dẫn đúng
+      const response = await axiosClient.delete(`/council-topic/council/${councilId}/user/${userId}`);
+
+      console.log("✅ API Response:", response);
+      return { councilId, userId };
+    } catch (error: any) {
+      console.error("❌ Delete council member error:", error.response?.data || error.message);
+      return rejectWithValue(error.response?.data?.message || "Không thể xóa thành viên khỏi hội đồng!");
+    }
+  }
+);
+
+
 
 const councilSlice = createSlice({
   name: "councils",
@@ -133,10 +176,7 @@ const councilSlice = createSlice({
       })
       .addCase(fetchCouncilDetail.fulfilled, (state, action) => {
         state.loadingDetail = false;
-        console.log("CouncilDetail updated with:", action.payload); // Debug
-        if (!state.councilDetail || JSON.stringify(state.councilDetail) !== JSON.stringify(action.payload)) {
-          state.councilDetail = action.payload;
-        }
+        state.councilDetail = action.payload;
       })
       .addCase(fetchCouncilDetail.rejected, (state, action) => {
         state.loadingDetail = false;
@@ -161,14 +201,11 @@ const councilSlice = createSlice({
       .addCase(updateCouncil.fulfilled, (state, action) => {
         state.loading = false;
         const updatedCouncil = action.payload;
-        console.log("Council updated with:", updatedCouncil); // Debug
         state.data = state.data.map((council) =>
           council.id === updatedCouncil.id ? updatedCouncil : council
         );
         if (state.councilDetail?.id === updatedCouncil.id) {
-          if (JSON.stringify(state.councilDetail) !== JSON.stringify(updatedCouncil)) {
-            state.councilDetail = updatedCouncil;
-          }
+          state.councilDetail = updatedCouncil;
         }
       })
       .addCase(updateCouncil.rejected, (state, action) => {
@@ -182,7 +219,12 @@ const councilSlice = createSlice({
       .addCase(deleteCouncil.fulfilled, (state, action) => {
         state.loading = false;
         state.data = state.data.filter((council) => council.id !== action.payload);
-      })
+      
+        // Nếu đang xem trang chi tiết hội đồng, xóa nó để tránh gọi lại API GET
+        if (state.councilDetail?.id === action.payload) {
+          state.councilDetail = null;
+        }
+      })     
       .addCase(deleteCouncil.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
@@ -200,7 +242,27 @@ const councilSlice = createSlice({
       .addCase(addCouncilMember.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+      .addCase(deleteCouncilMember.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteCouncilMember.fulfilled, (state, action) => {
+        state.loading = false;
+        const { councilId, userId } = action.payload;
+
+        // Nếu đang xem chi tiết hội đồng, cập nhật danh sách thành viên
+        if (state.councilDetail?.id === councilId) {
+          state.councilDetail.members = state.councilDetail.members.filter(
+            (member) => member.userId !== userId
+          );
+        }
+      })
+      .addCase(deleteCouncilMember.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
+
   },
 });
 

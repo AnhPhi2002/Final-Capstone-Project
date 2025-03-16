@@ -7,6 +7,9 @@ const AutoNavigate = () => {
   const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.auth.user);
   useEffect(() => {
+    navigate("/log-in", { replace: true });
+  }, [navigate]);
+  useEffect(() => {
     const roles = user?.roles;
     if (!roles) return;
     if (roles.find((role: any) => role.name === "admin"))

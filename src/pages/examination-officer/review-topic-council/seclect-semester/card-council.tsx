@@ -13,17 +13,19 @@ import { Badge } from "@/components/ui/badge";
 
 type CardCouncilProps = {
   councils: Council[];
+  semesterId: string;
 };
 
-export const CardCouncil: React.FC<CardCouncilProps> = ({ councils }) => {
+export const CardCouncil: React.FC<CardCouncilProps> = ({ councils, semesterId }) => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6; // Số lượng items trên mỗi trang
+  // const semesterId = useParams();
 
   const totalPages = Math.ceil(councils.length / itemsPerPage);
 
   const handleCardClick = (councilId: string) => {
-    navigate(`/examination/review-topic-council-detail/${councilId}`);
+    navigate(`/examination/review-topic-council-detail/${councilId}/${semesterId}`);
     // navigate(`/review-topic-council-detail`);
   };
 

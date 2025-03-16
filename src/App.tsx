@@ -15,14 +15,14 @@ export default function Home() {
     <div>
       <Routes>
       <Route path="/" element={<AutoNavigate />} />
-        <Route path="/log-in" element={<LoginPage />} />
-        <Route path="/access-denied" element={<AccessDenied />} />
+        <Route path="/log-in" element={<LoginPage />} />       
         <Route path="/admin/*" element={<AdminContainer />} />
         <Route path="/academic/*" element={<AcademicOfficerContainer />} />
         <Route path="/examination/*" element={<ExaminationOfficerContainer />} />
         <Route path="/graduation-thesis/*" element={<GraduationThesisManagerContainer />}/>
         <Route path="/lecturer/*" element={<LecturerContainer />} />
         <Route path="/student/*" element={<StudentContainer />} />
+        <Route path="/access-denied" element={<AccessDenied />} />
         <Route path="/*" element={<NotFound />} />
       </Routes>
     </div>

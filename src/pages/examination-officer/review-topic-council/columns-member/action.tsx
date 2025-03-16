@@ -1,4 +1,3 @@
-// src/components/action.tsx
 import React, { useState } from "react";
 import { MoreHorizontal } from "lucide-react";
 import {
@@ -10,15 +9,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Council, CouncilMember } from "@/lib/api/types"; // Thêm CouncilMember
+import { Council, CouncilMember } from "@/lib/api/types";
 import { useNavigate } from "react-router";
 import { DeleteReviewTopicCouncilMember } from "./delete-council-member";
 
-// Kiểu dữ liệu linh hoạt cho cả Council và CouncilMember
 export interface ActionMenuProps {
   data: Council | CouncilMember;
   refetchData: () => void;
 }
+
 export const ActionMenuMember: React.FC<ActionMenuProps> = ({ data, refetchData }) => {
   const navigate = useNavigate();
   const [openUpdate, setOpenUpdate] = useState(false);
@@ -26,6 +25,10 @@ export const ActionMenuMember: React.FC<ActionMenuProps> = ({ data, refetchData 
 
   // Kiểm tra xem data là Council hay CouncilMember
   const isCouncil = "members" in data; // Council có thuộc tính members, CouncilMember thì không
+
+  // 🛠️ Xử lý `councilId` và `userId` đúng cách
+  const councilId = isCouncil ? data.id : (data as CouncilMember).councilId;
+  const userId = isCouncil ? undefined : (data as CouncilMember).userId;
 
   return (
     <>
@@ -41,7 +44,7 @@ export const ActionMenuMember: React.FC<ActionMenuProps> = ({ data, refetchData 
           <DropdownMenuItem onClick={() => setOpenUpdate(true)}>
             {isCouncil ? "Cập nhật Hội đồng" : "Cập nhật Thành viên"}
           </DropdownMenuItem>
-          {isCouncil && ( // Chỉ hiển thị cho Council
+          {isCouncil && (
             <DropdownMenuItem
               onClick={() => navigate(`/examination/review-topic-council-member/${data.id}`)}
             >
@@ -54,11 +57,13 @@ export const ActionMenuMember: React.FC<ActionMenuProps> = ({ data, refetchData 
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {openDelete && (
+      {openDelete && !isCouncil && userId && (
         <DeleteReviewTopicCouncilMember
           open={openDelete}
           setOpen={setOpenDelete}
-          lecturerId={data.id} // Truyền ID của Council hoặc CouncilMember
+          councilId={councilId}
+          userId={userId}
+          refetchData={refetchData}
         />
       )}
     </>

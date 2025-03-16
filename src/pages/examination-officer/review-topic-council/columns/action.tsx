@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Council } from "@/lib/api/types";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { DeleteReviewTopicCouncil } from "./delete-review-topic-council";
 import { UpdateReviewTopicCouncil } from "./update-review-topic-council";
 
@@ -24,6 +24,7 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({ council, refetchData }) 
   const navigate = useNavigate();
   const [openUpdate, setOpenUpdate] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
+  const { semesterId } = useParams();
 
   return (
     <>
@@ -40,7 +41,7 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({ council, refetchData }) 
             Cập nhật Hội đồng
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => navigate(`/examination/review-topic-council-member/${council.id}`)}
+            onClick={() => navigate(`/examination/review-topic-council-member/${council.id}/${semesterId}`)}
           >
             Thành viên hội đồng
           </DropdownMenuItem>
@@ -50,13 +51,13 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({ council, refetchData }) 
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {openDelete && (
-        <DeleteReviewTopicCouncil
-          open={openDelete}
-          setOpen={setOpenDelete}
-          lecturerId={council.id}
-        />
-      )}
+      <DeleteReviewTopicCouncil
+  open={openDelete}
+  setOpen={setOpenDelete}
+  councilId={council.id}
+  refetchData={refetchData} // Gọi lại danh sách sau khi xóa
+/>
+
 
       {openUpdate && (
         <UpdateReviewTopicCouncil
