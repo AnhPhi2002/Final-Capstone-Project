@@ -10,7 +10,7 @@ import {
 import { AddReviewMemberTopicCouncil } from "./add-council-member";
 
 
-export function ToolPanel({ table, councilId, refetchData }: { table: any; councilId: string; refetchData: () => void }) {
+export function ToolPanel({ table, councilId, refetchData, semesterId }: { table: any; councilId: string; refetchData: () => void; semesterId: string }) {
   const handleSemesterFilter = (value: string) => {
     table.getColumn("code")?.setFilterValue?.(value === "all" ? "" : value);
   };
@@ -19,7 +19,7 @@ export function ToolPanel({ table, councilId, refetchData }: { table: any; counc
     <div className="mb-6 flex items-center">
       <div className="ml-auto flex items-center space-x-4">
         <div>
-          <AddReviewMemberTopicCouncil councilId={councilId} refetchData={refetchData} />
+          <AddReviewMemberTopicCouncil councilId={councilId} refetchData={refetchData} semesterId={semesterId}/>
         </div>
 
         <div>

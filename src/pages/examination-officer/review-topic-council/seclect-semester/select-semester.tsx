@@ -162,7 +162,7 @@ export const SelectSemester: React.FC = () => {
       </div>
 
 
-      {selectedSubmissionRound && <CardCouncil councils={councils} />}
+      {selectedSubmissionRound && <CardCouncil councils={councils} semesterId={selectedSemester}/>}
     </div>
   );
 };

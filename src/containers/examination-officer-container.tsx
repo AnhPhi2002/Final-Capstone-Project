@@ -49,8 +49,9 @@ export const ExaminationOfficerContainer = () => {
         
 
         <Route path="review-topic-council" element={<ReviewTopicCouncilPage />} />
-        <Route path="/review-topic-council-detail/:councilId" element={<ReviewTopicCouncilDetail />} />
-        <Route path="/review-topic-council-member/:councilId" element={<CouncilMembersPage />} />         
+        <Route path="/review-topic-council-detail/:councilId/:semesterId" element={<ReviewTopicCouncilDetail />} />
+        <Route path="/review-topic-council-member/:councilId/:semesterId" element={<CouncilMembersPage />} />   
+              
         <Route path="/*" element={<NotFound />} />
       </Routes>
     </MainLayout>

@@ -42,7 +42,7 @@ export interface User {
 export interface CouncilMember {
   id: string;
   councilId: string;
-  role: string;
+  roleId: string;
   status: string;
   userId: string;
   user: User;

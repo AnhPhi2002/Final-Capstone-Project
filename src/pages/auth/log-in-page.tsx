@@ -87,7 +87,7 @@ const LoginPage = () => {
               ease: "linear", // Chạy đều, không bị giật
             }}
           >
-            WEELCOME TO FU FCPRIMS HCM Management System
+            {/* WELCOME TO FU FCPRIMS HCM Management System */}
           </motion.p>
         </motion.div>
 
@@ -112,7 +112,7 @@ const LoginPage = () => {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel htmlFor="email">Email</FormLabel>
                     <FormControl>
                       <Input
                         id="email"
@@ -130,10 +130,10 @@ const LoginPage = () => {
                 control={form.control}
                 name="password"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Mật khẩu</FormLabel>
-                    <FormControl>
-                      <Input id="password" type="password" {...field} />
+                  <FormItem >
+                    <FormLabel htmlFor="password">Mật khẩu</FormLabel>
+                    <FormControl >
+                      <Input id="password" type="password"  {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Toaster, toast } from "sonner";
+
 import {
   Form,
   FormField,
@@ -30,6 +30,7 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
+import { toast } from "sonner";
 
 // ✅ Xây dựng schema validation với Zod
 const formSchema = z.object({
@@ -67,7 +68,7 @@ export const AddReviewTopicCouncil = () => {
 
   return (
     <div>
-      <Toaster position="top-right" richColors duration={3000} />
+
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogTrigger asChild>
           <Button ref={triggerRef} className="bg-black text-white">

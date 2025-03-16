@@ -1,21 +1,35 @@
 import React from "react";
 import { Toaster, toast } from "sonner";
+import { useDispatch } from "react-redux";
+
+
+import { AppDispatch } from "@/lib/api/redux/store";
+import { deleteCouncil } from "@/lib/api/redux/councilSlice";
 
 export type DeleteReviewTopicCouncilProps = {
   open: boolean;
-  lecturerId: string;
+  councilId: string;
   setOpen: (open: boolean) => void;
+  refetchData?: () => void; // Optional để reload danh sách sau khi xóa
 };
 
 export const DeleteReviewTopicCouncil: React.FC<DeleteReviewTopicCouncilProps> = ({
   open,
   setOpen,
-  lecturerId,
+  councilId,
+  refetchData,
 }) => {
-  const handleDelete = () => {
-    console.log("Hội đồng review bị xóa:", lecturerId);
-    toast.success("Hội đồng review đã được xóa thành công!");
-    setOpen(false);
+  const dispatch = useDispatch<AppDispatch>();
+
+  const handleDelete = async () => {
+    try {
+      await dispatch(deleteCouncil(councilId)).unwrap();
+      toast.success("Hội đồng review đã được xóa thành công!");
+      setOpen(false);
+      refetchData?.(); // Refetch danh sách nếu có function refetch
+    } catch (error: any) {
+      toast.error(error || "Xóa hội đồng thất bại!");
+    }
   };
 
   if (!open) return null;
