@@ -24,6 +24,7 @@ interface Topic {
   nameVi: string;
   nameEn: string;
   name: string;
+  groupCode?: string;
   description: string;
   isBusiness: boolean;
   businessPartner: string | null;
@@ -39,13 +40,24 @@ interface Topic {
     email: string;
     createdAt?: string;
   };
-  draftFileUrl: string;
+  draftFileUrl: string | null | undefined;
   group?: {
     "id": string;
     "groupCode": string;
   };
   createdAt: string;
   topicRegistrations: TopicRegistration[];
+  subMentor?: {
+    fullName: string;
+    email: string;
+  };
+  documents?: [
+    {
+      fileName: string;
+      fileUrl: string;
+      fileType: string;
+    },
+  ];
 }
 
 // Fetch danh sách topic theo semesterId
@@ -127,6 +139,24 @@ export const createTopic = createAsyncThunk(
       return rejectWithValue(
         error.response?.data?.message || "Không thể tạo đề tài."
       );
+    }
+  }
+);
+
+export const deleteTopic = createAsyncThunk(
+  "topics/deleteTopic",
+  async ({ topicId, semesterId }: { topicId: string; semesterId: string }, { rejectWithValue }) => {
+    try {
+      console.log("🟢 Gửi API xóa đề tài:", { topicId, semesterId });
+  await axiosClient.delete(`/topics/${topicId}`, {
+        params: { semesterId }, // ✅ Truyền semesterId qua params
+      });
+
+      // toast.success("Xóa đề tài thành công!");
+      return topicId; // ✅ Trả về topicId để cập nhật state
+    } catch (error: any) {
+      // toast.error(error.response?.data?.message || "Không thể xóa đề tài!");
+      return rejectWithValue(error.response?.data?.message || "Lỗi hệ thống!");
     }
   }
 );
@@ -368,6 +398,18 @@ const topicSlice = createSlice({
         );
       })
       .addCase(updateTopicRegistrationStatus.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(deleteTopic.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteTopic.fulfilled, (state, action: PayloadAction<string>) => {
+        state.loading = false;
+        state.data = state.data.filter((topic: any) => topic.id !== action.payload);
+        state.topicDetails = null; // ✅ Xóa khỏi chi tiết nếu đang xem
+      })
+      .addCase(deleteTopic.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })

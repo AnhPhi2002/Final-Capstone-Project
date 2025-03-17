@@ -14,6 +14,10 @@ export const columnsCouncils: ColumnDef<Council, any>[] = [
     header: "Tên hội đồng",
   },
   {
+    accessorKey: "code",
+    header: "Mã Hội đồng",
+  },
+  {
     accessorKey: "round",
     header: "Vòng xét duyệt",
   },

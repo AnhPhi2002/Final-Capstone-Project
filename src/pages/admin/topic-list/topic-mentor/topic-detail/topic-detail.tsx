@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchTopicDetail } from "@/lib/api/redux/topicSlice";
+import { fetchTopicDetail, deleteTopic } from "@/lib/api/redux/topicSlice";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -12,10 +12,10 @@ import { DataTableGroupTopic } from "./data-table-group-topic";
 import { fetchUserById } from "@/lib/api/redux/authSlice";
 import { resetGroupDetail } from "@/lib/api/redux/groupDetailSlice";
 
-
 export default function TopicDetail() {
   const { topicId, semesterId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const { topicDetails, loading, error } = useSelector(
     (state: RootState) => state.topics
   );
@@ -24,11 +24,9 @@ export default function TopicDetail() {
   useEffect(() => {
     dispatch(resetGroupDetail());
     if (topicId && (!topicDetails || topicDetails.id !== topicId) && semesterId) {
-      dispatch(fetchTopicDetail({topicId, semesterId}));
+      dispatch(fetchTopicDetail({ topicId, semesterId }));
     }
   }, [dispatch, topicId, topicDetails, semesterId]);
-
-  console.log(topicId, semesterId);
 
   useEffect(() => {
     if (topicDetails?.createdBy && topicDetails?.semesterId) {
@@ -55,6 +53,23 @@ export default function TopicDetail() {
       </p>
     );
 
+  const handleDeleteTopic = async () => {
+    if (!topicId || !semesterId) {
+      toast.error("Không thể xác định đề tài cần xóa!");
+      return;
+    }
+
+    if (!confirm("Bạn có chắc muốn xóa đề tài này?")) return;
+
+    try {
+      toast.success("Xóa đề tài thành công")
+      await dispatch(deleteTopic({ topicId, semesterId })).unwrap();
+      navigate("/lecturer/topic"); // ✅ Điều hướng sau khi xóa thành công
+    } catch (error) {
+      toast.error("Lỗi khi xóa đề tài!");
+    }
+  };
+
   return (
     <div>
       <div className="mt-6 bg-white">
@@ -76,7 +91,7 @@ export default function TopicDetail() {
                 {topicDetails.createdAt
                   ? new Date(topicDetails.createdAt).toLocaleDateString()
                   : "Không xác định"}{" "}
-                  by {author?.fullName || "không có tác giả"}
+                by {author?.fullName || "không có tác giả"}
               </p>
             </div>
           </div>
@@ -107,6 +122,18 @@ export default function TopicDetail() {
                   {topicDetails.status || "Chưa cập nhật trạng thái"}
                 </Badge>
               </div>
+
+              {/* 🔹 Thêm phần hiển thị Mentor phụ */}
+              <div className="col-span-2">
+                <p className="text-sm text-gray-500 mb-1">Mentor phụ</p>
+                <p className="font-semibold italic">
+                  {topicDetails.subMentor?.email ? (
+                    <span className="text-blue-600">{topicDetails.subMentor?.email}</span>
+                  ) : (
+                    <span className="text-red-500">Chưa có mentor phụ</span>
+                  )}
+                </p>
+              </div>
             </div>
 
             <div>
@@ -115,14 +142,17 @@ export default function TopicDetail() {
                 {topicDetails.description || "Chưa có mô tả"}
               </p>
             </div>
-          </CardContent> 
+          </CardContent>
+
 
           <div>
-          <DataTableGroupTopic groupId={topicDetails.group?.id}/>
+            <DataTableGroupTopic groupId={topicDetails.group?.id} />
           </div>
 
           <div className="flex justify-end gap-4 mt-6">
-            <Button variant="destructive">Xóa đề tài</Button>
+            <Button variant="destructive" onClick={handleDeleteTopic}>
+              Xóa đề tài
+            </Button>
           </div>
         </Card>
       </div>

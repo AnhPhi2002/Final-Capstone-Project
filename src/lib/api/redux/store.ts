@@ -23,6 +23,7 @@ import submissionRoundReducer from "./submissionRoundSlice";
 import { mentorReducer } from './mentorSlice';
 import councilReducer from "./councilSlice";
 import topicStudentReducer from "./topicStudentSlice";
+import uploadReducer from "./uploadSlice";
 
 
 const rootReducer = combineReducers({
@@ -49,6 +50,8 @@ const rootReducer = combineReducers({
   mentors: mentorReducer,
   councils: councilReducer,
   topicStudents: topicStudentReducer,
+  upload: uploadReducer,
+  // persist: persistedReducer,
 });
 
 // const persistedReducer = persistReducer(persistConfig, rootReducer)
