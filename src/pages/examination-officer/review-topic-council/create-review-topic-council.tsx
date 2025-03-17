@@ -195,7 +195,7 @@ export const CreateReviewTopicCouncil = () => {
             </div>
 
             {/* Chọn trạng thái */}
-            <div className="grid grid-cols-4 items-center gap-4">
+            {/* <div className="grid grid-cols-4 items-center gap-4">
               <Label className="text-right">Trạng thái</Label>
               <Select onValueChange={setStatus} value={status}>
                 <SelectTrigger className="w-full col-span-3">
@@ -208,7 +208,7 @@ export const CreateReviewTopicCouncil = () => {
                   </SelectGroup>
                 </SelectContent>
               </Select>
-            </div>
+            </div> */}
           </div>
 
           <DialogFooter>

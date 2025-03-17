@@ -15,7 +15,9 @@ export const columnsCouncils: ColumnDef<Council, any>[] = [
   },
   {
     accessorKey: "code",
+
     header: "Mã Hội đồng",
+
   },
   {
     accessorKey: "round",
@@ -40,8 +42,11 @@ export const columnsCouncils: ColumnDef<Council, any>[] = [
         return <span className="text-green-600">Đang hoạt động</span>;
       } else if (status === "INACTIVE") {
         return <span className="text-red-600">Không hoạt động</span>;
+      } else if (status === "UPCOMING")  {
+        return <span className="text-yellow-600">Sắp diễn ra</span>;
       } else {
         return <span className="text-gray-600">Không xác định</span>;
+     
       }
     },
   },
