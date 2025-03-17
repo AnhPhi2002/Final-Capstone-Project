@@ -10,16 +10,18 @@ import Header from "@/components/header";
 import { Textarea } from "@/components/ui/textarea";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
 import { fetchTopicDetail, updateTopic } from "@/lib/api/redux/topicSlice";
+import { fetchMentorsBySemesterId } from "@/lib/api/redux/mentorSlice"; // ✅ Fetch mentor
+import { Select, SelectItem, SelectContent, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+
 
 export default function UpdateTopicDetail() {
   const { topicId, semesterId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const { topicDetails, loading } = useSelector(
-    (state: RootState) => state.topics
-  );
+  const { topicDetails, loading } = useSelector((state: RootState) => state.topics);
+  const { mentors } = useSelector((state: RootState) => state.mentors); // ✅ Danh sách mentor
 
   const [formData, setFormData] = useState({
     name: "",
@@ -28,17 +30,17 @@ export default function UpdateTopicDetail() {
     majorId: "",
     status: "",
     description: "",
+    subMentorEmail: "", 
+    groupCode: "",
   });
 
-  // Khi component mount, fetch topic detail nếu chưa có dữ liệu
   useEffect(() => {
     if (topicId && semesterId) {
-      console.log("📡 Fetching topic detail:", topicId, semesterId);
       dispatch(fetchTopicDetail({ topicId, semesterId }));
+      dispatch(fetchMentorsBySemesterId(semesterId)); // ✅ Fetch danh sách mentor
     }
   }, [dispatch, topicId, semesterId]);
 
-  // Cập nhật state khi topicDetails thay đổi
   useEffect(() => {
     if (topicDetails) {
       setFormData({
@@ -48,34 +50,49 @@ export default function UpdateTopicDetail() {
         majorId: topicDetails.majorId || "",
         status: topicDetails.status || "PENDING",
         description: topicDetails.description || "",
+        subMentorEmail: topicDetails.subMentor?.email || "", 
+        groupCode: topicDetails.group?.groupCode || "",
       });
     }
   }, [topicDetails]);
 
-  // Xử lý nhập liệu
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Xử lý cập nhật đề tài
   const handleUpdate = async () => {
     if (!topicId || !semesterId) {
-      console.error("❌ Không có topicId hoặc semesterId, không thể cập nhật!");
       toast.error("Thiếu thông tin cần thiết!");
       return;
     }
-
-    console.log("🚀 Cập nhật đề tài:", { topicId, semesterId, formData });
-
+  
+    let subMentorId = topicDetails?.subSupervisorEmail || null;
+  
+    // 🔹 Nếu chọn mentor mới, tìm ID từ danh sách mentor
+    if (formData.subMentorEmail && formData.subMentorEmail !== topicDetails?.subMentor?.email) {
+      const selectedMentor = mentors.find(m => m.email === formData.subMentorEmail);
+      if (selectedMentor) {
+        subMentorId = selectedMentor.id;
+      }
+    }
+  
+    const updatedData = {
+      ...formData,
+      subSupervisor: subMentorId, // ✅ Cập nhật subSupervisor là ID của subMentor
+      subMentorEmail: formData.subMentorEmail || null, // ✅ Giữ giá trị email mentor phụ
+    };
+  
     try {
-      await dispatch(updateTopic({ topicId, updatedData: formData, semesterId })).unwrap();
+      console.log("🚀 Gửi API cập nhật:", { topicId, semesterId, updatedData });
+      await dispatch(updateTopic({ topicId, updatedData, semesterId })).unwrap();
       toast.success("✅ Cập nhật đề tài thành công!");
       navigate(`/lecturer/topic-detail/${topicId}/${semesterId}`);
-    } catch (err: any) {
-      console.error("❌ Lỗi khi cập nhật:", err);
-      toast.error(err || "Có lỗi xảy ra khi cập nhật đề tài.");
+      dispatch(fetchTopicDetail({ topicId, semesterId }));
+    } catch (err) {
+      toast.error("Có lỗi xảy ra khi cập nhật đề tài.");
     }
   };
+  
 
   return (
     <div>
@@ -111,16 +128,41 @@ export default function UpdateTopicDetail() {
                 <p className="text-sm text-gray-500 mb-1">Status</p>
                 <Badge>{formData.status}</Badge>
               </div>
+              <div className="col-span-2">
+                <p className="text-sm text-gray-500 mb-1">Nhóm sinh viên</p>
+                <Input
+                  name="groupCode"
+                  value={formData.groupCode}
+                  onChange={handleChange}
+                  placeholder="Chưa có nhóm tham gia dự án"
+                />
+              </div>
+
+              {/* 🔹 Select Mentor Phụ */}
+              <div>
+                <p className="text-sm text-gray-500 mb-1">Mentor phụ</p>
+                <Select value={formData.subMentorEmail} onValueChange={(email) => setFormData({ ...formData, subMentorEmail: email })}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Chọn mentor phụ" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {mentors.length > 0 ? (
+                      mentors.map((mentor) => (
+                        <SelectItem key={mentor.email} value={mentor.email}>
+                          {mentor.fullName} ({mentor.email})
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="" disabled>Không có mentor khả dụng</SelectItem>
+                    )}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div>
               <p className="text-sm text-gray-500 mb-1">Description</p>
-              <Textarea
-                name="description"
-                className="w-full p-2 border rounded-md h-24"
-                value={formData.description}
-                onChange={handleChange}
-              />
+              <Textarea name="description" className="w-full p-2 border rounded-md h-24" value={formData.description} onChange={handleChange} />
             </div>
           </CardContent>
 
@@ -134,4 +176,3 @@ export default function UpdateTopicDetail() {
     </div>
   );
 }
-

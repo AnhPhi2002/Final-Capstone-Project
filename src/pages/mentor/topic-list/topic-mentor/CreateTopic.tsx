@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/api/redux/store";
 import { createTopic } from "@/lib/api/redux/topicSlice";
 import { fetchMajors } from "@/lib/api/redux/majorSlice";
-import { fetchMentorsBySemesterId } from "@/lib/api/redux/mentorSlice"; // ✅ Thêm import
+import { fetchMentorsBySemesterId } from "@/lib/api/redux/mentorSlice";
+import { uploadFile } from "@/lib/api/redux/uploadSlice";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -34,7 +35,10 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
   );
   const { mentors, loading: mentorLoading } = useSelector(
     (state: RootState) => state.mentors
-  ); // ✅ Lấy danh sách mentors từ Redux
+  );
+  const { fileUrl, loading: uploadLoading, error: uploadError } = useSelector(
+    (state: RootState) => state.upload
+  );
 
   const [open, setOpen] = useState(false);
   const [nameVi, setNameVi] = useState("");
@@ -42,12 +46,12 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [subSupervisorEmail, setSubSupervisorEmail] = useState("");
-  const [filteredEmails, setFilteredEmails] = useState<string[]>([]); // ✅ Danh sách gợi ý email
+  const [filteredEmails, setFilteredEmails] = useState<string[]>([]);
   const [isBusiness, setIsBusiness] = useState(false);
   const [businessPartner, setBusinessPartner] = useState<string | null>(null);
   const [majorId, setMajorId] = useState<string | null>(null);
   const [groupCode, setGroupCode] = useState("");
-  const [documentUrl, setDocumentUrl] = useState("");
+  const [documentFile, setDocumentFile] = useState<File | null>(null);
   const [documents, setDocuments] = useState<
     { fileName: string; draftFileUrl: string; fileType: string }[]
   >([]);
@@ -55,49 +59,70 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
   // Fetch majors và mentors khi component mount
   useEffect(() => {
     dispatch(fetchMajors());
-    dispatch(fetchMentorsBySemesterId(semesterId)); // ✅ Gọi API fetch mentors
+    dispatch(fetchMentorsBySemesterId(semesterId));
   }, [dispatch, semesterId]);
-
-  console.log("Mentors from Redux:", mentors);
-  console.log("Mentor loading:", mentorLoading);
 
   // Lọc email dựa trên input subSupervisorEmail
   useEffect(() => {
-    console.log("subSupervisorEmail:", subSupervisorEmail);
     if (subSupervisorEmail.trim() === "") {
-      setFilteredEmails([]); // Không hiển thị gợi ý khi input trống
+      setFilteredEmails([]);
     } else {
       const filtered = mentors
         .map((mentor) => mentor.email)
         .filter((email) =>
           email.toLowerCase().startsWith(subSupervisorEmail.toLowerCase())
         );
-        console.log("Filtered emails:", filtered);
       setFilteredEmails(filtered);
     }
   }, [subSupervisorEmail, mentors]);
+
+  // Xử lý fileUrl từ API upload
+  useEffect(() => {
+    if (fileUrl && !uploadLoading && !uploadError && documentFile) {
+      const fileName = documentFile.name || "Tài liệu";
+      const fileType = fileName.split(".").pop() || "unknown";
+      setDocuments([...documents, { fileName, draftFileUrl: fileUrl, fileType }]);
+      setDocumentFile(null); // Reset file sau khi upload thành công
+      toast.success("Tải file thành công!");
+    }
+    if (uploadError) {
+      toast.error(uploadError);
+    }
+  }, [fileUrl, uploadLoading, uploadError, documentFile, documents]);
 
   const handleBusinessToggle = (checked: boolean) => {
     setIsBusiness(checked);
     if (!checked) setBusinessPartner(null);
   };
 
-  const handleAddDocument = () => {
-    if (!documentUrl.trim()) {
-      toast.error("Vui lòng nhập đường dẫn tài liệu!");
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setDocumentFile(file);
+    }
+  };
+
+  const handleAddDocument = async () => {
+    if (!documentFile) {
+      toast.error("Vui lòng chọn file để tải lên!");
       return;
     }
 
-    const fileName = documentUrl.split("/").pop() || "Tài liệu";
-    const fileType = fileName.split(".").pop() || "unknown";
-
-    setDocuments([...documents, { fileName, draftFileUrl: documentUrl, fileType }]);
-    setDocumentUrl("");
+    try {
+      await dispatch(uploadFile(documentFile)).unwrap(); // Gọi API upload và đợi kết quả
+    } catch (error) {
+      toast.error("Không thể tải file lên. Vui lòng thử lại!");
+    }
   };
 
   const handleCreateTopic = async () => {
     if (!nameVi || !nameEn || !name || !description || !semesterId || !majorId) {
       toast.error("Vui lòng nhập đầy đủ thông tin!");
+      return;
+    }
+
+    if (documentFile && documents.length === 0) {
+      toast.error("Vui lòng đợi file tải lên hoàn tất trước khi tạo đề tài!");
       return;
     }
 
@@ -130,15 +155,15 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
       setDocuments([]);
       setIsBusiness(false);
       setBusinessPartner(null);
+      setDocumentFile(null);
     } catch (error: any) {
       toast.error(error?.message || "Tạo đề tài thất bại!");
     }
   };
 
-  // Xử lý khi chọn email từ danh sách gợi ý
   const handleSelectEmail = (email: string) => {
     setSubSupervisorEmail(email);
-    setFilteredEmails([]); // Ẩn danh sách gợi ý sau khi chọn
+    setFilteredEmails([]);
   };
 
   return (
@@ -175,7 +200,6 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
             className="h-24"
           />
 
-          {/* Input với gợi ý email */}
           <div className="relative">
             <Input
               value={subSupervisorEmail}
@@ -248,11 +272,13 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
 
           <div className="flex items-center gap-2">
             <Input
-              value={documentUrl}
-              onChange={(e) => setDocumentUrl(e.target.value)}
-              placeholder="URL tài liệu"
+              type="file"
+              accept=".doc,.docx,.xls,.xlsx"
+              onChange={handleFileChange}
             />
-            <Button onClick={handleAddDocument}>Thêm</Button>
+            <Button onClick={handleAddDocument} disabled={uploadLoading}>
+              {uploadLoading ? "Đang tải..." : "Thêm"}
+            </Button>
           </div>
 
           {documents.length > 0 && (
@@ -273,7 +299,10 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
           <Button variant="outline" onClick={() => setOpen(false)}>
             Hủy
           </Button>
-          <Button onClick={handleCreateTopic} disabled={majorLoading || mentorLoading}>
+          <Button
+            onClick={handleCreateTopic}
+            disabled={majorLoading || mentorLoading || uploadLoading}
+          >
             Tạo
           </Button>
         </DialogFooter>

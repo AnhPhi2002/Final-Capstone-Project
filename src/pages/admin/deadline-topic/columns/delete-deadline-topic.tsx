@@ -26,7 +26,7 @@ export const DeleteDeadlineTopic: React.FC<DeleteDeadlineTopicProps> = ({ roundI
       if (deleteSubmissionRound.fulfilled.match(resultAction)) {
         toast.success("Vòng nộp đã được xóa thành công!");
         setOpen(false); 
-        navigate(`/deadline-topic`);
+        navigate(`examination/deadline-topic`);
       } else {
         throw new Error("Xóa thất bại!");
       }

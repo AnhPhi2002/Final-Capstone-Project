@@ -6,6 +6,7 @@ import { fetchApprovalTopics, resetApprovalTopics } from "@/lib/api/redux/topicS
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { SelectRound } from "./select-round";
+import { resetGroupDetail } from "@/lib/api/redux/groupDetailSlice";
 
 export const ReviewTopicList = () => {
   const { semesterId } = useParams();
@@ -20,6 +21,7 @@ export const ReviewTopicList = () => {
 
   useEffect(() => {
     if (semesterId) {
+      dispatch(resetGroupDetail());
       dispatch(resetApprovalTopics()); // ✅ Xóa dữ liệu cũ trước khi gọi API mới
       dispatch(fetchApprovalTopics({ semesterId, round }));
     }
