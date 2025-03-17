@@ -23,7 +23,7 @@ export const DeleteSemester: React.FC<DeleteSemesterProps> = ({
     try {
       await dispatch(deleteSemester(semesterId)).unwrap();
       toast.success("Học kỳ đã được xóa thành công!");
-      navigate(`/semester`);
+      navigate(`/academic/semester`);
       setOpen(false);
     } catch (error: any) {
       toast.error(`Xóa thất bại: ${error.message || "Đã xảy ra lỗi"}`);
