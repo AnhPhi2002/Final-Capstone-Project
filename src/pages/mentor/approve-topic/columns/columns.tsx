@@ -1,12 +1,23 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { ApproveTopic } from "@/lib/api/types"; // 🔹 Đảm bảo đúng đường dẫn
 import { ActionMenu } from "./action";
+import { GroupCodeCell } from "./GroupCodeCell";
 
 // ✅ Cấu hình cột
 export const columnsApproveTopic: ColumnDef<ApproveTopic, any>[] = [
   { accessorKey: "registrationId", header: "ID Đăng ký" },
-  { accessorKey: "groupCode", header: "Mã Nhóm", cell: ({ row }) => row.original.groupCode || "Chưa có" },
-  { accessorKey: "topicCode", header: "Mã Đề Tài" },
+  // { accessorKey: "groupCode", header: "Mã Nhóm", cell: ({ row }) => row.original.groupCode || "Chưa có" },
+
+  {
+    accessorKey: "groupCode",
+    header: "Mã Nhóm",
+    cell: ({ row }) => (
+      <GroupCodeCell 
+        groupId={row.original.groupId} 
+        groupCode={row.original.groupCode || "Chưa có"} 
+      />
+    ),
+  },
   { accessorKey: "nameEn", header: "Tên Đề Tài" },
   { accessorKey: "description", header: "Mô Tả" },
   { accessorKey: "userEmail", header: "Email Người Đăng Ký" },
@@ -39,3 +50,7 @@ export const columnsApproveTopic: ColumnDef<ApproveTopic, any>[] = [
     ),
   },
 ];
+function useParams(): { semesterId: any; } {
+  throw new Error("Function not implemented.");
+}
+
