@@ -29,10 +29,11 @@ interface Topic {
   isBusiness: boolean;
   businessPartner: string | null;
   source: string | null;
-  semesterId: string;
+  semesterId: string | undefined;
   majorId: string;
   createdBy: string | null;
   status: string;
+  reasons: string;
   reviewReason: string | null;
   subSupervisorEmail: string | null;
   creator?: {
@@ -83,11 +84,13 @@ export const fetchTopics = createAsyncThunk(
 
 export const exportTopicsToExcel = createAsyncThunk(
   "topics/exportExcel",
-  async (submissionPeriodId: string, { rejectWithValue }) => {
+  async ({submissionPeriodId, semesterId}:{submissionPeriodId:string, semesterId: string}, { rejectWithValue }) => {
     try {
       const response = await axiosClient.get(
-        `/export-topic?submissionPeriodId=${submissionPeriodId}`,
-        { responseType: "blob" } // API trả về file
+        `/export-topic`,{
+          params: {submissionPeriodId, semesterId},
+          responseType: "blob"
+        },
       );
 
       // Xử lý tải file về máy
@@ -204,7 +207,7 @@ export const fetchApprovalTopics = createAsyncThunk(
 
 export const updateTopicStatus = createAsyncThunk(
   "topics/updateTopicStatus",
-  async ({ topicId, updatedData}: { topicId: string; updatedData: { status: string; reviewReason: string }}, { rejectWithValue }) => {
+  async ({ topicId, updatedData}: { topicId: string; updatedData: { status: string; reasons: string }}, { rejectWithValue }) => {
     try {
       const response = await axiosClient.put(`/topics/${topicId}/status`, updatedData); // ✅ Đảm bảo topicId đúng
       return response.data;
@@ -245,7 +248,7 @@ export const fetchTopicRegistrations = createAsyncThunk(
 
 export const updateTopicRegistrationStatus = createAsyncThunk(
   "topics/updateTopicRegistrationStatus",
-  async ({ registrationId, status, semesterId }: { registrationId: string; status: "APPROVED" | "REJECTED"; semesterId: string }, { rejectWithValue }) => {
+  async ({ registrationId, status, semesterId }: { registrationId: string; status: "APPROVED" | "REJECTED" ; semesterId: string }, { rejectWithValue }) => {
     try {
       const response = await axiosClient.put(`/topics/topic-registrations/${registrationId}/approve`, {
         status,

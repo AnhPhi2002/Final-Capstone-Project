@@ -113,22 +113,22 @@ export default function UpdateTopicDetail() {
           <CardContent className="p-4 space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-gray-500 mb-1">Abbreviations</p>
+                <p className="text-sm text-gray-500 mb-1">Tên viết tắt</p>
                 <Input name="name" value={formData.name} onChange={handleChange} />
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">Vietnamese Title</p>
+                <p className="text-sm text-gray-500 mb-1">Tên tiếng Việt</p>
                 <Input name="nameVi" value={formData.nameVi} onChange={handleChange} />
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">Profession</p>
+                <p className="text-sm text-gray-500 mb-1">Chuyên ngành</p>
                 <Input name="majorId" value={formData.majorId} onChange={handleChange} />
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">Status</p>
+                <p className="text-sm text-gray-500 mb-1">Trạng tháu</p>
                 <Badge>{formData.status}</Badge>
               </div>
-              <div className="col-span-2">
+              <div className="">
                 <p className="text-sm text-gray-500 mb-1">Nhóm sinh viên</p>
                 <Input
                   name="groupCode"
@@ -161,7 +161,7 @@ export default function UpdateTopicDetail() {
             </div>
 
             <div>
-              <p className="text-sm text-gray-500 mb-1">Description</p>
+              <p className="text-sm text-gray-500 mb-1">Nội dung</p>
               <Textarea name="description" className="w-full p-2 border rounded-md h-24" value={formData.description} onChange={handleChange} />
             </div>
           </CardContent>

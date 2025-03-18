@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { SelectMajor } from "./SelectMajor";
 
 export const TopicListPage = () => {
-  const { semesterId, submissionPeriodId } = useParams(); // Lấy cả semesterId và submissionPeriodId từ URL
+  const { semesterId, submissionPeriodId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
 
   // const { data: topics } = useSelector((state: RootState) => state.topics);
@@ -25,12 +25,17 @@ export const TopicListPage = () => {
 
   const handleExportExcel = async () => {
     if (!submissionPeriodId) {
+      toast.error("Không tìm thấy đợt nộp.");
+      return;
+    }
+
+    if (!semesterId) {
       toast.error("Không tìm thấy kỳ nộp.");
       return;
     }
 
     try {
-      await dispatch(exportTopicsToExcel(submissionPeriodId)).unwrap();
+      await dispatch(exportTopicsToExcel({submissionPeriodId, semesterId})).unwrap();
       toast.success("Xuất danh sách đề tài thành công!");
     } catch (error: any) {
       toast.error(error || "Xuất danh sách thất bại!");

@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import {  AppDispatch } from "@/lib/api/redux/store";
-import { fetchTopics, exportTopicsToExcel } from "@/lib/api/redux/topicSlice";
-import { Link, useParams } from "react-router";
+import { fetchTopics} from "@/lib/api/redux/topicSlice";
+import { useParams } from "react-router";
 // import { CreateTopic } from "./CreateTopic";
 import Header from "@/components/header";
 import { ReviewTopicList } from "./review-topic-list";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+// import { Button } from "@/components/ui/button";
+// import { toast } from "sonner";
 import { SelectMajor } from "./SelectMajor";
 
 
 export const ReviewTopicListPage = () => {
-  const { semesterId, submissionPeriodId } = useParams(); // Lấy cả semesterId và submissionPeriodId từ URL
+  const { semesterId} = useParams(); // Lấy cả semesterId và submissionPeriodId từ URL
   const dispatch = useDispatch<AppDispatch>();
 
   // const { data: topics } = useSelector((state: RootState) => state.topics);
@@ -24,19 +24,19 @@ export const ReviewTopicListPage = () => {
     }
   }, [dispatch, semesterId, selectedMajor]);
 
-  const handleExportExcel = async () => {
-    if (!submissionPeriodId) {
-      toast.error("Không tìm thấy kỳ nộp.");
-      return;
-    }
+  // const handleExportExcel = async () => {
+  //   if (!submissionPeriodId) {
+  //     toast.error("Không tìm thấy kỳ nộp.");
+  //     return;
+  //   }
 
-    try {
-      await dispatch(exportTopicsToExcel(submissionPeriodId)).unwrap();
-      toast.success("Xuất danh sách đề tài thành công!");
-    } catch (error: any) {
-      toast.error(error || "Xuất danh sách thất bại!");
-    }
-  };
+  //   try {
+  //     await dispatch(exportTopicsToExcel(submissionPeriodId)).unwrap();
+  //     toast.success("Xuất danh sách đề tài thành công!");
+  //   } catch (error: any) {
+  //     toast.error(error || "Xuất danh sách thất bại!");
+  //   }
+  // };
 
   return (
     <div className="flex flex-col h-screen">
@@ -52,13 +52,13 @@ export const ReviewTopicListPage = () => {
           <div className="flex items-center justify-between">
             <SelectMajor onMajorChange={setSelectedMajor} />
             <div className="flex items-center gap-4 justify-end">
-              <Button onClick={handleExportExcel} variant="outline">
+              {/* <Button onClick={handleExportExcel} variant="outline">
                 Export danh sách đề tài
-              </Button>
+              </Button> */}
               {/* <CreateTopic semesterId={semesterId!} /> */}
-              <Link to={`/import-topic-mentor/${semesterId}`}>
+              {/* <Link to={`/import-topic-mentor/${semesterId}`}>
                 <Button className="flex gap-3 items-center">Import đề tài</Button>
-              </Link>
+              </Link> */}
             </div>
           </div>
         </div>
