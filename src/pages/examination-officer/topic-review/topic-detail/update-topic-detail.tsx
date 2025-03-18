@@ -15,6 +15,8 @@ export default function UpdateReviewTopicDetail() {
   const { topicId, semesterId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const { author } = useSelector((state: RootState) => state.auth);
+
 
   const { topicDetails, loading } = useSelector(
     (state: RootState) => state.topics
@@ -22,11 +24,11 @@ export default function UpdateReviewTopicDetail() {
 
   const [formData, setFormData] = useState({
     status: "PENDING", 
-    reviewReason: "",
+    reasons: "",
   });
 
   // Danh sách trạng thái có thể chọn
-  const statusOptions = ["PENDING", "APPROVED", "REJECTED"];
+  const statusOptions = ["PENDING", "APPROVED", "IMPROVED","REJECTED"];
 
   useEffect(() => {
     if (topicId && semesterId) {
@@ -38,7 +40,7 @@ export default function UpdateReviewTopicDetail() {
     if (topicDetails) {
       setFormData({
         status: topicDetails.status || "PENDING",
-        reviewReason: topicDetails.reviewReason || "",
+        reasons: topicDetails.reasons || "",
       });
     }
   }, [topicDetails]);
@@ -98,16 +100,32 @@ export default function UpdateReviewTopicDetail() {
           <CardContent className="p-4 space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-gray-500 mb-1">Abbreviations</p>
+                <p className="text-sm text-gray-500 mb-1">Tên viết tắt</p>
                 <Input name="name" value={topicDetails?.name || ""} disabled />
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">Vietnamese Title</p>
+                <p className="text-sm text-gray-500 mb-1">Tên tiếng Việt</p>
                 <Input name="nameVi" value={topicDetails?.nameVi || ""} disabled />
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">Profession</p>
+                <p className="text-sm text-gray-500 mb-1">Tên tiếng Anh</p>
+                <Input name="nameVi" value={topicDetails?.nameEn || ""} disabled />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500 mb-1">Tên tiếng Anh</p>
+                <Input name="nameVi" value={topicDetails?.nameEn || ""} disabled />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500 mb-1">Chuyên ngành</p>
                 <Input name="majorId" value={topicDetails?.majorId || ""} disabled />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500 mb-1">Mentor 1</p>
+                <Input name="majorId" value={author?.email || ""} disabled />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500 mb-1">Mentor 2</p>
+                <Input name="majorId" value={topicDetails?.subMentor?.email || ""} disabled />
               </div>
 
               {/* ✅ Thay thế Badge bằng Select để chọn status */}
@@ -128,13 +146,13 @@ export default function UpdateReviewTopicDetail() {
               </div>
             </div>
 
-            {/* ✅ Textarea để nhập reviewReason */}
+
             <div>
               <p className="text-sm text-gray-500 mb-1">Lý do xét duyệt</p>
               <Textarea
-                name="reviewReason"
+                name="reasons"
                 className="w-full p-2 border rounded-md h-24"
-                value={formData.reviewReason}
+                value={formData.reasons}
                 onChange={handleChange}
               />
             </div>

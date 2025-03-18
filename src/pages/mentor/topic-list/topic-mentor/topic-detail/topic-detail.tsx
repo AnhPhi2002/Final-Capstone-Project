@@ -125,6 +125,28 @@ export default function TopicDetail() {
                   {topicDetails.status || "Chưa cập nhật trạng thái"}
                 </Badge>
               </div>
+              
+              <div>
+                <p className="text-sm text-gray-500 mb-1">Mentor 1</p>
+                <p className="font-semibold italic">
+                  {author?.email ? (
+                    <span className="text-blue-600">{author?.email}</span>
+                  ) : (
+                    <span className="text-red-500">Chưa có mentor 1</span>
+                  )}
+                </p>
+              </div>
+              {/* 🔹 Thêm phần hiển thị Mentor phụ */}
+              <div>
+                <p className="text-sm text-gray-500 mb-1">Mentor 2</p>
+                <p className="font-semibold italic">
+                  {topicDetails.subMentor?.email ? (
+                    <span className="text-blue-600">{topicDetails.subMentor?.email}</span>
+                  ) : (
+                    <span className="text-red-500">Chưa có mentor 2</span>
+                  )}
+                </p>
+              </div>
               <div>
                 <p className="text-sm text-gray-500 mb-1">Tài liệu</p>
                 {topicDetails.documents && topicDetails.documents.length > 0 ? (
@@ -141,18 +163,6 @@ export default function TopicDetail() {
                 ) : (
                   <p className="text-sm text-gray-500">Chưa cập nhật trạng thái</p>
                 )}
-              </div>
-
-              {/* 🔹 Thêm phần hiển thị Mentor phụ */}
-              <div className="col-span-2">
-                <p className="text-sm text-gray-500 mb-1">Mentor phụ</p>
-                <p className="font-semibold italic">
-                  {topicDetails.subMentor?.email ? (
-                    <span className="text-blue-600">{topicDetails.subMentor?.email}</span>
-                  ) : (
-                    <span className="text-red-500">Chưa có mentor phụ</span>
-                  )}
-                </p>
               </div>
             </div>
 

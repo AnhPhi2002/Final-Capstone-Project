@@ -1,27 +1,30 @@
 import { useEffect } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchTopicDetail } from "@/lib/api/redux/topicSlice";
+import { fetchTopicDetail, deleteTopic } from "@/lib/api/redux/topicSlice";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-
+import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { DataTableGroupTopic } from "./data-table-group-topic";
 import { fetchUserById } from "@/lib/api/redux/authSlice";
+import { resetGroupDetail } from "@/lib/api/redux/groupDetailSlice";
 
-export default function ReviewTopicDetail() {
+export default function TopicDetail() {
   const { topicId, semesterId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const { topicDetails, loading, error } = useSelector(
     (state: RootState) => state.topics
   );
   const { author } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
+    dispatch(resetGroupDetail());
     if (topicId && (!topicDetails || topicDetails.id !== topicId) && semesterId) {
-      dispatch(fetchTopicDetail({topicId, semesterId}));
+      dispatch(fetchTopicDetail({ topicId, semesterId }));
     }
   }, [dispatch, topicId, topicDetails, semesterId]);
 
@@ -50,6 +53,26 @@ export default function ReviewTopicDetail() {
       </p>
     );
 
+  const handleDeleteTopic = async () => {
+    if (!topicId || !semesterId) {
+      toast.error("Không thể xác định đề tài cần xóa!");
+      return;
+    }
+
+    if (!confirm("Bạn có chắc muốn xóa đề tài này?")) return;
+
+    try {
+      toast.success("Xóa đề tài thành công")
+      await dispatch(deleteTopic({ topicId, semesterId })).unwrap();
+      navigate("/lecturer/topic"); // ✅ Điều hướng sau khi xóa thành công
+    } catch (error) {
+      toast.error("Lỗi khi xóa đề tài!");
+    }
+  };
+  const handleOpenFile = (fileUrl: string) => {
+    // Mở URL trong tab mới
+    window.open(fileUrl, "_blank", "noopener,noreferrer");
+  };
   return (
     <div>
       <div className="mt-6 bg-white">
@@ -71,7 +94,7 @@ export default function ReviewTopicDetail() {
                 {topicDetails.createdAt
                   ? new Date(topicDetails.createdAt).toLocaleDateString()
                   : "Không xác định"}{" "}
-                  by {author?.fullName || "không có tác giả"}
+                by {author?.fullName || "không có tác giả"}
               </p>
             </div>
           </div>
@@ -79,28 +102,67 @@ export default function ReviewTopicDetail() {
           <CardContent className="p-4 space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-gray-500 mb-1">Abbreviations</p>
+                <p className="text-sm text-gray-500 mb-1">Tên viết tắt</p>
                 <p className="font-semibold italic">
                   {topicDetails.name || "Không có tên viết tắt"}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">Vietnamese Title</p>
+                <p className="text-sm text-gray-500 mb-1">Tên tiếng việt</p>
                 <p className="font-semibold italic">
                   {topicDetails.nameVi || "Chưa có tiêu đề tiếng Việt"}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">Profession</p>
+                <p className="text-sm text-gray-500 mb-1">Ngành</p>
                 <p className="font-semibold italic">
                   {topicDetails.majorId || "Chưa có chuyên ngành"}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">Status</p>
+                <p className="text-sm text-gray-500 mb-1">Trạng thái</p>
                 <Badge>
                   {topicDetails.status || "Chưa cập nhật trạng thái"}
                 </Badge>
+              </div>
+              
+              <div>
+                <p className="text-sm text-gray-500 mb-1">Mentor 1</p>
+                <p className="font-semibold italic">
+                  {author?.email ? (
+                    <span className="text-blue-600">{author?.email}</span>
+                  ) : (
+                    <span className="text-red-500">Chưa có mentor 1</span>
+                  )}
+                </p>
+              </div>
+              {/* 🔹 Thêm phần hiển thị Mentor phụ */}
+              <div>
+                <p className="text-sm text-gray-500 mb-1">Mentor 2</p>
+                <p className="font-semibold italic">
+                  {topicDetails.subMentor?.email ? (
+                    <span className="text-blue-600">{topicDetails.subMentor?.email}</span>
+                  ) : (
+                    <span className="text-red-500">Chưa có mentor 2</span>
+                  )}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500 mb-1">Tài liệu</p>
+                {topicDetails.documents && topicDetails.documents.length > 0 ? (
+                  topicDetails.documents.map((doc, index) => (
+                    <Button
+                      key={index}
+                      variant="outline"
+                      className="mr-2 mb-2"
+                      onClick={() => handleOpenFile(doc.fileUrl)}
+                    >
+                      Xem {doc.fileName || "Tài liệu"}
+                    </Button>
+                  ))
+                ) : (
+                  <p className="text-sm text-gray-500">Chưa cập nhật trạng thái</p>
+                )}
               </div>
             </div>
 
@@ -110,10 +172,17 @@ export default function ReviewTopicDetail() {
                 {topicDetails.description || "Chưa có mô tả"}
               </p>
             </div>
-          </CardContent> 
+          </CardContent>
+
 
           <div>
-          <DataTableGroupTopic groupId={topicDetails.group?.id}/>
+            <DataTableGroupTopic groupId={topicDetails.group?.id} />
+          </div>
+
+          <div className="flex justify-end gap-4 mt-6">
+            <Button variant="destructive" onClick={handleDeleteTopic}>
+              Xóa đề tài
+            </Button>
           </div>
         </Card>
       </div>
