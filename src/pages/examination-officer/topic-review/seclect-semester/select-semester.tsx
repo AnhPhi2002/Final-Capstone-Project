@@ -7,7 +7,6 @@ import {
   fetchSubmissionRounds,
   clearSubmissionRounds,
 } from "@/lib/api/redux/submissionRoundSlice";
-
 import {
   Select,
   SelectContent,
@@ -17,7 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
 import { CardSemester } from "./card-semester";
 
 export const SelectSemester: React.FC = () => {
@@ -34,10 +32,9 @@ export const SelectSemester: React.FC = () => {
     (state: RootState) => state.submissionRounds
   );
 
-  // State lưu năm học, học kỳ và vòng nộp được chọn
+  // State lưu năm học và học kỳ được chọn
   const [selectedYear, setSelectedYear] = useState<string>("");
   const [selectedSemester, setSelectedSemester] = useState<string>("");
-  const [selectedSubmissionRound, setSelectedSubmissionRound] = useState<string>("");
 
   // Fetch danh sách năm học khi component mount
   useEffect(() => {
@@ -48,8 +45,7 @@ export const SelectSemester: React.FC = () => {
   useEffect(() => {
     if (selectedYear) {
       dispatch(fetchSemesters({ yearId: selectedYear }));
-      setSelectedSemester("");
-      setSelectedSubmissionRound("");
+      setSelectedSemester(""); // Reset học kỳ khi chọn năm mới
       dispatch(clearSubmissionRounds());
     } else {
       dispatch(clearSemesters());
@@ -61,7 +57,6 @@ export const SelectSemester: React.FC = () => {
   useEffect(() => {
     if (selectedSemester) {
       dispatch(fetchSubmissionRounds(selectedSemester));
-      setSelectedSubmissionRound(""); // Reset khi chọn kỳ mới
     } else {
       dispatch(clearSubmissionRounds());
     }
@@ -120,38 +115,15 @@ export const SelectSemester: React.FC = () => {
             </SelectGroup>
           </SelectContent>
         </Select>
-
-        {/* Select chọn vòng nộp */}
-        <Select
-          onValueChange={setSelectedSubmissionRound}
-          value={selectedSubmissionRound}
-          disabled={!selectedSemester}
-        >
-          <SelectTrigger className="w-[200px]">
-            <SelectValue placeholder="Chọn vòng nộp" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Vòng nộp</SelectLabel>
-              {loadingRounds ? (
-                <SelectItem value="loading" disabled>
-                  Đang tải...
-                </SelectItem>
-              ) : (
-                submissionRounds.map((round) => (
-                  <SelectItem key={round.id} value={round.id}>
-                    {round.description}
-                  </SelectItem>
-                ))
-              )}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
       </div>
 
-
-      {selectedSubmissionRound && (
-        <CardSemester data={semesters} submissionRounds={submissionRounds} />
+      {/* Hiển thị CardSemester khi chọn học kỳ */}
+      {selectedSemester && (
+        <CardSemester
+          data={submissionRounds}
+          loading={loadingRounds}
+          selectedSemester={selectedSemester}
+        />
       )}
     </div>
   );
