@@ -21,7 +21,7 @@ export const fetchSemesterDetail = createAsyncThunk(
   async (semesterId: string, { rejectWithValue }) => {
     try {
       const response = await axiosClient.get(`/semester/detail/${semesterId}`);
-      return response.data.data;
+      return response.data.data.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Failed to fetch semester detail");
     }
