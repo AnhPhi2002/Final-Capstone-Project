@@ -24,6 +24,7 @@ import { mentorReducer } from './mentorSlice';
 import councilReducer from "./councilSlice";
 import topicStudentReducer from "./topicStudentSlice";
 import uploadReducer from "./uploadSlice";
+import meetingReducer from "./meetingSlice";
 
 
 const rootReducer = combineReducers({
@@ -52,6 +53,7 @@ const rootReducer = combineReducers({
   topicStudents: topicStudentReducer,
   upload: uploadReducer,
   // persist: persistedReducer,
+  meetings: meetingReducer,
 });
 
 // const persistedReducer = persistReducer(persistConfig, rootReducer)

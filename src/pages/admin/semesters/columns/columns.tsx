@@ -14,7 +14,7 @@ export const columns: ColumnDef<Semester>[] = [
   {
     accessorKey: "id",
     header: "ID",
-    cell: ({ row }) => <span>{row.index + 1}</span>, // Dùng index thay vì id từ JSON
+    cell: ({ row }) => <span>{row.index + 1}</span>,
   },
   {
     accessorKey: "year.year",

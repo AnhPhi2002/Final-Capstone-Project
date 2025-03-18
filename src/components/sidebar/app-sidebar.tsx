@@ -273,6 +273,18 @@ const lecturerMenu = {
           url: "/lecturer/approve-topic",
         },
       ],
+    },{
+      title: "Phòng họp",
+      url: "/lecturer/council-member",
+      icon: List,
+      isActive: true,
+      items: [
+        {
+          title: "Phòng họp",
+          url: "/lecturer/meeting",
+        },
+
+      ],
     },
   ],
 };
