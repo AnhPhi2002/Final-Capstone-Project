@@ -90,7 +90,14 @@ export const CardDeadlineTopic: React.FC<CardDeadlineTopicProps> = ({
                   <CardTitle className="text-xl font-bold text-gray-800">
                     {round.description}
                   </CardTitle>
+                
                 </CardHeader>
+                <CardContent>
+                  <p className="text- text-gray-500 flex items-center gap-1">
+                    Vòng nộp: {round.roundNumber}
+                   
+                  </p>
+                </CardContent>
                 <CardContent>
                   <p className="text-sm text-gray-500 flex items-center gap-1">
                     Trạng thái:{" "}
