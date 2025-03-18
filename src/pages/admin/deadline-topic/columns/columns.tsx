@@ -33,12 +33,12 @@ export const columns: ColumnDef<SubmissionRound, any>[] = [
     accessorFn: (row) => row.status, 
     header: "Trạng thái",
     cell: ({ getValue }) => {
-      const status = getValue<string>() as "ACTIVE" | "COMPLETE" | "PENDING";
+      const status = getValue<string>() as "ACTIVE" | "COMPLETE" | "UPCOMING";
   
-      const statusClasses: { [key in "ACTIVE" | "COMPLETE" | "PENDING"]: string } = {
+      const statusClasses: { [key in "ACTIVE" | "COMPLETE" | "UPCOMING"]: string } = {
         "ACTIVE": "bg-green-100 text-green-600 hover:bg-green-200",
         "COMPLETE": "bg-blue-100 text-blue-600 hover:bg-blue-200",
-        "PENDING": "bg-gray-100 text-gray-600 hover:bg-gray-200",
+        "UPCOMING": "bg-gray-100 text-gray-600 hover:bg-gray-200",
       };
   
       return (
