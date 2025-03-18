@@ -172,7 +172,7 @@ export const updateTopic = createAsyncThunk(
 
       const response = await axiosClient.put(
         `/topics/${topicId}`,
-        { ...updatedData, semesterId } // ✅ Thêm `semesterId` vào body
+        { ...updatedData, semesterId } 
       );
 
       console.log("✅ API Response:", response.data);

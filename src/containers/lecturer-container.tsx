@@ -19,6 +19,8 @@ import { Route, Routes, useNavigate } from "react-router";
 import { ApproveTopicPage } from "@/pages/mentor/approve-topic/approve-topic-page";
 import { ApproveTopicDetail } from "@/pages/mentor/approve-topic/columns/approve-topic-detail";
 import { ApproveTopicList } from "@/pages/mentor/approve-topic/columns/approve-topic-list";
+import { MeetingPage } from "@/pages/mentor/meeting/meeting";
+import MeetingListPage from "@/pages/mentor/meeting/meeting-page";
 
 export const LecturerContainer = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -54,7 +56,8 @@ export const LecturerContainer = () => {
         <Route path="/approve-topic" element={<ApproveTopicPage />} />
         <Route path="/approve-topic-detail/:topicId/:semesterId" element={<ApproveTopicDetail />} />
         
-        
+        <Route path="/meeting" element={<MeetingListPage/>} />
+        <Route path="/meeting/:semesterId" element={<MeetingPage/>} />
         
         <Route path="/*" element={<NotFound />} />
       </Routes>
