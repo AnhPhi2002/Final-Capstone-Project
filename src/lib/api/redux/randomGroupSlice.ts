@@ -9,7 +9,10 @@ export const createRandomGroup = createAsyncThunk(
       const response = await axiosClient.post("/groups/randomize", { semesterId });
       return response.data.groups; // Trả về danh sách nhóm được tạo
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Lỗi khi tạo nhóm ngẫu nhiên!");
+      // Trả về thông báo lỗi từ API hoặc thông báo mặc định
+      return rejectWithValue(
+        error.response?.data?.message || "Lỗi khi tạo nhóm ngẫu nhiên!"
+      );
     }
   }
 );
@@ -34,7 +37,7 @@ const randomGroupSlice = createSlice({
       })
       .addCase(createRandomGroup.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload as string;
+        state.error = action.payload as string; // Lưu thông báo lỗi
       });
   },
 });

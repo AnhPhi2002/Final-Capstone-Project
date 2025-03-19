@@ -1,38 +1,23 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import { SubmissionRound } from "@/lib/api/types";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge"; // Import Badge UI nếu cần
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/api/redux/store";
+import { SubmissionRound, Semester } from "@/lib/api/types";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { PaginationDashboardPage } from "../pagination";
+import { Dot } from "lucide-react";
 
 type CardDeadlineTopicProps = {
   data: SubmissionRound[];
   loading: boolean;
   selectedSemester: string;
-};
-
-// Định nghĩa màu sắc cho từng trạng thái
-const statusClasses: { [key in "ACTIVE" | "COMPLETE" | "PENDING"]: string } = {
-  ACTIVE: "bg-green-100 text-green-600 hover:bg-green-200",
-  COMPLETE: "bg-blue-100 text-blue-600 hover:bg-blue-200",
-  PENDING: "bg-gray-100 text-gray-600 hover:bg-gray-200",
-};
-
-// Component hiển thị trạng thái dưới dạng Badge
-const StatusBadge = ({
-  status,
-}: {
-  status: "ACTIVE" | "COMPLETE" | "PENDING";
-}) => {
-  return (
-    <Badge
-      className={`${
-        statusClasses[status] || "bg-gray-100 text-gray-600 hover:bg-gray-200"
-      } px-2 py-1 rounded-md`}
-    >
-      {status}
-    </Badge>
-  );
 };
 
 export const CardDeadlineTopic: React.FC<CardDeadlineTopicProps> = ({
@@ -41,23 +26,28 @@ export const CardDeadlineTopic: React.FC<CardDeadlineTopicProps> = ({
   selectedSemester,
 }) => {
   const navigate = useNavigate();
-  const itemsPerPage = 6; // Số vòng nộp trên mỗi trang
+  const semesters = useSelector((state: RootState) => state.semesters.data); // Lấy semesters từ Redux
   const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
 
   // Tính tổng số trang
   const totalPages = Math.ceil(data.length / itemsPerPage);
 
-  // Lấy dữ liệu theo trang hiện tại
+  // Lấy dữ liệu phân trang
   const paginatedData = data.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
+  // Hàm lấy semester.code dựa trên semesterId
+  const getSemesterCode = (semesterId: string) => {
+    const semester = semesters.find((s: Semester) => s.id === semesterId);
+    return semester ? semester.code : "Không xác định";
+  };
+
   const handleCardClick = (submissionId: string, Id: string) => {
     navigate(`/examination/deadline-topic/${Id}/submission/${submissionId}`);
   };
-
-  console.log("🚀 Submission Rounds Data:", data);
 
   if (loading) {
     return (
@@ -83,42 +73,70 @@ export const CardDeadlineTopic: React.FC<CardDeadlineTopicProps> = ({
             {paginatedData.map((round) => (
               <Card
                 key={round.id}
-                className="cursor-pointer hover:shadow-lg"
+                className="w-full p-4 shadow-md border border-gray-200 rounded-lg hover:shadow-lg transition duration-200"
                 onClick={() => handleCardClick(round.id, round.semesterId)}
               >
                 <CardHeader>
                   <CardTitle className="text-xl font-bold text-gray-800">
-                    {round.description}
+                     {round.description}
                   </CardTitle>
-                
+                  <CardDescription>
+                  Học kỳ: {getSemesterCode(round.semesterId)} 
+                  </CardDescription>
+                  <CardDescription>
+                  Vòng nộp lần: {round.roundNumber}
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text- text-gray-500 flex items-center gap-1">
-                    Vòng nộp: {round.roundNumber}
-                   
-                  </p>
-                </CardContent>
-                <CardContent>
-                  <p className="text-sm text-gray-500 flex items-center gap-1">
-                    Trạng thái:{" "}
-                    <StatusBadge
-                      status={round.status as "ACTIVE" | "COMPLETE" | "PENDING"}
-                    />
-                  </p>
+                  <div className="flex items-center gap-2">
+                    <span className="flex items-center gap-1">
+                      <Dot
+                        size={40}
+                        className={
+                          round.status === "ACTIVE"
+                            ? "text-green-600"
+                            : round.status === "UPCOMING"
+                            ? "text-yellow-600"
+                            : round.status === "COMPLETE"
+                            ? "text-blue-600"
+                            : "text-gray-600"
+                        }
+                      />
+                      Trạng thái
+                    </span>
+                    <Badge
+                      className={
+                        round.status === "ACTIVE"
+                          ? "bg-green-100 text-green-600 border border-green-500 hover:bg-green-200"
+                          : round.status === "UPCOMING"
+                          ? "bg-yellow-100 text-yellow-600 border border-yellow-500 hover:bg-yellow-200"
+                          : round.status === "COMPLETE"
+                          ? "bg-blue-100 text-blue-600 border border-blue-500 hover:bg-blue-200"
+                          : "bg-gray-100 text-gray-600 border border-gray-500 hover:bg-gray-200"
+                      }
+                    >
+                      {round.status === "ACTIVE"
+                        ? "Đang hoạt động"
+                        : round.status === "UPCOMING"
+                        ? "Sắp diễn ra"
+                        : round.status === "COMPLETE"
+                        ? "Hoàn thành"
+                        : "Không xác định"}
+                    </Badge>
+                  </div>
                 </CardContent>
               </Card>
             ))}
           </div>
         )}
       </div>
-        <div className="flex justify-end mt-6">
-          <PaginationDashboardPage
-            totalPages={totalPages}
-            currentPage={currentPage}
-            onPageChange={setCurrentPage}
-          />
-        </div>
-
+      <div className="flex justify-end mt-6">
+        <PaginationDashboardPage
+          totalPages={totalPages}
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+        />
+      </div>
     </div>
   );
 };

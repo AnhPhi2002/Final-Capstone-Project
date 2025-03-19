@@ -8,8 +8,11 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
+  CardContent,
 } from "@/components/ui/card";
 import { PaginationDashboardPage } from "../pagination";
+import { Badge } from "@/components/ui/badge";
+import { Dot } from "lucide-react";
 
 type CardSemesterProps = {
   data: Semester[];
@@ -56,9 +59,49 @@ export const CardSemester: React.FC<CardSemesterProps> = ({ data }) => {
                   Học kỳ: {semester.code}
                 </CardTitle>
                 <CardDescription>
-                  Năm học: {getYearById(semester.yearId)}
+                  Năm học: {/* <span className="font-bold text-gray-800 "> */}
+                  {getYearById(semester.yearId)}
+                  {/* </span> */}
                 </CardDescription>
               </CardHeader>
+              <CardContent>
+                <div className="flex items-center gap-2">
+                  <span className="flex items-center gap-1">
+                    <Dot
+                      size={40}
+                      className={
+                        semester.status === "ACTIVE"
+                          ? "text-green-600"
+                          : semester.status === "UPCOMING"
+                          ? "text-yellow-600"
+                          : semester.status === "COMPLETE"
+                          ? "text-blue-600"
+                          : "text-gray-600"
+                      }
+                    />
+                    Trạng thái
+                  </span>
+                  <Badge
+                    className={
+                      semester.status === "ACTIVE"
+                        ? "bg-green-100 text-green-600 border border-green-500 hover:bg-green-200"
+                        : semester.status === "UPCOMING"
+                        ? "bg-yellow-100 text-yellow-600 border border-yellow-500 hover:bg-yellow-200"
+                        : semester.status === "COMPLETE"
+                        ? "bg-blue-100 text-blue-600 border border-blue-500 hover:bg-blue-200"
+                        : "bg-gray-100 text-gray-600 border border-gray-500 hover:bg-gray-200"
+                    }
+                  >
+                    {semester.status === "ACTIVE"
+                      ? "Đang hoạt động"
+                      : semester.status === "UPCOMING"
+                      ? "Sắp diễn ra"
+                      : semester.status === "COMPLETE"
+                      ? "Hoàn thành"
+                      : "Không xác định"}
+                  </Badge>
+                </div>
+              </CardContent>
             </Card>
           ))
         )}

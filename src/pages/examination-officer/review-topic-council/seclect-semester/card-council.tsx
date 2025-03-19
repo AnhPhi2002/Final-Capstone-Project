@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { PaginationDashboardPage } from "@/pages/admin/pagination";
 import { Badge } from "@/components/ui/badge";
+import { Dot } from "lucide-react";
 
 type CardCouncilProps = {
   councils: Council[];
@@ -54,21 +55,48 @@ export const CardCouncil: React.FC<CardCouncilProps> = ({ councils, semesterId }
                   <CardDescription>
                     Ngày tạo: {new Date(council.createdDate).toLocaleDateString()}
                   </CardDescription>
+                  <CardDescription>
+                  Vòng nộp lần: {council.round}
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex items-center gap-2">
-                    <span>🔹 Vòng {council.round}</span>
-                    <Badge
-                      className={
+                   <div className="flex items-center gap-2">
+                     <span className="flex items-center gap-1">
+                       <Dot
+                         size={40}
+                         className={
+                          council.status === "ACTIVE"
+                             ? "text-green-600"
+                             : council.status === "UPCOMING"
+                             ? "text-yellow-600"
+                             : council.status === "COMPLETE"
+                             ? "text-blue-600"
+                             : "text-gray-600"
+                         }
+                       />
+                       Trạng thái
+                     </span>
+                     <Badge
+                       className={
                         council.status === "ACTIVE"
-                          ? "bg-green-100 text-green-600 hover:bg-green-200"
-                          : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                      }
-                    >
-                      {council.status}
-                    </Badge>
-                  </div>
-                </CardContent>
+                           ? "bg-green-100 text-green-600 border border-green-500 hover:bg-green-200"
+                           : council.status === "UPCOMING"
+                           ? "bg-yellow-100 text-yellow-600 border border-yellow-500 hover:bg-yellow-200"
+                           : council.status === "COMPLETE"
+                           ? "bg-blue-100 text-blue-600 border border-blue-500 hover:bg-blue-200"
+                           : "bg-gray-100 text-gray-600 border border-gray-500 hover:bg-gray-200"
+                       }
+                     >
+                       {council.status === "ACTIVE"
+                         ? "Đang hoạt động"
+                         : council.status === "UPCOMING"
+                         ? "Sắp diễn ra"
+                         : council.status === "COMPLETE"
+                         ? "Hoàn thành"
+                         : "Không xác định"}
+                     </Badge>
+                   </div>
+                 </CardContent>
               </Card>
             ))}
           </div>
