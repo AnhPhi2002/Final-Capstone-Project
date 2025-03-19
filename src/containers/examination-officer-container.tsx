@@ -37,7 +37,7 @@ export const ExaminationOfficerContainer = () => {
         <Route path="/review-topic-page" element={<ReviewTopicPage />} />
         <Route path="/review-topic-page/:semesterId" element={<ReviewTopicPage />} />
         <Route path="/review-topic-list" element={<ReviewTopicListPage />} />
-        <Route path="/review-topic-list/:semesterId/submission/:submissionPeriodId" element={<ReviewTopicListPage />} />
+        <Route path="/review-topic-list/:semesterId/submission/:submissionPeriodId/round/:roundNumber" element={<ReviewTopicListPage />} />
         <Route path="/review-topic-detail/:topicId/:semesterId" element={<ReviewTopicDetailPage />} />
         
         <Route path="/council-member" element={<CouncilMemberPage />} />

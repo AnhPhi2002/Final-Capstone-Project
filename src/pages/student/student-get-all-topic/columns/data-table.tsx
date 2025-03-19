@@ -15,11 +15,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { StudentNotGroupForStudent } from "@/lib/api/redux/types/not-group-student"; // Đường dẫn đúng
+import { Topic } from "@/lib/api/types";
 
 interface DataTableProps {
-  columns: ColumnDef<StudentNotGroupForStudent, unknown>[];
-  data: StudentNotGroupForStudent[];
+  columns: ColumnDef<Topic, unknown>[];
+  data: Topic[];
 }
 
 export function DataTable({ columns, data }: DataTableProps) {

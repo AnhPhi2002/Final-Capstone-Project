@@ -62,9 +62,9 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
     currentPage * itemsPerPage
   );
 
-  const handleCardClick = (semesterId: string, submissionRoundId: string) => {
+  const handleCardClick = (semesterId: string, submissionRoundId: string,  roundNumber: number) => {
     navigate(
-      `/examination/review-topic-list/${semesterId}/submission/${submissionRoundId}`
+      `/examination/review-topic-list/${semesterId}/submission/${submissionRoundId}/round/${roundNumber}`
     );
   };
 
@@ -92,7 +92,7 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
             <Card
               key={round.id}
               className="cursor-pointer hover:shadow-lg"
-              onClick={() => handleCardClick(round.semesterId, round.id)}
+              onClick={() => handleCardClick(round.semesterId, round.id, round.roundNumber)}
             >
               <CardHeader>
                 <CardTitle className="text-xl font-bold text-gray-800">

@@ -48,6 +48,18 @@ interface Group {
   }[]
 }
 
+type GroupState = {
+  groups: Group[];
+  loading: boolean;
+  error: string | null;
+};
+
+const initialState: GroupState = {
+  groups: [],
+  loading: false,
+  error: null,
+};
+
 // Fetch danh sách nhóm theo `semesterId`
 export const fetchGroupsBySemester = createAsyncThunk(
   "groups/fetchBySemester",
@@ -89,11 +101,7 @@ export const inviteStudentToGroup = createAsyncThunk(
 
 const groupSlice = createSlice({
   name: "groups",
-  initialState: {
-    groups: [] as Group[],
-    loading: false,
-    error: null as string | null,
-  },
+  initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder

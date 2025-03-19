@@ -89,4 +89,60 @@ export type ApproveTopic = {
   leaderRole: string;
 };
 
+export type Topic = {
+  id: string;
+  topicCode: string;
+  nameVi: string;
+  nameEn: string;
+  description: string;
+  status: string;
+  createdAt?: string; // Có thể cần nếu API trả về
+
+  semester: {
+    id: string;
+    code: string;
+    startDate: string;
+    endDate: string;
+  };
+
+  createdBy: {
+    fullName: string;
+    email: string;
+  };
+
+  subSupervisor?: string | null;
+
+  majors: {
+    id: string;
+    name: string;
+  }[];
+
+  group?: {
+    id: string;
+    groupCode: string;
+    semester: {
+      id: string;
+      code: string;
+    };
+    members: {
+      id: string;
+      studentId: string;
+      userId?: string | null;
+      roleId: string;
+      joinedAt: string;
+      leaveAt?: string | null;
+      leaveReason?: string | null;
+      isActive: boolean;
+      status: string;
+      user?: {
+        id: string;
+        fullName?: string | null;
+        email?: string | null;
+      } | null;
+      role: {
+        name: "leader" | "member"; // Định nghĩa rõ leader & member
+      };
+    }[];
+  };
+};
 
