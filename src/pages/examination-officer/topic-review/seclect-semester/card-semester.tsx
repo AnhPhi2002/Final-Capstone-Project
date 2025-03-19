@@ -85,7 +85,7 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
                  <Card
                  key={round.id}
                  className="w-full p-4 shadow-md border border-gray-200 rounded-lg hover:shadow-lg transition duration-200"
-                 onClick={() => handleCardClick(round.id, round.semesterId)}
+                 onClick={() => handleCardClick(round.id, round.semesterId, round.roundNumber)}
                >
                  <CardHeader>
                    <CardTitle className="text-xl font-bold text-gray-800">

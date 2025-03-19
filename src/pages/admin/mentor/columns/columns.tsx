@@ -18,9 +18,14 @@ export const columns: ColumnDef<Mentor>[] = [
     accessorKey: "fullName",
     header: "Tên giảng viên",
   },
+
   {
-    accessorKey: "role",
-    header: "Chức vụ",
+    accessorKey: "department",
+    header: "Chuyên môn",
+  },
+  {
+    accessorKey: "departmentPosition",
+    header: "Bộ môn",
   },
   {
     accessorKey: "isActive",
