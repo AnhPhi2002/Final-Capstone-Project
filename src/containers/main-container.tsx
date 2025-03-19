@@ -8,7 +8,7 @@ import DashboardPage from "@/pages/admin/dashboard/dashboard-page";
 import { GroupStudentCardPage } from "@/pages/admin/group-student/group-student-card-page";
 import { GroupStudentDetail } from "@/pages/admin/group-student/group-student-detail/group-student-detail";
 import { GroupStudentPage } from "@/pages/admin/group-student/group-student-page";
-import { RandomGroupStudentPage } from "@/pages/admin/group-student/random-group-student/random-group-student-page";
+import { RandomGroupStudentPage } from "@/pages/academic/random-group-student/random-group-student-page";
 // import ImportMentorTab from "@/pages/admin/import-mentor/import-mentor-tab";
 import ImportStudentPage from "@/pages/admin/import-student/import-student-page";
 import { MentorDetail } from "@/pages/admin/mentor/columns/mentor-detail";

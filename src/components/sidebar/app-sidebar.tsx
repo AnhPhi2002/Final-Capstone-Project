@@ -362,6 +362,10 @@ const academicMenu = {
           title: "D.s giáo viên",
           url: "/academic/mentor-page",
         },
+        {
+          title: "D.s nhóm sinh viên ngẫu nhiên ",
+          url: "/academic/random-group-student-page",
+        },
       ],
     },
     {

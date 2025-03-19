@@ -7,7 +7,7 @@ import { DeadineTopicPage } from "@/pages/admin/deadline-topic/deadine-topic-pag
 import { GroupStudentCardPage } from "@/pages/admin/group-student/group-student-card-page";
 import { GroupStudentDetail } from "@/pages/admin/group-student/group-student-detail/group-student-detail";
 import { GroupStudentPage } from "@/pages/admin/group-student/group-student-page";
-import { RandomGroupStudentPage } from "@/pages/admin/group-student/random-group-student/random-group-student-page";
+import { RandomGroupStudentPage } from "@/pages/academic/random-group-student/random-group-student-page";
 import ImportMentorPage from "@/pages/admin/import-mentor/import-mentor-page";
 import ImportStudentPage from "@/pages/admin/import-student/import-student-page";
 import { MentorDetail } from "@/pages/admin/mentor/columns/mentor-detail";
@@ -30,6 +30,7 @@ import { useSelector } from "react-redux";
 import { Route, Routes, useNavigate } from "react-router";
 import { TopicAssignmentDecisionPage } from "@/pages/academic/topic-assignment-decision/TopicAssignmentDecisionPage";
 import { TopicAssignmentDecisionDetail } from "@/pages/academic/topic-assignment-decision/topic-assignment-decision-detail/TopicAssignmentDecisionDetail";
+import { RRadomGroupStudentDetail } from "@/pages/academic/random-group-student/radom-group-student-detail";
 
 export const AcademicOfficerContainer = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -63,7 +64,7 @@ export const AcademicOfficerContainer = () => {
         <Route path="/group-student-detail/:groupId/:semesterId" element={<GroupStudentDetail />} />
 
         <Route path="/random-group-student-page" element={<RandomGroupStudentPage />} />
-        <Route path="/random-group-student-page/:semesterId" element={<RandomGroupStudentPage />} />
+        <Route path="/random-group-student-page/:semesterId" element={<RRadomGroupStudentDetail />} />
 
         <Route path="/not-group-student" element={<NotGroupStudentPage />} />
         <Route path="/not-group-student/:semesterId" element={<NotGroupStudentDetailPage />} />
