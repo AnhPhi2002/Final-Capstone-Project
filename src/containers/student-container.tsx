@@ -16,6 +16,10 @@ import { useSelector } from "react-redux";
 import { Route, Routes, useNavigate } from "react-router";
 import { NotGroupStudentPage } from "@/pages/student/not-group-student/not-group-student-page";
 import { NotGroupStudentDetailPage } from "@/pages/student/not-group-student/columns/not-group-student-detail-page";
+import { AllTopicStudent } from "@/pages/student/student-get-all-topic/all-topic-student";
+import AllTopicDetail from "@/pages/student/student-get-all-topic/all-topic-detail";
+import { TopicGroupRegisterPage } from "@/pages/student/topic-group-register/topic-group-register-page";
+import TopicGroupRegisterDetail from "@/pages/student/topic-group-register/topic-group-register-detail";
 
 export const StudentContainer = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -42,6 +46,13 @@ export const StudentContainer = () => {
         <Route path="/group-student-detail/:groupId/:semesterId" element={<GroupStudentDetail />} />
         <Route path="/not-group-student" element={<NotGroupStudentPage />} />
         <Route path="/not-group-student/:semesterId" element={<NotGroupStudentDetailPage />} />
+
+        <Route path="/all-topics-student" element={<AllTopicStudent />} />
+        <Route path="/all-topics-student/:topicId" element={<AllTopicDetail />} />
+
+        <Route path="/topic-group-register-detail" element={<TopicGroupRegisterPage />} />
+        <Route path="/topic-group-register-detail/:topicId" element={<TopicGroupRegisterDetail />} />
+
         <Route path="/*" element={<NotFound />} />
       </Routes>
     </MainLayout>

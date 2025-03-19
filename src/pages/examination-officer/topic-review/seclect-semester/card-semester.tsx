@@ -54,9 +54,9 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
     currentPage * itemsPerPage
   );
 
-  const handleCardClick = (semesterId: string, submissionRoundId: string) => {
+  const handleCardClick = (semesterId: string, submissionRoundId: string,  roundNumber: number) => {
     navigate(
-      `/examination/review-topic-list/${semesterId}/submission/${submissionRoundId}`
+      `/examination/review-topic-list/${semesterId}/submission/${submissionRoundId}/round/${roundNumber}`
     );
   };
 
@@ -81,6 +81,7 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {paginatedData.map((round) => (
+
                  <Card
                  key={round.id}
                  className="w-full p-4 shadow-md border border-gray-200 rounded-lg hover:shadow-lg transition duration-200"
@@ -136,6 +137,7 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
                    </div>
                  </CardContent>
                </Card>
+
           ))}
         </div>
       )}

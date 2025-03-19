@@ -1,42 +1,36 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
 import { fetchApprovalTopics, resetApprovalTopics } from "@/lib/api/redux/topicSlice";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { SelectRound } from "./select-round";
 import { resetGroupDetail } from "@/lib/api/redux/groupDetailSlice";
 
 export const ReviewTopicList = () => {
-  const { semesterId } = useParams();
+  const { semesterId, roundNumber } = useParams(); // ✅ Lấy `roundNumber` từ URL
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-
-  const [round, setRound] = useState<number>(1); // ✅ Lưu round trong state
 
   const { approvalTopics: topics = [], loading: topicsLoading, error } = useSelector(
     (state: RootState) => state.topics
   );
 
   useEffect(() => {
-    if (semesterId) {
+    if (semesterId && roundNumber) {
       dispatch(resetGroupDetail());
       dispatch(resetApprovalTopics()); // ✅ Xóa dữ liệu cũ trước khi gọi API mới
-      dispatch(fetchApprovalTopics({ semesterId, round }));
+      dispatch(fetchApprovalTopics({ semesterId, round: Number(roundNumber) }));
     }
-  }, [dispatch, semesterId, round]);
+  }, [dispatch, semesterId, roundNumber]); // ✅ Theo dõi `roundNumber` từ URL
 
   return (
     <div className="bg-background text-foreground min-h-screen p-6">
-      {/* ✅ Chọn vòng duyệt */}
-      <SelectRound onRoundChange={setRound} />
-
       <div className="flex flex-1 flex-col gap-4 mt-4">
         {topicsLoading ? (
           <p className="text-center text-gray-500">Đang tải danh sách đề tài...</p>
         ) : error ? (
-          <p className="text-center text-red-500">{error}</p> // ✅ Hiển thị lỗi nếu không có đề tài
+          <p className="text-center text-red-500">{error}</p>
         ) : topics.length === 0 ? (
           <p className="text-center text-gray-500">Không có đề tài nào trong vòng này.</p>
         ) : (

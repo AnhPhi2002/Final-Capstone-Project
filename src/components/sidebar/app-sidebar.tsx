@@ -419,8 +419,16 @@ const studentMenu = {
       isActive: true,
       items: [
         {
-          title: "Danh sách đề tài",
+          title: "Danh sách đề tài có thể đăng ký",
           url: "/student/topic-student",
+        },
+        {
+          title: "Toàn bộ đề tài",
+          url: "/student/all-topics-student",
+        },
+        {
+          title: "Đề tài nhóm đăng ký",
+          url: "/student/topic-group-register-detail",
         },
       ],
     },

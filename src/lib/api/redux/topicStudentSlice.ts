@@ -1,15 +1,54 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { axiosClient } from "@/lib/api/config/axios-client";
+import { Topic } from "../types";
 
-interface Topic {
-  id: string;
-  topicCode: string;
-  nameVi: string;
-  nameEn: string;
-  description: string;
-  status: string;
-  createdAt: string;
-}
+// interface Topic {
+//   id: string;
+//   topicCode: string;
+//   nameVi: string;
+//   nameEn: string;
+//   description: string;
+//   status: string;
+//   createdAt: string;
+//   semester:{
+//     id: string;
+//     code: string;
+//     startDate: string;
+//     endDate: string;
+//   };
+//   subsubSupervisor: string;
+//   major: {
+//     id: string;
+//     name: string;
+//   }[];
+//   group?: {
+//     id: string;
+//     groupCode: string;
+//     semester: {
+//       id: string;
+//       code: string;
+//     };
+//     members: {
+//       id: string;
+//       studentId: string;
+//       userId?: string | null;
+//       roleId: string;
+//       joinedAt: string;
+//       leaveAt?: string | null;
+//       leaveReason?: string | null;
+//       isActive: boolean;
+//       status: string;
+//       user?: {
+//         id: string;
+//         fullName?: string | null;
+//         email?: string | null;
+//       } | null;
+//       role: {
+//         name: string;
+//       };
+//     }[];
+//   };
+// }
 
 // 🟢 Fetch danh sách đề tài có thể đăng ký
 export const fetchAvailableTopics = createAsyncThunk(
@@ -65,6 +104,40 @@ export const registerTopic = createAsyncThunk(
   }
 );
 
+export const fetchAllTopicsStudent = createAsyncThunk(
+  "topic/fetchAllTopicsStudent",
+  async (_, {rejectWithValue }) => {
+    try {
+      const response = await axiosClient.get(`/topics/student/topics/approved/all`);
+      return response.data.data as Topic[];
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Không thể lấy danh sách đ�� tài.");
+    }
+  }
+);
+
+// 🟢 Lấy chi tiết đề tài từ danh sách đã tải
+export const fetchTopicStudentDetailFromList = createAsyncThunk(
+  "topics/fetchTopicStudentDetailFromList",
+  async (topicId: string, { getState, rejectWithValue }) => {
+    const state: any = getState();
+    const topicList = state.topicStudents.availableTopics;
+
+    // Nếu danh sách trống, không có dữ liệu
+    if (!topicList || topicList.length === 0) {
+      return rejectWithValue("Danh sách đề tài trống hoặc chưa tải.");
+    }
+
+    const topicDetail = topicList.find((t: Topic) => t.id === topicId);
+
+    if (!topicDetail) {
+      return rejectWithValue("Không tìm thấy đề tài.");
+    }
+
+    return topicDetail;
+  }
+);
+
 const topicStudentSlice = createSlice({
   name: "topicStudents",
   initialState: {
@@ -88,7 +161,20 @@ const topicStudentSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-
+      .addCase(fetchAllTopicsStudent.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAllTopicsStudent.fulfilled, (state, action: PayloadAction<Topic[]>) => {
+        state.availableTopics = action.payload;
+        state.loading = false;
+      })
+      .addCase(fetchAllTopicsStudent.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+  
+      // ✅ Xử lý fetchTopicDetailFromList (Lấy từ danh sách có sẵn)
       .addCase(fetchTopicDetailFromList.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -101,7 +187,21 @@ const topicStudentSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-
+  
+      // ✅ Xử lý fetchTopicStudentDetailFromList (Dành cho student)
+      .addCase(fetchTopicStudentDetailFromList.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchTopicStudentDetailFromList.fulfilled, (state, action: PayloadAction<Topic>) => {
+        state.topicDetails = action.payload;
+        state.loading = false;
+      })
+      .addCase(fetchTopicStudentDetailFromList.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+  
       .addCase(registerTopic.pending, (state) => {
         state.loading = true;
       })
@@ -112,7 +212,8 @@ const topicStudentSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       });
-  },
+  }
+  ,
 });
 
 export default topicStudentSlice.reducer;

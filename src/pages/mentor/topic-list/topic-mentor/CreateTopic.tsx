@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
+import { fetchGroupsBySemester } from "@/lib/api/redux/groupSlice";
 import {
   Dialog,
   DialogTrigger,
@@ -36,6 +37,9 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
   const { mentors, loading: mentorLoading } = useSelector(
     (state: RootState) => state.mentors
   );
+const { groups, loading: groupLoading } = useSelector(
+  (state: RootState) => state.groups);
+
   const { fileUrl, loading: uploadLoading, error: uploadError } = useSelector(
     (state: RootState) => state.upload
   );
@@ -47,6 +51,7 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
   const [description, setDescription] = useState("");
   const [subSupervisorEmail, setSubSupervisorEmail] = useState("");
   const [filteredEmails, setFilteredEmails] = useState<string[]>([]);
+  const [filteredGroups, setFilteredGroups] = useState<string[]>([]);
   const [isBusiness, setIsBusiness] = useState(false);
   const [businessPartner, setBusinessPartner] = useState<string | null>(null);
   const [majorId, setMajorId] = useState<string | null>(null);
@@ -60,6 +65,7 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
   useEffect(() => {
     dispatch(fetchMajors());
     dispatch(fetchMentorsBySemesterId(semesterId));
+    dispatch(fetchGroupsBySemester(semesterId));
   }, [dispatch, semesterId]);
 
   // Lọc email dựa trên input subSupervisorEmail
@@ -75,6 +81,19 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
       setFilteredEmails(filtered);
     }
   }, [subSupervisorEmail, mentors]);
+
+  useEffect(() => {
+    if (groupCode.trim() === "") {
+      setFilteredGroups([]);
+    } else {
+      const filteredGroup = groups
+        .map((group) => group.groupCode)
+        .filter((code) =>
+          code.toLowerCase().startsWith(groupCode.toLowerCase())
+        );
+      setFilteredGroups(filteredGroup);
+    }
+  }, [groupCode, groups]);
 
   // Xử lý fileUrl từ API upload
   useEffect(() => {
@@ -164,6 +183,11 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
   const handleSelectEmail = (email: string) => {
     setSubSupervisorEmail(email);
     setFilteredEmails([]);
+  };
+
+  const handleSelectGroup = (group: string) => {
+    setGroupCode(group);
+    setFilteredGroups([]);
   };
 
   return (
@@ -263,13 +287,46 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
               placeholder="Tên doanh nghiệp"
             />
           )}
-
-          <Input
-            value={groupCode}
-            onChange={(e) => setGroupCode(e.target.value)}
-            placeholder="Mã nhóm"
-          />
-
+          {/* <div className="relative">
+            <Input
+              value={subSupervisorEmail}
+              onChange={(e) => setSubSupervisorEmail(e.target.value)}
+              placeholder="Email giảng viên phụ trách"
+            />
+            {filteredEmails.length > 0 && (
+              <ul className="absolute z-10 w-full bg-white border rounded-md shadow-lg max-h-40 overflow-y-auto">
+                {filteredEmails.map((email) => (
+                  <li
+                    key={email}
+                    className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => handleSelectEmail(email)}
+                  >
+                    {email}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div> */}
+          <div className="relative">
+            <Input
+              value={groupCode}
+              onChange={(e) => setGroupCode(e.target.value)}
+              placeholder="Mã nhóm"
+            />
+            {filteredGroups.length > 0 && (
+              <ul className="absolute z-10 w-full bg-white border rounded-md shadow-lg max-h-40 overflow-y-auto">
+                {filteredGroups.map((group) => (
+                  <li
+                    key={group}
+                    className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => handleSelectGroup(group)}
+                  >
+                    {group}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
           <div className="flex items-center gap-2">
             <Input
               type="file"
@@ -301,7 +358,7 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
           </Button>
           <Button
             onClick={handleCreateTopic}
-            disabled={majorLoading || mentorLoading || uploadLoading}
+            disabled={majorLoading || mentorLoading || uploadLoading || groupLoading}
           >
             Tạo
           </Button>

@@ -42,3 +42,10 @@ export interface StudentNotGroup {
     updatedAt: string;
   };
 }
+
+export interface StudentNotGroupForStudent {
+  studentId: string;
+  fullName: string;
+  email: string;
+  major: string;
+}
