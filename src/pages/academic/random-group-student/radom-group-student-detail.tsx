@@ -11,7 +11,7 @@ import { fetchGroupsBySemester } from "@/lib/api/redux/groupSlice";
 export const RRadomGroupStudentDetail = () => {
   const { semesterId } = useParams<{ semesterId: string }>();
   const dispatch = useAppDispatch();
-  const { groups, loading } = useSelector((state: RootState) => state.groups);
+  const { groups} = useSelector((state: RootState) => state.groups);
 
   useEffect(() => {
     if (semesterId) {
@@ -24,16 +24,9 @@ export const RRadomGroupStudentDetail = () => {
     <div className="p-5 flex-1 overflow-auto">
        <div className="flex justify-end mb-4 gap-x-4">
         {semesterId && <CreateRandomGroup semesterId={semesterId} />}
-      </div>
-      {loading ? (
-        <p className="text-center">Đang tải danh sách nhóm...</p>
-      ) : groups.length > 0 ? (
+      </div>   
         <DataTable columns={columns} data={groups} />
-      ) : (
-        <p className="text-center text-gray-500">Chưa có nhóm nào được tạo.</p>
-      )} 
-    
-    </div>
+       </div>
   </div>
 );
 };

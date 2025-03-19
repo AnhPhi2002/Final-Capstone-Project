@@ -69,7 +69,7 @@ export interface SubmissionRound {
   startDate: string;
   endDate: string;
   description: string;
-  status: "PENDING" | "ACTIVE" | "COMPLETE";
+  status: "UPCOMING" | "ACTIVE" | "COMPLETE";
 }
 
 export type ApproveTopic = {
