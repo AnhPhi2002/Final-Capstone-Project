@@ -247,7 +247,7 @@ const adminMenu = {
 const lecturerMenu = {
   navMain: [
     {
-      title: "Danh sách sinh viên ",
+      title: "Quản lý sinh viên ",
       url: "/lecturer/council-member",
       icon: List,
       isActive: true,
@@ -259,28 +259,28 @@ const lecturerMenu = {
       ],
     },
     {
-      title: "Quản lý Topic",
+      title: "Quản lý đề tài",
       url: "/lecturer/council-member",
       icon: List,
       isActive: true,
       items: [
         {
-          title: "Ds. topic ",
+          title: "Ds. đề tài ",
           url: "/lecturer/topic",
         },
         {
-          title: "Ds. phê duyệt topic",
+          title: "Ds. phê duyệt đề tài ",
           url: "/lecturer/approve-topic",
         },
       ],
     },{
-      title: "Phòng họp",
+      title: "Quản lý phòng họp",
       url: "/lecturer/council-member",
       icon: List,
       isActive: true,
       items: [
         {
-          title: "Phòng họp",
+          title: "D.s phòng họp",
           url: "/lecturer/meeting",
         },
 
@@ -291,13 +291,13 @@ const lecturerMenu = {
 const examinationMenu = {
   navMain: [
     {
-      title: "Xét duyệt",
+      title: "Quản lý đề tài xét duyệt",
       url: "/examination/council-member",
       icon: List,
       isActive: true,
       items: [
         {
-          title: "Thời gian đăng kí đề tài",
+          title: "Thời gian đăng kí đợt đề tài",
           url: "/examination/deadline-topic",
         },
         {
@@ -365,13 +365,13 @@ const academicMenu = {
       ],
     },
     {
-      title: "Topic",
+      title: "Quản lý đề tài",
       url: "/academic/council-member",
       icon: List,
       isActive: true,
       items: [
         {
-          title: "Manage Topic",
+          title: "D.s đề tài",
           url: "/academic/topic",
         },
       ],
@@ -409,13 +409,13 @@ const studentMenu = {
       ],
     },
     {
-      title: "Topic",
+      title: "Đề tài",
       url: "/student/council-student",
       icon: List,
       isActive: true,
       items: [
         {
-          title: "Danh sách",
+          title: "Danh sách đề tài",
           url: "/student/topic-student",
         },
       ],

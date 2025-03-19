@@ -7,7 +7,7 @@ export const ReviewTopicPage = () => {
       <Header
         title="Tổng quan"
         href="/"
-        currentPage="Danh sách đề tài giảng viên "
+        currentPage="Danh sách đề tài chờ xét duyệt"
       />
 
       <div className="p-5 flex-1 overflow-auto">
