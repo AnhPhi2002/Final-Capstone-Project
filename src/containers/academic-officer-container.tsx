@@ -29,6 +29,8 @@ import UpdateTopicDetail from "@/pages/academic/topic-list/topic-mentor/topic-de
 import { MentorDetail } from "@/pages/academic/mentor/columns/mentor-detail";
 import ImportMentorPage from "@/pages/academic/import-mentor/import-mentor-page";
 import TemplateDetail from "@/pages/academic/templates-mail/TemplateDetail";
+import { DecisionPage } from "@/pages/academic/decision/decision-page";
+
 
 
 export const AcademicOfficerContainer = () => {
@@ -82,6 +84,9 @@ export const AcademicOfficerContainer = () => {
 
         <Route path="/topic-assignment-decision" element={<TopicAssignmentDecisionPage />} />
         <Route path="/topic-assignment-decision-detail" element={<TopicAssignmentDecisionDetail />} />
+
+        <Route path="/decision" element={< DecisionPage />} />
+       
         <Route path="/*" element={<NotFound />} />
       </Routes>
     </MainLayout>

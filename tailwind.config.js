@@ -63,8 +63,12 @@ export default {
   				border: 'hsl(var(--sidebar-border))',
   				ring: 'hsl(var(--sidebar-ring))'
   			}
-  		}
+  		},
+			textIndent: {
+        'custom': '1.27cm', // Thụt lề chính xác 1.27cm
+      },
   	}
   },
+	
   plugins: [require("tailwindcss-animate")],
 }
