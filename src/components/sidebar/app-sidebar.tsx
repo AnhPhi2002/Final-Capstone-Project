@@ -224,22 +224,7 @@ const adminMenu = {
           title: "Tài khoản",
           url: "/admin/user",
         },
-        {
-          title: "Hội đồng xét duyệt",
-          url: "",
-        },
-        {
-          title: "Hội đồng review",
-          url: "",
-        },
-        {
-          title: "Giảng viên hướng dẫn",
-          url: "",
-        },
-        {
-          title: "Sinh viên",
-          url: "",
-        },
+       
       ],
     },
   ],
@@ -389,6 +374,19 @@ const academicMenu = {
         {
           title: "Ds. quyết định",
           url: "/academic/topic-assignment-decision",
+        },
+      ],
+    },
+    {
+      title: "Bảng quyết định",
+      url: "/academic/decision",
+      icon: List,
+      isActive: true,
+      items: [
+        {
+          title: "D.s quyết định",
+          url: "/academic/decision",
+      
         },
       ],
     },

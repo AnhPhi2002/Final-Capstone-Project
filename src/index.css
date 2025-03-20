@@ -89,3 +89,11 @@
     @apply bg-background text-foreground;
   }
 }
+@font-face {
+  font-family: "Times New Roman";
+  src: url("/path-to-times-new-roman.ttf") format("truetype");
+}
+
+.font-times {
+  font-family: "Times New Roman", serif;
+}
