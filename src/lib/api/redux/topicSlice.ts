@@ -31,6 +31,10 @@ interface Topic {
   source: string | null;
   semesterId: string | undefined;
   majorId: string;
+  mainMentorId?: string | null;
+  subMentorId?: string | null;
+  subSupervisor?: string | null;
+  mainSupervisor?: string | null;
   createdBy: string | null;
   status: string;
   reasons: string;
@@ -146,6 +150,20 @@ export const createTopic = createAsyncThunk(
   }
 );
 
+export const createTopicByAcademic = createAsyncThunk(
+  "topics/createTopicByAcademic",
+  async (newTopic: Partial<Topic>, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.post(`/topics/create-with-mentors`, newTopic);
+      return response.data.data as Topic;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Không thể tạo đề tài."
+      );
+    }
+  }
+);
+
 export const deleteTopic = createAsyncThunk(
   "topics/deleteTopic",
   async ({ topicId, semesterId }: { topicId: string; semesterId: string }, { rejectWithValue }) => {
@@ -186,6 +204,31 @@ export const updateTopic = createAsyncThunk(
     }
   }
 );
+
+export const updateTopicForAcademic = createAsyncThunk(
+  "topics/updateTopicForAcademic",
+  async (
+    { topicId, updatedData }: { topicId: string; updatedData: Partial<Topic> },
+    { rejectWithValue }
+  ) => {
+    try {
+      console.log("📡 Gửi API cập nhật đề tài bằng POST:", { topicId, updatedData });
+
+      const response = await axiosClient.post(
+        `/topics/topics/${topicId}/assign`, // ✅ Sử dụng POST thay vì PUT
+        updatedData // ✅ Truyền body đúng định dạng
+      );
+
+      console.log("✅ API Response:", response.data);
+      return response.data.data as Topic;
+    } catch (error: any) {
+      console.error("❌ API Error:", error.response?.data);
+      return rejectWithValue(error.response?.data?.message || "Không thể cập nhật đề tài.");
+    }
+  }
+);
+
+
 
 
 export const fetchApprovalTopics = createAsyncThunk(
@@ -279,6 +322,10 @@ const topicSlice = createSlice({
       state.approvalTopics = [];
       state.error = null;
     },
+    resetTopicDetail: (state) => {
+      state.topicDetails = null;
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -334,6 +381,28 @@ const topicSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
+      .addCase(createTopicByAcademic.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(createTopicByAcademic.fulfilled, (state, action: PayloadAction<Topic>) => {
+        state.loading = false;
+        state.data.unshift(action.payload);
+        const newTopic = action.payload;
+
+        if (!newTopic.creator) {
+          const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+          newTopic.creator = {
+
+            fullName: currentUser.fullName,
+            email: currentUser.email,
+          };
+        }
+        state.data.unshift(newTopic);
+      })
+      .addCase(createTopicByAcademic.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
       .addCase(updateTopic.pending, (state) => {
 
         state.loading = true;
@@ -343,6 +412,18 @@ const topicSlice = createSlice({
         state.topicDetails = action.payload;
       })
       .addCase(updateTopic.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(updateTopicForAcademic.pending, (state) => {
+
+        state.loading = true;
+      })
+      .addCase(updateTopicForAcademic.fulfilled, (state, action: PayloadAction<Topic>) => {
+        state.loading = false;
+        state.topicDetails = action.payload;
+      })
+      .addCase(updateTopicForAcademic.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
@@ -425,5 +506,7 @@ const topicSlice = createSlice({
       ;
   },
 });
+
+export const { resetTopicDetail } = topicSlice.actions;
 export const { resetApprovalTopics } = topicSlice.actions;
 export default topicSlice.reducer;

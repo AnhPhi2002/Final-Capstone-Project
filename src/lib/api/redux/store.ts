@@ -2,6 +2,7 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import counterReducer from './counterSlice';
 import authReducer from './authSlice';
+import authSubReducer from './authSubSlice';
 import yearReducer from "./yearSlice";
 import semesterReducer from "./semesterSlice";
 import { studentReducer } from './studentSlice';
@@ -31,6 +32,8 @@ import topicGroupRegisterReducer  from './topicGroupRegisterSlice';
 const rootReducer = combineReducers({
   counter: counterReducer,
   auth: authReducer,
+  authSub: authSubReducer,
+
   // profileUser: profileUserReducer,
   years: yearReducer,
   semesters: semesterReducer,

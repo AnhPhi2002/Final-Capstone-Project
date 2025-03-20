@@ -8,12 +8,11 @@ export interface GroupMember {
   id: string;
   groupId: string;
   studentId: string;
-  // role: RoleType;
   joinedAt: string;
   leaveAt: string | null;
   leaveReason: string | null;
   isActive: boolean;
-  status: string;
+  status: "ACTIVE" | "INACTIVE"; // ✅ Cập nhật kiểu dữ liệu
   student: {
     id: string;
     studentCode: string;
@@ -44,12 +43,14 @@ interface GroupDetailState {
     members: GroupMember[];
   } | null;
   loading: boolean;
+  // updatingMember: boolean;
   error: string | null;
 }
 
 const initialState: GroupDetailState = {
   group: null,
   loading: false,
+  // updatingMember: false,
   error: null,
 };
 
@@ -120,6 +121,33 @@ export const removeMemberFromGroup = createAsyncThunk(
   }
 );
 
+export const toggleMemberStatus = createAsyncThunk(
+  "groupDetail/toggleMemberStatus",
+  async (
+    { groupCode, memberEmail, newStatus, semesterId }: { groupCode: string; memberEmail: string; newStatus: "ACTIVE" | "INACTIVE"; semesterId: string },
+    { rejectWithValue }
+  ) => {
+    try {
+  await axiosClient.post(
+        `/groups/toggle-member-status`,
+        {
+          groupCode,
+          memberEmail,
+          newStatus,
+        },
+        {
+          params: { semesterId },
+        }
+      );
+
+      toast.success(`Cập nhật trạng thái thành công: ${newStatus === "ACTIVE" ? "Hoạt động" : "Ngừng hoạt động"}`);
+      return { memberEmail, newStatus };
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Lỗi khi cập nhật trạng thái thành viên!");
+      return rejectWithValue(error.response?.data?.message || "Lỗi hệ thống!");
+    }
+  }
+);
 // **🔹 Redux Slice**
 const groupDetailSlice = createSlice({
   name: "groupDetail",
@@ -128,6 +156,7 @@ const groupDetailSlice = createSlice({
     resetGroupDetail: (state) => {
       state.group = null;
       state.loading = false;
+      // state.updatingMember = false;
       state.error = null;
     },
   },
@@ -163,7 +192,23 @@ const groupDetailSlice = createSlice({
             (member) => member.studentId !== action.payload.studentId
           );
         }
+      })
+      .addCase(toggleMemberStatus.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(toggleMemberStatus.fulfilled, (state) => {
+        state.loading = false;
+        // toast.success("Cập nhật trạng thái thành viên thành công!");
+      })
+      .addCase(toggleMemberStatus.rejected, (state) => {
+        state.loading = false;
+        // const errorMessage = typeof action.payload === "object" && action.payload?.message
+        //   ? action.payload.message
+        //   : "Lỗi hệ thống khi cập nhật trạng thái!";
+          
+        // toast.error(errorMessage); // ✅ Hiển thị lỗi đúng từ API
       });
+      
   },
 });
 export const { resetGroupDetail } = groupDetailSlice.actions;
