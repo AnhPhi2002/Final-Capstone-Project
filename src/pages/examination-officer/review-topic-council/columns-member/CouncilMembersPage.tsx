@@ -41,7 +41,7 @@ export const CouncilMembersPage: React.FC = () => {
     <div className="flex flex-col h-screen">
       <Header title="Thành viên hội đồng" href="/review-topic-council" currentPage="Quản lý hội đồng" />
       <div className="p-6 flex-1 overflow-auto">
-        <ToolPanel table={table} councilId={safeCouncilId} refetchData={refetchData} />
+        <ToolPanel table={table} councilId={safeCouncilId} refetchData={refetchData} semesterId="" />
         {loadingDetail ? (
           <p className="text-center text-gray-500">Đang tải danh sách thành viên...</p>
         ) : (
