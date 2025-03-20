@@ -29,7 +29,7 @@ export default function TopicStudentListDetail() {
     }
   
     // ✅ Kiểm tra xem nhóm đã đăng ký đề tài chưa
-    if (topicDetails?.topicAssignments?.length > 0) {
+    if ((topicDetails?.topicAssignments ?? []).length > 0) {
       toast.error("Nhóm của bạn đã đăng ký đề tài này!");
       return; // 🚀 Không thay đổi state hoặc reload trang
     }
@@ -63,7 +63,7 @@ export default function TopicStudentListDetail() {
               Mã đề tài: <strong>{topicDetails.topicCode}</strong>
             </p>
             <p className="text-sm text-gray-500 italic">
-              Ngày tạo: {new Date(topicDetails.createdAt).toLocaleDateString()}
+              Ngày tạo: {topicDetails.createdAt ? new Date(topicDetails.createdAt).toLocaleDateString() : "Không xác định"}
             </p>
           </div>
         </div>

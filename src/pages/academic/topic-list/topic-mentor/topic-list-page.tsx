@@ -13,7 +13,7 @@ import { SelectMajor } from "./SelectMajor";
 export const TopicListPage = () => {
   const { semesterId, submissionPeriodId } = useParams<{ semesterId: string; submissionPeriodId: string }>(); // Type-safe params
   const dispatch = useDispatch<AppDispatch>();
-  const { data: topics, loading: topicsLoading } = useSelector((state: RootState) => state.topics); // Lấy topics từ Redux
+  const { loading: topicsLoading } = useSelector((state: RootState) => state.topics); // Lấy trạng thái loading từ Redux
   const [selectedMajor, setSelectedMajor] = useState<string | undefined>();
 
   // Fetch topics khi semesterId hoặc selectedMajor thay đổi

@@ -1,6 +1,6 @@
 import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
-import { Link, useParams, useNavigate } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import TopicDetail from "./topic-detail";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/api/redux/store";

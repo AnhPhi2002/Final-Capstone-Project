@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+
 import { DataTableGroupTopic } from "./DataTableGroupTopic";
 import { resetGroupDetail } from "@/lib/api/redux/groupDetailSlice";
 
@@ -31,9 +31,6 @@ export default function AllTopicDetail() {
   if (error) return <p className="text-center text-red-500">Lỗi khi tải đề tài: {error}</p>;
   if (!topicDetails) return <p className="text-center text-gray-500">Không tìm thấy đề tài hoặc đang tải...</p>;
 
-  const handleOpenFile = (fileUrl: string) => {
-    window.open(fileUrl, "_blank", "noopener,noreferrer");
-  };
 
   return (
     <div>

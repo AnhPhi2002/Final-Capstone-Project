@@ -1,5 +1,5 @@
 // MeetingPage.tsx
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
@@ -21,7 +21,7 @@ export function MeetingPage() {
   const { meetings, loading: meetingsLoading, error: meetingsError } = useSelector(
     (state: RootState) => state.meetings
   );
-  const { group, loading: groupLoading } = useSelector(
+  const { loading: groupLoading } = useSelector(
     (state: RootState) => state.groupDetail
   );
 

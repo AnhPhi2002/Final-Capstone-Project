@@ -96,7 +96,8 @@ export type Topic = {
   nameEn: string;
   description: string;
   status: string;
-  createdAt?: string; // Có thể cần nếu API trả về
+  createdAt?: string; 
+  topicAssignments?: any[];// Có thể cần nếu API trả về
 
   semester: {
     id: string;
