@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { AppDispatch, RootState } from "@/lib/api/redux/store";
-import { createTopic } from "@/lib/api/redux/topicSlice";
+import { createTopicByAcademic } from "@/lib/api/redux/topicSlice";
 import { fetchMajors } from "@/lib/api/redux/majorSlice";
 import { fetchMentorsBySemesterId } from "@/lib/api/redux/mentorSlice";
 import { uploadFile } from "@/lib/api/redux/uploadSlice";
@@ -33,6 +33,7 @@ import {
 import {
   Form,
   FormControl,
+
   FormField,
   FormItem,
   FormLabel,
@@ -46,7 +47,9 @@ const topicSchema = z.object({
   nameEn: z.string().min(1, "Tên tiếng Anh không được để trống"),
   name: z.string().min(1, "Tên viết tắt không được để trống"),
   description: z.string().min(1, "Mô tả không được để trống"),
-  subSupervisorEmail: z.string().email("Email không hợp lệ").optional(),
+  // subSupervisorEmail: z.string().email("Email không hợp lệ").optional(),
+  mainMentorId: z.string().email("Nhập format mail @...com").optional().or(z.literal("")),
+  subMentorId: z.string().email("Nhập fommat mail @...com").optional().or(z.literal("")),
   majorId: z.string().min(1, "Vui lòng chọn ngành học"),
   groupCode: z.string().optional(),
   isBusiness: z.boolean(),
@@ -77,7 +80,9 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
       nameEn: "",
       name: "",
       description: "",
-      subSupervisorEmail: "",
+      // subSupervisorEmail: "",
+      mainMentorId: "",
+      subMentorId: "",
       majorId: "",
       groupCode: "",
       isBusiness: false,
@@ -93,7 +98,9 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
   >([]);
 
   const isBusiness = form.watch("isBusiness");
-  const subSupervisorEmail = form.watch("subSupervisorEmail");
+  const mainMentorId = form.watch("mainMentorId");
+  const subMentorId = form.watch("subMentorId");
+  // const subSupervisorEmail = form.watch("subSupervisorEmail");
 
   // Fetch majors và mentors khi component mount
   useEffect(() => {
@@ -114,8 +121,12 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
   }, 300);
 
   useEffect(() => {
-    filterEmails(subSupervisorEmail || "");
-  }, [subSupervisorEmail, mentors]);
+    filterEmails(mainMentorId || "");
+  }, [mainMentorId, mentors]);
+
+  useEffect(() => {
+    filterEmails(subMentorId || "");
+  }, [subMentorId, mentors]);
 
   // Xử lý fileUrl từ API upload
   useEffect(() => {
@@ -156,9 +167,17 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
   };
 
   const handleSelectEmail = (email: string) => {
-    form.setValue("subSupervisorEmail", email);
+    form.setValue("mainMentorId", email);
+    // form.setValue("subMentorEmail", email);
     setFilteredEmails([]);
   };
+
+  const handleSelectsubEmail = (email: string) => {
+    // form.setValue("mainMentorEmail", email);
+    form.setValue("subMentorId", email);
+    setFilteredEmails([]);
+  };
+
 
   const onSubmit = async (data: TopicFormData) => {
     if (documentFile && documents.length === 0) {
@@ -173,9 +192,10 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
       source: "Tự đề xuất",
       draftFileUrl: documents.length > 0 ? documents[0].draftFileUrl : null,
     };
-
+    if (!newTopic.mainMentorId) delete newTopic.mainMentorId;
+    if (!newTopic.subMentorId) delete newTopic.subMentorId;
     try {
-      await dispatch(createTopic(newTopic)).unwrap();
+      await dispatch(createTopicByAcademic(newTopic)).unwrap();
       toast.success("Đề tài đã được tạo thành công!");
       setOpen(false);
       form.reset();
@@ -258,13 +278,13 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
 
             <FormField
               control={form.control}
-              name="subSupervisorEmail"
+              name="mainMentorId"
               render={({ field }) => (
                 <FormItem className="relative">
-                  <FormLabel>Email giảng viên phụ trách</FormLabel>
+                  <FormLabel>Email giảng viên 1</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Email giảng viên phụ trách"
+                      placeholder="Email giảng viên 1"
                       {...field}
                     />
                   </FormControl>
@@ -276,6 +296,35 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
                           key={email}
                           className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
                           onClick={() => handleSelectEmail(email)}
+                        >
+                          {email}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="subMentorId"
+              render={({ field }) => (
+                <FormItem className="relative">
+                  <FormLabel>Email giảng viên 1</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Email giảng viên 1"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                  {filteredEmails.length > 0 && (
+                    <ul className="absolute z-10 w-full bg-white border rounded-md shadow-lg max-h-40 overflow-y-auto">
+                      {filteredEmails.map((email) => (
+                        <li
+                          key={email}
+                          className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                          onClick={() => handleSelectsubEmail(email)}
                         >
                           {email}
                         </li>

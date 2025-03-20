@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchTopicDetail, deleteTopic } from "@/lib/api/redux/topicSlice";
+import { fetchTopicDetail, deleteTopic, resetTopicDetail } from "@/lib/api/redux/topicSlice";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -9,8 +9,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { DataTableGroupTopic } from "./data-table-group-topic";
-import { fetchUserById } from "@/lib/api/redux/authSlice";
+import { fetchUserById, resetMainMentor } from "@/lib/api/redux/authSlice";
 import { resetGroupDetail } from "@/lib/api/redux/groupDetailSlice";
+import { fetchSubUserById, resetSubMentor } from "@/lib/api/redux/authSubSlice"
 
 export default function TopicDetail() {
   const { topicId, semesterId } = useParams();
@@ -19,20 +20,51 @@ export default function TopicDetail() {
   const { topicDetails, loading, error } = useSelector(
     (state: RootState) => state.topics
   );
-  const { author } = useSelector((state: RootState) => state.auth);
+  // const { author: auth } = useSelector((state: RootState) => state.auth);
+  const { author: mainMentor } = useSelector((state: RootState) => state.auth);
+  const { author: subMentor } = useSelector((state: RootState) => state.authSub);
 
   useEffect(() => {
-    dispatch(resetGroupDetail());
-    if (topicId && (!topicDetails || topicDetails.id !== topicId) && semesterId) {
-      dispatch(fetchTopicDetail({ topicId, semesterId }));
-    }
-  }, [dispatch, topicId, topicDetails, semesterId]);
+    // ✅ Reset mainMentor và subMentor trước khi fetch API
+    dispatch(resetGroupDetail()); 
+    dispatch(resetMainMentor()); 
+    dispatch(resetSubMentor());
+    dispatch(resetTopicDetail());
+  
+    // ✅ Đợi reset xong rồi mới gọi API mới
+    setTimeout(() => {
+      if (topicId && semesterId) {
+        dispatch(fetchTopicDetail({ topicId, semesterId }));
+  
+        if (topicDetails?.mainSupervisor) {
+          dispatch(fetchUserById({ userId: topicDetails.mainSupervisor, semesterId }));
+        }
+  
+        if (topicDetails?.subSupervisor) {
+          dispatch(fetchSubUserById({ userId: topicDetails.subSupervisor, semesterId }));
+        }
+      }
+    }, 50); // Chờ 50ms để đảm bảo Redux đã reset xong trước khi fetch dữ liệu mới
+  
+  }, [dispatch, topicId, semesterId]);
+
+  // useEffect(() => {
+  //   if (topicDetails?.createdBy && topicDetails?.semesterId) {
+  //     dispatch(fetchUserById({ userId: topicDetails.createdBy, semesterId: topicDetails.semesterId }));
+  //   }
+  // }, [dispatch, topicDetails?.createdBy, topicDetails?.semesterId]);
 
   useEffect(() => {
-    if (topicDetails?.createdBy && topicDetails?.semesterId) {
-      dispatch(fetchUserById({ userId: topicDetails.createdBy, semesterId: topicDetails.semesterId }));
+    if (topicDetails?.mainSupervisor && topicDetails?.semesterId) {
+      dispatch(fetchUserById({ userId: topicDetails.mainSupervisor, semesterId: topicDetails.semesterId }));
     }
-  }, [dispatch, topicDetails?.createdBy, topicDetails?.semesterId]);
+  }, [dispatch, topicDetails?.mainSupervisor, topicDetails?.semesterId]);
+
+  useEffect(() => {
+    if (topicDetails?.subSupervisor && topicDetails?.semesterId) {
+      dispatch(fetchSubUserById({ userId: topicDetails.subSupervisor, semesterId: topicDetails.semesterId }));
+    }
+  }, [dispatch, topicDetails?.subSupervisor, topicDetails?.semesterId]);
 
   if (loading)
     return <p className="text-center text-gray-500">Đang tải dữ liệu...</p>;
@@ -69,7 +101,10 @@ export default function TopicDetail() {
       toast.error("Lỗi khi xóa đề tài!");
     }
   };
-
+  const handleOpenFile = (fileUrl: string) => {
+    // Mở URL trong tab mới
+    window.open(fileUrl, "_blank", "noopener,noreferrer");
+  };
   return (
     <div>
       <div className="mt-6 bg-white">
@@ -91,7 +126,7 @@ export default function TopicDetail() {
                 {topicDetails.createdAt
                   ? new Date(topicDetails.createdAt).toLocaleDateString()
                   : "Không xác định"}{" "}
-                by {author?.fullName || "không có tác giả"}
+                {/* by {auth?.fullName || "không có tác giả"} */}
               </p>
             </div>
           </div>
@@ -99,40 +134,67 @@ export default function TopicDetail() {
           <CardContent className="p-4 space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-gray-500 mb-1">Abbreviations</p>
+                <p className="text-sm text-gray-500 mb-1">Tên viết tắt</p>
                 <p className="font-semibold italic">
                   {topicDetails.name || "Không có tên viết tắt"}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">Vietnamese Title</p>
+                <p className="text-sm text-gray-500 mb-1">Tên tiếng việt</p>
                 <p className="font-semibold italic">
                   {topicDetails.nameVi || "Chưa có tiêu đề tiếng Việt"}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">Profession</p>
+                <p className="text-sm text-gray-500 mb-1">Ngành</p>
                 <p className="font-semibold italic">
                   {topicDetails.majorId || "Chưa có chuyên ngành"}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">Status</p>
+                <p className="text-sm text-gray-500 mb-1">Trạng thái</p>
                 <Badge>
                   {topicDetails.status || "Chưa cập nhật trạng thái"}
                 </Badge>
               </div>
-
-              {/* 🔹 Thêm phần hiển thị Mentor phụ */}
-              <div className="col-span-2">
-                <p className="text-sm text-gray-500 mb-1">Mentor phụ</p>
+              
+              <div>
+                <p className="text-sm text-gray-500 mb-1">Mentor 1</p>
                 <p className="font-semibold italic">
-                  {topicDetails.subMentor?.email ? (
-                    <span className="text-blue-600">{topicDetails.subMentor?.email}</span>
+                  {mainMentor?.email ? (
+                    <span className="text-blue-600">{mainMentor.email}</span>
                   ) : (
-                    <span className="text-red-500">Chưa có mentor phụ</span>
+                    <span className="text-red-500">Chưa có mentor 1</span>
                   )}
                 </p>
+              </div>
+              {/* 🔹 Thêm phần hiển thị Mentor phụ */}
+              <div>
+                <p className="text-sm text-gray-500 mb-1">Mentor 2</p>
+                <p className="font-semibold italic">
+                  {subMentor?.email ? (
+                    <span className="text-blue-600">{subMentor.email}</span>
+                  ) : (
+                    <span className="text-red-500">Chưa có mentor 2</span>
+                  )}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500 mb-1">Tài liệu</p>
+                {topicDetails.documents && topicDetails.documents.length > 0 ? (
+                  topicDetails.documents.map((doc, index) => (
+                    <Button
+                      key={index}
+                      variant="outline"
+                      className="mr-2 mb-2"
+                      onClick={() => handleOpenFile(doc.fileUrl)}
+                    >
+                      Xem {doc.fileName || "Tài liệu"}
+                    </Button>
+                  ))
+                ) : (
+                  <p className="text-sm text-gray-500">Chưa cập nhật trạng thái</p>
+                )}
               </div>
             </div>
 

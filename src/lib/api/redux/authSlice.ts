@@ -112,7 +112,11 @@ const authSlice = createSlice({
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       
+      
     },
+    resetMainMentor: (state) => {
+      state.author = null; // ✅ Reset author về null khi chuyển topic
+  },
   },
   extraReducers: (builder) => {
     builder
@@ -186,6 +190,6 @@ const authSlice = createSlice({
       });
   },
 });
-
+export const { resetMainMentor } = authSlice.actions;
 export const { logout } = authSlice.actions;
 export default authSlice.reducer;

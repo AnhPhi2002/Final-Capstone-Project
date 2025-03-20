@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/api/redux/store";
-import { fetchTopics, exportTopicsToExcel } from "@/lib/api/redux/topicSlice";
+import { fetchTopics, exportTopicsToExcel, resetTopicDetail } from "@/lib/api/redux/topicSlice";
 import { Link, useParams } from "react-router";
 import { CreateTopic } from "./CreateTopic";
 import Header from "@/components/header";
@@ -9,6 +9,8 @@ import { TopicList } from "./topic-list";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { SelectMajor } from "./SelectMajor";
+import { resetMainMentor } from "@/lib/api/redux/authSlice";
+import { resetSubMentor } from "@/lib/api/redux/authSubSlice";
 
 export const TopicListPage = () => {
   const { semesterId, submissionPeriodId } = useParams();
@@ -18,6 +20,9 @@ export const TopicListPage = () => {
   const [selectedMajor, setSelectedMajor] = useState<string | undefined>();
 
   useEffect(() => {
+           dispatch(resetTopicDetail());
+              dispatch(resetMainMentor()); 
+              dispatch(resetSubMentor());
     if (semesterId) {
       dispatch(fetchTopics({ semesterId, majorId: selectedMajor })); // Fetch topics theo semesterId
     }

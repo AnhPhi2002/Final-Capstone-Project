@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/api/redux/store";
-import { fetchTopics, exportTopicsToExcel } from "@/lib/api/redux/topicSlice";
+import { fetchTopics, exportTopicsToExcel, resetTopicDetail } from "@/lib/api/redux/topicSlice";
 import { Link, useParams } from "react-router"; // Sửa lỗi import
 import { CreateTopic } from "./CreateTopic";
 import Header from "@/components/header";
@@ -9,6 +9,8 @@ import { TopicList } from "./topic-list";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { SelectMajor } from "./SelectMajor";
+import { resetMainMentor } from "@/lib/api/redux/authSlice";
+import { resetSubMentor } from "@/lib/api/redux/authSubSlice";
 
 export const TopicListPage = () => {
   const { semesterId, submissionPeriodId } = useParams<{ semesterId: string; submissionPeriodId: string }>(); // Type-safe params
@@ -18,9 +20,13 @@ export const TopicListPage = () => {
 
   // Fetch topics khi semesterId hoặc selectedMajor thay đổi
   useEffect(() => {
+       dispatch(resetTopicDetail());
+          dispatch(resetMainMentor()); 
+          dispatch(resetSubMentor());
     if (semesterId) {
       dispatch(fetchTopics({ semesterId, majorId: selectedMajor }));
     }
+  
   }, [dispatch, semesterId, selectedMajor]);
 
   const handleExportExcel = async () => {

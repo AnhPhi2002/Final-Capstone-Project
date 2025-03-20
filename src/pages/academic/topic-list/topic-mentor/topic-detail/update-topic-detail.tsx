@@ -7,13 +7,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import Header from "@/components/header";
-import { Textarea } from "@/components/ui/textarea";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
-import { fetchTopicDetail, updateTopic } from "@/lib/api/redux/topicSlice";
-import { fetchMentorsBySemesterId } from "@/lib/api/redux/mentorSlice"; // ✅ Fetch mentor
+import { fetchTopicDetail, updateTopicForAcademic } from "@/lib/api/redux/topicSlice";
+import { fetchMentorsBySemesterId } from "@/lib/api/redux/mentorSlice";
 import { Select, SelectItem, SelectContent, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-
 
 export default function UpdateTopicDetail() {
   const { topicId, semesterId } = useParams();
@@ -21,70 +19,51 @@ export default function UpdateTopicDetail() {
   const navigate = useNavigate();
 
   const { topicDetails, loading } = useSelector((state: RootState) => state.topics);
-  const { mentors } = useSelector((state: RootState) => state.mentors); // ✅ Danh sách mentor
+  const { mentors } = useSelector((state: RootState) => state.mentors);
 
   const [formData, setFormData] = useState({
-    name: "",
-    nameVi: "",
-    nameEn: "",
-    majorId: "",
-    status: "",
-    description: "",
-    subMentorEmail: "", 
+    mainMentorEmail: "",
+    subMentorEmail: "",
     groupCode: "",
   });
 
   useEffect(() => {
     if (topicId && semesterId) {
       dispatch(fetchTopicDetail({ topicId, semesterId }));
-      dispatch(fetchMentorsBySemesterId(semesterId)); // ✅ Fetch danh sách mentor
+      dispatch(fetchMentorsBySemesterId(semesterId));
     }
   }, [dispatch, topicId, semesterId]);
 
   useEffect(() => {
     if (topicDetails) {
+      // 🔍 Tìm email của mainSupervisor từ danh sách mentors
+      const mainMentor = mentors.find(m => m.id === topicDetails.mainSupervisor)?.email || "";
+      const subMentor = mentors.find(m => m.id === topicDetails.subSupervisor)?.email || "";
+
       setFormData({
-        name: topicDetails.name || "",
-        nameVi: topicDetails.nameVi || "",
-        nameEn: topicDetails.nameEn || "",
-        majorId: topicDetails.majorId || "",
-        status: topicDetails.status || "PENDING",
-        description: topicDetails.description || "",
-        subMentorEmail: topicDetails.subMentor?.email || "", 
+        mainMentorEmail: mainMentor,
+        subMentorEmail: subMentor,
         groupCode: topicDetails.group?.groupCode || "",
       });
     }
-  }, [topicDetails]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  }, [topicDetails, mentors]);
 
   const handleUpdate = async () => {
     if (!topicId || !semesterId) {
       toast.error("Thiếu thông tin cần thiết!");
       return;
     }
-  
-    let subMentorId = topicDetails?.subSupervisorEmail || null;
-  
-    // 🔹 Nếu chọn mentor mới, tìm ID từ danh sách mentor
-    if (formData.subMentorEmail && formData.subMentorEmail !== topicDetails?.subMentor?.email) {
-      const selectedMentor = mentors.find(m => m.email === formData.subMentorEmail);
-      if (selectedMentor) {
-        subMentorId = selectedMentor.id;
-      }
-    }
-  
+
     const updatedData = {
-      ...formData,
-      subSupervisor: subMentorId, // ✅ Cập nhật subSupervisor là ID của subMentor
-      subMentorEmail: formData.subMentorEmail || null, // ✅ Giữ giá trị email mentor phụ
+      mainMentorEmail: formData.mainMentorEmail || null,
+      subMentorEmail: formData.subMentorEmail || null,
+      groupCode: formData.groupCode || "",
+      semesterId,
     };
-  
+
     try {
-      console.log("🚀 Gửi API cập nhật:", { topicId, semesterId, updatedData });
-      await dispatch(updateTopic({ topicId, updatedData, semesterId })).unwrap();
+      console.log("🚀 Gửi API cập nhật bằng POST:", { topicId, updatedData });
+      await dispatch(updateTopicForAcademic({ topicId, updatedData })).unwrap();
       toast.success("✅ Cập nhật đề tài thành công!");
       navigate(`/academic/topic-detail/${topicId}/${semesterId}`);
       dispatch(fetchTopicDetail({ topicId, semesterId }));
@@ -92,7 +71,6 @@ export default function UpdateTopicDetail() {
       toast.error("Có lỗi xảy ra khi cập nhật đề tài.");
     }
   };
-  
 
   return (
     <div>
@@ -105,43 +83,73 @@ export default function UpdateTopicDetail() {
               <AvatarFallback>T</AvatarFallback>
             </Avatar>
             <div className="w-full">
-              <Input name="nameEn" value={formData.nameEn} onChange={handleChange} />
-              <p className="text-sm text-gray-500 italic mb-1">Last updated: {new Date().toLocaleDateString()}</p>
+              <Input value={topicDetails?.nameEn || ""} disabled />
+              <p className="text-sm text-gray-500 italic mb-1">
+                Last updated: {new Date().toLocaleDateString()}
+              </p>
             </div>
           </div>
 
           <CardContent className="p-4 space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-gray-500 mb-1">Abbreviations</p>
-                <Input name="name" value={formData.name} onChange={handleChange} />
+                <p className="text-sm text-gray-500 mb-1">Tên viết tắt</p>
+                <Input value={topicDetails?.name || ""} disabled />
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">Vietnamese Title</p>
-                <Input name="nameVi" value={formData.nameVi} onChange={handleChange} />
+                <p className="text-sm text-gray-500 mb-1">Tên tiếng Việt</p>
+                <Input value={topicDetails?.nameVi || ""} disabled />
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">Profession</p>
-                <Input name="majorId" value={formData.majorId} onChange={handleChange} />
+                <p className="text-sm text-gray-500 mb-1">Ngành</p>
+                <Input value={topicDetails?.majorId || ""} disabled />
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">Status</p>
-                <Badge>{formData.status}</Badge>
+                <p className="text-sm text-gray-500 mb-1">Trạng thái</p>
+                <Badge>{topicDetails?.status || "PENDING"}</Badge>
               </div>
               <div className="col-span-2">
                 <p className="text-sm text-gray-500 mb-1">Nhóm sinh viên</p>
                 <Input
                   name="groupCode"
                   value={formData.groupCode}
-                  onChange={handleChange}
-                  placeholder="Chưa có nhóm tham gia dự án"
+                  onChange={(e) => setFormData({ ...formData, groupCode: e.target.value })}
                 />
               </div>
 
-              {/* 🔹 Select Mentor Phụ */}
+              {/* 🔹 Select Mentor 1 (Hiển thị sẵn nếu có) */}
               <div>
-                <p className="text-sm text-gray-500 mb-1">Mentor phụ</p>
-                <Select value={formData.subMentorEmail} onValueChange={(email) => setFormData({ ...formData, subMentorEmail: email })}>
+                <p className="text-sm text-gray-500 mb-1">Mentor 1</p>
+                <Select
+                  value={formData.mainMentorEmail || ""}
+                  onValueChange={(email) => setFormData({ ...formData, mainMentorEmail: email })}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Chọn mentor chính" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {mentors.length > 0 ? (
+                      mentors.map((mentor) => (
+                        <SelectItem key={mentor.email} value={mentor.email}>
+                          {mentor.fullName} ({mentor.email})
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="" disabled>
+                        Không có mentor khả dụng
+                      </SelectItem>
+                    )}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* 🔹 Select Mentor 2 (Hiển thị sẵn nếu có) */}
+              <div>
+                <p className="text-sm text-gray-500 mb-1">Mentor 2</p>
+                <Select
+                  value={formData.subMentorEmail || ""}
+                  onValueChange={(email) => setFormData({ ...formData, subMentorEmail: email })}
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Chọn mentor phụ" />
                   </SelectTrigger>
@@ -153,16 +161,13 @@ export default function UpdateTopicDetail() {
                         </SelectItem>
                       ))
                     ) : (
-                      <SelectItem value="" disabled>Không có mentor khả dụng</SelectItem>
+                      <SelectItem value="" disabled>
+                        Không có mentor khả dụng
+                      </SelectItem>
                     )}
                   </SelectContent>
                 </Select>
               </div>
-            </div>
-
-            <div>
-              <p className="text-sm text-gray-500 mb-1">Description</p>
-              <Textarea name="description" className="w-full p-2 border rounded-md h-24" value={formData.description} onChange={handleChange} />
             </div>
           </CardContent>
 

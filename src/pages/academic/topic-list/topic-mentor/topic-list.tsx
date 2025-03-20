@@ -5,6 +5,8 @@ import { RootState, AppDispatch } from "@/lib/api/redux/store";
 import { fetchTopics } from "@/lib/api/redux/topicSlice";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { resetSubMentor } from "@/lib/api/redux/authSubSlice";
+import { resetMainMentor } from "@/lib/api/redux/authSlice";
 
 const truncateText = (text: string, maxLength: number) => {
   return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
@@ -42,6 +44,8 @@ export const TopicList = ({ selectedMajor }: { selectedMajor?: string }) => {
   );
 
   useEffect(() => {
+              dispatch(resetMainMentor()); 
+              dispatch(resetSubMentor());
     if (semesterId) {
       dispatch(fetchTopics({ semesterId, majorId: selectedMajor } as any));
     }
