@@ -50,7 +50,4 @@ export const columnsApproveTopic: ColumnDef<ApproveTopic, any>[] = [
     ),
   },
 ];
-function useParams(): { semesterId: any; } {
-  throw new Error("Function not implemented.");
-}
 

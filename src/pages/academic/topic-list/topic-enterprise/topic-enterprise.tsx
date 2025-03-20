@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { PaginationDashboardPage } from "../../pagination";
+import { PaginationDashboardPage } from "@/pages/admin/pagination";
 
 // Hàm rút gọn mô tả với giới hạn ký tự
 const truncateText = (text: string, maxLength: number) => {

@@ -20,7 +20,7 @@ export interface ActionMenuProps {
 
 export const ActionMenuMember: React.FC<ActionMenuProps> = ({ data, refetchData }) => {
   const navigate = useNavigate();
-  const [openUpdate, setOpenUpdate] = useState(false);
+  // const [openUpdate, setOpenUpdate] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
 
   // Kiểm tra xem data là Council hay CouncilMember
@@ -41,9 +41,9 @@ export const ActionMenuMember: React.FC<ActionMenuProps> = ({ data, refetchData 
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => setOpenUpdate(true)}>
+          {/* <DropdownMenuItem onClick={() => setOpenUpdate(true)}>
             {isCouncil ? "Cập nhật Hội đồng" : "Cập nhật Thành viên"}
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
           {isCouncil && (
             <DropdownMenuItem
               onClick={() => navigate(`/examination/review-topic-council-member/${data.id}`)}
