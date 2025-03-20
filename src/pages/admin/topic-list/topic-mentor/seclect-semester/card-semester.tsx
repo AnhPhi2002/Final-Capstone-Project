@@ -1,52 +1,42 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import { SubmissionRound } from "@/lib/api/types";
+import { Semester, SubmissionRound } from "@/lib/api/types";
 import {
   Card,
   CardHeader,
   CardTitle,
   CardContent,
+  CardDescription,
 } from "@/components/ui/card";
 import { PaginationDashboardPage } from "@/pages/admin/pagination";
 import { Badge } from "@/components/ui/badge";
+import { Dot } from "lucide-react";
+import { RootState } from "@/lib/api/redux/store";
+import { useSelector } from "react-redux";
 
 type CardSemesterProps = {
+  selectedSemester: string;
   data: SubmissionRound[];
   loading: boolean;
-  selectedSemester: string;
+
 };
 
-const statusClasses: { [key in "ACTIVE" | "COMPLETE" | "UPCOMING"]: string } = {
-  ACTIVE: "bg-green-100 text-green-600 hover:bg-green-200",
-  COMPLETE: "bg-blue-100 text-blue-600 hover:bg-blue-200",
-  UPCOMING: "bg-gray-100 text-gray-600 hover:bg-gray-200",
-};
-
-const StatusBadge = ({
-  status,
-}: {
-  status: "ACTIVE" | "COMPLETE" | "UPCOMING";
-}) => {
-  return (
-    <Badge
-      className={`${
-        statusClasses[status] || "bg-gray-100 text-gray-600 hover:bg-gray-200"
-      } px-2 py-1 rounded-md`}
-    >
-      {status}
-    </Badge>
-  );
-};
 
 export const CardSemester: React.FC<CardSemesterProps> = ({
+  selectedSemester,
   data,
   loading,
-  selectedSemester,
+
 }) => {
   const navigate = useNavigate();
   const itemsPerPage = 6; // Số vòng nộp trên mỗi trang
   const [currentPage, setCurrentPage] = useState(1);
-
+  const semesters = useSelector((state: RootState) => state.semesters.data); // Lấy semesters từ Redux
+  
+  const getSemesterCode = (semesterId: string) => {
+    const semester = semesters.find((s: Semester) => s.id === semesterId);
+    return semester ? semester.code : "Không xác định";
+  };
   // Lọc dữ liệu vòng nộp theo selectedSemester
   const filteredData = data.filter(
     (round) => round.semesterId === selectedSemester
@@ -61,9 +51,9 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
     currentPage * itemsPerPage
   );
 
-  const handleCardClick = (semesterId: string, submissionRoundId: string) => {
+  const handleCardClick = (semesterId: string, submissionRoundId: string, roundNumber: number) => {
     navigate(
-      `/academic/topic-list/${semesterId}/submission/${submissionRoundId}`
+      `/academic/topic-list/semester/${submissionRoundId}/submission/${semesterId}/round/${roundNumber}`
     );
   };
 
@@ -89,29 +79,60 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {paginatedData.map((round) => (
             <Card
-              key={round.id}
-              className="cursor-pointer hover:shadow-lg"
-              onClick={() => handleCardClick(round.semesterId, round.id)}
-            >
-              <CardHeader>
-                <CardTitle className="text-xl font-bold text-gray-800">
-                  {round.description}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-gray-500 flex items-center gap-1">
-                  Vòng nộp: {round.roundNumber}
-                </p>
-              </CardContent>
-              <CardContent>
-                <p className="text-sm text-gray-500 flex items-center gap-1">
-                  Trạng thái:{" "}
-                  <StatusBadge
-                    status={round.status as "ACTIVE" | "COMPLETE" | "UPCOMING"}
+            key={round.id}
+            className="w-full p-4 shadow-md border border-gray-200 rounded-lg hover:shadow-lg transition duration-200"
+            onClick={() => handleCardClick(round.id, round.semesterId, round.roundNumber)}
+          >
+            <CardHeader>
+              <CardTitle className="text-xl font-bold text-gray-800">
+                {round.description}
+              </CardTitle>
+              <CardDescription>
+                Học kỳ: {getSemesterCode(round.semesterId)}
+              </CardDescription>
+              <CardDescription>
+                Vòng nộp lần: {round.roundNumber}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-2">
+                <span className="flex items-center gap-1">
+                  <Dot
+                    size={40}
+                    className={
+                      round.status === "ACTIVE"
+                        ? "text-green-600"
+                        : round.status === "UPCOMING"
+                        ? "text-yellow-600"
+                        : round.status === "COMPLETE"
+                        ? "text-blue-600"
+                        : "text-gray-600"
+                    }
                   />
-                </p>
-              </CardContent>
-            </Card>
+                  Trạng thái
+                </span>
+                <Badge
+                  className={
+                    round.status === "ACTIVE"
+                      ? "bg-green-100 text-green-600 border border-green-500 hover:bg-green-200"
+                      : round.status === "UPCOMING"
+                      ? "bg-yellow-100 text-yellow-600 border border-yellow-500 hover:bg-yellow-200"
+                      : round.status === "COMPLETE"
+                      ? "bg-blue-100 text-blue-600 border border-blue-500 hover:bg-blue-200"
+                      : "bg-gray-100 text-gray-600 border border-gray-500 hover:bg-gray-200"
+                  }
+                >
+                  {round.status === "ACTIVE"
+                    ? "Đang hoạt động"
+                    : round.status === "UPCOMING"
+                    ? "Sắp diễn ra"
+                    : round.status === "COMPLETE"
+                    ? "Hoàn thành"
+                    : "Không xác định"}
+                </Badge>
+              </div>
+            </CardContent>
+          </Card>
           ))}
         </div>
       )}

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/lib/api/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/lib/api/redux/store";
 import { fetchTopics, exportTopicsToExcel } from "@/lib/api/redux/topicSlice";
-import { Link, useParams } from "react-router";
+import { Link, useParams } from "react-router"; // Sửa lỗi import
 import { CreateTopic } from "./CreateTopic";
 import Header from "@/components/header";
 import { TopicList } from "./topic-list";
@@ -11,29 +11,29 @@ import { toast } from "sonner";
 import { SelectMajor } from "./SelectMajor";
 
 export const TopicListPage = () => {
-  const { semesterId, submissionPeriodId } = useParams(); // Lấy cả semesterId và submissionPeriodId từ URL
+  const { semesterId, submissionPeriodId } = useParams<{ semesterId: string; submissionPeriodId: string }>(); // Type-safe params
   const dispatch = useDispatch<AppDispatch>();
-
-  // const { data: topics } = useSelector((state: RootState) => state.topics);
+  const { data: topics, loading: topicsLoading } = useSelector((state: RootState) => state.topics); // Lấy topics từ Redux
   const [selectedMajor, setSelectedMajor] = useState<string | undefined>();
 
+  // Fetch topics khi semesterId hoặc selectedMajor thay đổi
   useEffect(() => {
     if (semesterId) {
-      dispatch(fetchTopics({ semesterId, majorId: selectedMajor })); // Fetch topics theo semesterId
+      dispatch(fetchTopics({ semesterId, majorId: selectedMajor }));
     }
   }, [dispatch, semesterId, selectedMajor]);
 
   const handleExportExcel = async () => {
-    if (!submissionPeriodId) {
-      toast.error("Không tìm thấy kỳ nộp.");
+    if (!submissionPeriodId || !semesterId) {
+      toast.error("Không tìm thấy kỳ nộp hoặc kỳ học.");
       return;
     }
 
     try {
-      await dispatch(exportTopicsToExcel(submissionPeriodId)).unwrap();
+      await dispatch(exportTopicsToExcel({ submissionPeriodId, semesterId })).unwrap();
       toast.success("Xuất danh sách đề tài thành công!");
     } catch (error: any) {
-      toast.error(error || "Xuất danh sách thất bại!");
+      toast.error(error?.message || "Xuất danh sách thất bại!");
     }
   };
 
@@ -47,11 +47,11 @@ export const TopicListPage = () => {
 
       <div className="flex flex-col flex-1">
         {/* Phần lọc (SelectMajor + Button) */}
-        <div className="sticky top-16 bg-white z-40 p-6 rounded-md ">
+        <div className="sticky top-16 bg-white z-40 p-6 rounded-md">
           <div className="flex items-center justify-between">
             <SelectMajor onMajorChange={setSelectedMajor} />
             <div className="flex items-center gap-4 justify-end">
-              <Button onClick={handleExportExcel} variant="outline">
+              <Button onClick={handleExportExcel} variant="outline" disabled={topicsLoading}>
                 Export danh sách đề tài
               </Button>
               <CreateTopic semesterId={semesterId!} />
@@ -63,7 +63,7 @@ export const TopicListPage = () => {
         </div>
 
         {/* Danh sách Topic */}
-        <div className="flex-1 overflow-y-auto p-6 ">
+        <div className="flex-1 overflow-y-auto p-6">
           <TopicList />
         </div>
       </div>

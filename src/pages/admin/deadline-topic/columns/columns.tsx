@@ -30,20 +30,30 @@ export const columns: ColumnDef<SubmissionRound, any>[] = [
     },
   },
   {
-    accessorFn: (row) => row.status, 
+    accessorKey: "status",
     header: "Trạng thái",
-    cell: ({ getValue }) => {
-      const status = getValue<string>() as "ACTIVE" | "COMPLETE" | "UPCOMING";
-  
-      const statusClasses: { [key in "ACTIVE" | "COMPLETE" | "UPCOMING"]: string } = {
-        "ACTIVE": "bg-green-100 text-green-600 hover:bg-green-200",
-        "COMPLETE": "bg-blue-100 text-blue-600 hover:bg-blue-200",
-        "UPCOMING": "bg-gray-100 text-gray-600 hover:bg-gray-200",
-      };
+    cell: ({ row }) => {
+      const status = row.getValue("status") as "ACTIVE" | "UPCOMING" | "COMPLETE";
   
       return (
-        <Badge className={`${statusClasses[status] || "bg-gray-100 text-gray-600 hover:bg-gray-200"} px-2 py-1 rounded-md`}>
-          {status}
+        <Badge
+          className={
+            status === "ACTIVE"
+              ? "bg-green-100 text-green-600 border border-green-500 hover:bg-green-200"
+              : status === "UPCOMING"
+              ? "bg-yellow-100 text-yellow-600 border border-yellow-500 hover:bg-yellow-200"
+              : status === "COMPLETE"
+              ? "bg-blue-100 text-blue-600 border border-blue-500 hover:bg-blue-200"
+              : "bg-gray-100 text-gray-600 border border-gray-500 hover:bg-gray-200"
+          }
+        >
+          {status === "ACTIVE"
+            ? "Đang hoạt động"
+            : status === "UPCOMING"
+            ? "Sắp diễn ra"
+            : status === "COMPLETE"
+            ? "Hoàn thành"
+            : "Không xác định"}
         </Badge>
       );
     },
