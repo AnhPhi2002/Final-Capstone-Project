@@ -14,7 +14,7 @@ export interface GroupMember {
   leaveAt: string | null;
   leaveReason: string | null;
   isActive: boolean;
-  status: string;
+  status: "ACTIVE" | "INACTIVE";
   student: {
     id: string;
     studentCode: string;
