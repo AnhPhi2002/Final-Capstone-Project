@@ -352,7 +352,13 @@ const topicSlice = createSlice({
       })
       .addCase(fetchApprovalTopics.fulfilled, (state, action) => {
         state.loading = false;
-        state.approvalTopics = action.payload; // ✅ Cập nhật danh sách mới
+        state.approvalTopics = action.payload.map((approvalTopic: Topic) => {
+          const matchingTopic = state.data.find((t) => t.id === approvalTopic.id);
+          return {
+            ...approvalTopic,
+            creator: matchingTopic?.creator || approvalTopic.creator,
+          };
+        });
       })
       .addCase(fetchApprovalTopics.rejected, (state, action) => {
         state.loading = false;

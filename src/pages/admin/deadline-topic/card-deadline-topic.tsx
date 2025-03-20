@@ -78,13 +78,13 @@ export const CardDeadlineTopic: React.FC<CardDeadlineTopicProps> = ({
               >
                 <CardHeader>
                   <CardTitle className="text-xl font-bold text-gray-800">
-                     {round.description}
+                    {round.description}
                   </CardTitle>
                   <CardDescription>
-                  Học kỳ: {getSemesterCode(round.semesterId)} 
+                    Học kỳ: {getSemesterCode(round.semesterId)}
                   </CardDescription>
                   <CardDescription>
-                  Vòng nộp lần: {round.roundNumber}
+                    Vòng nộp lần: {round.roundNumber}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>

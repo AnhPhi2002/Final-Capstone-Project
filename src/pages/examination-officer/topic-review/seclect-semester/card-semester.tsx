@@ -17,9 +17,10 @@ import { useSelector } from "react-redux";
 import {  Semester } from "@/lib/api/types";
 
 type CardSemesterProps = {
+    selectedSemester: string;
   data: SubmissionRound[];
   loading: boolean;
-  selectedSemester: string;
+
 };
 
 
@@ -85,7 +86,7 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
                  <Card
                  key={round.id}
                  className="w-full p-4 shadow-md border border-gray-200 rounded-lg hover:shadow-lg transition duration-200"
-                 onClick={() => handleCardClick(round.id, round.semesterId, round.roundNumber)}
+                 onClick={() => handleCardClick(round.semesterId, round.id,  round.roundNumber)}
                >
                  <CardHeader>
                    <CardTitle className="text-xl font-bold text-gray-800">
