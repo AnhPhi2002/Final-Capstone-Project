@@ -1,7 +1,7 @@
 // src/components/columns/columns.ts
 import { ColumnDef } from "@tanstack/react-table";
 
-import { Mentor } from "@/types/mentor";
+import { Mentor } from "@/lib/api/types";
 
 export const columns: ColumnDef<Mentor>[] = [
   {

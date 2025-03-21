@@ -1,7 +1,7 @@
 // src/lib/api/redux/mentorSlice.ts
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { axiosClient } from '@/lib/api/config/axios-client';
-import { Mentor } from '@/types/mentor'; // Use the consistent type
+import { Mentor } from '@/lib/api/types'; 
 
 type MentorState = {
   mentors: Mentor[];

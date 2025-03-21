@@ -16,7 +16,6 @@ export const columns: ColumnDef<Mentor>[] = [
     accessorKey: "fullName",
     header: "Tên giảng viên",
   },
-
   {
     accessorKey: "department",
     header: "Chuyên môn",
@@ -44,31 +43,6 @@ export const columns: ColumnDef<Mentor>[] = [
     },
   },
 
-  // {
-  //   id: "actions",
-  //   cell: () => {
 
-  //     return (
-  //       <DropdownMenu>
-  //         <DropdownMenuTrigger asChild>
-  //           <Button variant="ghost" className="h-8 w-8 p-0">
-  //             <span className="sr-only">Open menu</span>
-  //             <MoreHorizontal className="h-4 w-4" />
-  //           </Button>
-  //         </DropdownMenuTrigger>
-  //         <DropdownMenuContent align="end">
-  //           <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
-  //           <DropdownMenuItem      
-  //           >
-  //             Sao chép ID sản phẩm
-  //           </DropdownMenuItem>
-  //           <DropdownMenuItem className="text-red-500">
-  //             Xóa sản phẩm
-  //           </DropdownMenuItem>
-  //         </DropdownMenuContent>
-  //       </DropdownMenu>
-  //     );
-  //   },
-  // },
 ];
 

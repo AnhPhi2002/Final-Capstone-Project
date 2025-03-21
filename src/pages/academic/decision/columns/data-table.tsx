@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"; // Sử dụng ShadCN Table
-import { Mentor } from "@/types/mentor";
+import { Mentor } from "@/lib/api/types";
 
 interface CustomColumnMeta {
   className?: string;
