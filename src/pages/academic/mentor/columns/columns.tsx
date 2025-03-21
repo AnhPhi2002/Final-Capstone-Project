@@ -1,7 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-// import { Button } from "@/components/ui/button"; // Sử dụng Button từ thư viện UI
-// import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-// import { MoreHorizontal } from "lucide-react";
+
 import { Mentor } from '@/lib/api/types';
 import { Badge } from "@/components/ui/badge";
 

@@ -16,7 +16,7 @@ import { SemestersDetailPage } from "@/pages/academic/semesters/columns/semester
 import StudentListPage from "@/pages/academic/student-list/student-list-page";
 import { GroupStudentPage } from "@/pages/academic/group-student/group-student-page";
 import { NotGroupStudentPage } from "@/pages/academic/not-group-student/not-group-student-page";
-import MentorPage from "@/pages/academic/mentor/mentor-page";
+
 import { TopicDetailPage } from "@/pages/academic/topic-list/topic-mentor/topic-detail/topic-detail-page";
 import { TopicPage } from "@/pages/academic/topic-list/topic-mentor/topic-page";
 import { TopicListPage } from "@/pages/academic/topic-list/topic-mentor/topic-list-page";
@@ -30,6 +30,10 @@ import { MentorDetail } from "@/pages/academic/mentor/columns/mentor-detail";
 import ImportMentorPage from "@/pages/academic/import-mentor/import-mentor-page";
 import TemplateDetail from "@/pages/academic/templates-mail/TemplateDetail";
 import { DecisionPage } from "@/pages/academic/decision/decision-page";
+import { MentorPage } from "@/pages/academic/mentor/mentor-page";
+import { DecisionDetail } from "@/pages/academic/decision/decision-detail";
+import { UpdateDecision } from "@/pages/academic/decision/update-decision";
+
 
 
 
@@ -86,7 +90,8 @@ export const AcademicOfficerContainer = () => {
         <Route path="/topic-assignment-decision-detail" element={<TopicAssignmentDecisionDetail />} />
 
         <Route path="/decision" element={< DecisionPage />} />
-       
+        <Route path="/decision/:semesterId" element={< DecisionDetail />} />
+        <Route path="/decision/:semesterId/update" element={<UpdateDecision />} />
         <Route path="/*" element={<NotFound />} />
       </Routes>
     </MainLayout>

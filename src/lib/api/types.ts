@@ -24,6 +24,7 @@ export interface Student {
   status: string;
 }
 
+// src/types/mentor.ts
 export interface Mentor {
   id: string;
   email: string;
@@ -32,6 +33,8 @@ export interface Mentor {
   fullName: string;
   isActive: boolean;
   role: string;
+  department?: string; 
+  departmentPosition?: string; 
 }
 export interface User {
   id: string;
