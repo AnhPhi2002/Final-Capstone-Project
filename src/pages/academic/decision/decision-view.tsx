@@ -1,41 +1,42 @@
-
-import { Card, CardContent } from "@/components/ui/card";
+// src/pages/DecisionView.tsx
+import { Card, CardContent } from "@/components/ui/card"; 
+import { fetchMentorsBySemesterId } from "@/lib/api/redux/mentorSlice";
+import { RootState } from "@/lib/api/redux/store";
+import { useEffect } from "react";
+import {  useSelector } from "react-redux";
+import { useParams } from "react-router";
+import { DataTable } from "./columns/data-table"; 
+import { columns } from "./columns/columns";
+import { useAppDispatch } from "@/hooks/reduxHooks";
 
 export const DecisionView = () => {
-  // Dữ liệu mẫu cho bảng giảng viên (có thể mở rộng)
-  const lecturers = [
-    {
-      id: 1,
-      name: "Nguyễn Thị Cẩm Hương",
-      specialization: "Chủ nhiệm bộ môn SE",
-      department: "Trường đại học FPT",
-    },
-    {
-      id: 2,
-      name: "Nguyễn Minh Sang",
-      specialization: "Giảng viên bộ môn SE",
-      department: "Trường đại học FPT",
-    },
-  ];
+  const dispatch = useAppDispatch();
+
+  const { semesterId } = useParams<{ semesterId: string }>();
+  const { mentors, loading, error } = useSelector((state: RootState) => state.mentors);
+
+  useEffect(() => {
+    if (semesterId) {
+      dispatch(fetchMentorsBySemesterId(semesterId) as any); // Type assertion may be needed
+    }
+  }, [dispatch, semesterId]);
 
   return (
     <div className="max-w-6xl mx-auto p-8">
       <Card className="font-times text-[13pt] leading-[1.5] shadow-lg">
-        <CardContent className="p-20">
-          
+        <CardContent className="p-32">
           <div className="flex justify-between uppercase">
             <div className="w-1/2">
               <p>TRƯỜNG ĐẠI HỌC FPT</p>
               <p className="font-bold">PHÂN HIỆU TRƯỜNG ĐẠI HỌC FPT</p>
               <p className="font-bold">TẠI TP. HỒ CHÍ MINH</p>
             </div>
-            <div className="w-1/2 text-right">
+            <div className="w-1/2 t ext-right">
               <p>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</p>
               <p className="font-bold">Độc lập - Tự do - Hạnh phúc</p>
             </div>
           </div>
 
-          {/* Document Number */}
           <div className="mt-6 flex justify-between text-[14.5pt]">
             <p className="indent-[1.27cm]">Số: [keynum]/QĐ-FPTUHCM</p>
             <p className="italic pr-[0.9cm]">
@@ -43,17 +44,15 @@ export const DecisionView = () => {
             </p>
           </div>
 
-
           <div className="mt-6 text-center">
             <h1 className="text-[14.5pt] font-bold uppercase">QUYẾT ĐỊNH</h1>
             <p className="mt-2 text-[14.5pt] font-bold">
-              Về việc giao hướng dẫn khóa luận tốt nghiệp - học kỳ Spring 2025
+              Về việc giao hướng dẫn khóa luận tốt nghiệp - học kỳ Spring 2025 Cơ sở Hồ Chí Minh
             </p>
             <p className="text-[14.5pt] font-bold">Cơ sở Hồ Chí Minh</p>
             <hr className="border-t border-black w-1/4 mx-auto mt-2" />
           </div>
 
-          {/* Legal Basis */}
           <div className="mt-6 text-[14.5pt]">
             <p className="font-bold text-center">
               HIỆU TRƯỞNG TRƯỜNG ĐẠI HỌC FPT
@@ -110,7 +109,6 @@ export const DecisionView = () => {
             </div>
           </div>
 
-          {/* Decision Content */}
           <div className="text-[14.5pt]">
             <p className="mt-6 font-bold text-center">QUYẾT ĐỊNH:</p>
             <p className="mt-2 indent-[1.27cm] text-justify">
@@ -121,36 +119,14 @@ export const DecisionView = () => {
             </p>
           </div>
 
-          {/* Lecturers Table */}
           <div className="mt-4">
-            <table className="w-full border-collapse border border-gray-400">
-              <thead>
-                <tr className="bg-gray-100">
-                  <th className="border border-gray-400 p-2">STT</th>
-                  <th className="border border-gray-400 p-2">Họ và tên</th>
-                  <th className="border border-gray-400 p-2">Chuyên môn</th>
-                  <th className="border border-gray-400 p-2">Bộ phận</th>
-                </tr>
-              </thead>
-              <tbody>
-                {lecturers.map((lecturer) => (
-                  <tr key={lecturer.id}>
-                    <td className="border border-gray-400 p-2 text-center">
-                      {lecturer.id}
-                    </td>
-                    <td className="border border-gray-400 p-2">
-                      {lecturer.name}
-                    </td>
-                    <td className="border border-gray-400 p-2">
-                      {lecturer.specialization}
-                    </td>
-                    <td className="border border-gray-400 p-2">
-                      {lecturer.department}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            {loading ? (
+              <p className="text-center">Đang tải dữ liệu...</p>
+            ) : error ? (
+              <p className="text-center text-red-500">Lỗi: {error}</p>
+            ) : (
+              <DataTable columns={columns} data={mentors} />
+            )}
           </div>
         </CardContent>
       </Card>
