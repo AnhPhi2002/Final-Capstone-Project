@@ -1,20 +1,21 @@
-// meetingSlice.ts
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { axiosClient } from "../config/axios-client"; // Giả sử bạn đã cấu hình axiosClient
+import { axiosClient } from "../config/axios-client";
 
-// Type cho Meeting
 export interface Meeting {
   id?: string;
   groupId: string;
   meetingTime: string;
-  groupCode?: string;
   location: string;
   agenda: string;
   url: string;
-  semesterId?: string;
+  mentor: {
+    id: string;
+    fullName: string;
+    email: string;
+    avatar: string | null;
+  };
 }
 
-// Tạo meeting
 export const createMeeting = createAsyncThunk(
   "meetings/createMeeting",
   async (
@@ -26,33 +27,61 @@ export const createMeeting = createAsyncThunk(
         `/meetings/create?semesterId=${semesterId}`,
         meetingData
       );
-      return response.data.data; // Giả sử API trả về dữ liệu meeting vừa tạo
+      return response.data.data;
     } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to create meeting"
-      );
+      return rejectWithValue(error.response?.data?.message || "Failed to create meeting");
     }
   }
 );
 
-// Lấy danh sách meeting
 export const fetchMeetings = createAsyncThunk(
   "meetings/fetchMeetings",
   async (semesterId: string, { rejectWithValue }) => {
     try {
-      const response = await axiosClient.get(
-        `/meetings/lecturer/main?semesterId=${semesterId}`
-      );
-      return response.data.data; // Giả sử API trả về mảng các meeting
+      const response = await axiosClient.get(`/meetings/lecturer/main?semesterId=${semesterId}`);
+      return response.data.data;
     } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch meetings"
-      );
+      return rejectWithValue(error.response?.data?.message || "Failed to fetch meetings");
     }
   }
 );
 
-// Meeting Slice
+export const fetchMeetingsByGroup = createAsyncThunk(
+  "meetings/fetchByGroup",
+  async (
+    { groupId, semesterId }: { groupId: string; semesterId: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const res = await axiosClient.get(`/meetings/group/${groupId}?semesterId=${semesterId}`);
+      console.log("a");
+      
+      console.log("fetchMeetingsByGroup response:", res.data.data); 
+      return res.data.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data?.message || "Lỗi khi lấy meetings!");
+    }
+  }
+);
+
+export const updateMeeting = createAsyncThunk(
+  "meetings/updateMeeting",
+  async (
+    { meetingId, semesterId, meetingData }: { meetingId: string; semesterId: string; meetingData: Partial<Meeting> },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axiosClient.put(
+        `/meetings/${meetingId}?semesterId=${semesterId}`,
+        meetingData
+      );
+      return response.data.data; // Giả sử API trả về meeting đã cập nhật
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Failed to update meeting");
+    }
+  }
+);
+
 const meetingSlice = createSlice({
   name: "meetings",
   initialState: {
@@ -60,9 +89,14 @@ const meetingSlice = createSlice({
     loading: false,
     error: null as string | null,
   },
-  reducers: {},
+  reducers: {
+    resetMeetings: (state) => {
+      state.meetings = [];
+      state.loading = false;
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
-    // Create Meeting
     builder
       .addCase(createMeeting.pending, (state) => {
         state.loading = true;
@@ -70,26 +104,56 @@ const meetingSlice = createSlice({
       })
       .addCase(createMeeting.fulfilled, (state, action) => {
         state.loading = false;
-        state.meetings.push(action.payload); // Thêm meeting mới vào danh sách
+        state.meetings.push(action.payload);
       })
       .addCase(createMeeting.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
-      // Fetch Meetings
       .addCase(fetchMeetings.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchMeetings.fulfilled, (state, action) => {
         state.loading = false;
-        state.meetings = action.payload; // Cập nhật danh sách meeting
+        state.meetings = action.payload;
       })
       .addCase(fetchMeetings.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
-      });
+      })
+      .addCase(fetchMeetingsByGroup.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchMeetingsByGroup.fulfilled, (state, action) => {
+        state.loading = false;
+        state.meetings = action.payload;
+        console.log("fetchMeetingsByGroup fulfilled:", action.payload); // Log để kiểm tra
+      })
+      .addCase(fetchMeetingsByGroup.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(updateMeeting.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateMeeting.fulfilled, (state, action) => {
+        state.loading = false;
+        const updatedMeeting = action.payload;
+        const index = state.meetings.findIndex((m) => m.id === updatedMeeting.id);
+        if (index !== -1) {
+          state.meetings[index] = updatedMeeting; // Cập nhật meeting trong danh sách
+        }
+      })
+      .addCase(updateMeeting.rejected, (state, action) => {
+        state.loading = false;
+        // state.error = action.payload as string;
+      })
+      ;
   },
 });
 
+export const { resetMeetings } = meetingSlice.actions;
 export default meetingSlice.reducer;

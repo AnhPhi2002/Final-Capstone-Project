@@ -20,6 +20,9 @@ import { AllTopicStudent } from "@/pages/student/student-get-all-topic/all-topic
 import AllTopicDetail from "@/pages/student/student-get-all-topic/all-topic-detail";
 import { TopicGroupRegisterPage } from "@/pages/student/topic-group-register/topic-group-register-page";
 import TopicGroupRegisterDetail from "@/pages/student/topic-group-register/topic-group-register-detail";
+import { MeetingStudentDetail } from "@/pages/student/meeting/meeting-student";
+import { MeetingStudentPage } from "@/pages/student/meeting/meeting-student-page";
+
 
 export const StudentContainer = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -52,6 +55,10 @@ export const StudentContainer = () => {
 
         <Route path="/topic-group-register-detail" element={<TopicGroupRegisterPage />} />
         <Route path="/topic-group-register-detail/:topicId" element={<TopicGroupRegisterDetail />} />
+
+        <Route path="/meeting-student" element={<MeetingStudentPage/>} />
+        <Route path="/meeting-student/:id" element={<MeetingStudentDetail />} />
+
 
         <Route path="/*" element={<NotFound />} />
       </Routes>
