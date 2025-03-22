@@ -23,9 +23,16 @@ export const CardSemester: React.FC<CardSemesterProps> = ({ data }) => {
   const navigate = useNavigate();
   const years = useSelector((state: RootState) => state.years.data);
 
+  const activeSemesters = data.filter((s) => !s.isDeleted); // 👈 Chỉ hiển thị học kỳ chưa bị xóa
+
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6; // Số lượng items trên mỗi trang
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const itemsPerPage = 6;
+  const totalPages = Math.ceil(activeSemesters.length / itemsPerPage);
+
+  const paginatedData = activeSemesters.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   const getYearById = (yearId: string) => {
     const foundYear = years.find((year) => year.id === yearId);
@@ -36,17 +43,12 @@ export const CardSemester: React.FC<CardSemesterProps> = ({ data }) => {
     navigate(`/academic/semester/${id}`);
   };
 
-  const paginatedData = data.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {paginatedData.length === 0 ? (
           <p className="text-gray-500 text-center col-span-full">
-            No semesters available
+            Không có học kỳ nào
           </p>
         ) : (
           paginatedData.map((semester) => (
@@ -60,9 +62,7 @@ export const CardSemester: React.FC<CardSemesterProps> = ({ data }) => {
                   Học kỳ: {semester.code}
                 </CardTitle>
                 <CardDescription>
-                  Năm học: {/* <span className="font-bold text-gray-800 "> */}
-                  {getYearById(semester.yearId)}
-                  {/* </span> */}
+                  Năm học: {getYearById(semester.yearId)}
                 </CardDescription>
               </CardHeader>
               <CardContent>

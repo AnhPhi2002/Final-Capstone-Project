@@ -41,18 +41,21 @@ export const createYear = createAsyncThunk(
   }
 );
 
-// Thunk để xóa năm học
+// Thunk để xóa (mềm) năm học
 export const deleteYear = createAsyncThunk(
   "years/deleteYear",
   async (yearId: string, { rejectWithValue }) => {
     try {
-      await axiosClient.put(`/year/${yearId}`);
-      return yearId;  // Trả về ID của năm học đã xóa
+      const response = await axiosClient.put(`/year/${yearId}/delete`);
+      return response.data.data?.id || yearId; // Ưu tiên lấy id từ server nếu có
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Không thể xóa năm học");
+      return rejectWithValue(
+        error.response?.data?.message || "Không thể xóa năm học"
+      );
     }
   }
 );
+
 
 // Thunk để cập nhật năm học
 export const updateYear = createAsyncThunk(

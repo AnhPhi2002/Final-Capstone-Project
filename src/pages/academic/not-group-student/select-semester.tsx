@@ -23,30 +23,25 @@ export const SelectSemester: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState<string>("");
 
   useEffect(() => {
-    dispatch(fetchAllYears()); // Lấy danh sách năm học
+    dispatch(fetchAllYears());
   }, [dispatch]);
 
   useEffect(() => {
     if (selectedYear) {
-      dispatch(fetchSemesters({ yearId: selectedYear })); // Lấy tất cả học kỳ theo năm học (không có phân trang)
+      dispatch(fetchSemesters({ yearId: selectedYear }));
     }
   }, [dispatch, selectedYear]);
 
-  const handleYearChange = (value: string) => {
-    setSelectedYear(value); // Cập nhật năm học được chọn
-  };
+  // Lọc năm học chưa bị xóa
+  const availableYears = years.filter((year) => !year.isDeleted);
 
-  if (!Array.isArray(years)) {
-    console.error("Years is not an array:", years);
-    return <p>Không tải được danh sách năm học...</p>;
-  }
-
-  const cardData = semesters; // Không cần phân trang, truyền toàn bộ dữ liệu học kỳ
+  // Lọc học kỳ chưa bị xóa
+  const activeSemesters = semesters.filter((s) => !s.isDeleted);
 
   return (
     <div className="space-y-4">
       <div className="flex flex-col md:flex-row md:items-center gap-4">
-        <Select onValueChange={(value) => handleYearChange(value)}>
+        <Select onValueChange={setSelectedYear} value={selectedYear}>
           <SelectTrigger className="w-[200px]">
             <SelectValue placeholder="Chọn năm học" />
           </SelectTrigger>
@@ -57,19 +52,23 @@ export const SelectSemester: React.FC = () => {
                 <SelectItem value="loading" disabled>
                   Đang tải...
                 </SelectItem>
-              ) : (
-                years.map((year) => (
+              ) : availableYears.length > 0 ? (
+                availableYears.map((year) => (
                   <SelectItem key={year.id} value={year.id}>
                     {year.year}
                   </SelectItem>
                 ))
+              ) : (
+                <SelectItem value="none" disabled>
+                  Không có năm học
+                </SelectItem>
               )}
             </SelectGroup>
           </SelectContent>
         </Select>
       </div>
 
-      {selectedYear && <CardSemester data={cardData} />}
+      {selectedYear && <CardSemester data={activeSemesters} />}
     </div>
   );
 };

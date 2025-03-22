@@ -1,25 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchYears } from "@/lib/api/redux/yearSlice";
+
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { UpdateYearSemester } from "./update-year-semester";
 import { DeteleYearSemester } from "./detele-year-semester";
 import { PaginationDashboardPage } from "@/pages/admin/pagination";
+import { fetchYears } from "@/lib/api/redux/yearSlice";
 
 export const CardYearSemester: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { data: years, loading, error } = useSelector((state: RootState) => state.years);
-
+  const activeYears = years.filter((year) => !year.isDeleted);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
-  const totalPages = Math.ceil(years.length / itemsPerPage);
+  const totalPages = Math.ceil(activeYears.length / itemsPerPage);
 
   useEffect(() => {
     dispatch(fetchYears());
   }, [dispatch]);
 
-  const paginatedYears = years.slice(
+  const paginatedYears = activeYears.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
