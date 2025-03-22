@@ -22,18 +22,15 @@ import { CardDeadlineTopic } from "./card-deadline-topic";
 export const SelectSemester: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const { data: years, loading: loadingYears } = useSelector(
-    (state: RootState) => state.years
-  );
-  const { data: semesters, loading: loadingSemesters } = useSelector(
-    (state: RootState) => state.semesters
-  );
-  const { data: submissionRounds, loading: loadingRounds } = useSelector(
-    (state: RootState) => state.submissionRounds
-  );
+  const { data: years, loading: loadingYears } = useSelector((state: RootState) => state.years);
+  const { data: semesters, loading: loadingSemesters } = useSelector((state: RootState) => state.semesters);
+  const { data: submissionRounds, loading: loadingRounds } = useSelector((state: RootState) => state.submissionRounds);
 
   const [selectedYear, setSelectedYear] = useState<string>("");
   const [selectedSemester, setSelectedSemester] = useState<string>("all");
+
+  const availableYears = years.filter((y) => !y.isDeleted);
+  const availableSemesters = semesters.filter((s) => !s.isDeleted);
 
   useEffect(() => {
     dispatch(fetchYears());
@@ -61,29 +58,31 @@ export const SelectSemester: React.FC = () => {
   return (
     <div className="space-y-4">
       <div className="flex flex-col md:flex-row md:items-center gap-4 mb-10">
+        {/* Select năm học */}
         <Select onValueChange={setSelectedYear} value={selectedYear}>
           <SelectTrigger className="w-[200px]">
             <SelectValue placeholder="Chọn năm học" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectLabel>Chọn năm học</SelectLabel>
+              <SelectLabel>Năm học</SelectLabel>
               {loadingYears ? (
-                <SelectItem value="loading" disabled>
-                  Đang tải...
-                </SelectItem>
-              ) : (
-                years.map((year) => (
+                <SelectItem value="loading" disabled>Đang tải...</SelectItem>
+              ) : availableYears.length > 0 ? (
+                availableYears.map((year) => (
                   <SelectItem key={year.id} value={year.id}>
                     {year.year}
                   </SelectItem>
                 ))
+              ) : (
+                <SelectItem value="none" disabled>Không có năm học</SelectItem>
               )}
             </SelectGroup>
           </SelectContent>
         </Select>
 
-        <Select onValueChange={setSelectedSemester} value={selectedSemester}>
+        {/* Select kỳ học */}
+        <Select onValueChange={setSelectedSemester} value={selectedSemester} disabled={!selectedYear}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Chọn học kỳ" />
           </SelectTrigger>
@@ -92,22 +91,23 @@ export const SelectSemester: React.FC = () => {
               <SelectLabel>Kỳ học</SelectLabel>
               <SelectItem value="all">Chưa chọn kỳ</SelectItem>
               {loadingSemesters ? (
-                <SelectItem value="loading" disabled>
-                  Đang tải...
-                </SelectItem>
-              ) : (
-                semesters.map((semester) => (
+                <SelectItem value="loading" disabled>Đang tải...</SelectItem>
+              ) : availableSemesters.length > 0 ? (
+                availableSemesters.map((semester) => (
                   <SelectItem key={semester.id} value={semester.id}>
                     {semester.code}
                   </SelectItem>
                 ))
+              ) : (
+                <SelectItem value="none" disabled>Không có học kỳ</SelectItem>
               )}
             </SelectGroup>
           </SelectContent>
         </Select>
       </div>
+
       <CardDeadlineTopic
-        data={submissionRounds}
+        data={submissionRounds.filter((r) => !r.isDeleted)}
         loading={loadingRounds}
         selectedSemester={selectedSemester}
       />

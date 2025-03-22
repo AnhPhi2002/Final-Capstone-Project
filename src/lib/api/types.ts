@@ -50,6 +50,7 @@ export interface CouncilMember {
   status: string;
   userId: string;
   user: User;
+  isDeleted?: boolean;
 }
 
 export interface Council {
@@ -62,6 +63,7 @@ export interface Council {
   submissionPeriodId: string;
   councilStartDate: string,
   councilEndDate: string,
+  isDeleted?: boolean;
   members: CouncilMember[];
 }
 
@@ -74,6 +76,7 @@ export interface SubmissionRound {
   endDate: string;
   description: string;
   status: "UPCOMING" | "ACTIVE" | "COMPLETE";
+  isDeleted: boolean;
 }
 
 export type ApproveTopic = {

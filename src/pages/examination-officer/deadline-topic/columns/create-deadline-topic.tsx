@@ -1,23 +1,12 @@
 import { useState, useEffect } from "react";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
@@ -28,7 +17,6 @@ import { Toaster, toast } from "sonner";
 
 export const CreateSubmissionRound = () => {
   const dispatch = useDispatch<AppDispatch>();
-
   const { data: years, loading: yearLoading } = useSelector((state: RootState) => state.years);
   const { data: semesters, loading: semesterLoading } = useSelector((state: RootState) => state.semesters);
 
@@ -41,6 +29,9 @@ export const CreateSubmissionRound = () => {
   const [endDate, setEndDate] = useState("");
   const [creating, setCreating] = useState(false);
 
+  const availableYears = years.filter((y) => !y.isDeleted);
+  const availableSemesters = semesters.filter((s) => !s.isDeleted);
+
   useEffect(() => {
     dispatch(fetchAllYears());
   }, [dispatch]);
@@ -49,16 +40,21 @@ export const CreateSubmissionRound = () => {
     if (yearId) {
       dispatch(fetchSemesters({ yearId }));
     }
-  }, [dispatch, yearId]);
+  }, [yearId, dispatch]);
 
-  // ✅ Chuyển đổi ngày thành định dạng "YYYY-MM-DDTHH:MM:SS.SSSZ"
-  const convertToISODate = (dateString: string, isEndDate = false) => {
-    return isEndDate ? `${dateString}T23:59:59.999Z` : `${dateString}T00:00:00.000Z`;
+  const convertToISODate = (dateString: string, isEnd = false) => {
+    return isEnd ? `${dateString}T23:59:59.999Z` : `${dateString}T00:00:00.000Z`;
   };
 
   const handleSave = async () => {
     if (!semesterId || !roundNumber || !startDate || !endDate || !description) {
       toast.error("Vui lòng nhập đầy đủ thông tin!");
+      return;
+    }
+
+    const parsedRound = Number(roundNumber);
+    if (isNaN(parsedRound) || parsedRound <= 0) {
+      toast.error("Lần nộp phải là số hợp lệ lớn hơn 0!");
       return;
     }
 
@@ -68,24 +64,22 @@ export const CreateSubmissionRound = () => {
     }
 
     setCreating(true);
-
     try {
-      const resultAction = await dispatch(
+      const result = await dispatch(
         createSubmissionRound({
           semesterId,
-          roundNumber: Number(roundNumber),
-          startDate: convertToISODate(startDate), // ✅ Chuyển định dạng ngày
-          endDate: convertToISODate(endDate, true), // ✅ Chuyển định dạng ngày kết thúc
+          roundNumber: parsedRound,
+          startDate: convertToISODate(startDate),
+          endDate: convertToISODate(endDate, true),
           description,
         })
       ).unwrap();
 
-      if (resultAction.success) {
+      if (result?.success) {
         toast.success("Tạo vòng nộp thành công!");
         setOpen(false);
-        // dispatch(fetchSubmissionRounds(semesterId)); // ✅ Load lại danh sách vòng nộp
       } else {
-        throw new Error(resultAction.message || "Tạo thất bại!");
+        throw new Error(result?.message || "Tạo thất bại!");
       }
     } catch (error: any) {
       toast.error(`Tạo thất bại: ${error.message || "Đã xảy ra lỗi"}`);
@@ -113,7 +107,7 @@ export const CreateSubmissionRound = () => {
             {/* Chọn năm học */}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="year" className="text-right">Năm học</Label>
-              <Select onValueChange={setYearId}>
+              <Select onValueChange={setYearId} value={yearId}>
                 <SelectTrigger className="w-full col-span-3">
                   <SelectValue placeholder="Chọn năm học" />
                 </SelectTrigger>
@@ -121,13 +115,9 @@ export const CreateSubmissionRound = () => {
                   <SelectGroup>
                     {yearLoading ? (
                       <SelectItem value="loading" disabled>Đang tải...</SelectItem>
-                    ) : (
-                      years.map((year) => (
-                        <SelectItem key={year.id} value={year.id}>
-                          {year.year}
-                        </SelectItem>
-                      ))
-                    )}
+                    ) : availableYears.map((year) => (
+                      <SelectItem key={year.id} value={year.id}>{year.year}</SelectItem>
+                    ))}
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -136,7 +126,7 @@ export const CreateSubmissionRound = () => {
             {/* Chọn kỳ học */}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="semester" className="text-right">Kỳ học</Label>
-              <Select onValueChange={setSemesterId} disabled={!yearId}>
+              <Select onValueChange={setSemesterId} value={semesterId} disabled={!yearId}>
                 <SelectTrigger className="w-full col-span-3">
                   <SelectValue placeholder="Chọn kỳ học" />
                 </SelectTrigger>
@@ -144,31 +134,28 @@ export const CreateSubmissionRound = () => {
                   <SelectGroup>
                     {semesterLoading ? (
                       <SelectItem value="loading" disabled>Đang tải...</SelectItem>
-                    ) : (
-                      semesters.map((semester) => (
-                        <SelectItem key={semester.id} value={semester.id}>
-                          {semester.code}
-                        </SelectItem>
-                      ))
-                    )}
+                    ) : availableSemesters.map((semester) => (
+                      <SelectItem key={semester.id} value={semester.id}>{semester.code}</SelectItem>
+                    ))}
                   </SelectGroup>
                 </SelectContent>
               </Select>
             </div>
 
-            {/* Nhập số lần nộp */}
+            {/* Lần nộp */}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="roundNumber" className="text-right">Lần nộp</Label>
               <Input
                 id="roundNumber"
                 type="number"
+                min={1}
                 className="col-span-3"
                 value={roundNumber}
                 onChange={(e) => setRoundNumber(e.target.value)}
               />
             </div>
 
-            {/* Nhập tên vòng nộp */}
+            {/* Mô tả */}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="description" className="text-right">Mô tả</Label>
               <Input
@@ -180,7 +167,7 @@ export const CreateSubmissionRound = () => {
               />
             </div>
 
-            {/* Nhập ngày bắt đầu */}
+            {/* Ngày bắt đầu */}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="startDate" className="text-right">Ngày bắt đầu</Label>
               <Input
@@ -192,7 +179,7 @@ export const CreateSubmissionRound = () => {
               />
             </div>
 
-            {/* Nhập ngày kết thúc */}
+            {/* Ngày kết thúc */}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="endDate" className="text-right">Ngày kết thúc</Label>
               <Input

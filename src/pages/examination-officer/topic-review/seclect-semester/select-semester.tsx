@@ -7,6 +7,7 @@ import {
   fetchSubmissionRounds,
   clearSubmissionRounds,
 } from "@/lib/api/redux/submissionRoundSlice";
+
 import {
   Select,
   SelectContent,
@@ -21,7 +22,6 @@ import { CardSemester } from "./card-semester";
 export const SelectSemester: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  // Lấy danh sách năm học, kỳ học, vòng nộp từ Redux
   const { data: years, loading: loadingYears } = useSelector(
     (state: RootState) => state.years
   );
@@ -32,20 +32,17 @@ export const SelectSemester: React.FC = () => {
     (state: RootState) => state.submissionRounds
   );
 
-  // State lưu năm học và học kỳ được chọn
   const [selectedYear, setSelectedYear] = useState<string>("");
   const [selectedSemester, setSelectedSemester] = useState<string>("");
 
-  // Fetch danh sách năm học khi component mount
   useEffect(() => {
     dispatch(fetchYears());
   }, [dispatch]);
 
-  // Fetch danh sách kỳ học khi chọn năm học
   useEffect(() => {
     if (selectedYear) {
       dispatch(fetchSemesters({ yearId: selectedYear }));
-      setSelectedSemester(""); // Reset học kỳ khi chọn năm mới
+      setSelectedSemester("");
       dispatch(clearSubmissionRounds());
     } else {
       dispatch(clearSemesters());
@@ -53,7 +50,6 @@ export const SelectSemester: React.FC = () => {
     }
   }, [selectedYear, dispatch]);
 
-  // Fetch danh sách vòng nộp khi chọn kỳ học
   useEffect(() => {
     if (selectedSemester) {
       dispatch(fetchSubmissionRounds(selectedSemester));
@@ -62,11 +58,13 @@ export const SelectSemester: React.FC = () => {
     }
   }, [selectedSemester, dispatch]);
 
+  // Lọc năm học và kỳ học chưa bị xóa
+  const availableYears = years.filter((year) => !year.isDeleted);
+  const availableSemesters = semesters.filter((semester) => !semester.isDeleted);
+
   return (
     <div className="space-y-4">
-      {/* Bộ lọc */}
       <div className="flex flex-col md:flex-row md:items-center gap-4 mb-10">
-        {/* Select chọn năm học */}
         <Select onValueChange={setSelectedYear} value={selectedYear}>
           <SelectTrigger className="w-[200px]">
             <SelectValue placeholder="Chọn năm học" />
@@ -78,18 +76,21 @@ export const SelectSemester: React.FC = () => {
                 <SelectItem value="loading" disabled>
                   Đang tải...
                 </SelectItem>
-              ) : (
-                years.map((year) => (
+              ) : availableYears.length > 0 ? (
+                availableYears.map((year) => (
                   <SelectItem key={year.id} value={year.id}>
                     {year.year}
                   </SelectItem>
                 ))
+              ) : (
+                <SelectItem value="none" disabled>
+                  Không có năm học
+                </SelectItem>
               )}
             </SelectGroup>
           </SelectContent>
         </Select>
 
-        {/* Select chọn kỳ học */}
         <Select
           onValueChange={setSelectedSemester}
           value={selectedSemester}
@@ -105,19 +106,22 @@ export const SelectSemester: React.FC = () => {
                 <SelectItem value="loading" disabled>
                   Đang tải...
                 </SelectItem>
-              ) : (
-                semesters.map((semester) => (
+              ) : availableSemesters.length > 0 ? (
+                availableSemesters.map((semester) => (
                   <SelectItem key={semester.id} value={semester.id}>
                     {semester.code}
                   </SelectItem>
                 ))
+              ) : (
+                <SelectItem value="none" disabled>
+                  Không có học kỳ
+                </SelectItem>
               )}
             </SelectGroup>
           </SelectContent>
         </Select>
       </div>
 
-      {/* Hiển thị CardSemester khi chọn học kỳ */}
       {selectedSemester && (
         <CardSemester
           data={submissionRounds}

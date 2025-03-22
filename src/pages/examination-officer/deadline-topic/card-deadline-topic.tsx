@@ -27,40 +27,34 @@ export const CardDeadlineTopic: React.FC<CardDeadlineTopicProps> = ({
   selectedSemester,
 }) => {
   const navigate = useNavigate();
-  const semesters = useSelector((state: RootState) => state.semesters.data); // Lấy semesters từ Redux
+  const semesters = useSelector((state: RootState) => state.semesters.data);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
-  // Tính tổng số trang
-  const totalPages = Math.ceil(data.length / itemsPerPage);
-
-  // Lấy dữ liệu phân trang
-  const paginatedData = data.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  // Hàm lấy semester.code dựa trên semesterId
   const getSemesterCode = (semesterId: string) => {
     const semester = semesters.find((s: Semester) => s.id === semesterId);
     return semester ? semester.code : "Không xác định";
   };
 
-  const handleCardClick = (submissionId: string, Id: string) => {
-    navigate(`/examination/deadline-topic/${Id}/submission/${submissionId}`);
+  const filteredData = data.filter(
+    (round) => round.semesterId === selectedSemester && !round.isDeleted
+  );
+
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  const paginatedData = filteredData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handleCardClick = (submissionId: string, semesterId: string) => {
+    navigate(`/examination/deadline-topic/${semesterId}/submission/${submissionId}`);
   };
 
   if (loading) {
-    return (
-      <p className="text-center text-gray-500 text-lg font-semibold mt-5">
-        Đang tải vòng nộp...
-      </p>
-    );
+    return <p className="text-center text-gray-500 text-lg font-semibold mt-5">Đang tải vòng nộp...</p>;
   }
 
-  if (selectedSemester === "all") {
-    return null;
-  }
+  if (selectedSemester === "all") return null;
 
   return (
     <div>
@@ -78,15 +72,9 @@ export const CardDeadlineTopic: React.FC<CardDeadlineTopicProps> = ({
                 onClick={() => handleCardClick(round.id, round.semesterId)}
               >
                 <CardHeader>
-                  <CardTitle className="text-xl font-bold text-gray-800">
-                    {round.description}
-                  </CardTitle>
-                  <CardDescription>
-                    Học kỳ: {getSemesterCode(round.semesterId)}
-                  </CardDescription>
-                  <CardDescription>
-                    Vòng nộp lần: {round.roundNumber}
-                  </CardDescription>
+                  <CardTitle className="text-xl font-bold text-gray-800">{round.description}</CardTitle>
+                  <CardDescription>Học kỳ: {getSemesterCode(round.semesterId)}</CardDescription>
+                  <CardDescription>Vòng nộp lần: {round.roundNumber}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center gap-2">
@@ -131,13 +119,16 @@ export const CardDeadlineTopic: React.FC<CardDeadlineTopicProps> = ({
           </div>
         )}
       </div>
-      <div className="flex justify-end mt-6">
-        <PaginationDashboardPage
-          totalPages={totalPages}
-          currentPage={currentPage}
-          onPageChange={setCurrentPage}
-        />
-      </div>
+
+      {totalPages > 1 && (
+        <div className="flex justify-end mt-6">
+          <PaginationDashboardPage
+            totalPages={totalPages}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+          />
+        </div>
+      )}
     </div>
   );
 };

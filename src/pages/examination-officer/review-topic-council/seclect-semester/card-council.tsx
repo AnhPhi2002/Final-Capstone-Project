@@ -17,20 +17,24 @@ type CardCouncilProps = {
   semesterId: string;
 };
 
-export const CardCouncil: React.FC<CardCouncilProps> = ({ councils, semesterId }) => {
+export const CardCouncil: React.FC<CardCouncilProps> = ({
+  councils,
+  semesterId,
+}) => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6; // Số lượng items trên mỗi trang
-  // const semesterId = useParams();
+  const itemsPerPage = 6;
 
-  const totalPages = Math.ceil(councils.length / itemsPerPage);
+  // ✅ Lọc danh sách hội đồng chưa bị xóa
+  const activeCouncils = councils.filter((council) => !council.isDeleted);
+
+  const totalPages = Math.ceil(activeCouncils.length / itemsPerPage);
 
   const handleCardClick = (councilId: string) => {
     navigate(`/examination/review-topic-council-detail/${councilId}/${semesterId}`);
-    // navigate(`/review-topic-council-detail`);
   };
 
-  const paginatedData = councils.slice(
+  const paginatedData = activeCouncils.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -56,58 +60,60 @@ export const CardCouncil: React.FC<CardCouncilProps> = ({ councils, semesterId }
                     Ngày tạo: {new Date(council.createdDate).toLocaleDateString()}
                   </CardDescription>
                   <CardDescription>
-                  Vòng nộp lần: {council.round}
+                    Vòng nộp lần: {council.round}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                   <div className="flex items-center gap-2">
-                     <span className="flex items-center gap-1">
-                       <Dot
-                         size={40}
-                         className={
+                  <div className="flex items-center gap-2">
+                    <span className="flex items-center gap-1">
+                      <Dot
+                        size={40}
+                        className={
                           council.status === "ACTIVE"
-                             ? "text-green-600"
-                             : council.status === "UPCOMING"
-                             ? "text-yellow-600"
-                             : council.status === "COMPLETE"
-                             ? "text-blue-600"
-                             : "text-gray-600"
-                         }
-                       />
-                       Trạng thái
-                     </span>
-                     <Badge
-                       className={
+                            ? "text-green-600"
+                            : council.status === "UPCOMING"
+                            ? "text-yellow-600"
+                            : council.status === "COMPLETE"
+                            ? "text-blue-600"
+                            : "text-gray-600"
+                        }
+                      />
+                      Trạng thái
+                    </span>
+                    <Badge
+                      className={
                         council.status === "ACTIVE"
-                           ? "bg-green-100 text-green-600 border border-green-500 hover:bg-green-200"
-                           : council.status === "UPCOMING"
-                           ? "bg-yellow-100 text-yellow-600 border border-yellow-500 hover:bg-yellow-200"
-                           : council.status === "COMPLETE"
-                           ? "bg-blue-100 text-blue-600 border border-blue-500 hover:bg-blue-200"
-                           : "bg-gray-100 text-gray-600 border border-gray-500 hover:bg-gray-200"
-                       }
-                     >
-                       {council.status === "ACTIVE"
-                         ? "Đang hoạt động"
-                         : council.status === "UPCOMING"
-                         ? "Sắp diễn ra"
-                         : council.status === "COMPLETE"
-                         ? "Hoàn thành"
-                         : "Không xác định"}
-                     </Badge>
-                   </div>
-                 </CardContent>
+                          ? "bg-green-100 text-green-600 border border-green-500 hover:bg-green-200"
+                          : council.status === "UPCOMING"
+                          ? "bg-yellow-100 text-yellow-600 border border-yellow-500 hover:bg-yellow-200"
+                          : council.status === "COMPLETE"
+                          ? "bg-blue-100 text-blue-600 border border-blue-500 hover:bg-blue-200"
+                          : "bg-gray-100 text-gray-600 border border-gray-500 hover:bg-gray-200"
+                      }
+                    >
+                      {council.status === "ACTIVE"
+                        ? "Đang hoạt động"
+                        : council.status === "UPCOMING"
+                        ? "Sắp diễn ra"
+                        : council.status === "COMPLETE"
+                        ? "Hoàn thành"
+                        : "Không xác định"}
+                    </Badge>
+                  </div>
+                </CardContent>
               </Card>
             ))}
           </div>
 
-          <div className="flex justify-end mt-6">
-            <PaginationDashboardPage
-              totalPages={totalPages}
-              currentPage={currentPage}
-              onPageChange={setCurrentPage}
-            />
-          </div>
+          {totalPages > 1 && (
+            <div className="flex justify-end mt-6">
+              <PaginationDashboardPage
+                totalPages={totalPages}
+                currentPage={currentPage}
+                onPageChange={setCurrentPage}
+              />
+            </div>
+          )}
         </>
       )}
     </div>

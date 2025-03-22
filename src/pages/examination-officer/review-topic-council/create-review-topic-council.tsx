@@ -30,12 +30,10 @@ import { createCouncil } from "@/lib/api/redux/councilSlice";
 export const CreateReviewTopicCouncil = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  // Lấy dữ liệu từ Redux
   const { data: years } = useSelector((state: RootState) => state.years);
   const { data: semesters } = useSelector((state: RootState) => state.semesters);
   const { data: submissionRounds } = useSelector((state: RootState) => state.submissionRounds);
 
-  // State quản lý form
   const [open, setOpen] = useState(false);
   const [councilName, setCouncilName] = useState("");
   const [selectedYear, setSelectedYear] = useState("");
@@ -43,7 +41,7 @@ export const CreateReviewTopicCouncil = () => {
   const [selectedSubmissionRound, setSelectedSubmissionRound] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [status, setStatus] = useState("ACTIVE");
+  const [status] = useState("ACTIVE");
   const [creating, setCreating] = useState(false);
 
   useEffect(() => {
@@ -51,21 +49,15 @@ export const CreateReviewTopicCouncil = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (selectedYear) {
-      dispatch(fetchSemesters({ yearId: selectedYear }));
-    }
+    if (selectedYear) dispatch(fetchSemesters({ yearId: selectedYear }));
   }, [selectedYear, dispatch]);
 
   useEffect(() => {
-    if (selectedSemester) {
-      dispatch(fetchSubmissionRounds(selectedSemester));
-    }
+    if (selectedSemester) dispatch(fetchSubmissionRounds(selectedSemester));
   }, [selectedSemester, dispatch]);
 
-  // ✅ Chuyển đổi ngày sang định dạng ISO 8601
-  const convertToISODate = (dateString: string, isEndDate = false) => {
-    return isEndDate ? `${dateString}T23:59:59.999Z` : `${dateString}T00:00:00.000Z`;
-  };
+  const convertToISODate = (date: string, isEnd = false) =>
+    isEnd ? `${date}T23:59:59.999Z` : `${date}T00:00:00.000Z`;
 
   const handleCreateCouncil = async () => {
     if (!councilName || !selectedSemester || !selectedSubmissionRound || !startDate || !endDate) {
@@ -80,22 +72,22 @@ export const CreateReviewTopicCouncil = () => {
 
     setCreating(true);
 
+    const round = submissionRounds.find((r) => r.id === selectedSubmissionRound);
+
     const newCouncil = {
       name: councilName,
       semesterId: selectedSemester,
       submissionPeriodId: selectedSubmissionRound,
-      startDate: convertToISODate(startDate), // ✅ Chuyển ngày bắt đầu
-      endDate: convertToISODate(endDate, true), // ✅ Chuyển ngày kết thúc
+      startDate: convertToISODate(startDate),
+      endDate: convertToISODate(endDate, true),
       status,
       type: "topic",
-      round: submissionRounds.find((round) => round.id === selectedSubmissionRound)?.roundNumber || 1,
+      round: round?.roundNumber || 1,
     };
 
     try {
       await dispatch(createCouncil(newCouncil)).unwrap();
-      toast.success("Hội đồng xét duyệt đã được tạo thành công!");
-
-      // Reset form
+      toast.success("Tạo hội đồng xét duyệt thành công!");
       setOpen(false);
       setCouncilName("");
       setSelectedYear("");
@@ -103,13 +95,16 @@ export const CreateReviewTopicCouncil = () => {
       setSelectedSubmissionRound("");
       setStartDate("");
       setEndDate("");
-      setStatus("ACTIVE");
-    } catch (error) {
+    } catch {
       toast.error("Tạo hội đồng xét duyệt thất bại!");
     } finally {
       setCreating(false);
     }
   };
+
+  const availableYears = years.filter((y) => !y.isDeleted);
+  const availableSemesters = semesters.filter((s) => !s.isDeleted);
+  const availableRounds = submissionRounds.filter((r) => !r.isDeleted);
 
   return (
     <div>
@@ -121,17 +116,20 @@ export const CreateReviewTopicCouncil = () => {
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Tạo hội đồng xét duyệt</DialogTitle>
-            <DialogDescription>Nhập thông tin hội đồng xét duyệt bên dưới.</DialogDescription>
+            <DialogDescription>Nhập thông tin hội đồng bên dưới.</DialogDescription>
           </DialogHeader>
 
           <div className="grid gap-4 py-4">
-            {/* Nhập tên hội đồng */}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label className="text-right">Tên hội đồng</Label>
-              <Input value={councilName} onChange={(e) => setCouncilName(e.target.value)} placeholder="VD: Hội đồng xét duyệt 1" className="col-span-3" />
+              <Input
+                value={councilName}
+                onChange={(e) => setCouncilName(e.target.value)}
+                placeholder="VD: Hội đồng xét duyệt 1"
+                className="col-span-3"
+              />
             </div>
 
-            {/* Chọn năm học */}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label className="text-right">Năm học</Label>
               <Select onValueChange={setSelectedYear} value={selectedYear}>
@@ -140,75 +138,79 @@ export const CreateReviewTopicCouncil = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    {years.map((year) => (
-                      <SelectItem key={year.id} value={year.id}>{year.year}</SelectItem>
+                    {availableYears.map((year) => (
+                      <SelectItem key={year.id} value={year.id}>
+                        {year.year}
+                      </SelectItem>
                     ))}
                   </SelectGroup>
                 </SelectContent>
               </Select>
             </div>
 
-            {/* Chọn kỳ học */}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label className="text-right">Kỳ học</Label>
-              <Select onValueChange={setSelectedSemester} value={selectedSemester} disabled={!selectedYear}>
+              <Select
+                onValueChange={setSelectedSemester}
+                value={selectedSemester}
+                disabled={!selectedYear}
+              >
                 <SelectTrigger className="w-full col-span-3">
                   <SelectValue placeholder="Chọn kỳ học" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    {semesters.map((semester) => (
-                      <SelectItem key={semester.id} value={semester.id}>{semester.code}</SelectItem>
+                    {availableSemesters.map((s) => (
+                      <SelectItem key={s.id} value={s.id}>
+                        {s.code}
+                      </SelectItem>
                     ))}
                   </SelectGroup>
                 </SelectContent>
               </Select>
             </div>
 
-            {/* Chọn đợt nộp */}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label className="text-right">Đợt nộp</Label>
-              <Select onValueChange={setSelectedSubmissionRound} value={selectedSubmissionRound} disabled={!selectedSemester}>
+              <Select
+                onValueChange={setSelectedSubmissionRound}
+                value={selectedSubmissionRound}
+                disabled={!selectedSemester}
+              >
                 <SelectTrigger className="w-full col-span-3">
                   <SelectValue placeholder="Chọn đợt nộp" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    {submissionRounds.map((round) => (
-                      <SelectItem key={round.id} value={round.id}>{round.description}</SelectItem>
+                    {availableRounds.map((round) => (
+                      <SelectItem key={round.id} value={round.id}>
+                        {round.description}
+                      </SelectItem>
                     ))}
                   </SelectGroup>
                 </SelectContent>
               </Select>
             </div>
 
-            {/* Nhập ngày bắt đầu */}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label className="text-right">Ngày bắt đầu</Label>
-              <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="col-span-3" />
+              <Input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="col-span-3"
+              />
             </div>
 
-            {/* Nhập ngày kết thúc */}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label className="text-right">Ngày kết thúc</Label>
-              <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="col-span-3" />
+              <Input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="col-span-3"
+              />
             </div>
-
-            {/* Chọn trạng thái */}
-            {/* <div className="grid grid-cols-4 items-center gap-4">
-              <Label className="text-right">Trạng thái</Label>
-              <Select onValueChange={setStatus} value={status}>
-                <SelectTrigger className="w-full col-span-3">
-                  <SelectValue placeholder="Chọn trạng thái" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="ACTIVE">Hoạt động</SelectItem>
-                    <SelectItem value="INACTIVE">Không hoạt động</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div> */}
           </div>
 
           <DialogFooter>
