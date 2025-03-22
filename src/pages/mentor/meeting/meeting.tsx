@@ -1,19 +1,26 @@
-// MeetingPage.tsx
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
 import { fetchMeetings } from "@/lib/api/redux/meetingSlice";
 import { fetchGroupDetail } from "@/lib/api/redux/groupDetailSlice";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+import { fetchGroupsBySemester } from "@/lib/api/redux/groupSlice";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Calendar, MapPin, Edit } from "lucide-react";
 import Header from "@/components/header";
 import { CreateMeeting } from "./CreateMeeting";
+import { UpdateMeeting } from "./UpdateMeeting";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function MeetingPage() {
   const { semesterId } = useParams<{ semesterId: string }>();
@@ -21,19 +28,21 @@ export function MeetingPage() {
   const { meetings, loading: meetingsLoading, error: meetingsError } = useSelector(
     (state: RootState) => state.meetings
   );
-  const { loading: groupLoading } = useSelector(
-    (state: RootState) => state.groupDetail
-  );
+  const { groups, loading: groupsLoading } = useSelector((state: RootState) => state.groups);
+  const { loading: groupLoading } = useSelector((state: RootState) => state.groupDetail);
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [groupCodes, setGroupCodes] = useState<{ [key: string]: string }>({}); // Lưu groupCode theo groupId
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [selectedMeeting, setSelectedMeeting] = useState<null | any>(null);
+  const [groupCodes, setGroupCodes] = useState<{ [key: string]: string }>({});
+  const [selectedGroupId, setSelectedGroupId] = useState<string>("all");
 
   useEffect(() => {
     if (semesterId) {
+      dispatch(fetchGroupsBySemester(semesterId));
       dispatch(fetchMeetings(semesterId)).then((result) => {
         if (fetchMeetings.fulfilled.match(result)) {
           const meetings = result.payload;
-          // Gọi fetchGroupDetail cho từng groupId
           meetings.forEach((meeting: any) => {
             dispatch(fetchGroupDetail({ groupId: meeting.groupId, semesterId })).then(
               (groupResult) => {
@@ -51,66 +60,156 @@ export function MeetingPage() {
     }
   }, [semesterId, dispatch]);
 
-  const handleOpenCreateModal = () => {
-    setIsCreateModalOpen(true);
+  const handleOpenCreateModal = () => setIsCreateModalOpen(true);
+  const handleCloseCreateModal = () => setIsCreateModalOpen(false);
+
+  const handleOpenUpdateModal = (meeting: any) => {
+    setSelectedMeeting(meeting);
+    setIsUpdateModalOpen(true);
+  };
+  const handleCloseUpdateModal = () => {
+    setIsUpdateModalOpen(false);
+    setSelectedMeeting(null);
   };
 
-  const handleCloseCreateModal = () => {
-    setIsCreateModalOpen(false);
+  const handleGroupFilterChange = (value: string) => {
+    setSelectedGroupId(value);
   };
 
-  if (meetingsLoading) {
-    return <div>Loading meetings...</div>;
-  }
-
-  if (meetingsError) {
-    return <div>Error: {meetingsError}</div>;
-  }
+  // Sao chép mảng trước khi sắp xếp và lọc
+  const sortedAndFilteredMeetings = [...meetings] // Tạo bản sao
+    .sort((a, b) => new Date(a.meetingTime).getTime() - new Date(b.meetingTime).getTime()) // Sắp xếp
+    .filter((meeting) => selectedGroupId === "all" || meeting.groupId === selectedGroupId); // Lọc
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col min-h-screen bg-gray-100">
       <Header
-        title={`Meetings for Semester ${semesterId || "Unknown"}`}
+        title={`Họp Học Kỳ ${semesterId || "Không xác định"}`}
         href="/meeting"
         currentPage="Meetings"
       />
-      <div className="p-5 flex-1 overflow-auto">
-        <div className="mb-6">
-          <Button onClick={handleOpenCreateModal}>Create Meeting</Button>
+      <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8 flex-1">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+          <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+            Danh Sách Buổi Họp
+          </h2>
+          <div className="flex items-center gap-4 w-full sm:w-auto">
+            <Select onValueChange={handleGroupFilterChange} value={selectedGroupId}>
+              <SelectTrigger className="w-full sm:w-64 border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                <SelectValue placeholder="Lọc theo nhóm" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Lọc theo nhóm</SelectLabel>
+                  <SelectItem value="all">Tất cả nhóm</SelectItem>
+                  {groupsLoading ? (
+                    <SelectItem value="loading" disabled>
+                      Đang tải...
+                    </SelectItem>
+                  ) : groups.length === 0 ? (
+                    <SelectItem value="no-groups" disabled>
+                      Không có nhóm nào
+                    </SelectItem>
+                  ) : (
+                    groups.map((group) => (
+                      <SelectItem key={group.id} value={group.id}>
+                        {group.groupCode}
+                      </SelectItem>
+                    ))
+                  )}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <Button
+              onClick={handleOpenCreateModal}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-sm"
+            >
+              Tạo Buổi Họp
+            </Button>
+          </div>
         </div>
 
-        <h2 className="text-2xl font-bold mb-4">Meeting List</h2>
-        {meetings.length === 0 ? (
-          <p>No meetings available</p>
+        {meetingsLoading ? (
+          <div className="space-y-6">
+            <div className="w-full h-40 bg-gray-200 rounded-xl animate-pulse" />
+            <div className="w-full h-40 bg-gray-200 rounded-xl animate-pulse" />
+          </div>
+        ) : meetingsError ? (
+          <p className="text-red-600 text-center text-xl font-medium bg-red-50 p-4 rounded-lg">
+            Lỗi: {meetingsError}
+          </p>
+        ) : sortedAndFilteredMeetings.length === 0 ? (
+          <p className="text-gray-600 text-center text-xl font-medium bg-white p-6 rounded-lg shadow">
+            Không có buổi họp nào cho nhóm đã chọn.
+          </p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {meetings.map((meeting) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {sortedAndFilteredMeetings.map((meeting) => (
               <Card
                 key={meeting.id}
-                className="w-full p-4 shadow-md border border-gray-200 rounded-lg"
+                className="bg-white shadow-md hover:shadow-lg transition-all duration-300 rounded-xl border border-gray-200 overflow-hidden"
               >
-                <CardHeader>
-                  <CardTitle>{meeting.agenda}</CardTitle>
-                  <CardDescription>
-                  <p>
-                      Group: {groupCodes[meeting.groupId] || (groupLoading ? "Loading..." : "N/A")}
-                    </p>
-                    <p>Location: {meeting.location}</p>
-                    <p>Time: {new Date(meeting.meetingTime).toLocaleString()}</p>
-                    <p>
-                      URL:{" "}
-                      <a
-                        href={meeting.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 underline hover:text-blue-800 font-medium break-all"
+                <CardHeader className="bg-gradient-to-r from-blue-50 to-gray-50 border-b border-gray-200 p-4">
+                  <CardTitle className="text-xl font-semibold text-gray-800 flex items-center justify-between">
+                    <span className="truncate">{meeting.agenda}</span>
+                    <div className="flex items-center gap-2">
+                      <Badge
+                        variant="secondary"
+                        className="text-sm bg-blue-100 text-blue-800 font-medium"
                       >
-                        {meeting.url}
-                      </a>
-                    </p>
-                    {/* <p>Status: {meeting.status}</p> */}
-                  </CardDescription>
+                        {new Date(meeting.meetingTime).toLocaleDateString("vi-VN")}
+                      </Badge>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleOpenUpdateModal(meeting)}
+                        className="text-gray-600 hover:text-blue-600"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </CardTitle>
                 </CardHeader>
+                <CardContent className="p-5 space-y-4">
+                  <div className="flex items-start text-gray-700">
+                    <Calendar className="w-5 h-5 mr-2 text-blue-500 flex-shrink-0" />
+                    <div>
+                      <span className="font-medium">Thời gian:</span>
+                      <p className="text-sm">
+                        {new Date(meeting.meetingTime).toLocaleString("vi-VN", {
+                          weekday: "long",
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start text-gray-700">
+                    <MapPin className="w-5 h-5 mr-2 text-blue-500 flex-shrink-0" />
+                    <div>
+                      <span className="font-medium">Địa điểm:</span>
+                      <p className="text-sm">{meeting.location}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start text-gray-700">
+                    <span className="font-medium w-20">Nhóm:</span>
+                    <p className="text-sm">
+                      {groupCodes[meeting.groupId] || (groupLoading ? "Đang tải..." : "N/A")}
+                    </p>
+                  </div>
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="w-full border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold py-2 rounded-lg transition-colors"
+                  >
+                    <a href={meeting.url} target="_blank" rel="noopener noreferrer">
+                      Tham gia phòng
+                    </a>
+                  </Button>
+                </CardContent>
               </Card>
             ))}
           </div>
@@ -118,6 +217,13 @@ export function MeetingPage() {
 
         {isCreateModalOpen && semesterId && (
           <CreateMeeting semesterId={semesterId} onClose={handleCloseCreateModal} />
+        )}
+        {isUpdateModalOpen && semesterId && selectedMeeting && (
+          <UpdateMeeting
+            semesterId={semesterId}
+            meeting={selectedMeeting}
+            onClose={handleCloseUpdateModal}
+          />
         )}
       </div>
     </div>

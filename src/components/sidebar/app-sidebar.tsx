@@ -430,6 +430,18 @@ const studentMenu = {
         },
       ],
     },
+    {
+      title: "Phòng họp ",
+      url: "/student/council-member",
+      icon: List,
+      isActive: true,
+      items: [
+        {
+          title: "Lịch họp",
+          url: "/student/meeting-student",
+        },
+      ],
+    },
   ],
 };
 const graduationThesisMenu = {
@@ -455,7 +467,7 @@ const graduationThesisMenu = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const user = useSelector((state: RootState) => state.auth.user);
-  console.log("user", user);
+  // console.log("user", user);
   const formattedUser = user
     ? {
         name: user.fullName || user.username || "Người dùng",

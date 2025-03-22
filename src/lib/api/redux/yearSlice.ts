@@ -46,7 +46,7 @@ export const deleteYear = createAsyncThunk(
   "years/deleteYear",
   async (yearId: string, { rejectWithValue }) => {
     try {
-      await axiosClient.delete(`/year/${yearId}`);
+      await axiosClient.put(`/year/${yearId}`);
       return yearId;  // Trả về ID của năm học đã xóa
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Không thể xóa năm học");

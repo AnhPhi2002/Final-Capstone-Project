@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/api/redux/store";
-import { createMeeting, Meeting } from "@/lib/api/redux/meetingSlice";
+import { updateMeeting, Meeting } from "@/lib/api/redux/meetingSlice";
 import { fetchGroupsBySemester } from "@/lib/api/redux/groupSlice";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,23 +15,32 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { X } from "lucide-react"; // Icon đóng
+import { X } from "lucide-react";
+import { toast } from "sonner";
 
-type CreateMeetingProps = {
+type UpdateMeetingProps = {
   semesterId: string;
+  meeting: Meeting;
   onClose: () => void;
 };
 
-export const CreateMeeting: React.FC<CreateMeetingProps> = ({ semesterId, onClose }) => {
+export const UpdateMeeting: React.FC<UpdateMeetingProps> = ({ semesterId, meeting, onClose }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { groups, loading: groupsLoading } = useSelector((state: RootState) => state.groups);
+  const { loading: updateLoading } = useSelector((state: RootState) => state.meetings);
 
-  const [newMeeting, setNewMeeting] = useState<Partial<Meeting>>({
-    groupId: "",
-    meetingTime: "",
-    location: "",
-    agenda: "",
-    url: "",
+  // Hàm định dạng ISO sang datetime-local
+  const formatDateForInput = (isoDate: string) => {
+    const date = new Date(isoDate);
+    return date.toISOString().slice(0, 16); // Cắt đến phút (YYYY-MM-DDThh:mm)
+  };
+
+  const [updatedMeeting, setUpdatedMeeting] = useState<Partial<Meeting>>({
+    groupId: meeting.groupId,
+    meetingTime: formatDateForInput(meeting.meetingTime), // Định dạng lại thời gian
+    location: meeting.location,
+    agenda: meeting.agenda,
+    url: meeting.url,
   });
 
   useEffect(() => {
@@ -43,20 +52,41 @@ export const CreateMeeting: React.FC<CreateMeetingProps> = ({ semesterId, onClos
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (name === "meetingTime" && value) {
-      setNewMeeting({ ...newMeeting, [name]: `${value}:00Z` });
+      setUpdatedMeeting({ ...updatedMeeting, [name]: `${value}:00Z` }); // Thêm lại :00Z cho API
     } else {
-      setNewMeeting({ ...newMeeting, [name]: value });
+      setUpdatedMeeting({ ...updatedMeeting, [name]: value });
     }
   };
 
   const handleGroupChange = (value: string) => {
-    setNewMeeting({ ...newMeeting, groupId: value });
+    setUpdatedMeeting({ ...updatedMeeting, groupId: value });
   };
 
-  const handleCreateMeeting = async () => {
-    if (semesterId && newMeeting.groupId) {
-      await dispatch(createMeeting({ semesterId, meetingData: newMeeting as Meeting }));
-      onClose();
+  const handleUpdateMeeting = async () => {
+    if (semesterId && updatedMeeting.groupId && meeting.id) {
+      try {
+        const result = await dispatch(
+          updateMeeting({
+            meetingId: meeting.id,
+            semesterId,
+            meetingData: updatedMeeting,
+          })
+        );
+
+        if (updateMeeting.fulfilled.match(result)) {
+          toast.success("Cập nhật buổi họp thành công!");
+          onClose();
+        } else {
+          const errorMessage = result.payload as string;
+          if (errorMessage === "Cannot update meeting before 1 day of the meeting") {
+            toast.error("Không thể cập nhật buổi họp trước 1 ngày diễn ra!");
+          } else {
+            toast.error(errorMessage || "Cập nhật buổi họp thất bại!");
+          }
+        }
+      } catch (error: any) {
+        toast.error("Có lỗi xảy ra khi cập nhật buổi họp!");
+      }
     }
   };
 
@@ -69,13 +99,13 @@ export const CreateMeeting: React.FC<CreateMeetingProps> = ({ semesterId, onClos
         >
           <X className="w-6 h-6" />
         </button>
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Tạo Buổi Họp Mới</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">Cập Nhật Buổi Họp</h2>
         <div className="space-y-5">
           <div className="space-y-2">
             <Label htmlFor="groupId" className="text-sm font-medium text-gray-700">
               Nhóm
             </Label>
-            <Select onValueChange={handleGroupChange} value={newMeeting.groupId}>
+            <Select onValueChange={handleGroupChange} value={updatedMeeting.groupId}>
               <SelectTrigger className="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                 <SelectValue placeholder="Chọn nhóm" />
               </SelectTrigger>
@@ -111,7 +141,7 @@ export const CreateMeeting: React.FC<CreateMeetingProps> = ({ semesterId, onClos
               name="meetingTime"
               type="datetime-local"
               className="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-              value={newMeeting.meetingTime?.replace(":00Z", "") || ""}
+              value={updatedMeeting.meetingTime?.replace(":00Z", "") || ""}
               onChange={handleInputChange}
             />
           </div>
@@ -123,7 +153,7 @@ export const CreateMeeting: React.FC<CreateMeetingProps> = ({ semesterId, onClos
             <Input
               id="location"
               name="location"
-              value={newMeeting.location || ""}
+              value={updatedMeeting.location || ""}
               onChange={handleInputChange}
               placeholder="Nhập địa điểm (VD: NVH302)"
               className="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
@@ -137,7 +167,7 @@ export const CreateMeeting: React.FC<CreateMeetingProps> = ({ semesterId, onClos
             <Input
               id="agenda"
               name="agenda"
-              value={newMeeting.agenda || ""}
+              value={updatedMeeting.agenda || ""}
               onChange={handleInputChange}
               placeholder="Nhập chủ đề (VD: Thảo luận tiến độ dự án)"
               className="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
@@ -151,7 +181,7 @@ export const CreateMeeting: React.FC<CreateMeetingProps> = ({ semesterId, onClos
             <Input
               id="url"
               name="url"
-              value={newMeeting.url || ""}
+              value={updatedMeeting.url || ""}
               onChange={handleInputChange}
               placeholder="Nhập URL (VD: https://meet.google.com/abc-def-ghi)"
               className="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
@@ -167,11 +197,11 @@ export const CreateMeeting: React.FC<CreateMeetingProps> = ({ semesterId, onClos
               Hủy
             </Button>
             <Button
-              onClick={handleCreateMeeting}
-              disabled={!newMeeting.groupId}
+              onClick={handleUpdateMeeting}
+              disabled={!updatedMeeting.groupId || updateLoading}
               className="bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm"
             >
-              Tạo
+              {updateLoading ? "Đang cập nhật..." : "Cập nhật"}
             </Button>
           </div>
         </div>
