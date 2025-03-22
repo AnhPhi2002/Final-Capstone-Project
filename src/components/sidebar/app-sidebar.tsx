@@ -344,7 +344,7 @@ const academicMenu = {
           url: "/academic/not-group-student",
         },
         {
-          title: "D.s giáo viên",
+          title: "D.s giảng viên",
           url: "/academic/mentor-page",
         },
         {

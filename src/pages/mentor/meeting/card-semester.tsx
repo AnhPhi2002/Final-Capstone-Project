@@ -8,8 +8,11 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
+  CardContent,
 } from "@/components/ui/card";
 import { PaginationDashboardPage } from "../pagination";
+import { Dot } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 type CardSemesterProps = {
   data: Semester[];
@@ -25,11 +28,11 @@ export const CardSemester: React.FC<CardSemesterProps> = ({ data }) => {
 
   const getYearById = (yearId: string) => {
     const foundYear = years.find((year) => year.id === yearId);
-    return foundYear ? foundYear.year : "Unknown Year";
+    return foundYear ? foundYear.year : "Không xác định";
   };
 
   const handleCardClick = (semesterId: string) => {
-    navigate(`/lecturer/meeting/${semesterId}`); // Sử dụng path parameter thay vì query string
+    navigate(`/lecturer/meeting/${semesterId}`);
   };
 
   const paginatedData = data.slice(
@@ -42,7 +45,7 @@ export const CardSemester: React.FC<CardSemesterProps> = ({ data }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {paginatedData.length === 0 ? (
           <p className="text-gray-500 text-center col-span-full">
-            No semesters available
+            Không có học kỳ nào.
           </p>
         ) : (
           paginatedData.map((semester) => (
@@ -56,9 +59,48 @@ export const CardSemester: React.FC<CardSemesterProps> = ({ data }) => {
                   Học kỳ: {semester.code}
                 </CardTitle>
                 <CardDescription>
-                  Year: {getYearById(semester.yearId)}
+                  Năm học: {getYearById(semester.yearId)}
                 </CardDescription>
               </CardHeader>
+
+              <CardContent>
+                <div className="flex items-center gap-2">
+                  <span className="flex items-center gap-1">
+                    <Dot
+                      size={40}
+                      className={
+                        semester.status === "ACTIVE"
+                          ? "text-green-600"
+                          : semester.status === "UPCOMING"
+                          ? "text-yellow-600"
+                          : semester.status === "COMPLETE"
+                          ? "text-blue-600"
+                          : "text-gray-600"
+                      }
+                    />
+                    Trạng thái
+                  </span>
+                  <Badge
+                    className={
+                      semester.status === "ACTIVE"
+                        ? "bg-green-100 text-green-600 border border-green-500 hover:bg-green-200"
+                        : semester.status === "UPCOMING"
+                        ? "bg-yellow-100 text-yellow-600 border border-yellow-500 hover:bg-yellow-200"
+                        : semester.status === "COMPLETE"
+                        ? "bg-blue-100 text-blue-600 border border-blue-500 hover:bg-blue-200"
+                        : "bg-gray-100 text-gray-600 border border-gray-500 hover:bg-gray-200"
+                    }
+                  >
+                    {semester.status === "ACTIVE"
+                      ? "Đang hoạt động"
+                      : semester.status === "UPCOMING"
+                      ? "Sắp diễn ra"
+                      : semester.status === "COMPLETE"
+                      ? "Hoàn thành"
+                      : "Không xác định"}
+                  </Badge>
+                </div>
+              </CardContent>
             </Card>
           ))
         )}

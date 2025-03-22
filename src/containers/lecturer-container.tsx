@@ -38,7 +38,7 @@ export const LecturerContainer = () => {
         <Route path="/topic" element={<TopicPage />} />
         <Route path="/topic/:semesterId" element={<TopicPage />} />
         <Route path="/topic-list" element={<TopicListPage />} />
-        <Route path="/topic-list/:semesterId/submission/:submissionPeriodId" element={<TopicListPage />}/>
+        <Route path="/topic-list/semester/:semesterId/submission/:submissionPeriodId/round/:roundNumber" element={<TopicListPage />}/>
         <Route path="/topic-detail/:topicId/:semesterId" element={<TopicDetailPage />} />
         <Route path="/topic-detail/:topicId/:semesterId/update" element={<UpdateTopicDetail />}
         />
@@ -51,9 +51,8 @@ export const LecturerContainer = () => {
         <Route path="/group-student-detail" element={<GroupStudentDetail />} />
         <Route path="/group-student-detail/:groupId/:semesterId" element={<GroupStudentDetail />} />
 
-        <Route path="/approve-topic-list/:semesterId" element={<ApproveTopicList />} />
-
         <Route path="/approve-topic" element={<ApproveTopicPage />} />
+        <Route path="/approve-topic-list/:semesterId/submission/:submissionPeriodId/round/:roundNumber" element={<ApproveTopicList />} />
         <Route path="/approve-topic-detail/:topicId/:semesterId" element={<ApproveTopicDetail />} />
         
         <Route path="/meeting" element={<MeetingListPage/>} />
