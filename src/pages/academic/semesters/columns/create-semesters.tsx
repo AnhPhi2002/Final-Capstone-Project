@@ -36,11 +36,17 @@ export const CreateSemesters = () => {
   const [code, setCode] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  // const [status, setStatus] = useState("ACTIVE");
 
   useEffect(() => {
     dispatch(fetchAllYears());
   }, [dispatch]);
+
+  const resetForm = () => {
+    setYearId("");
+    setCode("");
+    setStartDate("");
+    setEndDate("");
+  };
 
   const handleSave = async () => {
     if (!yearId || !code || !startDate || !endDate) {
@@ -61,13 +67,13 @@ export const CreateSemesters = () => {
       code,
       startDate,
       endDate,
-      // status,
     };
 
     try {
       await dispatch(createSemester(newSemester)).unwrap();
       toast.success("Học kỳ đã được tạo thành công!");
       setOpen(false);
+      resetForm();
       dispatch(fetchSemesters({ yearId }));
     } catch (error: any) {
       console.error("Failed to create semester:", error);
@@ -75,12 +81,14 @@ export const CreateSemesters = () => {
     }
   };
 
+  const availableYears = years.filter((y) => !y.isDeleted);
+
   return (
     <div>
       <Toaster position="top-right" richColors duration={3000} />
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button className="bg-black text-white ">Tạo học kỳ mới</Button>
+          <Button className="bg-black text-white">Tạo học kỳ mới</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
@@ -91,32 +99,42 @@ export const CreateSemesters = () => {
           </DialogHeader>
 
           <div className="grid gap-4 py-4">
-            {/* Chọn năm học */}
+            {/* Năm học */}
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="year" className="text-right">Năm học</Label>
-              <Select onValueChange={(value) => setYearId(value)}>
+              <Label htmlFor="year" className="text-right">
+                Năm học
+              </Label>
+              <Select onValueChange={setYearId} value={yearId}>
                 <SelectTrigger className="w-full col-span-3">
                   <SelectValue placeholder="Chọn năm học" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
                     {yearLoading ? (
-                      <SelectItem value="loading" disabled>Đang tải...</SelectItem>
-                    ) : (
-                      years.map((year) => (
+                      <SelectItem value="loading" disabled>
+                        Đang tải...
+                      </SelectItem>
+                    ) : availableYears.length > 0 ? (
+                      availableYears.map((year) => (
                         <SelectItem key={year.id} value={year.id}>
                           {year.year}
                         </SelectItem>
                       ))
+                    ) : (
+                      <SelectItem value="none" disabled>
+                        Không có năm học nào
+                      </SelectItem>
                     )}
                   </SelectGroup>
                 </SelectContent>
               </Select>
             </div>
 
-            {/* Nhập mã học kỳ */}
+            {/* Mã học kỳ */}
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="code" className="text-right">Mã học kỳ</Label>
+              <Label htmlFor="code" className="text-right">
+                Mã học kỳ
+              </Label>
               <Input
                 id="code"
                 placeholder="VD: Spring2025"
@@ -128,7 +146,9 @@ export const CreateSemesters = () => {
 
             {/* Ngày bắt đầu */}
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="start_date" className="text-right">Ngày bắt đầu</Label>
+              <Label htmlFor="start_date" className="text-right">
+                Ngày bắt đầu
+              </Label>
               <Input
                 id="start_date"
                 type="date"
@@ -140,7 +160,9 @@ export const CreateSemesters = () => {
 
             {/* Ngày kết thúc */}
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="end_date" className="text-right">Ngày kết thúc</Label>
+              <Label htmlFor="end_date" className="text-right">
+                Ngày kết thúc
+              </Label>
               <Input
                 id="end_date"
                 type="date"

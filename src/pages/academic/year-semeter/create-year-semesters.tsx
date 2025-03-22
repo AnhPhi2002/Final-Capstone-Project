@@ -25,7 +25,7 @@ export const CreateYearSemesters: React.FC = () => {
   const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>();
   const dispatch = useDispatch<AppDispatch>();
   const [open, setOpen] = useState(false);  // State to manage dialog visibility
-
+  
   const onSubmit = async (data: FormData) => {
     try {
       await dispatch(createYear({ year: data.year })).unwrap();

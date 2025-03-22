@@ -147,7 +147,7 @@ const meetingSlice = createSlice({
           state.meetings[index] = updatedMeeting; // Cập nhật meeting trong danh sách
         }
       })
-      .addCase(updateMeeting.rejected, (state, action) => {
+      .addCase(updateMeeting.rejected, (state) => {
         state.loading = false;
         // state.error = action.payload as string;
       })

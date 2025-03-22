@@ -22,18 +22,20 @@ export const SelectSemester: React.FC = () => {
 
   const [selectedYear, setSelectedYear] = useState<string>("");
 
+  // Fetch toàn bộ năm học
   useEffect(() => {
-    dispatch(fetchAllYears()); // Lấy danh sách năm học
+    dispatch(fetchAllYears());
   }, [dispatch]);
 
+  // Fetch học kỳ theo năm học được chọn
   useEffect(() => {
     if (selectedYear) {
-      dispatch(fetchSemesters({ yearId: selectedYear })); // Lấy tất cả học kỳ theo năm học (không có phân trang)
+      dispatch(fetchSemesters({ yearId: selectedYear }));
     }
   }, [dispatch, selectedYear]);
 
   const handleYearChange = (value: string) => {
-    setSelectedYear(value); // Cập nhật năm học được chọn
+    setSelectedYear(value);
   };
 
   if (!Array.isArray(years)) {
@@ -41,12 +43,13 @@ export const SelectSemester: React.FC = () => {
     return <p>Không tải được danh sách năm học...</p>;
   }
 
-  const cardData = semesters; // Không cần phân trang, truyền toàn bộ dữ liệu học kỳ
+  // Chỉ truyền các học kỳ chưa bị xóa vào CardSemester
+  const cardData = semesters.filter((s) => !s.isDeleted);
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col md:flex-row md:items-center gap-4 mb-10 ">
-        <Select onValueChange={(value) => handleYearChange(value)}>
+      <div className="flex flex-col md:flex-row md:items-center gap-4 mb-10">
+        <Select onValueChange={handleYearChange}>
           <SelectTrigger className="w-[200px]">
             <SelectValue placeholder="Chọn năm học" />
           </SelectTrigger>
@@ -58,11 +61,13 @@ export const SelectSemester: React.FC = () => {
                   Đang tải...
                 </SelectItem>
               ) : (
-                years.map((year) => (
-                  <SelectItem key={year.id} value={year.id}>
-                    {year.year}
-                  </SelectItem>
-                ))
+                years
+                  .filter((year) => !year.isDeleted) // ✅ Chỉ hiện năm chưa bị xóa
+                  .map((year) => (
+                    <SelectItem key={year.id} value={year.id}>
+                      {year.year}
+                    </SelectItem>
+                  ))
               )}
             </SelectGroup>
           </SelectContent>

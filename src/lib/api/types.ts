@@ -7,6 +7,7 @@ export interface Semester {
   status: string;
   createdAt: string;
   yearId: string;
+  isDeleted?: boolean;
   year: {
     id: string;
     year: number;
