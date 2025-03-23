@@ -1,3 +1,4 @@
+// import { createCouncilReview } from './councilReviewSlice';
 // lib/api/redux/councilReviewSlice.ts
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosClient } from "@/lib/api/config/axios-client";
@@ -18,6 +19,18 @@ const initialState: CouncilState = {
     loadingDetail: false,
     error: null,
 };
+
+export const createCouncilReview = createAsyncThunk(
+  "councils/createCouncilReview",
+  async (newCouncil: Partial<CouncilReview>, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.post(`/council-review`, newCouncil);
+      return response.data.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Không thể tạo hội đồng!");
+    }
+  }
+);
 
 export const fetchReviewCouncilsList = createAsyncThunk(
     "councils/fetchReviewCouncils",
@@ -154,6 +167,18 @@ const councilReviewSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
+        .addCase(createCouncilReview.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+              })
+              .addCase(createCouncilReview.fulfilled, (state, action) => {
+                state.loading = false;
+                state.data.push(action.payload);
+              })
+              .addCase(createCouncilReview.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+              })
             .addCase(fetchReviewCouncilsList.pending, (state) => {
                 state.loading = true;
                 state.error = null;

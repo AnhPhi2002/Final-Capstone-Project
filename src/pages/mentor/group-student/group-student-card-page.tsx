@@ -5,7 +5,7 @@ import { fetchGroupsBySemester } from "@/lib/api/redux/groupSlice";
 import Header from "@/components/header";
 import { DataTable } from "./data-table/data-table";
 import { columns } from "./data-table/columns";
-import CreateGroup from "./create-group-button";
+// import CreateGroup from "./create-group-button";
 import { ExportExcelGroupStudent } from "./export-excel-group-student";
 import { PaginationDashboardPage } from "../pagination";
 
@@ -40,7 +40,7 @@ export const GroupStudentCardPage = () => {
       <div className="p-5 flex-1 overflow-auto">
         <div className="flex justify-end mb-4 gap-x-4">
           <ExportExcelGroupStudent />
-          <CreateGroup key={groups.length} semesterId={semesterId!} />
+          {/* <CreateGroup key={groups.length} semesterId={semesterId!} /> */}
         </div>
         <DataTable columns={columns} data={currentGroups} />
         <div className="flex justify-end mt-6">

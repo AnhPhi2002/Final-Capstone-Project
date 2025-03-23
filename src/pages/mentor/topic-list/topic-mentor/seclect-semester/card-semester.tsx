@@ -36,7 +36,9 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
     return semester ? semester.code : "Không xác định";
   };
 
-  const filteredData = data.filter((round) => round.semesterId === selectedSemester);
+  const filteredData = data.filter(
+    (round) => round.semesterId === selectedSemester
+  );
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
   const paginatedData = filteredData.slice(
@@ -44,16 +46,28 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
     currentPage * itemsPerPage
   );
 
-  const handleCardClick = (semesterId: string, submissionRoundId: string, roundNumber: number) => {
-    navigate(`/lecturer/topic-list/semester/${semesterId}/submission/${submissionRoundId}/round/${roundNumber}`);
+  const handleCardClick = (
+    semesterId: string,
+    submissionRoundId: string,
+    roundNumber: number
+  ) => {
+    navigate(
+      `/lecturer/topic-list/semester/${semesterId}/submission/${submissionRoundId}/round/${roundNumber}`
+    );
   };
 
   if (loading) {
-    return <p className="text-center text-gray-500 mt-5">Đang tải vòng nộp...</p>;
+    return (
+      <p className="text-center text-gray-500 mt-5">Đang tải vòng nộp...</p>
+    );
   }
 
   if (paginatedData.length === 0) {
-    return <p className="text-center text-gray-500 mt-5">Chưa có vòng nộp nào cho học kỳ này.</p>;
+    return (
+      <p className="text-center text-gray-500 mt-5">
+        Chưa có vòng nộp nào cho học kỳ này.
+      </p>
+    );
   }
 
   return (
@@ -63,14 +77,20 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
           <Card
             key={round.id}
             className="w-full p-4 shadow-md border rounded-lg hover:shadow-lg transition"
-            onClick={() => handleCardClick(round.semesterId, round.id, round.roundNumber)}
+            onClick={() =>
+              handleCardClick(round.semesterId, round.id, round.roundNumber)
+            }
           >
             <CardHeader>
               <CardTitle className="text-xl font-bold text-gray-800">
                 {round.description}
               </CardTitle>
-              <CardDescription>Học kỳ: {getSemesterCode(round.semesterId)}</CardDescription>
-              <CardDescription>Vòng nộp lần: {round.roundNumber}</CardDescription>
+              <CardDescription>
+                Học kỳ: {getSemesterCode(round.semesterId)}
+              </CardDescription>
+              <CardDescription>
+                Vòng nộp lần: {round.roundNumber}
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-2">
@@ -92,12 +112,12 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
                 <Badge
                   className={
                     round.status === "ACTIVE"
-                      ? "bg-green-100 text-green-600 border border-green-500"
+                      ? "bg-green-100 text-green-600 border border-green-500 hover:bg-green-200"
                       : round.status === "UPCOMING"
-                      ? "bg-yellow-100 text-yellow-600 border border-yellow-500"
+                      ? "bg-yellow-100 text-yellow-600 border border-yellow-500 hover:bg-yellow-200"
                       : round.status === "COMPLETE"
-                      ? "bg-blue-100 text-blue-600 border border-blue-500"
-                      : "bg-gray-100 text-gray-600 border border-gray-500"
+                      ? "bg-blue-100 text-blue-600 border border-blue-500 hover:bg-blue-200"
+                      : "bg-gray-100 text-gray-600 border border-gray-500 hover:bg-gray-200"
                   }
                 >
                   {round.status === "ACTIVE"

@@ -25,7 +25,7 @@ import { RootState, AppDispatch } from "@/lib/api/redux/store";
 import { fetchYears } from "@/lib/api/redux/yearSlice";
 import { fetchSemesters } from "@/lib/api/redux/semesterSlice";
 import { fetchSubmissionRounds } from "@/lib/api/redux/submissionRoundSlice";
-import { createCouncil } from "@/lib/api/redux/councilSlice";
+import { createCouncilReview } from "@/lib/api/redux/councilReviewSlice";
 
 export const CreateReviewTopicCouncil = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -86,7 +86,7 @@ export const CreateReviewTopicCouncil = () => {
     };
 
     try {
-      await dispatch(createCouncil(newCouncil)).unwrap();
+      await dispatch(createCouncilReview(newCouncil)).unwrap();
       toast.success("Tạo hội đồng xét duyệt thành công!");
       setOpen(false);
       setCouncilName("");
