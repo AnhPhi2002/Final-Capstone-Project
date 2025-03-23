@@ -27,6 +27,7 @@ import topicStudentReducer from "./topicStudentSlice";
 import uploadReducer from "./uploadSlice";
 import meetingReducer from "./meetingSlice";
 import topicGroupRegisterReducer  from './topicGroupRegisterSlice';
+import councilReviewReducer from './councilReviewSlice'; 
 
 
 const rootReducer = combineReducers({
@@ -59,6 +60,7 @@ const rootReducer = combineReducers({
   // persist: persistedReducer,
   meetings: meetingReducer,
   topicGroupRegister: topicGroupRegisterReducer,
+  councilReview: councilReviewReducer,
 });
 
 // const persistedReducer = persistReducer(persistConfig, rootReducer)

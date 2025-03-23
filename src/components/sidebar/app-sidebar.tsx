@@ -301,6 +301,10 @@ const examinationMenu = {
           title: "D.s hội chấm KLTN",
           url: "/examination/review-topic-council",
         },
+        {
+          title: "D.s hội chấm Review-Topic",
+          url: "/examination/council-review",
+        },
       ],
     },
     

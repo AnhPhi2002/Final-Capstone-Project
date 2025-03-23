@@ -1,52 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosClient } from "../config/axios-client";
+import { Group } from "../types";
 
 // Định nghĩa kiểu dữ liệu cho nhóm
-interface Group {
-  id: string;
-  groupCode: string;
-  semesterId: string;
-  status: string;
-  isAutoCreated: boolean;
-  createdBy: string;
-  maxMembers: number;
-  isMultiMajor: boolean;
-  isLocked: boolean;
-  createdAt: string;
-  updatedAt: string;
-  topicEnglish: string | null;
-  topicTiengViet: string | null;
-  totalMembers: number;
-  members: {
-    id: string;
-    groupId: string;
-    studentId: string;
-    role: string;
-    joinedAt: string;
-    leaveAt: string | null;
-    leaveReason: string | null;
-    isActive: boolean;
-    status: string;
-    student: {
-      id: string;
-      userId: string;
-      studentCode: string;
-      majorId: string;
-      specializationId: string;
-      isEligible: boolean;
-      personalEmail: string | null;
-      status: string;
-      user: {
-        id: string;
-        username: string;
-        email: string;
-        fullName: string | null;
-        profession: string;
-        specialty: string;
-      };
-    };
-  }[]
-}
+
 
 type GroupState = {
   groups: Group[];
