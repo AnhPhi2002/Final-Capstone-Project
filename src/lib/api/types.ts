@@ -55,8 +55,10 @@ export interface CouncilMember {
 
 export interface Council {
   id: string;
+  code: string;
   name: string;
   round: number;
+  type: string;
   status: string;
   createdDate: string;
   semesterId: string;
@@ -65,6 +67,37 @@ export interface Council {
   councilEndDate: string,
   isDeleted?: boolean;
   members: CouncilMember[];
+}
+
+export interface CouncilReviewMember {
+  id: string;
+  councilId: string;
+  roleId: string;
+  status: string;
+  userId: string;
+  user: {
+    id: string;
+    fullName: string;
+    email: string;
+  }
+  roleName: string;
+  isDeleted?: boolean;
+}
+
+export interface CouncilReview {
+  id: string;
+  code: string;
+  name: string;
+  round: number;
+  type: string;
+  status: string;
+  createdDate: string;
+  semesterId: string;
+  submissionPeriodId: string;
+  councilStartDate: string,
+  councilEndDate: string,
+  isDeleted?: boolean;
+  members: CouncilReviewMember[];
 }
 
 
@@ -154,3 +187,48 @@ export type Topic = {
   };
 };
 
+export interface Group {
+  id: string;
+  groupCode: string;
+  semesterId: string;
+  status: string;
+  isAutoCreated: boolean;
+  createdBy: string;
+  maxMembers: number;
+  isMultiMajor: boolean;
+  isLocked: boolean;
+  createdAt: string;
+  updatedAt: string;
+  topicEnglish: string | null;
+  topicTiengViet: string | null;
+  totalMembers: number;
+  members: {
+    id: string;
+    groupId: string;
+    studentId: string;
+    role: string;
+    joinedAt: string;
+    leaveAt: string | null;
+    leaveReason: string | null;
+    isActive: boolean;
+    status: string;
+    student: {
+      id: string;
+      userId: string;
+      studentCode: string;
+      majorId: string;
+      specializationId: string;
+      isEligible: boolean;
+      personalEmail: string | null;
+      status: string;
+      user: {
+        id: string;
+        username: string;
+        email: string;
+        fullName: string | null;
+        profession: string;
+        specialty: string;
+      };
+    };
+  }[]
+}
