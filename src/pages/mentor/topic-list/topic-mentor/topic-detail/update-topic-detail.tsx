@@ -27,7 +27,7 @@ export default function UpdateTopicDetail() {
     name: "",
     nameVi: "",
     nameEn: "",
-    majorId: "",
+    majors: [] as {id : string, name:string}[],
     status: "",
     description: "",
     subMentorEmail: "", 
@@ -47,7 +47,7 @@ export default function UpdateTopicDetail() {
         name: topicDetails.name || "",
         nameVi: topicDetails.nameVi || "",
         nameEn: topicDetails.nameEn || "",
-        majorId: topicDetails.majorId || "",
+        majors: topicDetails.majors || [],
         status: topicDetails.status || "PENDING",
         description: topicDetails.description || "",
         subMentorEmail: topicDetails.subMentor?.email || "", 
@@ -122,7 +122,10 @@ export default function UpdateTopicDetail() {
               </div>
               <div>
                 <p className="text-sm text-gray-500 mb-1">Chuyên ngành</p>
-                <Input name="majorId" value={formData.majorId} onChange={handleChange} />
+                <Input
+                  value={formData.majors.map((major) => major.name).join(", ") || "Chưa có chuyên ngành"}
+                  disabled // Tạm thời disable vì majors là mảng, cần Select nếu muốn chỉnh sửa
+                />
               </div>
               <div>
                 <p className="text-sm text-gray-500 mb-1">Trạng tháu</p>

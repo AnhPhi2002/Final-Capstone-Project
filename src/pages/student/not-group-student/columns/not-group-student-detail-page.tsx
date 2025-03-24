@@ -3,12 +3,13 @@ import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { fetchStudentsWithoutGroupForStudent } from "@/lib/api/redux/studentWithoutGroupSlice";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
-import ToolPanel from "./tool-panel";
+// import ToolPanel from "./tool-panel";
 import { PaginationDashboardPage } from "../../pagination";
 
 export interface StudentNotGroupForStudent {
-  studentId: string;
-  fullName: string;
+  id: string;
+  studentCode: string;
+  studentName: string;
   email: string;
   major: string;
 }
@@ -39,7 +40,7 @@ export const NotGroupStudentDetailPage = () => {
 
   return (
     <div className="flex flex-col">
-      <ToolPanel />
+      {/* <ToolPanel /> */}
 
       {loading && <p>Đang tải danh sách sinh viên...</p>}
       {error && <p className="text-red-500">Lỗi: {error}</p>}

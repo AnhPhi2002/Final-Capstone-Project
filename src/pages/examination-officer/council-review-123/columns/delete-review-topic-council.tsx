@@ -3,7 +3,8 @@ import React from "react";
 import { Toaster, toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/api/redux/store";
-import { deleteCouncil } from "@/lib/api/redux/councilReviewSlice"; // Sửa import
+import { deleteCouncil } from "@/lib/api/redux/councilReviewSlice"; 
+import { useNavigate } from "react-router";
 
 export type DeleteReviewTopicCouncilProps = {
   open: boolean;
@@ -19,11 +20,13 @@ export const DeleteReviewTopicCouncil: React.FC<DeleteReviewTopicCouncilProps> =
   refetchData,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
   const handleDelete = async () => {
     try {
       await dispatch(deleteCouncil(councilId)).unwrap();
       toast.success("Hội đồng review đã được xóa thành công!");
+      navigate(`/examination/council-review`);
       setOpen(false);
       refetchData?.();
     } catch (error: any) {

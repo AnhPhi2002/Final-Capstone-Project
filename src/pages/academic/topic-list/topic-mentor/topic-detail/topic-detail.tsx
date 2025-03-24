@@ -105,6 +105,15 @@ export default function TopicDetail() {
     // Mở URL trong tab mới
     window.open(fileUrl, "_blank", "noopener,noreferrer");
   };
+  const getGroupId = () => {
+    console.log("Topic Details:", topicDetails); // Debug dữ liệu topicDetails
+    if (topicDetails.status === "PENDING") {
+      return topicDetails.group?.id;
+    } else if (["APPROVED", "IMPROVED"].includes(topicDetails.status)) {
+      return topicDetails.topicAssignments?.[0]?.groupId; // Lấy groupId từ phần tử đầu tiên của mảng topicAssignments
+    }
+    return undefined;
+  };
   return (
     <div>
       <div className="mt-6 bg-white">
@@ -208,7 +217,7 @@ export default function TopicDetail() {
 
 
           <div>
-            <DataTableGroupTopic groupId={topicDetails.group?.id} />
+            <DataTableGroupTopic groupId={getGroupId()} />
           </div>
 
           <div className="flex justify-end gap-4 mt-6">

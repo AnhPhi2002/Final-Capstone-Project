@@ -5,6 +5,7 @@ import { RootState } from "@/lib/api/redux/store";
 import DashboardPage from "@/pages/admin/dashboard/dashboard-page";
 
 import { ProfilePage } from "@/pages/admin/profile-user/page";
+import { CouncilReviewMembersPage } from "@/pages/examination-officer/council-review-123/columns-member/CouncilMembersPage";
 import { CouncilReviewDetail } from "@/pages/examination-officer/council-review-123/columns/council-review123-detail";
 import { CouncilReviewPage } from "@/pages/examination-officer/council-review-123/council-review123-page";
 
@@ -54,7 +55,8 @@ export const ExaminationOfficerContainer = () => {
         <Route path="/review-topic-council-member/:councilId/:semesterId" element={<CouncilMembersPage />} /> 
 
         <Route path="/council-review" element={<CouncilReviewPage />} />
-        <Route path="/council-review/:councilId" element={<CouncilReviewDetail />} />  
+        <Route path="/council-review/:councilId/:semesterId" element={<CouncilReviewDetail />} />  
+        <Route path="/council-review-member/:councilId/:semesterId" element={<CouncilReviewMembersPage />} />
               
         <Route path="/*" element={<NotFound />} />
       </Routes>

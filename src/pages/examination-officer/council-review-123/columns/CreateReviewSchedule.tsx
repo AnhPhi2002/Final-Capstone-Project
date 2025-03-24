@@ -1,5 +1,4 @@
-// components/CreateReviewSchedule.tsx
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -28,12 +27,15 @@ import { Input } from "@/components/ui/input";
 import { Group } from "@/lib/api/types";
 
 const formSchema = z.object({
-  groups: z.array(
-    z.object({
-      groupId: z.string().min(1, "Vui lòng chọn nhóm"),
-      reviewTime: z.string().min(1, "Vui lòng chọn thời gian review"),
-    })
-  ).min(1, "Vui lòng chọn ít nhất một nhóm"),
+  groups: z
+    .array(
+      z.object({
+        groupId: z.string().min(1, "Vui lòng chọn nhóm"),
+        reviewTime: z.string().min(1, "Vui lòng chọn thời gian review"),
+      })
+    )
+    .min(1, "Vui lòng chọn ít nhất một nhóm")
+    .max(4, "Hội đồng chỉ có thể review tối đa 4 nhóm"),
   room: z.string().min(1, "Vui lòng nhập phòng"),
 });
 
@@ -52,7 +54,8 @@ export const CreateReviewSchedule: React.FC<CreateReviewScheduleProps> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { groups, loading: groupLoading } = useSelector((state: RootState) => state.groups);
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [groupCount, setGroupCount] = useState(1); // Số lượng nhóm hiển thị, bắt đầu từ 1
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -67,6 +70,17 @@ export const CreateReviewSchedule: React.FC<CreateReviewScheduleProps> = ({
       dispatch(fetchGroupsBySemester(semesterId));
     }
   }, [open, semesterId, dispatch]);
+
+  // Reset form và groupCount khi đóng/mở modal
+  useEffect(() => {
+    if (!open) {
+      setGroupCount(1);
+      form.reset({
+        groups: [{ groupId: "", reviewTime: "" }],
+        room: "",
+      });
+    }
+  }, [open, form]);
 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
@@ -83,10 +97,8 @@ export const CreateReviewSchedule: React.FC<CreateReviewScheduleProps> = ({
       await dispatch(createReviewSchedule(formattedData)).unwrap();
       toast.success("Tạo lịch review thành công!");
       setOpen(false);
-      form.reset();
     } catch (error: any) {
       console.error("Create review schedule failed:", error);
-      // Lấy thông báo lỗi từ error.payload và thay thế groupId bằng groupCode
       let errorMessage = error?.payload || "Tạo lịch review thất bại!";
       if (errorMessage.includes("Các nhóm chưa được phân công đề tài")) {
         const groupIds = errorMessage.match(/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/g) || [];
@@ -105,7 +117,23 @@ export const CreateReviewSchedule: React.FC<CreateReviewScheduleProps> = ({
 
   const addGroup = () => {
     const currentGroups = form.getValues("groups");
+    if (currentGroups.length >= 4) {
+      toast.error("Hội đồng chỉ có thể review tối đa 4 nhóm!");
+      return;
+    }
+    setGroupCount(groupCount + 1);
     form.setValue("groups", [...currentGroups, { groupId: "", reviewTime: "" }]);
+  };
+
+  const removeGroup = (index: number) => {
+    const currentGroups = form.getValues("groups");
+    if (currentGroups.length <= 1) {
+      toast.error("Phải có ít nhất một nhóm!");
+      return;
+    }
+    const updatedGroups = currentGroups.filter((_, i) => i !== index);
+    form.setValue("groups", updatedGroups);
+    setGroupCount(groupCount - 1);
   };
 
   if (!open) return null;
@@ -113,7 +141,7 @@ export const CreateReviewSchedule: React.FC<CreateReviewScheduleProps> = ({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">Tạo lịch review</h2>
           <button
             onClick={() => setOpen(false)}
@@ -124,19 +152,33 @@ export const CreateReviewSchedule: React.FC<CreateReviewScheduleProps> = ({
           </button>
         </div>
         <p className="text-gray-500 text-sm mb-4">
-          Nhập thông tin lịch review cho hội đồng.
+          Nhập thông tin lịch review cho hội đồng (tối đa 4 nhóm).
         </p>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            {form.watch("groups").map((_, index) => (
+            {/* Danh sách nhóm cố định */}
+            {Array.from({ length: groupCount }).map((_, index) => (
               <div key={index} className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <FormLabel>Nhóm {index + 1}</FormLabel>
+                  {groupCount > 1 && (
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => removeGroup(index)}
+                      disabled={isLoading || groupLoading}
+                    >
+                      Xóa
+                    </Button>
+                  )}
+                </div>
                 <FormField
                   control={form.control}
                   name={`groups.${index}.groupId`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Nhóm {index + 1}</FormLabel>
                       <FormControl>
                         <Select
                           onValueChange={field.onChange}
@@ -188,10 +230,20 @@ export const CreateReviewSchedule: React.FC<CreateReviewScheduleProps> = ({
                 />
               </div>
             ))}
-            <Button type="button" onClick={addGroup} disabled={isLoading || groupLoading}>
-              Thêm nhóm khác
-            </Button>
 
+            {/* Nút "Thêm nhóm khác" */}
+            {groupCount < 4 && (
+              <Button
+                type="button"
+                onClick={addGroup}
+                disabled={isLoading || groupLoading}
+                className="w-full"
+              >
+                Thêm nhóm khác ({groupCount}/4)
+              </Button>
+            )}
+
+            {/* Input "Phòng" */}
             <FormField
               control={form.control}
               name="room"
@@ -206,7 +258,8 @@ export const CreateReviewSchedule: React.FC<CreateReviewScheduleProps> = ({
               )}
             />
 
-            <div className="mt-6 flex justify-end space-x-4">
+            {/* Nút điều khiển */}
+            <div className="flex justify-end space-x-4">
               <Button
                 type="button"
                 onClick={() => setOpen(false)}

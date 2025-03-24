@@ -3,14 +3,14 @@ import { StudentNotGroupForStudent } from "@/lib/api/redux/types/not-group-stude
 
 export const columns: ColumnDef<StudentNotGroupForStudent>[] = [
   {
-    accessorKey: "studentId", 
+    accessorKey: "studentCode", 
     header: "Mã sinh viên",
-    cell: ({ row }) => <span>{row.original.studentId}</span>,
+    cell: ({ row }) => <span>{row.original.studentCode}</span>,
   },
   {
-    accessorKey: "fullName", 
+    accessorKey: "studentName", 
     header: "Họ và Tên",
-    cell: ({ row }) => <span>{row.original.fullName}</span>,
+    cell: ({ row }) => <span>{row.original.studentName}</span>,
   },
   {
     accessorKey: "email", 

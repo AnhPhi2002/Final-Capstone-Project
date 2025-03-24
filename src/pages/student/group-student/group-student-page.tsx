@@ -1,5 +1,6 @@
 import Header from "@/components/header";
-import { SelectSemester } from "./select/select-semester";
+import { GroupStudentCardPage } from "./group-student-card-page";
+// import { SelectSemester } from "./select/select-semester";
 
 export const GroupStudentWithStudentPage = () => {
   return (
@@ -10,8 +11,8 @@ export const GroupStudentWithStudentPage = () => {
         currentPage="Danh sách nhóm sinh vien"
       />
       <div className="p-5 flex-1 overflow-auto">
-        <SelectSemester />
-        
+        {/* <SelectSemester /> */}
+        <GroupStudentCardPage />
       </div>
     </div>
   );

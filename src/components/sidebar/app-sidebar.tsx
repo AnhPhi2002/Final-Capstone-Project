@@ -271,6 +271,19 @@ const lecturerMenu = {
 
       ],
     },
+    {
+      title: "Hội đồng",
+      url: "/lecturer/council-member",
+      icon: List,
+      isActive: true,
+      items: [
+        {
+          title: "Hội đồng review",
+          url: "/lecturer/council-review",
+        },
+
+      ],
+    }
   ],
 };
 const examinationMenu = {

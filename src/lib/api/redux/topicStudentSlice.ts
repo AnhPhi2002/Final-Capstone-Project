@@ -2,53 +2,6 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { axiosClient } from "@/lib/api/config/axios-client";
 import { Topic } from "../types";
 
-// interface Topic {
-//   id: string;
-//   topicCode: string;
-//   nameVi: string;
-//   nameEn: string;
-//   description: string;
-//   status: string;
-//   createdAt: string;
-//   semester:{
-//     id: string;
-//     code: string;
-//     startDate: string;
-//     endDate: string;
-//   };
-//   subsubSupervisor: string;
-//   major: {
-//     id: string;
-//     name: string;
-//   }[];
-//   group?: {
-//     id: string;
-//     groupCode: string;
-//     semester: {
-//       id: string;
-//       code: string;
-//     };
-//     members: {
-//       id: string;
-//       studentId: string;
-//       userId?: string | null;
-//       roleId: string;
-//       joinedAt: string;
-//       leaveAt?: string | null;
-//       leaveReason?: string | null;
-//       isActive: boolean;
-//       status: string;
-//       user?: {
-//         id: string;
-//         fullName?: string | null;
-//         email?: string | null;
-//       } | null;
-//       role: {
-//         name: string;
-//       };
-//     }[];
-//   };
-// }
 
 // 🟢 Fetch danh sách đề tài có thể đăng ký
 export const fetchAvailableTopics = createAsyncThunk(

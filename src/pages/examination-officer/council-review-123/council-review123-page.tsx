@@ -1,6 +1,6 @@
 import Header from "@/components/header";
 import { CreateReviewTopicCouncil } from "./create-council-review123";
-import { CouncilReviewList } from "./columns/CouncilReviewList";
+import { SelectSemester } from "./seclect-semester/select-semester";
 
 export const CouncilReviewPage = () => {
   return (
@@ -13,7 +13,8 @@ export const CouncilReviewPage = () => {
             <CreateReviewTopicCouncil />
           </div>
           <div className="w-full">
-          <CouncilReviewList />
+          {/* <CouncilReviewList /> */}
+          <SelectSemester/>
           </div>
         </div>
       </div>

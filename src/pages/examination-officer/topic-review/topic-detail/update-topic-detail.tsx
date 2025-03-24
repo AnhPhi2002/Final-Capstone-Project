@@ -15,27 +15,24 @@ export default function UpdateReviewTopicDetail() {
   const { topicId, semesterId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const { topicDetails, loading, error } = useSelector((state: RootState) => state.topics);
   const { author } = useSelector((state: RootState) => state.auth);
 
-
-  const { topicDetails, loading } = useSelector(
-    (state: RootState) => state.topics
-  );
-
   const [formData, setFormData] = useState({
-    status: "PENDING", 
+    status: "PENDING",
     reasons: "",
   });
 
-  // Danh sách trạng thái có thể chọn
-  const statusOptions = ["PENDING", "APPROVED", "IMPROVED","REJECTED"];
+  const statusOptions = ["PENDING", "APPROVED", "IMPROVED", "REJECTED"];
 
+  // Fetch topic detail khi component mount
   useEffect(() => {
     if (topicId && semesterId) {
-      dispatch(fetchTopicDetail({topicId, semesterId}));
+      dispatch(fetchTopicDetail({ topicId, semesterId }));
     }
   }, [dispatch, topicId, semesterId]);
 
+  // Cập nhật formData khi topicDetails thay đổi
   useEffect(() => {
     if (topicDetails) {
       setFormData({
@@ -50,31 +47,46 @@ export default function UpdateReviewTopicDetail() {
     setFormData({ ...formData, status: e.target.value });
   };
 
-  // Xử lý nhập liệu cho reviewReason
+  // Xử lý thay đổi lý do xét duyệt
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({ ...formData, reasons: e.target.value });
   };
 
+  // Xử lý cập nhật trạng thái
   const handleUpdate = async () => {
-    if (!topicId || topicId === ":topicId" || !semesterId) {
-      toast.error("Lỗi: topicId không hợp lệ!");
+    if (!topicId || !semesterId) {
+      toast.error("Lỗi: topicId hoặc semesterId không hợp lệ!");
       return;
     }
-  
-    try {
-      await dispatch(updateTopicStatus({ topicId, updatedData: formData})).unwrap();
-      toast.success("Cập nhật trạng thái thành công!");
-  
 
-      dispatch(fetchTopicDetail({topicId, semesterId})).unwrap();;
-  
-      navigate(`/examination/review-topic-detail/${topicId}/${semesterId}`); 
+    try {
+      await dispatch(updateTopicStatus({ topicId, updatedData: formData })).unwrap();
+      toast.success("Cập nhật trạng thái thành công!");
+      await dispatch(fetchTopicDetail({ topicId, semesterId })).unwrap(); // Refresh dữ liệu
+      navigate(`/examination/review-topic-detail/${topicId}/${semesterId}`);
     } catch (err: any) {
-      toast.error(err || "Có lỗi xảy ra khi cập nhật trạng thái.");
+      toast.error(err?.message || "Có lỗi xảy ra khi cập nhật trạng thái.");
     }
   };
-  
-  
+
+  // Hiển thị khi đang tải
+  if (loading) {
+    return <p className="text-center text-gray-500">Đang tải dữ liệu...</p>;
+  }
+
+  // Hiển thị khi có lỗi
+  if (error && !topicDetails) {
+    return <p className="text-center text-red-500">Lỗi khi tải đề tài: {error}</p>;
+  }
+
+  // Hiển thị khi không có dữ liệu
+  if (!topicDetails) {
+    return (
+      <p className="text-center text-gray-500">
+        Không tìm thấy đề tài hoặc đang tải...
+      </p>
+    );
+  }
 
   return (
     <div>
@@ -83,16 +95,19 @@ export default function UpdateReviewTopicDetail() {
         <Card className="p-6">
           <div className="flex items-center mt-4 gap-3">
             <Avatar className="w-10 h-10">
-              <AvatarImage
-                src="https://github.com/shadcn.png"
-                alt="Topic Avatar"
-              />
+              <AvatarImage src="https://github.com/shadcn.png" alt="Topic Avatar" />
               <AvatarFallback>T</AvatarFallback>
             </Avatar>
-            <div className="w-full">
-              <Input name="nameEn" value={topicDetails?.nameEn || ""} disabled />
-              <p className="text-sm text-gray-500 italic mb-1">
-                Last updated: {new Date().toLocaleDateString()}
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">
+                {topicDetails.nameEn || "Chưa có tên tiếng Anh"}
+              </h3>
+              <p className="text-sm text-gray-500 italic">
+                Created at:{" "}
+                {topicDetails.createdAt
+                  ? new Date(topicDetails.createdAt).toLocaleDateString()
+                  : "Không xác định"}{" "}
+                by {author?.fullName || "Không có tác giả"}
               </p>
             </div>
           </div>
@@ -101,34 +116,38 @@ export default function UpdateReviewTopicDetail() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-sm text-gray-500 mb-1">Tên viết tắt</p>
-                <Input name="name" value={topicDetails?.name || ""} disabled />
+                <Input value={topicDetails.name || "Không có tên viết tắt"} disabled />
               </div>
               <div>
                 <p className="text-sm text-gray-500 mb-1">Tên tiếng Việt</p>
-                <Input name="nameVi" value={topicDetails?.nameVi || ""} disabled />
+                <Input value={topicDetails.nameVi || "Chưa có tiêu đề tiếng Việt"} disabled />
               </div>
               <div>
                 <p className="text-sm text-gray-500 mb-1">Tên tiếng Anh</p>
-                <Input name="nameVi" value={topicDetails?.nameEn || ""} disabled />
-              </div>
-              <div>
-                <p className="text-sm text-gray-500 mb-1">Tên tiếng Anh</p>
-                <Input name="nameVi" value={topicDetails?.nameEn || ""} disabled />
+                <Input value={topicDetails.nameEn || "Chưa có tên tiếng Anh"} disabled />
               </div>
               <div>
                 <p className="text-sm text-gray-500 mb-1">Chuyên ngành</p>
-                <Input name="majorId" value={topicDetails?.majorId || ""} disabled />
+                <Input
+                  value={
+                    topicDetails.majors?.length > 0
+                      ? topicDetails.majors.map((major) => major.name).join(", ")
+                      : "Chưa có chuyên ngành"
+                  }
+                  disabled
+                />
               </div>
               <div>
                 <p className="text-sm text-gray-500 mb-1">Mentor 1</p>
-                <Input name="majorId" value={author?.email || ""} disabled />
+                <Input value={author?.email || "Chưa có mentor 1"} disabled />
               </div>
               <div>
                 <p className="text-sm text-gray-500 mb-1">Mentor 2</p>
-                <Input name="majorId" value={topicDetails?.subMentor?.email || ""} disabled />
+                <Input
+                  value={topicDetails.subMentor?.email || "Chưa có mentor 2"}
+                  disabled
+                />
               </div>
-
-              {/* ✅ Thay thế Badge bằng Select để chọn status */}
               <div>
                 <p className="text-sm text-gray-500 mb-1">Trạng thái</p>
                 <select
@@ -146,7 +165,6 @@ export default function UpdateReviewTopicDetail() {
               </div>
             </div>
 
-
             <div>
               <p className="text-sm text-gray-500 mb-1">Lý do xét duyệt</p>
               <Textarea
@@ -154,16 +172,13 @@ export default function UpdateReviewTopicDetail() {
                 className="w-full p-2 border rounded-md h-24"
                 value={formData.reasons}
                 onChange={handleChange}
+                placeholder="Nhập lý do xét duyệt..."
               />
             </div>
           </CardContent>
 
           <div className="flex justify-end gap-4 mt-6">
-            <Button
-              type="button"
-              onClick={handleUpdate}
-              disabled={loading}
-            >
+            <Button type="button" onClick={handleUpdate} disabled={loading}>
               {loading ? "Đang lưu..." : "Lưu thay đổi"}
             </Button>
           </div>
