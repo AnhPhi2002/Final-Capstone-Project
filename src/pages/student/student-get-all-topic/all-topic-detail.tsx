@@ -95,17 +95,19 @@ export default function AllTopicDetail() {
               </p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 mb-1">Tên tiếng Việt</p>
+              <p className="text-sm text-gray-500 mb-1">Tên tiếng Việt</p> 
               <p className="font-semibold italic">
                 {topicDetails.nameVi || "Chưa có tiêu đề tiếng Việt"}
               </p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 mb-1">Ngành</p>
-              <p className="font-semibold italic">
-                {topicDetails.majorId || "Chưa có chuyên ngành"}
-              </p>
-            </div>
+                <p className="text-sm text-gray-500 mb-1">Ngành</p>
+                <p className="font-semibold italic">
+                  {topicDetails.majors?.length > 0
+                    ? topicDetails.majors.map(major => major.name).join(", ")
+                    : "Chưa có chuyên ngành"}
+                </p>
+              </div>
             <div>
               <p className="text-sm text-gray-500 mb-1">Trạng thái</p>
               <Badge>

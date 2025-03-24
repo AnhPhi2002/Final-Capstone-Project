@@ -157,7 +157,9 @@ export default function TopicDetail() {
               <div>
                 <p className="text-sm text-gray-500 mb-1">Ngành</p>
                 <p className="font-semibold italic">
-                  {topicDetails.majorId || "Chưa có chuyên ngành"}
+                  {topicDetails.majors?.length > 0
+                    ? topicDetails.majors.map(major => major.name).join(", ")
+                    : "Chưa có chuyên ngành"}
                 </p>
               </div>
               <div>
