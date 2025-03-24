@@ -16,12 +16,12 @@ export const columns: ColumnDef<StudentNotGroup, unknown>[] = [
   {
     accessorKey: "major.name",
     header: "Ngành học",
-    cell: ({ row }) => <span>{row.original.major?.name || "N/A"}</span>,
+    cell: ({ row }) => <span>{row.original.major|| "N/A"}</span>,
   },
   {
     accessorKey: "specialization.name", 
     header: "Chuyên ngành hẹp",
-    cell: ({ row }) => <span>{row.original.specialization?.name || "N/A"}</span>,
+    cell: ({ row }) => <span>{row.original.specialization|| "N/A"}</span>,
   },
   {
     accessorKey: "status",
