@@ -21,6 +21,9 @@ import { ApproveTopicDetail } from "@/pages/mentor/approve-topic/columns/approve
 import { ApproveTopicList } from "@/pages/mentor/approve-topic/columns/approve-topic-list";
 import { MeetingPage } from "@/pages/mentor/meeting/meeting";
 import MeetingListPage from "@/pages/mentor/meeting/meeting-page";
+import { CouncilReviewMentorPage } from "@/pages/mentor/council-mentor/council-review-mentor-page";
+import { CouncilReviewMentorDetail } from "@/pages/mentor/council-mentor/columns/council-review-mentor-detail";
+import { CouncilReviewMembersPage } from "@/pages/mentor/council-mentor/columns-member/CouncilMembersPage";
 
 export const LecturerContainer = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -38,7 +41,7 @@ export const LecturerContainer = () => {
         <Route path="/topic" element={<TopicPage />} />
         <Route path="/topic/:semesterId" element={<TopicPage />} />
         <Route path="/topic-list" element={<TopicListPage />} />
-        <Route path="/topic-list/semester/:semesterId/submission/:submissionPeriodId/round/:roundNumber" element={<TopicListPage />}/>
+        <Route path="/topic-list/semester/:semesterId/submission/:submissionPeriodId/round/:roundNumber" element={<TopicListPage />} />
         <Route path="/topic-detail/:topicId/:semesterId" element={<TopicDetailPage />} />
         <Route path="/topic-detail/:topicId/:semesterId/update" element={<UpdateTopicDetail />}
         />
@@ -54,10 +57,14 @@ export const LecturerContainer = () => {
         <Route path="/approve-topic" element={<ApproveTopicPage />} />
         <Route path="/approve-topic-list/:semesterId/submission/:submissionPeriodId/round/:roundNumber" element={<ApproveTopicList />} />
         <Route path="/approve-topic-detail/:topicId/:semesterId" element={<ApproveTopicDetail />} />
-        
-        <Route path="/meeting" element={<MeetingListPage/>} />
-        <Route path="/meeting/:semesterId" element={<MeetingPage/>} />
-        
+
+        <Route path="/meeting" element={<MeetingListPage />} />
+        <Route path="/meeting/:semesterId" element={<MeetingPage />} />
+
+        <Route path="/council-review" element={<CouncilReviewMentorPage />} />
+        <Route path="/council-review/:councilId/:semesterId" element={<CouncilReviewMentorDetail />} />
+        <Route path="/council-review-member/:councilId/:semesterId" element={<CouncilReviewMembersPage />} />
+
         <Route path="/*" element={<NotFound />} />
       </Routes>
     </MainLayout>

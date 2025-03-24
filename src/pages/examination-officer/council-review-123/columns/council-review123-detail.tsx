@@ -1,5 +1,5 @@
-// components/CouncilReviewDetail.tsx
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useCallback, useState } from "react";
+import { CouncilReview } from "@/lib/api/types";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
@@ -10,80 +10,92 @@ import {
   getPaginationRowModel,
   getFilteredRowModel,
 } from "@tanstack/react-table";
-import { CouncilReviewMember } from "@/lib/api/types";
 import { DataTable } from "./data-table";
-import { memberColumns } from "./columns";
-import { AddMemberReviewCouncil } from "./AddMemberReviewCouncil";
-import { CreateReviewSchedule } from "./CreateReviewSchedule";
+import { columnsCouncils } from "./columns";
 import Header from "@/components/header";
+import { Button } from "@/components/ui/button";
+import { CreateReviewSchedule } from "./CreateReviewSchedule"; // Import CreateReviewSchedule
 
 export const CouncilReviewDetail = () => {
-  const { councilId } = useParams<{ councilId: string }>();
+  const { councilId, semesterId } = useParams<{ councilId?: string; semesterId?: string }>(); // Thêm semesterId
   const dispatch = useDispatch<AppDispatch>();
-  const { councilDetail, loadingDetail } = useSelector((state: RootState) => state.councilReview); // Bỏ error
-  const [addMemberOpen, setAddMemberOpen] = useState(false);
-  const [scheduleOpen, setScheduleOpen] = useState(false);
+  const { councilDetail, loadingDetail } = useSelector((state: RootState) => state.councilReview); // Giả sử key là councilReviews trong store
+  const [shouldRefetch, setShouldRefetch] = useState(false);
+  const [openCreateSchedule, setOpenCreateSchedule] = useState(false);
 
+  // Fetch chi tiết hội đồng khi component mount hoặc councilId thay đổi
   useEffect(() => {
     if (councilId) {
       dispatch(fetchCouncilDetail(councilId));
     }
   }, [dispatch, councilId]);
 
+  // Kiểm soát refetch khi cần
+  useEffect(() => {
+    if (shouldRefetch && councilId) {
+      dispatch(fetchCouncilDetail(councilId));
+      setShouldRefetch(false);
+    }
+  }, [shouldRefetch, dispatch, councilId]);
+
+  const handleRefetch = useCallback(() => {
+    setShouldRefetch(true);
+  }, []);
+
+  // Memoize dữ liệu đầu vào thay vì useReactTable
   const tableData = useMemo(() => {
-    console.log("Memoizing tableData with councilDetail.members:", councilDetail?.members);
-    return (councilDetail?.members || []) as CouncilReviewMember[];
+    console.log("Memoizing tableData with councilDetail:", councilDetail);
+    return councilDetail ? [councilDetail] : [];
   }, [councilDetail]);
 
-  const table = useReactTable<CouncilReviewMember>({
+  // Gọi useReactTable ở top level
+  const table = useReactTable<CouncilReview>({
     data: tableData,
-    columns: memberColumns,
+    columns: columnsCouncils,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    meta: {
+      refetchData: handleRefetch,
+    },
   });
+
+  // Kiểm tra councilId và semesterId có hợp lệ không
+  if (!councilId || !semesterId) {
+    return <p className="text-center text-red-500">Council ID hoặc Semester ID không hợp lệ!</p>;
+  }
 
   return (
     <div className="flex flex-col h-screen">
       {loadingDetail ? (
         <p className="text-center text-gray-500">Đang tải thông tin hội đồng...</p>
-      ) : !councilDetail ? (
-        <p className="text-center text-gray-500">Không tìm thấy thông tin hội đồng.</p>
       ) : (
         <>
           <Header
-            title={`Chi tiết hội đồng: ${councilDetail.name}`}
-            href="/council-review"
+            title="Chi tiết hội đồng xét duyệt"
+            href="/review-topic"
             currentPage="Quản lý hội đồng"
           />
           <div className="p-6 flex-1 overflow-auto">
-            <div className="flex justify-end mb-4 space-x-4">
-              <button
-                onClick={() => setAddMemberOpen(true)}
-                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
-              >
-                Thêm thành viên
-              </button>
-              <button
-                onClick={() => setScheduleOpen(true)}
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+            <div className="mb-4 flex justify-end">
+              <Button
+                className="bg-black text-white"
+                onClick={() => setOpenCreateSchedule(true)}
+                disabled={loadingDetail}
               >
                 Tạo lịch review
-              </button>
+              </Button>
             </div>
-            <DataTable table={table} />
-            <AddMemberReviewCouncil
-              open={addMemberOpen}
-              setOpen={setAddMemberOpen}
-              councilId={councilId!}
-              semesterId={councilDetail.semesterId}
-            />
+
+            {/* Tích hợp CreateReviewSchedule */}
             <CreateReviewSchedule
-              open={scheduleOpen}
-              setOpen={setScheduleOpen}
-              councilId={councilId!}
-              semesterId={councilDetail.semesterId}
+              open={openCreateSchedule}
+              setOpen={setOpenCreateSchedule}
+              councilId={councilId}
+              semesterId={semesterId}
             />
+
+            <DataTable table={table} />
           </div>
         </>
       )}

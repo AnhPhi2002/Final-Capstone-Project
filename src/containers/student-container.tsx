@@ -51,10 +51,10 @@ export const StudentContainer = () => {
         <Route path="/not-group-student/:semesterId" element={<NotGroupStudentDetailPage />} />
 
         <Route path="/all-topics-student" element={<AllTopicStudent />} />
-        <Route path="/all-topics-student/:topicId" element={<AllTopicDetail />} />
+        <Route path="/all-topics-student/:topicId/:semesterId" element={<AllTopicDetail />} />
 
         <Route path="/topic-group-register-detail" element={<TopicGroupRegisterPage />} />
-        <Route path="/topic-group-register-detail/:topicId" element={<TopicGroupRegisterDetail />} />
+        <Route path="/topic-group-register-detail/:topicId/:semesterId" element={<TopicGroupRegisterDetail />} />
 
         <Route path="/meeting-student" element={<MeetingStudentPage/>} />
         <Route path="/meeting-student/:id" element={<MeetingStudentDetail />} />

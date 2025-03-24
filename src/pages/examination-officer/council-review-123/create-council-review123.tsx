@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -25,7 +25,7 @@ import { RootState, AppDispatch } from "@/lib/api/redux/store";
 import { fetchYears } from "@/lib/api/redux/yearSlice";
 import { fetchSemesters } from "@/lib/api/redux/semesterSlice";
 import { fetchSubmissionRounds } from "@/lib/api/redux/submissionRoundSlice";
-import { createCouncilReview } from "@/lib/api/redux/councilReviewSlice";
+import { createCouncilReview, fetchReviewCouncilsList } from "@/lib/api/redux/councilReviewSlice";
 
 export const CreateReviewTopicCouncil = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -37,11 +37,10 @@ export const CreateReviewTopicCouncil = () => {
   const [open, setOpen] = useState(false);
   const [councilName, setCouncilName] = useState("");
   const [selectedYear, setSelectedYear] = useState("");
-  const [selectedSemester, setSelectedSemester] = useState("");
+  const [	selectedSemester, setSelectedSemester] = useState("");
   const [selectedSubmissionRound, setSelectedSubmissionRound] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [status] = useState("ACTIVE");
   const [creating, setCreating] = useState(false);
 
   useEffect(() => {
@@ -78,16 +77,17 @@ export const CreateReviewTopicCouncil = () => {
       name: councilName,
       semesterId: selectedSemester,
       submissionPeriodId: selectedSubmissionRound,
-      startDate: convertToISODate(startDate),
-      endDate: convertToISODate(endDate, true),
-      status,
-      type: "topic",
-      round: round?.roundNumber || 1,
+      startDate: convertToISODate(startDate), // Sử dụng startDate
+      endDate: convertToISODate(endDate, true), // Sử dụng endDate
+      round: round?.roundNumber || 1, // Lấy roundNumber từ submissionRound hoặc mặc định là 1
     };
+
+    console.log("Data gửi lên API:", newCouncil); // Debug
 
     try {
       await dispatch(createCouncilReview(newCouncil)).unwrap();
       toast.success("Tạo hội đồng xét duyệt thành công!");
+      await dispatch(fetchReviewCouncilsList({ semesterId: selectedSemester })); // Fetch lại danh sách
       setOpen(false);
       setCouncilName("");
       setSelectedYear("");
@@ -95,7 +95,8 @@ export const CreateReviewTopicCouncil = () => {
       setSelectedSubmissionRound("");
       setStartDate("");
       setEndDate("");
-    } catch {
+    } catch (error) {
+      console.error("Create council failed:", error); // Debug lỗi chi tiết
       toast.error("Tạo hội đồng xét duyệt thất bại!");
     } finally {
       setCreating(false);

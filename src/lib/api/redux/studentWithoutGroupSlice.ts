@@ -67,7 +67,7 @@ export const fetchStudentsWithoutGroupForStudent = createAsyncThunk<
 
     return response.data.data;
   } catch (error: any) {
-    console.error("❌ API Error:", error.response || error.message);
+    // console.error("❌ API Error:", error.response || error.message);
     return rejectWithValue(
       
       error.response?.data?.message || "Lỗi tải danh sách sinh viên"

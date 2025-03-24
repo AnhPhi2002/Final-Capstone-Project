@@ -30,7 +30,7 @@ interface Topic {
   businessPartner: string | null;
   source: string | null;
   semesterId: string | undefined;
-  majorId: string;
+  majors: GroupInfo[];
   mainMentorId?: string | null;
   subMentorId?: string | null;
   subSupervisor?: string | null;
@@ -63,6 +63,23 @@ interface Topic {
       fileType: string;
     },
   ];
+  topicAssignments?: TopicAssignment[];
+}
+
+interface TopicAssignment {
+  id?: string;
+  groupId: string;
+  status: string;
+  approvalStatus: string;
+  group?: {
+    id: string;
+    groupCode: string;
+  };
+}
+
+interface GroupInfo {
+  id: string;
+  name: string;
 }
 
 // Fetch danh sách topic theo semesterId
@@ -215,8 +232,8 @@ export const updateTopicForAcademic = createAsyncThunk(
       console.log("📡 Gửi API cập nhật đề tài bằng POST:", { topicId, updatedData });
 
       const response = await axiosClient.post(
-        `/topics/topics/${topicId}/assign`, // ✅ Sử dụng POST thay vì PUT
-        updatedData // ✅ Truyền body đúng định dạng
+        `/topics/${topicId}/assign`, 
+        updatedData 
       );
 
       console.log("✅ API Response:", response.data);

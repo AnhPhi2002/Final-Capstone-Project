@@ -71,11 +71,11 @@ export default function TopicStudentListDetail() {
         <CardContent className="p-4 space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <p className="text-sm text-gray-500 mb-1">Abbreviations</p>
+              <p className="text-sm text-gray-500 mb-1">Tên viết tắt</p>
               <p className="font-semibold italic">{topicDetails.nameEn || "Không có tên viết tắt"}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 mb-1">Vietnamese Title</p>
+              <p className="text-sm text-gray-500 mb-1">Tên tiếng Việt</p>
               <p className="font-semibold italic">{topicDetails.nameVi || "Chưa có tiêu đề tiếng Việt"}</p>
             </div>
             <div>

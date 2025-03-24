@@ -34,13 +34,14 @@ export const createCouncilReview = createAsyncThunk(
 
 export const fetchReviewCouncilsList = createAsyncThunk(
     "councils/fetchReviewCouncils",
-    async (_, { rejectWithValue }) => {
+    async ({semesterId}:{semesterId: string}, { rejectWithValue }) => {
         try {
-            const response = await axiosClient.get(`/council-review`);
-            console.log("API fetchReviewCouncilsList response:", response.data);
+            const response = await axiosClient.get(`/council-review`,{
+                params: { semesterId },
+            });
+
             const councils = response.data.data as CouncilReview[];
             const filteredCouncils = councils.filter((council) => council.isDeleted === false);
-            console.log("Filtered councils (isDeleted: false):", filteredCouncils);
             return filteredCouncils;
         } catch (error: any) {
             console.error("API fetchReviewCouncilsList error:", error.response?.data || error.message);
@@ -54,14 +55,31 @@ export const fetchCouncilDetail = createAsyncThunk(
     async (councilId: string, { rejectWithValue }) => {
         try {
             const response = await axiosClient.get(`/council-review/${councilId}`);
-            console.log("API fetchCouncilDetail response:", response.data);
             const council = response.data.data as CouncilReview;
             if (council.isDeleted) {
                 return rejectWithValue("Hội đồng đã bị xóa!");
             }
             return council;
         } catch (error: any) {
-            console.error("API fetchCouncilDetail error:", error.response?.data || error.message);
+            return rejectWithValue(error.response?.data?.message || "Không thể tải chi tiết hội đồng!");
+        }
+    }
+);
+
+export const fetchCouncilDetailForMentor = createAsyncThunk(
+    "councils/fetchCouncilDetailForMentor",
+    async ({councilId, semesterId}:{councilId: string; semesterId: string}, { rejectWithValue }) => {
+        try {
+            const response = await axiosClient.get(`/council-review/${councilId}`,{
+                params: {semesterId}
+            });
+            const council = response.data.data as CouncilReview;
+            if (council.isDeleted) {
+                return rejectWithValue("Hội đồng đã bị xóa!");
+            }
+            return council;
+        } catch (error: any) {
+
             return rejectWithValue(error.response?.data?.message || "Không thể tải chi tiết hội đồng!");
         }
     }
@@ -204,6 +222,18 @@ const councilReviewSlice = createSlice({
                 state.loadingDetail = false;
                 state.error = action.payload as string;
             })
+            .addCase(fetchCouncilDetailForMentor.pending, (state) => {
+                state.loadingDetail = true;
+                state.error = null;
+            })
+            .addCase(fetchCouncilDetailForMentor.fulfilled, (state, action) => {
+                state.loadingDetail = false;
+                state.councilDetail = action.payload;
+            })
+            .addCase(fetchCouncilDetailForMentor.rejected, (state, action) => {
+                state.loadingDetail = false;
+                state.error = action.payload as string;
+            })
             .addCase(updateCouncil.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -276,7 +306,7 @@ const councilReviewSlice = createSlice({
                 state.loading = false;
                 // Không cần cập nhật state vì không lưu lịch review trong councilDetail
               })
-              .addCase(createReviewSchedule.rejected, (state, action) => {
+              .addCase(createReviewSchedule.rejected, (state) => {
                 state.loading = false;
                 // state.error = action.payload as string;
               })

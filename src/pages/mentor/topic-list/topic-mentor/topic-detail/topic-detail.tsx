@@ -11,48 +11,28 @@ import { toast } from "sonner";
 import { DataTableGroupTopic } from "./data-table-group-topic";
 import { fetchUserById, resetMainMentor } from "@/lib/api/redux/authSlice";
 import { resetGroupDetail } from "@/lib/api/redux/groupDetailSlice";
-import { fetchSubUserById, resetSubMentor } from "@/lib/api/redux/authSubSlice"
+import { fetchSubUserById, resetSubMentor } from "@/lib/api/redux/authSubSlice";
 
 export default function TopicDetail() {
   const { topicId, semesterId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { topicDetails, loading, error } = useSelector(
-    (state: RootState) => state.topics
-  );
-  // const { author: auth } = useSelector((state: RootState) => state.auth);
+  const { topicDetails, loading, error } = useSelector((state: RootState) => state.topics);
   const { author: mainMentor } = useSelector((state: RootState) => state.auth);
   const { author: subMentor } = useSelector((state: RootState) => state.authSub);
 
   useEffect(() => {
-    // ✅ Reset mainMentor và subMentor trước khi fetch API
-    dispatch(resetGroupDetail()); 
-    dispatch(resetMainMentor()); 
+    dispatch(resetGroupDetail());
+    dispatch(resetMainMentor());
     dispatch(resetSubMentor());
     dispatch(resetTopicDetail());
-  
-    // ✅ Đợi reset xong rồi mới gọi API mới
+
     setTimeout(() => {
       if (topicId && semesterId) {
         dispatch(fetchTopicDetail({ topicId, semesterId }));
-  
-        if (topicDetails?.mainSupervisor) {
-          dispatch(fetchUserById({ userId: topicDetails.mainSupervisor, semesterId }));
-        }
-  
-        if (topicDetails?.subSupervisor) {
-          dispatch(fetchSubUserById({ userId: topicDetails.subSupervisor, semesterId }));
-        }
       }
-    }, 50); // Chờ 50ms để đảm bảo Redux đã reset xong trước khi fetch dữ liệu mới
-  
+    }, 50);
   }, [dispatch, topicId, semesterId]);
-
-  // useEffect(() => {
-  //   if (topicDetails?.createdBy && topicDetails?.semesterId) {
-  //     dispatch(fetchUserById({ userId: topicDetails.createdBy, semesterId: topicDetails.semesterId }));
-  //   }
-  // }, [dispatch, topicDetails?.createdBy, topicDetails?.semesterId]);
 
   useEffect(() => {
     if (topicDetails?.mainSupervisor && topicDetails?.semesterId) {
@@ -73,16 +53,12 @@ export default function TopicDetail() {
     useEffect(() => {
       if (error) toast.error(error);
     }, [error]);
-    return (
-      <p className="text-center text-red-500">Lỗi khi tải đề tài: {error}</p>
-    );
+    return <p className="text-center text-red-500">Lỗi khi tải đề tài: {error}</p>;
   }
 
   if (!topicDetails)
     return (
-      <p className="text-center text-gray-500">
-        Không tìm thấy đề tài hoặc đang tải...
-      </p>
+      <p className="text-center text-gray-500">Không tìm thấy đề tài hoặc đang tải...</p>
     );
 
   const handleDeleteTopic = async () => {
@@ -94,27 +70,35 @@ export default function TopicDetail() {
     if (!confirm("Bạn có chắc muốn xóa đề tài này?")) return;
 
     try {
-      toast.success("Xóa đề tài thành công")
+      toast.success("Xóa đề tài thành công");
       await dispatch(deleteTopic({ topicId, semesterId })).unwrap();
-      navigate("/lecturer/topic"); // ✅ Điều hướng sau khi xóa thành công
+      navigate("/lecturer/topic");
     } catch (error) {
       toast.error("Lỗi khi xóa đề tài!");
     }
   };
+
   const handleOpenFile = (fileUrl: string) => {
-    // Mở URL trong tab mới
     window.open(fileUrl, "_blank", "noopener,noreferrer");
   };
+
+  const getGroupId = () => {
+    console.log("Topic Details:", topicDetails); // Debug dữ liệu topicDetails
+    if (topicDetails.status === "PENDING") {
+      return topicDetails.group?.id;
+    } else if (["APPROVED", "IMPROVED"].includes(topicDetails.status)) {
+      return topicDetails.topicAssignments?.[0]?.groupId; // Lấy groupId từ phần tử đầu tiên của mảng topicAssignments
+    }
+    return undefined;
+  };
+
   return (
     <div>
       <div className="mt-6 bg-white">
         <Card className="p-6">
           <div className="flex items-center mt-4 gap-3">
             <Avatar className="w-10 h-10">
-              <AvatarImage
-                src="https://github.com/shadcn.png"
-                alt="Topic Avatar"
-              />
+              <AvatarImage src="https://github.com/shadcn.png" alt="Topic Avatar" />
               <AvatarFallback>T</AvatarFallback>
             </Avatar>
             <div>
@@ -125,8 +109,7 @@ export default function TopicDetail() {
                 Created at:{" "}
                 {topicDetails.createdAt
                   ? new Date(topicDetails.createdAt).toLocaleDateString()
-                  : "Không xác định"}{" "}
-                {/* by {auth?.fullName || "không có tác giả"} */}
+                  : "Không xác định"}
               </p>
             </div>
           </div>
@@ -140,7 +123,7 @@ export default function TopicDetail() {
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">Tên tiếng việt</p>
+                <p className="text-sm text-gray-500 mb-1">Tên tiếng Việt</p>
                 <p className="font-semibold italic">
                   {topicDetails.nameVi || "Chưa có tiêu đề tiếng Việt"}
                 </p>
@@ -148,16 +131,15 @@ export default function TopicDetail() {
               <div>
                 <p className="text-sm text-gray-500 mb-1">Ngành</p>
                 <p className="font-semibold italic">
-                  {topicDetails.majorId || "Chưa có chuyên ngành"}
+                  {topicDetails.majors?.length > 0
+                    ? topicDetails.majors.map(major => major.name).join(", ")
+                    : "Chưa có chuyên ngành"}
                 </p>
               </div>
               <div>
                 <p className="text-sm text-gray-500 mb-1">Trạng thái</p>
-                <Badge>
-                  {topicDetails.status || "Chưa cập nhật trạng thái"}
-                </Badge>
+                <Badge>{topicDetails.status || "Chưa cập nhật trạng thái"}</Badge>
               </div>
-              
               <div>
                 <p className="text-sm text-gray-500 mb-1">Mentor 1</p>
                 <p className="font-semibold italic">
@@ -168,7 +150,6 @@ export default function TopicDetail() {
                   )}
                 </p>
               </div>
-              {/* 🔹 Thêm phần hiển thị Mentor phụ */}
               <div>
                 <p className="text-sm text-gray-500 mb-1">Mentor 2</p>
                 <p className="font-semibold italic">
@@ -193,22 +174,21 @@ export default function TopicDetail() {
                     </Button>
                   ))
                 ) : (
-                  <p className="text-sm text-gray-500">Chưa cập nhật trạng thái</p>
+                  <p className="text-sm text-gray-500">Chưa cập nhật tài liệu</p>
                 )}
               </div>
             </div>
 
             <div>
-              <p className="text-sm text-gray-500 mb-1">Description</p>
+              <p className="text-sm text-gray-500 mb-1">Nội dung</p>
               <p className="italic text-gray-800">
                 {topicDetails.description || "Chưa có mô tả"}
               </p>
             </div>
           </CardContent>
 
-
           <div>
-            <DataTableGroupTopic groupId={topicDetails.group?.id} />
+            <DataTableGroupTopic groupId={getGroupId()} />
           </div>
 
           <div className="flex justify-end gap-4 mt-6">

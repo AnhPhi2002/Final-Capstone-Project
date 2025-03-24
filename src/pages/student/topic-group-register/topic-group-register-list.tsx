@@ -6,6 +6,7 @@ import { RootState, AppDispatch } from "@/lib/api/redux/store";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
+
 // Hàm chuyển đổi trạng thái phê duyệt
 const getApprovalStatusBadge = (status: string) => {
   switch (status) {
@@ -27,6 +28,7 @@ export const TopicGroupRegister = () => {
   );
 
   useEffect(() => {
+
     dispatch(fetchTopicsGroupRegistered());
   }, [dispatch]);
 
@@ -40,7 +42,7 @@ export const TopicGroupRegister = () => {
         <div
           key={topic.id}
           className="flex items-center gap-4 p-4 border rounded-lg cursor-pointer hover:bg-gray-100"
-          onClick={() => navigate(`/student/topic-group-register-detail/${topic.id}`)}
+          onClick={() => navigate(`/student/topic-group-register-detail/${topic.id}/${topic.semester.id}`)}
         >
           {/* Avatar đại diện cho đề tài */}
           <Avatar className="w-10 h-10">

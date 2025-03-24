@@ -145,14 +145,18 @@ export const CreateSubmissionRound = () => {
             {/* Lần nộp */}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="roundNumber" className="text-right">Lần nộp</Label>
-              <Input
-                id="roundNumber"
-                type="number"
-                min={1}
-                className="col-span-3"
-                value={roundNumber}
-                onChange={(e) => setRoundNumber(e.target.value)}
-              />
+              <Select onValueChange={setRoundNumber} value={roundNumber}>
+                <SelectTrigger className="w-full col-span-3">
+                  <SelectValue placeholder="Chọn lần nộp" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="1">1</SelectItem>
+                    <SelectItem value="2">2</SelectItem>
+                    <SelectItem value="3">3</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Mô tả */}

@@ -75,12 +75,13 @@ export interface CouncilReviewMember {
   roleId: string;
   status: string;
   userId: string;
+  roleName: string;
   user: {
     id: string;
     fullName: string;
     email: string;
   }
-  roleName: string;
+
   isDeleted?: boolean;
 }
 
@@ -90,12 +91,14 @@ export interface CouncilReview {
   name: string;
   round: number;
   type: string;
-  status: string;
+  status: "ACTIVE" | "UPCOMING" | "COMPLETE" | string;
   createdDate: string;
   semesterId: string;
   submissionPeriodId: string;
   councilStartDate: string,
   councilEndDate: string,
+  startDate: string,
+  endDate: string,
   isDeleted?: boolean;
   members: CouncilReviewMember[];
 }
@@ -231,4 +234,27 @@ export interface Group {
       };
     };
   }[]
+}
+
+export interface GroupResponse {
+  group: Group;
+  semester: {
+    code: string;
+    startDate: string;
+    endDate: string;
+  };
+  members: {
+    studentId: string;
+    fullName: string;
+    email: string;
+    role: string;
+    status: string;
+  }[];
+  creator: {
+    id: string;
+    fullName: string;
+    email: string;
+  };
+  mentors: any[]; // Có thể định nghĩa chi tiết hơn nếu cần
+  topicAssignments: any[]; // Có thể định nghĩa chi tiết hơn nếu cần
 }
