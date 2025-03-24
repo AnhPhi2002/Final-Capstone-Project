@@ -3,6 +3,9 @@
 export interface StudentNotGroup {
   id: string;
   userId: string;
+  username: string;
+  email: string;
+  major?:  string;
   studentCode: string;
   majorId: string;
   specializationId: string;
@@ -11,7 +14,9 @@ export interface StudentNotGroup {
   status: string; // "PENDING", "APPROVED", etc.
   importAt: string;
   importSource: string;
+  qualificationStatus: string;
   isImported: boolean;
+  specialization?: string
   user?: {
     id: string;
     username: string;
@@ -28,19 +33,19 @@ export interface StudentNotGroup {
     createdAt: string;
     updatedAt: string;
   };
-  major?: {
-    id: string;
-    name: string;
-    createdAt: string;
-    updatedAt: string;
-  };
-  specialization?: {
-    id: string;
-    majorId: string;
-    name: string;
-    createdAt: string;
-    updatedAt: string;
-  };
+  // major?: {
+  //   id: string;
+  //   name: string;
+  //   createdAt: string;
+  //   updatedAt: string;
+  // };
+  // specialization?: {
+  //   id: string;
+  //   majorId: string;
+  //   name: string;
+  //   createdAt: string;
+  //   updatedAt: string;
+  // };
 }
 
 export interface StudentNotGroupForStudent {

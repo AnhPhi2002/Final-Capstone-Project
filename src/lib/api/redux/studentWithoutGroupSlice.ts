@@ -22,8 +22,12 @@ const initialState: StudentWithoutGroupState = {
 
 // Định nghĩa kiểu cho response API chung
 interface ApiResponse<T> {
-  message: string;
-  data: T;
+  data: {
+    success: boolean;
+    status: number;
+    message: string;
+    data: T;
+  };
 }
 
 // API fetchStudentsWithoutGroup (loại cũ)
@@ -34,14 +38,14 @@ export const fetchStudentsWithoutGroup = createAsyncThunk<
 >("studentsWithoutGroup/fetch", async (semesterId, { rejectWithValue }) => {
   try {
     const response = await axiosClient.get<ApiResponse<StudentNotGroup[]>>(
-      `/groups/students-without-group/${semesterId}?semesterId=${semesterId}`
+      `/groups/students-without-group/${semesterId}`
     );
 
-    if (!response.data.data || !Array.isArray(response.data.data)) {
+    if (!response.data.data.data || !Array.isArray(response.data.data.data)) {
       return rejectWithValue("Dữ liệu không hợp lệ");
     }
 
-    return response.data.data;
+    return response.data.data.data;
   } catch (error: any) {
     return rejectWithValue(
       error.response?.data?.message || "Lỗi tải danh sách sinh viên"

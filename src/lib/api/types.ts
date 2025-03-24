@@ -17,12 +17,18 @@ export interface Semester {
   semester_detail?: any[]; // Nếu không có `semester_detail`, hãy để kiểu là tùy chọn (`?`)
 }
 
+// types.ts
 export interface Student {
   id: string;
   email: string;
+  studentCode: string;
+  studentName: string;
   major: string;
   specialization: string;
-  status: string;
+  qualificationStatus: "qualified" | "not qualified" | "processing";
+  status: "ACTIVE" | "PENDING" ;
+  isEligible: boolean;
+  semester: string;
 }
 
 // src/types/mentor.ts
