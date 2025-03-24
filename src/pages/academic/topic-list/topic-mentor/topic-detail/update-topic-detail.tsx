@@ -18,7 +18,7 @@ export default function UpdateTopicDetail() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const { topicDetails, loading } = useSelector((state: RootState) => state.topics);
+  const { topicDetails, loading, error } = useSelector((state: RootState) => state.topics);
   const { mentors } = useSelector((state: RootState) => state.mentors);
 
   const [formData, setFormData] = useState({
@@ -71,7 +71,18 @@ export default function UpdateTopicDetail() {
       toast.error("Có lỗi xảy ra khi cập nhật đề tài.");
     }
   };
+  if (error && !topicDetails) {
+    return <p className="text-center text-red-500">Lỗi khi tải đề tài: {error}</p>;
+  }
 
+  // Hiển thị khi không có dữ liệu
+  if (!topicDetails) {
+    return (
+      <p className="text-center text-gray-500">
+        Không tìm thấy đề tài hoặc đang tải...
+      </p>
+    );
+  }
   return (
     <div>
       <Header title="" href="/" currentPage="Cập nhật đề tài" />
@@ -102,7 +113,14 @@ export default function UpdateTopicDetail() {
               </div>
               <div>
                 <p className="text-sm text-gray-500 mb-1">Ngành</p>
-                <Input value={topicDetails?.majorId || ""} disabled />
+                <Input
+                  value={
+                    topicDetails.majors?.length > 0
+                      ? topicDetails.majors.map((major) => major.name).join(", ")
+                      : "Chưa có chuyên ngành"
+                  }
+                  disabled
+                />
               </div>
               <div>
                 <p className="text-sm text-gray-500 mb-1">Trạng thái</p>
