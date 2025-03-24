@@ -26,3 +26,24 @@ axiosClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+axiosClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // const originalRequest = error.config;
+
+    if (
+      error.response?.status === 401 &&
+      window.location.pathname !== "/log-in"
+    ) {
+      // Xóa thông tin đăng nhập
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      localStorage.removeItem("refreshToken");
+
+      // Redirect về trang đăng nhập
+      window.location.href = "/log-in";
+    }
+
+    return Promise.reject(error);
+  }
+);
