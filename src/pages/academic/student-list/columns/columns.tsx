@@ -3,6 +3,11 @@ import { Badge } from "@/components/ui/badge";
 import { Student } from "@/lib/api/types";
 
 export const columns: ColumnDef<Student>[] = [
+  // {
+  //   id: "id",
+  //   header: "STT",
+  //   cell: ({ row }) => row.index + 1,
+  // },  
   {
     accessorKey: "id",
     header: "ID",

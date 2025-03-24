@@ -32,6 +32,7 @@ export interface Student {
 }
 
 // src/types/mentor.ts
+// src/types/mentor.ts
 export interface Mentor {
   id: string;
   email: string;
