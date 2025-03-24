@@ -17,6 +17,8 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useNavigate } from "react-router";
+import { useAppDispatch } from "@/hooks/reduxHooks";
+import { logoutUser } from "@/lib/api/redux/authSlice";
 
 
 export function NavUser({
@@ -30,17 +32,19 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar();
   const navigate = useNavigate();
-  const handleLogout = () => {
-    // Xóa dữ liệu khỏi localStorage
-    localStorage.removeItem("token");
-    localStorage.removeItem("roles");
-    localStorage.removeItem("user");
-  
-    // Điều hướng về trang đăng nhập
-    navigate("/log-in");
+  const dispatch = useAppDispatch();
+  const handleLogout = async () => {
+    const refreshToken = localStorage.getItem("refreshToken");
+    if (refreshToken) {
+      try {
+        await dispatch(logoutUser(refreshToken)).unwrap();
+        navigate("/log-in");
+      } catch (error) {
+        console.error("Logout thất bại:", error);
+      }
+    }
   };
   
-
   return (
     <SidebarMenu>
       <SidebarMenuItem>
