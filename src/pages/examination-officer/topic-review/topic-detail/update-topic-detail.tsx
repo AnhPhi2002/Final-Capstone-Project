@@ -20,7 +20,7 @@ export default function UpdateReviewTopicDetail() {
 
   const [formData, setFormData] = useState({
     status: "PENDING",
-    reasons: "",
+    reviewReason: "",
   });
 
   const statusOptions = ["PENDING", "APPROVED", "IMPROVED", "REJECTED"];
@@ -37,7 +37,7 @@ export default function UpdateReviewTopicDetail() {
     if (topicDetails) {
       setFormData({
         status: topicDetails.status || "PENDING",
-        reasons: topicDetails.reasons || "",
+        reviewReason: topicDetails.reviewReason || "",
       });
     }
   }, [topicDetails]);
@@ -49,7 +49,7 @@ export default function UpdateReviewTopicDetail() {
 
   // Xử lý thay đổi lý do xét duyệt
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setFormData({ ...formData, reasons: e.target.value });
+    setFormData({ ...formData, reviewReason: e.target.value });
   };
 
   // Xử lý cập nhật trạng thái
@@ -170,7 +170,7 @@ export default function UpdateReviewTopicDetail() {
               <Textarea
                 name="reasons"
                 className="w-full p-2 border rounded-md h-24"
-                value={formData.reasons}
+                value={formData.reviewReason}
                 onChange={handleChange}
                 placeholder="Nhập lý do xét duyệt..."
               />

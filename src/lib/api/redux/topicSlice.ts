@@ -38,7 +38,7 @@ interface Topic {
   createdBy: string | null;
   status: string;
   reasons: string;
-  reviewReason: string | null;
+  reviewReason?: string | null;
   subSupervisorEmail: string | null;
   creator?: {
     fullName: string;
@@ -267,7 +267,7 @@ export const fetchApprovalTopics = createAsyncThunk(
 
 export const updateTopicStatus = createAsyncThunk(
   "topics/updateTopicStatus",
-  async ({ topicId, updatedData}: { topicId: string; updatedData: { status: string; reasons: string }}, { rejectWithValue }) => {
+  async ({ topicId, updatedData}: { topicId: string; updatedData: { status: string; reviewReason: string }}, { rejectWithValue }) => {
     try {
       const response = await axiosClient.put(`/topics/${topicId}/status`, updatedData); // ✅ Đảm bảo topicId đúng
       return response.data;
