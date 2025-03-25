@@ -23,11 +23,12 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
+  // FormControl,
   FormMessage,
 } from "@/components/ui/form";
+import { debounce } from "lodash";
 
-// ✅ Schema validation với Zod
+// Schema validation với Zod
 const formSchema = z.object({
   email: z.string().email("Email không hợp lệ"),
 });
@@ -38,15 +39,17 @@ interface AddReviewMemberTopicCouncilProps {
   semesterId: string;
 }
 
-export const AddReviewMemberTopicCouncil: React.FC<
-  AddReviewMemberTopicCouncilProps
-> = ({ councilId, refetchData, semesterId }) => {
+export const AddReviewMemberTopicCouncil: React.FC<AddReviewMemberTopicCouncilProps> = ({
+  councilId,
+  refetchData,
+  semesterId,
+}) => {
   const [open, setOpen] = useState(false);
   const [filteredEmails, setFilteredEmails] = useState<string[]>([]);
   const dispatch = useDispatch<AppDispatch>();
-  const { mentors } = useSelector((state: RootState) => state.mentors);
+  const { mentors, loading: mentorLoading } = useSelector((state: RootState) => state.mentors);
 
-  // ✅ Fetch mentor theo semesterId
+  // Fetch mentors theo semesterId
   useEffect(() => {
     dispatch(fetchMentorsBySemesterId(semesterId));
   }, [dispatch, semesterId]);
@@ -58,20 +61,25 @@ export const AddReviewMemberTopicCouncil: React.FC<
     },
   });
 
-  const filterEmails = (input: string) => {
-    if (!input.trim()) return setFilteredEmails([]);
-    const filtered = mentors
-      .filter((m) => m.email)
-      .map((m) => m.email!)
-      .filter((e) => e.toLowerCase().startsWith(input.toLowerCase()));
-    setFilteredEmails(filtered);
-  };
+  // Hàm lọc email với debounce
+  const filterEmails = debounce((input: string) => {
+    if (!input?.trim()) {
+      setFilteredEmails([]);
+    } else {
+      const filtered = mentors
+        .map((mentor) => mentor.email)
+        .filter((email) => email.toLowerCase().startsWith(input.toLowerCase()));
+      setFilteredEmails(filtered);
+    }
+  }, 300);
 
+  // Xử lý khi chọn email từ danh sách gợi ý
   const handleSelectMainEmail = (selectedEmail: string) => {
     form.setValue("email", selectedEmail, { shouldDirty: true });
-    setFilteredEmails([]);
+    setFilteredEmails([]); // Xóa danh sách gợi ý sau khi chọn
   };
 
+  // Xử lý submit form
   const onSubmit = async (data: { email: string }) => {
     try {
       await dispatch(
@@ -95,9 +103,7 @@ export const AddReviewMemberTopicCouncil: React.FC<
       <Toaster position="top-right" richColors duration={3000} />
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button className="bg-black text-white">
-            Thêm Thành viên hội đồng
-          </Button>
+          <Button className="bg-black text-white">Thêm Thành viên hội đồng</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
@@ -114,31 +120,34 @@ export const AddReviewMemberTopicCouncil: React.FC<
                 name="email"
                 render={({ field }) => (
                   <FormItem className="relative">
-                    <FormLabel>Email giảng viên 1</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Email giảng viên 1"
+                    <FormLabel>Email giảng viên</FormLabel>
+                    {/* <FormControl> */}
+                    <div className="relative">
+                    <Input
+                        placeholder="Email giảng viên"
                         value={field.value}
                         onChange={(e) => {
                           const val = e.target.value;
-                          form.setValue("email", val, { shouldDirty: true });
-                          filterEmails(val);
+                          field.onChange(val); // Cập nhật giá trị form
+                          filterEmails(val); // Lọc email dựa trên input
                         }}
                       />
-                    </FormControl>
+                    {/* </FormControl> */}
                     {filteredEmails.length > 0 && (
                       <ul className="absolute z-10 w-full bg-white border rounded-md shadow-lg max-h-40 overflow-y-auto mt-1">
-                        {filteredEmails.map((e) => (
+                        {filteredEmails.map((email) => (
                           <li
-                            key={e}
+                            key={email}
                             className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
-                            onClick={() => handleSelectMainEmail(e)}
+                            onClick={() => handleSelectMainEmail(email)}
                           >
-                            {e}
+                            {email}
                           </li>
                         ))}
                       </ul>
                     )}
+                    </div>
+                      
                     <FormMessage />
                   </FormItem>
                 )}
@@ -157,7 +166,9 @@ export const AddReviewMemberTopicCouncil: React.FC<
                 >
                   Hủy
                 </Button>
-                <Button type="submit">Lưu</Button>
+                <Button type="submit" disabled={mentorLoading}>
+                  Lưu
+                </Button>
               </DialogFooter>
             </form>
           </Form>
