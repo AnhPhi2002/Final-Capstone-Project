@@ -30,6 +30,7 @@ interface AuthState {
   loading: boolean;
   error: string | null;
   author: User | null;
+  currentRole: string | null; // 🔥 Thêm dòng này
 }
 
 // ==== Initial State ====
@@ -39,6 +40,7 @@ const initialState: AuthState = {
   loading: false,
   error: null,
   author: null,
+  currentRole: localStorage.getItem("currentRole") || null, // 🔥 Thêm dòng này
 };
 
 // ==== Thunks ====
@@ -129,6 +131,10 @@ const authSlice = createSlice({
     resetMainMentor: (state) => {
       state.author = null;
     },
+    setCurrentRole: (state, action) => {
+      state.currentRole = action.payload;
+      localStorage.setItem("currentRole", action.payload);
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -155,10 +161,13 @@ const authSlice = createSlice({
         state.loading = false;
         state.token = action.payload.accessToken;
         state.user = action.payload.user;
-
+        state.currentRole = action.payload.user.roles[0]?.name || null;//
+        localStorage.setItem("currentRole", state.currentRole || ""); //
+        
         localStorage.setItem("token", action.payload.accessToken);
         localStorage.setItem("user", JSON.stringify(action.payload.user));
         localStorage.setItem("refreshToken", action.payload.refreshToken);
+        
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -169,9 +178,11 @@ const authSlice = createSlice({
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;
         state.token = null;
+        state.currentRole = null; // 🔥 Reset role
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         localStorage.removeItem("refreshToken");
+        localStorage.removeItem("currentRole"); // 🔥 Xoá khỏi localStorage
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.error = action.payload as string;
@@ -221,5 +232,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { resetMainMentor } = authSlice.actions;
+export const { resetMainMentor, setCurrentRole } = authSlice.actions;
 export default authSlice.reducer;

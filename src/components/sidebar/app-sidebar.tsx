@@ -224,7 +224,6 @@ const adminMenu = {
           title: "Tài khoản",
           url: "/admin/user",
         },
-       
       ],
     },
   ],
@@ -258,7 +257,8 @@ const lecturerMenu = {
           url: "/lecturer/approve-topic",
         },
       ],
-    },{
+    },
+    {
       title: "Quản lý phòng họp",
       url: "/lecturer/council-member",
       icon: List,
@@ -268,7 +268,6 @@ const lecturerMenu = {
           title: "D.s phòng họp",
           url: "/lecturer/meeting",
         },
-
       ],
     },
     {
@@ -281,9 +280,8 @@ const lecturerMenu = {
           title: "Hội đồng review",
           url: "/lecturer/council-review",
         },
-
       ],
-    }
+    },
   ],
 };
 const examinationMenu = {
@@ -320,7 +318,6 @@ const examinationMenu = {
         },
       ],
     },
-    
   ],
 };
 const academicMenu = {
@@ -339,7 +336,6 @@ const academicMenu = {
           title: "D.s học kỳ ",
           url: "/academic/semester",
         },
-     
       ],
     },
     {
@@ -403,7 +399,6 @@ const academicMenu = {
         {
           title: "D.s quyết định",
           url: "/academic/decision",
-      
         },
       ],
     },
@@ -484,6 +479,9 @@ const graduationThesisMenu = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const user = useSelector((state: RootState) => state.auth.user);
+
+  const currentRole = useSelector((state: RootState) => state.auth.currentRole); // 🔥
+
   // console.log("user", user);
   const formattedUser = user
     ? {
@@ -509,27 +507,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        {user?.roles.find((role) => role.name === "admin") ? (
-          <NavMain items={adminMenu.navMain} />
-        ) : null}
-        {user?.roles.find((role) => role.name === "academic_officer") ? (
-          <NavMain items={academicMenu.navMain} />
-        ) : null}
-        {user?.roles.find(
-          (role) => role.name === "graduation_thesis_manager"
-        ) ? (
-          <NavMain items={graduationThesisMenu.navMain} />
-        ) : null}
-        {user?.roles.find((role) => role.name === "student") ? (
-          <NavMain items={studentMenu.navMain} />
-        ) : null}
-        {user?.roles.find((role) => role.name === "lecturer") ? (
-          <NavMain items={lecturerMenu.navMain} />
-        ) : null}
-        {user?.roles.find((role) => role.name === "examination_officer") ? (
-          <NavMain items={examinationMenu.navMain} />
-        ) : null}
-        {/* <NavMain items={data.navMain} /> */}
+        {currentRole === "admin" && <NavMain items={adminMenu.navMain} />}
+        {currentRole === "academic_officer" && (<NavMain items={academicMenu.navMain} /> )}
+        {currentRole === "graduation_thesis_manager" && (<NavMain items={graduationThesisMenu.navMain} />)}
+        {currentRole === "student" && <NavMain items={studentMenu.navMain} />}
+        {currentRole === "lecturer" && <NavMain items={lecturerMenu.navMain} />}
+        {currentRole === "examination_officer" && ( <NavMain items={examinationMenu.navMain} />)}
       </SidebarContent>
       <SidebarFooter>
         {formattedUser ? <NavUser user={formattedUser} /> : <p>Đang tải...</p>}

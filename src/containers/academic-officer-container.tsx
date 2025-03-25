@@ -33,6 +33,7 @@ import { DecisionPage } from "@/pages/academic/decision/decision-page";
 import { MentorPage } from "@/pages/academic/mentor/mentor-page";
 import { DecisionDetail } from "@/pages/academic/decision/decision-detail";
 import { UpdateDecision } from "@/pages/academic/decision/update-decision";
+import ProfileUpdateForm from "@/pages/admin/profile-user/components/profile-update";
 
 
 
@@ -50,7 +51,8 @@ export const AcademicOfficerContainer = () => {
     <MainLayout>
       <Routes>
         <Route path="/" element={<DashboardPage />} />
-        <Route path="/profile-page" element={<ProfilePage />} />
+                <Route path="/profile-page" element={<ProfilePage />} />
+                <Route path="/profile-page/update" element={<ProfileUpdateForm />} />
         <Route path="/semester" element={<SemestersPage />} />
         <Route path="/semester/:semesterId" element={<SemestersDetailPage />} />
         <Route path="/year-semester" element={<YearSemesterPage />} />

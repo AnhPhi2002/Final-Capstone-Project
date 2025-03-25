@@ -3,6 +3,7 @@ import MainLayout from "@/layouts/main-layout";
 import { RootState } from "@/lib/api/redux/store";
 
 import DashboardPage from "@/pages/admin/dashboard/dashboard-page";
+import ProfileUpdateForm from "@/pages/admin/profile-user/components/profile-update";
 
 import { ProfilePage } from "@/pages/admin/profile-user/page";
 import { DeadineTopicDetailPage } from "@/pages/examination-officer/deadline-topic/columns/deadine-topic-detail-page";
@@ -24,7 +25,8 @@ export const GraduationThesisManagerContainer = () => {
     <MainLayout>
       <Routes>
         <Route path="/" element={<DashboardPage />} />
-        <Route path="/profile-page" element={<ProfilePage />} />
+                <Route path="/profile-page" element={<ProfilePage />} />
+                <Route path="/profile-page/update" element={<ProfileUpdateForm />} />
         <Route path="deadline-topic/:semesterId" element={<DeadineTopicDetailPage />}/>
         <Route path="deadline-topic/:semesterId/submission/:submissionId"element={<DeadineTopicDetailPage />}/>
         <Route path="review-topic-council" element={<ReviewTopicCouncilPage />}/>

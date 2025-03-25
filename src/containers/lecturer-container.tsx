@@ -24,6 +24,7 @@ import MeetingListPage from "@/pages/mentor/meeting/meeting-page";
 import { CouncilReviewMentorPage } from "@/pages/mentor/council-mentor/council-review-mentor-page";
 import { CouncilReviewMentorDetail } from "@/pages/mentor/council-mentor/columns/council-review-mentor-detail";
 import { CouncilReviewMembersPage } from "@/pages/mentor/council-mentor/columns-member/CouncilMembersPage";
+import ProfileUpdateForm from "@/pages/admin/profile-user/components/profile-update";
 
 export const LecturerContainer = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -37,7 +38,8 @@ export const LecturerContainer = () => {
     <MainLayout>
       <Routes>
         <Route path="/" element={<DashboardPage />} />
-        <Route path="/profile-page" element={<ProfilePage />} />
+                <Route path="/profile-page" element={<ProfilePage />} />
+                <Route path="/profile-page/update" element={<ProfileUpdateForm />} />
         <Route path="/topic" element={<TopicPage />} />
         <Route path="/topic/:semesterId" element={<TopicPage />} />
         <Route path="/topic-list" element={<TopicListPage />} />
