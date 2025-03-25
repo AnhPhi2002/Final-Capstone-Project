@@ -22,6 +22,7 @@ import { useNavigate } from "react-router";
 export default function ProfileUpdateForm() {
   const dispatch = useDispatch<AppDispatch>();
   const { user, loading } = useSelector((state: RootState) => state.auth);
+  const currentRole = useSelector((state: RootState) => state.auth.currentRole);
   const navigate = useNavigate();
 
   // State lưu thông tin profile
@@ -64,13 +65,21 @@ export default function ProfileUpdateForm() {
   const handleSelectChange = (field: string, value: string) => {
     setFormData({ ...formData, [field]: value });
   };
-
+  const rolePathMap: Record<string, string> = {
+    admin: "admin",
+    lecturer: "lecturer",
+    student: "student",
+    academic_officer: "academic",
+    examination_officer: "examination",
+    graduation_thesis_manager: "graduation-thesis",
+  };
+  const path = rolePathMap[currentRole || ""] || "";  
   // Gửi dữ liệu cập nhật lên API và hiển thị toast
   const handleSubmit = async () => {
     try {
       await dispatch(updateUserProfile(formData)).unwrap();
       toast.success("Cập nhật thông tin thành công! 🎉");
-      navigate(`/profile-page`)
+      navigate(`/${path}/profile-page`);
     } catch (error: any) {
       let errorMessage = "Cập nhật thất bại, vui lòng thử lại!";
   

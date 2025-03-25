@@ -22,6 +22,7 @@ import { TopicGroupRegisterPage } from "@/pages/student/topic-group-register/top
 import TopicGroupRegisterDetail from "@/pages/student/topic-group-register/topic-group-register-detail";
 import { MeetingStudentDetail } from "@/pages/student/meeting/meeting-student";
 import { MeetingStudentPage } from "@/pages/student/meeting/meeting-student-page";
+import ProfileUpdateForm from "@/pages/admin/profile-user/components/profile-update";
 
 
 export const StudentContainer = () => {
@@ -36,7 +37,8 @@ export const StudentContainer = () => {
     <MainLayout>
       <Routes>
 
-        <Route path="/profile-page" element={<ProfilePage />} />
+               <Route path="/profile-page" element={<ProfilePage />} />
+               <Route path="/profile-page/update" element={<ProfileUpdateForm />} />
         <Route path="/topic-student" element={<TopicStudentPage />} />
         <Route path="/topic-student/:semesterId" element={<TopicStudentPage />}/>
         <Route path="/topic-student-detail" element={<TopicStudentListDetail />}/>

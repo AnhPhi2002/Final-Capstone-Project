@@ -1,5 +1,4 @@
 import { BadgeCheck, ChevronsUpDown, LogOut } from "lucide-react";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -19,7 +18,8 @@ import {
 import { useNavigate } from "react-router";
 import { useAppDispatch } from "@/hooks/reduxHooks";
 import { logoutUser } from "@/lib/api/redux/authSlice";
-
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/api/redux/store";
 
 export function NavUser({
   user,
@@ -33,6 +33,7 @@ export function NavUser({
   const { isMobile } = useSidebar();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const currentRole = useSelector((state: RootState) => state.auth.currentRole);
   const handleLogout = async () => {
     const refreshToken = localStorage.getItem("refreshToken");
     if (refreshToken) {
@@ -44,7 +45,21 @@ export function NavUser({
       }
     }
   };
-  
+
+const rolePathMap: Record<string, string> = {
+  admin: "admin",
+  lecturer: "lecturer",
+  student: "student",
+  academic_officer: "academic",
+  examination_officer: "examination",
+  graduation_thesis_manager: "graduation-thesis",
+};
+
+const handleProfileNavigate = () => {
+  const path = rolePathMap[currentRole || ""];
+  if (path) navigate(`/${path}/profile-page`);
+};
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -83,14 +98,18 @@ export function NavUser({
                 </div>
               </div>
             </DropdownMenuLabel>
+
             <DropdownMenuSeparator />
+
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={() => navigate("/profile-page")}>
+              <DropdownMenuItem onClick={handleProfileNavigate}>
                 <BadgeCheck />
                 Tài khoản
               </DropdownMenuItem>
             </DropdownMenuGroup>
+
             <DropdownMenuSeparator />
+
             <DropdownMenuItem onClick={handleLogout}>
               <LogOut />
               Đăng xuất
