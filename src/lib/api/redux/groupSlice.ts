@@ -63,6 +63,27 @@ export const createGroup = createAsyncThunk(
   }
 );
 
+export const createGroupForAcademic = createAsyncThunk(
+  "groups/createForAcademic",
+  async (
+    { leaderEmail, semesterId }: { leaderEmail: string; semesterId: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axiosClient.post(
+        "/groups/create-group-by-academic",
+        {
+          leaderEmail,
+          semesterId,
+        }
+      );
+      return response.data.group;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Lỗi khi tạo nhóm!");
+    }
+  }
+);
+
 export const inviteStudentToGroup = createAsyncThunk(
   "groups/invite",
   async ({ groupId, studentId }: { groupId: string; studentId: string }, { rejectWithValue }) => {
@@ -125,7 +146,24 @@ const groupSlice = createSlice({
       .addCase(createGroup.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
-      });
+      })
+      .addCase(createGroupForAcademic.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createGroupForAcademic.fulfilled, (state, action) => {
+        state.loading = false;
+        
+        if (action.payload) {
+          state.groups = [...state.groups, action.payload]; // Thêm nhóm mới vào danh sách
+        }
+      })
+      
+      .addCase(createGroupForAcademic.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      ;
   },
 });
 

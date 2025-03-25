@@ -240,7 +240,14 @@ export interface Group {
         specialty: string;
       };
     };
-  }[]
+  }[];
+}
+
+export interface Mentor {
+  id: string;
+  fullName: string;
+  email: string;
+  // role?: string; 
 }
 
 export interface GroupResponse {
@@ -262,6 +269,6 @@ export interface GroupResponse {
     fullName: string;
     email: string;
   };
-  mentors: any[]; // Có thể định nghĩa chi tiết hơn nếu cần
-  topicAssignments: any[]; // Có thể định nghĩa chi tiết hơn nếu cần
+  mentors?: Mentor[];
+  topicAssignments: any[]; 
 }

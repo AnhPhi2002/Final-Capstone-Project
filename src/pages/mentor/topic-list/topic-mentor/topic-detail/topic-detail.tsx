@@ -177,6 +177,12 @@ export default function TopicDetail() {
                   <p className="text-sm text-gray-500">Chưa cập nhật tài liệu</p>
                 )}
               </div>
+              <div>
+                <p className="text-sm text-gray-500 mb-1">Đánh giá đề tài</p>
+                <p className="font-semibold italic">
+                  {topicDetails?.reviewReason || "Đề tài chưa được đánh giá"}
+                </p>
+              </div>
             </div>
 
             <div>

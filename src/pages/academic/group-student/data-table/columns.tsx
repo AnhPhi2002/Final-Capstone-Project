@@ -1,7 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
-// import { Button } from "@/components/ui/button";
-// import { ArrowUpDown } from "lucide-react";
 import { Action } from "./action";
 
 export const columns: ColumnDef<any>[] = [
@@ -10,14 +8,24 @@ export const columns: ColumnDef<any>[] = [
     header: "Mã Nhóm",
   },
   {
-    accessorKey: "mentor1Id",
+    accessorKey: "mentors",
     header: "Giảng Viên 1",
-    cell: ({ row }) => <div>{row.original.mentor1Id || "N/A"}</div>,
+    cell: ({ row }) => {
+      const mentors = row.original.mentors || [];
+      // Tìm mentor chính (mentor_main)
+      const mainMentor = mentors.find((m: any) => m.role.name === "mentor_main");
+      return <div>{mainMentor ? mainMentor.mentor.email : "N/A"}</div>;
+    },
   },
   {
-    accessorKey: "mentor2Id",
+    accessorKey: "mentors",
     header: "Giảng Viên 2",
-    cell: ({ row }) => <div>{row.original.mentor2Id || "N/A"}</div>,
+    cell: ({ row }) => {
+      const mentors = row.original.mentors || [];
+      // Tìm mentor phụ (mentor_sub)
+      const subMentor = mentors.find((m: any) => m.role.name === "mentor_sub");
+      return <div>{subMentor ? subMentor.mentor.email : "N/A"}</div>;
+    },
   },
   {
     accessorKey: "status",
@@ -38,8 +46,12 @@ export const columns: ColumnDef<any>[] = [
     },
   },
   {
-    accessorKey: "maxMembers",
-    header: "Số Thành Viên Tối Đa",
+    accessorKey: "members",
+    header: "Số Thành Viên Hiện Tại",
+    cell: ({ row }) => {
+      const members = row.original.members || [];
+      return <div>{members.length}</div>;
+    },
   },
   {
     accessorKey: "isMultiMajor",
