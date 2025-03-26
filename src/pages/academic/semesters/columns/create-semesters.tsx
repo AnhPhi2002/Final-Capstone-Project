@@ -30,6 +30,7 @@ export const CreateSemesters = () => {
   const { data: years, loading: yearLoading } = useSelector(
     (state: RootState) => state.years
   );
+  const { data: semesters } = useSelector((state: RootState) => state.semesters);
 
   const [open, setOpen] = useState(false);
   const [yearId, setYearId] = useState("");
@@ -59,6 +60,38 @@ export const CreateSemesters = () => {
 
     if (end <= start) {
       toast.error("Ngày kết thúc phải lớn hơn ngày bắt đầu!");
+      return;
+    }
+
+    // Chuẩn hóa code về chữ thường để kiểm tra trùng lặp
+    const normalizedCode = code.toLowerCase();
+
+    // Kiểm tra trùng lặp code trong cùng yearId với các học kỳ chưa bị xóa
+    if (
+      semesters.some(
+        (semester) =>
+          semester.yearId === yearId &&
+          semester.code.toLowerCase() === normalizedCode &&
+          !semester.isDeleted
+      )
+    ) {
+      toast.error("Mã học kỳ đã tồn tại trong năm học này (không phân biệt chữ hoa/thường)!");
+      return;
+    }
+
+    // Kiểm tra trùng lặp ngày trong cùng yearId với các học kỳ chưa bị xóa
+    const newStartDate = new Date(startDate);
+    const newEndDate = new Date(endDate);
+    const isDateOverlap = semesters.some(
+      (semester) =>
+        semester.yearId === yearId &&
+        !semester.isDeleted &&
+        (new Date(semester.startDate) <= newEndDate &&
+          new Date(semester.endDate) >= newStartDate)
+    );
+
+    if (isDateOverlap) {
+      toast.error("Khoảng thời gian của học kỳ mới giao nhau với một học kỳ hiện có trong năm học này!");
       return;
     }
 
@@ -99,7 +132,6 @@ export const CreateSemesters = () => {
           </DialogHeader>
 
           <div className="grid gap-4 py-4">
-            {/* Năm học */}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="year" className="text-right">
                 Năm học
@@ -130,7 +162,6 @@ export const CreateSemesters = () => {
               </Select>
             </div>
 
-            {/* Mã học kỳ */}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="code" className="text-right">
                 Mã học kỳ
@@ -144,7 +175,6 @@ export const CreateSemesters = () => {
               />
             </div>
 
-            {/* Ngày bắt đầu */}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="start_date" className="text-right">
                 Ngày bắt đầu
@@ -158,7 +188,6 @@ export const CreateSemesters = () => {
               />
             </div>
 
-            {/* Ngày kết thúc */}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="end_date" className="text-right">
                 Ngày kết thúc

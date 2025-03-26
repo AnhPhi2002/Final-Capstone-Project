@@ -1,6 +1,6 @@
 
-export const CardReviewSemeter = () => {
-  return (
-    <div>CardReviewSemeter</div>
-  )
-}
+// export const CardReviewSemeter = () => {
+//   return (
+//     <div>CardReviewSemeter</div>
+//   )
+// }

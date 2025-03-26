@@ -9,6 +9,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"; // Thư viện shadcn/ui
+import { toast } from "sonner";
 
 type ActionProps = {
   semesterId: string;
@@ -22,9 +23,9 @@ export const ActionMenu: React.FC<ActionProps> = ({ semesterId, refetchData }) =
   const handleCopySemesterId = async () => {
     try {
       await navigator.clipboard.writeText(semesterId);
-      alert("Đã sao chép mã học kỳ vào clipboard!");
+      toast.success("Đã sao chép mã học kỳ vào clipboard!");
     } catch {
-      alert("Sao chép mã học kỳ thất bại.");
+      toast.error("Sao chép mã học kỳ thất bại.");
     }
   };
 
