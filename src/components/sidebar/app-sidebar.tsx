@@ -282,6 +282,18 @@ const lecturerMenu = {
         },
       ],
     },
+    {
+      title: "Quản lý nhóm làm đồ án",
+      url: "/lecturer/council-member",
+      icon: List,
+      isActive: true,
+      items: [
+        {
+          title: "Hội đồng review",
+          url: "/lecturer/check-review",
+        },
+      ],
+    }
   ],
 };
 const examinationMenu = {
@@ -300,6 +312,10 @@ const examinationMenu = {
           title: "Đề tài chờ xét duyệt",
           url: "/examination/review-topic-page",
         },
+        {
+          title: "Đề tài đã xét duyệt",
+          url: "/examination/topic",
+        }
       ],
     },
     {
@@ -316,6 +332,7 @@ const examinationMenu = {
           title: "D.s hội chấm Review-Topic",
           url: "/examination/council-review",
         },
+
       ],
     },
   ],
@@ -443,7 +460,7 @@ const studentMenu = {
       ],
     },
     {
-      title: "Phòng họp ",
+      title: "Phòng",
       url: "/student/council-member",
       icon: List,
       isActive: true,
@@ -451,6 +468,10 @@ const studentMenu = {
         {
           title: "Lịch họp",
           url: "/student/meeting-student",
+        },
+        {
+          title: "Phòng Review",
+          url: "/student/review-student",
         },
       ],
     },

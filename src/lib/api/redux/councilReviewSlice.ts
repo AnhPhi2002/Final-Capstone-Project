@@ -2,7 +2,7 @@
 // lib/api/redux/councilReviewSlice.ts
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosClient } from "@/lib/api/config/axios-client";
-import { CouncilReview, CouncilReviewMember } from "../types";
+import { CouncilReview, CouncilReviewMember, ReviewSchedule } from "../types";
 
 interface CouncilState {
     data: CouncilReview[];
@@ -10,6 +10,12 @@ interface CouncilState {
     loading: boolean;
     loadingDetail: boolean;
     error: string | null;
+    reviewSchedules: ReviewSchedule[];
+    loadingSchedules: boolean;
+    errorSchedules: string | null;
+    reviewSchedulesMentor: ReviewSchedule[];
+    loadingSchedulesMentor: boolean;
+    errorSchedulesMentor: string | null;
 }
 
 const initialState: CouncilState = {
@@ -18,25 +24,31 @@ const initialState: CouncilState = {
     loading: false,
     loadingDetail: false,
     error: null,
+    reviewSchedules: [],
+    loadingSchedules: false,
+    errorSchedules: null,
+    reviewSchedulesMentor: [],
+    loadingSchedulesMentor: false,
+    errorSchedulesMentor: null,
 };
 
 export const createCouncilReview = createAsyncThunk(
-  "councils/createCouncilReview",
-  async (newCouncil: Partial<CouncilReview>, { rejectWithValue }) => {
-    try {
-      const response = await axiosClient.post(`/council-review`, newCouncil);
-      return response.data.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Không thể tạo hội đồng!");
+    "councils/createCouncilReview",
+    async (newCouncil: Partial<CouncilReview>, { rejectWithValue }) => {
+        try {
+            const response = await axiosClient.post(`/council-review`, newCouncil);
+            return response.data.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || "Không thể tạo hội đồng!");
+        }
     }
-  }
 );
 
 export const fetchReviewCouncilsList = createAsyncThunk(
     "councils/fetchReviewCouncils",
-    async ({semesterId}:{semesterId: string}, { rejectWithValue }) => {
+    async ({ semesterId }: { semesterId: string }, { rejectWithValue }) => {
         try {
-            const response = await axiosClient.get(`/council-review`,{
+            const response = await axiosClient.get(`/council-review`, {
                 params: { semesterId },
             });
 
@@ -68,10 +80,10 @@ export const fetchCouncilDetail = createAsyncThunk(
 
 export const fetchCouncilDetailForMentor = createAsyncThunk(
     "councils/fetchCouncilDetailForMentor",
-    async ({councilId, semesterId}:{councilId: string; semesterId: string}, { rejectWithValue }) => {
+    async ({ councilId, semesterId }: { councilId: string; semesterId: string }, { rejectWithValue }) => {
         try {
-            const response = await axiosClient.get(`/council-review/${councilId}`,{
-                params: {semesterId}
+            const response = await axiosClient.get(`/council-review/lecturers/councils/${councilId}`, {
+                params: { semesterId }
             });
             const council = response.data.data as CouncilReview;
             if (council.isDeleted) {
@@ -174,6 +186,46 @@ export const createReviewSchedule = createAsyncThunk(
     }
 );
 
+export const fetchReviewSchedulesForStudent = createAsyncThunk(
+    "councilReview/fetchReviewSchedulesForStudent",
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await axiosClient.get("/council-review/student/schedules");
+            // Kiểm tra success từ API
+            if (response.data.success) {
+                return response.data.data as ReviewSchedule[];
+            } else {
+                // Nếu success: false, trả về mảng rỗng và lưu message vào error
+                return rejectWithValue(response.data.message);
+            }
+        } catch (error: any) {
+            return rejectWithValue(
+                error.response?.data?.message || "Không thể tải lịch chấm điểm!"
+            );
+        }
+    }
+);
+
+export const fetchReviewSchedulesForMentor = createAsyncThunk(
+    "councilReview/fetchReviewSchedulesForMentor",
+    async ({ semesterId }: { semesterId: string }, { rejectWithValue }) => {
+        try {
+            const response = await axiosClient.get("/council-review/mentor/schedules", {
+                params: { semesterId },
+            });
+            if (response.data.success) {
+                return response.data.data as ReviewSchedule[];
+            } else {
+                return rejectWithValue(response.data.message);
+            }
+        } catch (error: any) {
+            return rejectWithValue(
+                error.response?.data?.message || "Không thể tải lịch chấm điểm!"
+            );
+        }
+    }
+);
+
 const councilReviewSlice = createSlice({
     name: "councils",
     initialState,
@@ -185,18 +237,18 @@ const councilReviewSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-        .addCase(createCouncilReview.pending, (state) => {
+            .addCase(createCouncilReview.pending, (state) => {
                 state.loading = true;
                 state.error = null;
-              })
-              .addCase(createCouncilReview.fulfilled, (state, action) => {
+            })
+            .addCase(createCouncilReview.fulfilled, (state, action) => {
                 state.loading = false;
                 state.data.push(action.payload);
-              })
-              .addCase(createCouncilReview.rejected, (state, action) => {
+            })
+            .addCase(createCouncilReview.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
-              })
+            })
             .addCase(fetchReviewCouncilsList.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -301,16 +353,44 @@ const councilReviewSlice = createSlice({
             .addCase(createReviewSchedule.pending, (state) => {
                 state.loading = true;
                 state.error = null;
-              })
-              .addCase(createReviewSchedule.fulfilled, (state) => {
+            })
+            .addCase(createReviewSchedule.fulfilled, (state) => {
                 state.loading = false;
                 // Không cần cập nhật state vì không lưu lịch review trong councilDetail
-              })
-              .addCase(createReviewSchedule.rejected, (state) => {
+            })
+            .addCase(createReviewSchedule.rejected, (state) => {
                 state.loading = false;
                 // state.error = action.payload as string;
-              })
-            ;
+            })
+            .addCase(fetchReviewSchedulesForStudent.pending, (state) => {
+                state.loadingSchedules = true;
+                state.errorSchedules = null;
+                state.reviewSchedules = []; // Reset khi bắt đầu fetch
+            })
+            .addCase(fetchReviewSchedulesForStudent.fulfilled, (state, action) => {
+                state.loadingSchedules = false;
+                state.reviewSchedules = action.payload; // Gán mảng từ API
+            })
+            .addCase(fetchReviewSchedulesForStudent.rejected, (state, action) => {
+                state.loadingSchedules = false;
+                state.errorSchedules = action.payload as string;
+                state.reviewSchedules = []; // Đảm bảo mảng rỗng khi lỗi
+            })
+            .addCase(fetchReviewSchedulesForMentor.pending, (state) => {
+                state.loadingSchedulesMentor = true;
+                state.errorSchedulesMentor = null;
+                state.reviewSchedulesMentor = [];
+            })
+            .addCase(fetchReviewSchedulesForMentor.fulfilled, (state, action) => {
+                state.loadingSchedulesMentor = false;
+                state.reviewSchedulesMentor = action.payload;
+            })
+            .addCase(fetchReviewSchedulesForMentor.rejected, (state, action) => {
+                state.loadingSchedulesMentor = false;
+                state.errorSchedulesMentor = action.payload as string;
+                state.reviewSchedulesMentor = [];
+            });
+        ;
     },
 });
 

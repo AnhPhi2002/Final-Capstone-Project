@@ -23,6 +23,7 @@ import TopicGroupRegisterDetail from "@/pages/student/topic-group-register/topic
 import { MeetingStudentDetail } from "@/pages/student/meeting/meeting-student";
 import { MeetingStudentPage } from "@/pages/student/meeting/meeting-student-page";
 import ProfileUpdateForm from "@/pages/admin/profile-user/components/profile-update";
+import { RoomReviewStudent } from "@/pages/student/review-room/room-review-student";
 
 
 export const StudentContainer = () => {
@@ -60,6 +61,8 @@ export const StudentContainer = () => {
 
         <Route path="/meeting-student" element={<MeetingStudentPage/>} />
         <Route path="/meeting-student/:id" element={<MeetingStudentDetail />} />
+
+        <Route path="/review-student" element={<RoomReviewStudent />} />
 
 
         <Route path="/*" element={<NotFound />} />
