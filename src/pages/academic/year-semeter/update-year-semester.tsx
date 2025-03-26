@@ -11,27 +11,26 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/lib/api/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/lib/api/redux/store";
 import { updateYear } from "@/lib/api/redux/yearSlice";
 import { toast } from "sonner";
 
 type UpdateYearSemesterProps = {
   yearId: string;
   currentYear: number;
-  existingYears: number[];
   onUpdateSuccess: (updatedYear: number, yearId: string) => void;
 };
 
 export const UpdateYearSemester: React.FC<UpdateYearSemesterProps> = ({
   yearId,
   currentYear,
-  existingYears,
   onUpdateSuccess,
 }) => {
   const [year, setYear] = useState<string>(currentYear.toString());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
+  const years = useSelector((state: RootState) => state.years.data); // Lấy danh sách years từ Redux
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,8 +48,9 @@ export const UpdateYearSemester: React.FC<UpdateYearSemesterProps> = ({
       return;
     }
 
-    if (existingYears.includes(newYear)) {
-      toast.error("Năm học đã tồn tại! Vui lòng nhập một năm khác.");
+    // Kiểm tra trùng lặp chỉ với các năm có isDeleted: false
+    if (years.some((y) => y.year === newYear && !y.isDeleted && y.id !== yearId)) {
+      toast.error("Năm học đã tồn tại và chưa bị xóa! Vui lòng nhập một năm khác.");
       return;
     }
 

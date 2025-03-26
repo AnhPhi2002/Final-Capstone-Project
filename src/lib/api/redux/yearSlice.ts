@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosClient } from "../config/axios-client";
 import { Year } from "@/lib/api/redux/types/year";
+import { RootState } from "./store";
 
 // Thunk để lấy danh sách năm học
 export const fetchYears = createAsyncThunk(
@@ -31,16 +32,23 @@ export const fetchAllYears = createAsyncThunk(
 // Thunk để tạo năm học mới
 export const createYear = createAsyncThunk(
   "years/createYear",
-  async (newYear: { year: number }, { rejectWithValue }) => {
+  async (newYear: { year: number }, { rejectWithValue, getState }) => {
+    const state = getState() as RootState;
+    const existingYears = state.years.data;
+
+    // Kiểm tra trùng lặp chỉ với các năm có isDeleted: false
+    if (existingYears.some((year) => year.year === newYear.year && !year.isDeleted)) {
+      return rejectWithValue("Năm học đã tồn tại và chưa bị xóa!");
+    }
+
     try {
       const response = await axiosClient.post("/year", newYear);
-      return response.data.data;  // Trả về dữ liệu năm học vừa tạo
+      return response.data.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Không thể tạo năm học");
     }
   }
 );
-
 // Thunk để xóa (mềm) năm học
 export const deleteYear = createAsyncThunk(
   "years/deleteYear",

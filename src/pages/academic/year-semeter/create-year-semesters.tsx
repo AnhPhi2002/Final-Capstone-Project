@@ -12,10 +12,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/lib/api/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/lib/api/redux/store";
 import { createYear, fetchYears } from "@/lib/api/redux/yearSlice";
-import {  toast } from "sonner";
+import { toast } from "sonner";
 
 type FormData = {
   year: number;
@@ -24,18 +24,29 @@ type FormData = {
 export const CreateYearSemesters: React.FC = () => {
   const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>();
   const dispatch = useDispatch<AppDispatch>();
-  const [open, setOpen] = useState(false);  // State to manage dialog visibility
-  
+  const [open, setOpen] = useState(false);
+  const years = useSelector((state: RootState) => state.years.data);
+
   const onSubmit = async (data: FormData) => {
+    // Kiểm tra trùng lặp chỉ với các năm có isDeleted: false
+    if (years.some((year) => year.year === data.year && !year.isDeleted)) {
+      toast.error("Năm học đã tồn tại và chưa bị xóa!");
+      return;
+    }
+
     try {
       await dispatch(createYear({ year: data.year })).unwrap();
       toast.success("Tạo năm học thành công!");
       dispatch(fetchYears());
       reset();
-      setOpen(false);  // Close the dialog on success
+      setOpen(false);
     } catch (error: any) {
-      console.error("Error creating year:", error);
-      toast.error(error.message || "Có lỗi xảy ra khi tạo năm học!");
+      const message = error?.message || "Có lỗi xảy ra khi tạo năm học!";
+      if (message.includes("đã tồn tại")) {
+        toast.error("Năm học đã tồn tại!");
+      } else {
+        toast.error(message);
+      }
     }
   };
 
@@ -43,10 +54,7 @@ export const CreateYearSemesters: React.FC = () => {
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button
-            variant="outline"
-            className="bg-black text-white "
-          >
+          <Button variant="outline" className="bg-black text-white">
             Tạo năm học
           </Button>
         </DialogTrigger>
