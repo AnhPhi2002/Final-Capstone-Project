@@ -52,24 +52,49 @@ export const UpdateSemester: React.FC<UpdateSemesterProps> = ({
       toast.error("Vui lòng nhập đầy đủ thông tin!");
       return;
     }
-
+  
     const start = new Date(formValues.startDate);
     const end = new Date(formValues.endDate);
-
+  
     if (end <= start) {
       toast.error("Ngày kết thúc phải lớn hơn ngày bắt đầu!");
       return;
     }
-
+  
+    // Chuẩn hóa code về chữ thường để kiểm tra
+    const normalizedCode = formValues.code.toLowerCase();
+  
+    // Kiểm tra trùng lặp code trong cùng yearId, ngoại trừ chính học kỳ đang cập nhật
     const isDuplicateCode = allSemesters.some(
-      (semester) => semester.code === formValues.code && semester.id !== semesterId
+      (semester) =>
+        semester.yearId === semesterDetail?.yearId &&
+        semester.code.toLowerCase() === normalizedCode &&
+        !semester.isDeleted &&
+        semester.id !== semesterId
     );
-
+  
     if (isDuplicateCode) {
-      toast.error("Mã học kỳ đã tồn tại!");
+      toast.error("Mã học kỳ đã tồn tại trong năm học này !");
       return;
     }
-
+  
+    // Kiểm tra trùng lặp ngày trong cùng yearId, ngoại trừ chính học kỳ đang cập nhật
+    const newStartDate = new Date(formValues.startDate);
+    const newEndDate = new Date(formValues.endDate);
+    const isDateOverlap = allSemesters.some(
+      (semester) =>
+        semester.yearId === semesterDetail?.yearId &&
+        !semester.isDeleted &&
+        semester.id !== semesterId &&
+        (new Date(semester.startDate) <= newEndDate &&
+          new Date(semester.endDate) >= newStartDate)
+    );
+  
+    if (isDateOverlap) {
+      toast.error("Khoảng thời gian của học kỳ mới giao nhau với một học kỳ hiện có trong năm học này!");
+      return;
+    }
+  
     try {
       await dispatch(updateSemester({ semesterId, updatedData: formValues })).unwrap();
       toast.success("Cập nhật học kỳ thành công!");

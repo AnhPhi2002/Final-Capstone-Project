@@ -64,6 +64,7 @@ export const CardSemester: React.FC<CardSemesterProps> = ({ data }) => {
                 <CardDescription>
                   Năm học: {getYearById(semester.yearId)}
                 </CardDescription>
+ 
               </CardHeader>
               <CardContent>
                 <div className="flex items-center gap-2">

@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosClient } from "../config/axios-client";
 import { Semester } from "../types";
+import { RootState } from "./store";
 
 // Fetch semesters by yearId (no pagination)
 export const fetchSemesters = createAsyncThunk(
@@ -31,7 +32,40 @@ export const fetchSemesterDetail = createAsyncThunk(
 // Create semester
 export const createSemester = createAsyncThunk(
   "semesters/createSemester",
-  async (newSemester: Partial<Semester>, { rejectWithValue }) => {
+  async (newSemester: Partial<Semester>, { rejectWithValue, getState }) => {
+    const state = getState() as RootState;
+    const existingSemesters = state.semesters.data;
+
+    // Chuẩn hóa code về chữ thường để kiểm tra
+    const normalizedCode = newSemester.code?.toLowerCase();
+
+    // Kiểm tra trùng lặp code trong cùng yearId với các học kỳ chưa bị xóa
+    if (
+      existingSemesters.some(
+        (semester) =>
+          semester.yearId === newSemester.yearId &&
+          semester.code.toLowerCase() === normalizedCode &&
+          !semester.isDeleted
+      )
+    ) {
+      return rejectWithValue("Mã học kỳ đã tồn tại trong năm học này (không phân biệt chữ hoa/thường)!");
+    }
+
+    // Kiểm tra trùng lặp ngày trong cùng yearId với các học kỳ chưa bị xóa
+    const newStartDate = new Date(newSemester.startDate!);
+    const newEndDate = new Date(newSemester.endDate!);
+    const isDateOverlap = existingSemesters.some(
+      (semester) =>
+        semester.yearId === newSemester.yearId &&
+        !semester.isDeleted &&
+        (new Date(semester.startDate) <= newEndDate &&
+          new Date(semester.endDate) >= newStartDate)
+    );
+
+    if (isDateOverlap) {
+      return rejectWithValue("Khoảng thời gian của học kỳ mới giao nhau với một học kỳ hiện có trong năm học này!");
+    }
+
     try {
       const response = await axiosClient.post("/semester", newSemester);
       return response.data.data;
@@ -40,7 +74,6 @@ export const createSemester = createAsyncThunk(
     }
   }
 );
-
 // Update semester
 export const updateSemester = createAsyncThunk(
   "semesters/updateSemester",
