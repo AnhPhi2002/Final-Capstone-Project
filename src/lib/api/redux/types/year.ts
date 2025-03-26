@@ -4,7 +4,7 @@ export type Year = {
     year: number;
     createdAt: string;
     updatedAt: string;
-    isDeleted: boolean; // 👈 Thêm dòng này
+    isDeleted: boolean;
   };
   
   export interface YearState {

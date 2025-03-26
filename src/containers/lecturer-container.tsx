@@ -25,6 +25,8 @@ import { CouncilReviewMentorPage } from "@/pages/mentor/council-mentor/council-r
 import { CouncilReviewMentorDetail } from "@/pages/mentor/council-mentor/columns/council-review-mentor-detail";
 import { CouncilReviewMembersPage } from "@/pages/mentor/council-mentor/columns-member/CouncilMembersPage";
 import ProfileUpdateForm from "@/pages/admin/profile-user/components/profile-update";
+import { MentorCheckReviewPage } from "@/pages/mentor/review-room/mentor-check-review-page";
+import { MentorCheckReview } from "@/pages/mentor/review-room/columns/mentor-check-review-detail";
 
 export const LecturerContainer = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -66,6 +68,9 @@ export const LecturerContainer = () => {
         <Route path="/council-review" element={<CouncilReviewMentorPage />} />
         <Route path="/council-review/:councilId/:semesterId" element={<CouncilReviewMentorDetail />} />
         <Route path="/council-review-member/:councilId/:semesterId" element={<CouncilReviewMembersPage />} />
+
+        <Route path="/check-review/" element={<MentorCheckReviewPage />} />
+        <Route path="/check-review/:semesterId" element={<MentorCheckReview/>} />
 
         <Route path="/*" element={<NotFound />} />
       </Routes>

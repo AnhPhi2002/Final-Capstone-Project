@@ -26,10 +26,11 @@ const formatDate = (dateString?: string) => {
 
 
 // ✅ Cập nhật class cho Badge theo trạng thái
-const statusClasses: { [key in "ACTIVE" | "COMPLETE" | "PENDING"]: string } = {
-  "ACTIVE": "bg-green-100 text-green-600 hover:bg-green-200",
-  "COMPLETE": "bg-blue-100 text-blue-600 hover:bg-blue-200",
+const statusClasses: { [key in "APPROVED" | "REJECTED" | "PENDING" | "IMPROVED"]: string } = {
+  "APPROVED": "bg-green-100 text-green-600 hover:bg-green-200",
+  "REJECTED": "bg-blue-100 text-blue-600 hover:bg-blue-200",
   "PENDING": "bg-gray-100 text-gray-600 hover:bg-gray-200",
+  "IMPROVED": "bg-yellow-100 text-yellow-600 hover:bg-yellow-200",
 };
 
 export const TopicList = ({ selectedMajor }: { selectedMajor?: string }) => {
@@ -62,7 +63,7 @@ export const TopicList = ({ selectedMajor }: { selectedMajor?: string }) => {
               onClick={() => navigate(`/lecturer/topic-detail/${topic.id}/${semesterId}`)}
               className="relative min-h-[130px] w-full rounded-lg bg-muted/50 flex items-center p-4 gap-x-6 cursor-pointer hover:bg-muted transition-all"
             >
-              <Badge className={`${statusClasses[topic.status as "ACTIVE" | "COMPLETE" | "PENDING"] || "bg-gray-100 text-gray-600 hover:bg-gray-200"} absolute top-4 right-6 px-2 py-1 rounded-md text-xs`}>
+              <Badge className={`${statusClasses[topic.status as "APPROVED" | "REJECTED" | "PENDING" | "IMPROVED"] || "bg-gray-100 text-gray-600 hover:bg-gray-200"} absolute top-4 right-6 px-2 py-1 rounded-md text-xs`}>
                 {topic.status}
               </Badge>
 

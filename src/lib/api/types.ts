@@ -14,7 +14,7 @@ export interface Semester {
     createdAt: string;
     updatedAt: string;
   };
-  semester_detail?: any[]; // Nếu không có `semester_detail`, hãy để kiểu là tùy chọn (`?`)
+  semester_detail?: any[]; 
 }
 
 // types.ts
@@ -271,4 +271,30 @@ export interface GroupResponse {
   };
   mentors?: Mentor[];
   topicAssignments: any[]; 
+}
+
+export interface ReviewSchedule {
+  schedule: {
+    id: string;
+    councilId: string;
+    groupId: string;
+    topicId: string;
+    reviewTime: string;
+    room: string;
+    reviewRound: number;
+    status: string;
+    council: string;
+    group: string;
+    topic: string;
+  };
+  assignment: {
+    id: string;
+    score: number | null;
+    status: string;
+    feedback: string | null;
+    reviewerId: string | null;
+    assignedAt: string;
+    reviewedAt: string | null;
+  };
+  url: string | null;
 }

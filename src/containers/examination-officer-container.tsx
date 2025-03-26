@@ -16,6 +16,10 @@ import { CouncilMembersPage } from "@/pages/examination-officer/review-topic-cou
 
 import { ReviewTopicCouncilDetail } from "@/pages/examination-officer/review-topic-council/columns/review-topic-council-detail";
 import { ReviewTopicCouncilPage } from "@/pages/examination-officer/review-topic-council/review-topic-council-page";
+import { TopicDetailPage } from "@/pages/examination-officer/topic-list/topic-mentor/topic-detail/topic-detail-page";
+import UpdateTopicDetail from "@/pages/examination-officer/topic-list/topic-mentor/topic-detail/update-topic-detail";
+import { TopicListPage } from "@/pages/examination-officer/topic-list/topic-mentor/topic-list-page";
+import { TopicPage } from "@/pages/examination-officer/topic-list/topic-mentor/topic-page";
 import { ReviewTopicListPage } from "@/pages/examination-officer/topic-review/review-topic-list-page";
 import { ReviewTopicPage } from "@/pages/examination-officer/topic-review/review-topic-page";
 import { ReviewTopicDetailPage } from "@/pages/examination-officer/topic-review/topic-detail/topic-detail-page";
@@ -36,30 +40,37 @@ export const ExaminationOfficerContainer = () => {
     <MainLayout>
       <Routes>
         <Route path="/" element={<DashboardPage />} />
-                <Route path="/profile-page" element={<ProfilePage />} />
-                <Route path="/profile-page/update" element={<ProfileUpdateForm />} />
+        <Route path="/profile-page" element={<ProfilePage />} />
+        <Route path="/profile-page/update" element={<ProfileUpdateForm />} />
 
-        <Route path="/review-topic-detail/:topicId/:semesterId/update" element={<UpdateReviewTopicDetail />} /> 
+        <Route path="/review-topic-detail/:topicId/:semesterId/update" element={<UpdateReviewTopicDetail />} />
 
         <Route path="/review-topic-page" element={<ReviewTopicPage />} />
         <Route path="/review-topic-page/:semesterId" element={<ReviewTopicPage />} />
         <Route path="/review-topic-list" element={<ReviewTopicListPage />} />
         <Route path="/review-topic-list/:semesterId/submission/:submissionPeriodId/round/:roundNumber" element={<ReviewTopicListPage />} />
         <Route path="/review-topic-detail/:topicId/:semesterId" element={<ReviewTopicDetailPage />} />
-        
+
         <Route path="deadline-topic" element={<DeadineTopicPage />} />
         <Route path="deadline-topic/:semesterId" element={<DeadineTopicDetailPage />} />
         <Route path="deadline-topic/:semesterId/submission/:submissionId" element={<DeadineTopicDetailPage />} />
-        
+
 
         <Route path="review-topic-council" element={<ReviewTopicCouncilPage />} />
         <Route path="/review-topic-council-detail/:councilId/:semesterId" element={<ReviewTopicCouncilDetail />} />
-        <Route path="/review-topic-council-member/:councilId/:semesterId" element={<CouncilMembersPage />} /> 
+        <Route path="/review-topic-council-member/:councilId/:semesterId" element={<CouncilMembersPage />} />
 
         <Route path="/council-review" element={<CouncilReviewPage />} />
-        <Route path="/council-review/:councilId/:semesterId" element={<CouncilReviewDetail />} />  
+        <Route path="/council-review/:councilId/:semesterId" element={<CouncilReviewDetail />} />
         <Route path="/council-review-member/:councilId/:semesterId" element={<CouncilReviewMembersPage />} />
-              
+
+        <Route path="/topic" element={<TopicPage />} />
+        <Route path="/topic/:semesterId" element={<TopicPage />} />
+
+        <Route path="/topic-list/semester/:semesterId/submission/:submissionPeriodId/round/:roundNumber" element={<TopicListPage />} />
+        <Route path="/topic-detail/:topicId/:semesterId" element={<TopicDetailPage />} />
+        <Route path="/topic-detail/:topicId/:semesterId/update" element={<UpdateTopicDetail />} />
+
         <Route path="/*" element={<NotFound />} />
       </Routes>
     </MainLayout>
