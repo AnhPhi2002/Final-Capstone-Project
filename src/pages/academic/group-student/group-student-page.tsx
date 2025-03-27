@@ -10,8 +10,11 @@ export const GroupStudentPage = () => {
         currentPage="Danh sách nhóm sinh vien"
       />
       <div className="p-5 flex-1 overflow-auto">
-        <SelectSemester />
-        
+        <div className="flex flex-col items-end gap-4">
+          <div className="w-full mt-[52px]">
+            <SelectSemester />
+          </div>
+        </div>
       </div>
     </div>
   );
