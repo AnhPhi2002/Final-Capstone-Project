@@ -6,6 +6,7 @@ import DashboardPage from "@/pages/admin/dashboard/dashboard-page";
 import ProfileUpdateForm from "@/pages/admin/profile-user/components/profile-update";
 
 import { ProfilePage } from "@/pages/admin/profile-user/page";
+import { CouncilReviewGroupsPage } from "@/pages/examination-officer/council-review-123/columns-detail/CouncilGroupsPage";
 import { CouncilReviewMembersPage } from "@/pages/examination-officer/council-review-123/columns-member/CouncilMembersPage";
 import { CouncilReviewDetail } from "@/pages/examination-officer/council-review-123/columns/council-review123-detail";
 import { CouncilReviewPage } from "@/pages/examination-officer/council-review-123/council-review123-page";
@@ -63,6 +64,7 @@ export const ExaminationOfficerContainer = () => {
         <Route path="/council-review" element={<CouncilReviewPage />} />
         <Route path="/council-review/:councilId/:semesterId" element={<CouncilReviewDetail />} />
         <Route path="/council-review-member/:councilId/:semesterId" element={<CouncilReviewMembersPage />} />
+        <Route path="/council-review-group/:councilId/:semesterId" element={<CouncilReviewGroupsPage />} />
 
         <Route path="/topic" element={<TopicPage />} />
         <Route path="/topic/:semesterId" element={<TopicPage />} />

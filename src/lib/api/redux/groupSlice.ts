@@ -1,17 +1,19 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosClient } from "../config/axios-client";
-import { Group } from "../types";
+import { Group, GroupWithDetails } from "../types";
 
 // Định nghĩa kiểu dữ liệu cho nhóm
 
 
 type GroupState = {
+  groupsDetails: GroupWithDetails[];
   groups: Group[];
   loading: boolean;
   error: string | null;
 };
 
 const initialState: GroupState = {
+  groupsDetails: [],
   groups: [],
   loading: false,
   error: null,
@@ -35,20 +37,19 @@ export const fetchGroupsWithoutSemester = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axiosClient.get(`/groups/my-groups`);
-      console.log("Raw API response:", response.data); // Log dữ liệu thô
-      // Kiểm tra xem response.data.data có phải mảng không
+
       if (!Array.isArray(response.data.data)) {
         throw new Error("Dữ liệu trả về không phải là mảng!");
       }
-      const groups = response.data.data.map((item: any) => item.group);
-      console.log("Mapped groups:", groups); // Log dữ liệu sau khi ánh xạ
-      return groups; // Trả về Group[]
+
+      // Trả về chính xác mảng dữ liệu từ API mà không map sai thuộc tính
+      return response.data.data as GroupWithDetails[];
     } catch (error: any) {
-      console.log("API error:", error); // Log lỗi nếu có
       return rejectWithValue(error.message || "Lỗi khi lấy danh sách nhóm!");
     }
   }
 );
+
 
 // Action để tạo nhóm mới
 export const createGroup = createAsyncThunk(
@@ -123,7 +124,7 @@ const groupSlice = createSlice({
       })
       .addCase(fetchGroupsWithoutSemester.fulfilled, (state, action) => {
         state.loading = false;
-        state.groups = action.payload;
+        state.groupsDetails = action.payload;
       })
       .addCase(fetchGroupsWithoutSemester.rejected, (state, action) => {
         state.loading = false;

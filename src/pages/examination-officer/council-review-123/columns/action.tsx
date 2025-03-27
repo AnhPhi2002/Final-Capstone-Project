@@ -45,6 +45,11 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({ council, refetchData }) 
           >
             Thành viên hội đồng
           </DropdownMenuItem>
+          {/* <DropdownMenuItem
+            onClick={() => navigate(`/examination/council-review-group/${council.id}/${semesterId}`)}
+          >
+            Thông tin nhóm review
+          </DropdownMenuItem> */}
           <DropdownMenuItem onClick={() => setOpenDelete(true)} className="text-red-600">
             Xóa Hội đồng
           </DropdownMenuItem>
@@ -52,11 +57,11 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({ council, refetchData }) 
       </DropdownMenu>
 
       <DeleteReviewTopicCouncil
-  open={openDelete}
-  setOpen={setOpenDelete}
-  councilId={council.id}
-  refetchData={refetchData} // Gọi lại danh sách sau khi xóa
-/>
+        open={openDelete}
+        setOpen={setOpenDelete}
+        councilId={council.id}
+        refetchData={refetchData} // Gọi lại danh sách sau khi xóa
+      />
 
 
       {openUpdate && (

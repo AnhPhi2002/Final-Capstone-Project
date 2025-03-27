@@ -27,6 +27,7 @@ import { CouncilReviewMembersPage } from "@/pages/mentor/council-mentor/columns-
 import ProfileUpdateForm from "@/pages/admin/profile-user/components/profile-update";
 import { MentorCheckReviewPage } from "@/pages/mentor/review-room/mentor-check-review-page";
 import { MentorCheckReview } from "@/pages/mentor/review-room/columns/mentor-check-review-detail";
+import { CouncilReviewGroupsPage } from "@/pages/mentor/council-mentor/columns-detail/CouncilGroupsPage";
 
 export const LecturerContainer = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -68,6 +69,7 @@ export const LecturerContainer = () => {
         <Route path="/council-review" element={<CouncilReviewMentorPage />} />
         <Route path="/council-review/:councilId/:semesterId" element={<CouncilReviewMentorDetail />} />
         <Route path="/council-review-member/:councilId/:semesterId" element={<CouncilReviewMembersPage />} />
+        <Route path="/council-review-group/:councilId/:semesterId" element={<CouncilReviewGroupsPage />} />
 
         <Route path="/check-review/" element={<MentorCheckReviewPage />} />
         <Route path="/check-review/:semesterId" element={<MentorCheckReview/>} />

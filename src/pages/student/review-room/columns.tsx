@@ -4,20 +4,20 @@ import { ReviewSchedule } from "@/lib/api/types";
 
 export const columns: ColumnDef<ReviewSchedule>[] = [
   {
-    accessorKey: "schedule.council",
+    accessorKey: "schedule.council.name",
     header: "Tên hội đồng",
   },
   {
-    accessorKey: "schedule.group",
+    accessorKey: "schedule.group.groupCode",
     header: "Nhóm",
   },
   {
-    accessorKey: "schedule.topic",
+    accessorKey: "schedule.topic.topicCode",
     header: "Đề tài",
   },
   {
     accessorKey: "schedule.reviewTime",
-    header: "Thời gian họp",
+    header: "Thời gian xét duyệt",
     cell: ({ row }) => {
       const date = new Date(row.original.schedule.reviewTime);
       return date.toLocaleString("vi-VN", {
