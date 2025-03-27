@@ -63,7 +63,7 @@ export function SemestersDetailPage() {
 
   return (
     <div className="flex flex-col h-screen">
-      <Header title={`Semester: ${semesterDetail?.code}`} href="/semester" currentPage="Semester Detail" />
+      <Header title={`Học kỳ:  ${semesterDetail?.code}`} href="/academic/semester" currentPage={`Học kỳ chi tiết ${semesterDetail?.code}`}/>
       <div className="p-5 flex-1 overflow-auto">
         <DataTable table={table} />
       </div>

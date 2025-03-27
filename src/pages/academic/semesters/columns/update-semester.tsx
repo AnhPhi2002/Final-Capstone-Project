@@ -1,182 +1,276 @@
-import React, { useState, useEffect } from "react";
+"use client";
+
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
 import { updateSemester } from "@/lib/api/redux/semesterSlice";
 import { AppDispatch, RootState } from "@/lib/api/redux/store";
-import { Toaster, toast } from "sonner";
+import { toast } from "sonner";
 
-type UpdateSemesterProps = {
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { CalendarIcon } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { format } from "date-fns";
+import { vi } from "date-fns/locale";
+import { cn } from "@/lib/utils";
+
+const formSchema = z.object({
+  code: z.string().min(1, "Vui lòng nhập mã học kỳ"),
+  startDate: z.date({ required_error: "Vui lòng chọn ngày bắt đầu" }),
+  endDate: z.date({ required_error: "Vui lòng chọn ngày kết thúc" }),
+});
+
+type FormValues = z.infer<typeof formSchema>;
+
+type Props = {
   open: boolean;
   setOpen: (open: boolean) => void;
   semesterId: string;
   refetchData?: () => void;
 };
 
-export const UpdateSemester: React.FC<UpdateSemesterProps> = ({
+export const UpdateSemester: React.FC<Props> = ({
   open,
   setOpen,
   semesterId,
   refetchData,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const semesterDetail = useSelector((state: RootState) => state.semesters.semesterDetail);
+  const semesterDetail = useSelector(
+    (state: RootState) => state.semesters.semesterDetail
+  );
   const allSemesters = useSelector((state: RootState) => state.semesters.data);
 
-  const [formValues, setFormValues] = useState({
-    code: "",
-    startDate: "",
-    endDate: "",
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      code: "",
+      startDate: undefined,
+      endDate: undefined,
+    },
   });
 
-  const formatDateForInput = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toISOString().split("T")[0];
-  };
+  const { handleSubmit, reset } = form;
 
   useEffect(() => {
     if (open && semesterDetail) {
-      setFormValues({
+      reset({
         code: semesterDetail.code || "",
-        startDate: formatDateForInput(semesterDetail.startDate) || "",
-        endDate: formatDateForInput(semesterDetail.endDate) || "",
+        startDate: new Date(semesterDetail.startDate),
+        endDate: new Date(semesterDetail.endDate),
       });
     }
-  }, [open, semesterDetail]);
+  }, [open, semesterDetail, reset]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormValues({ ...formValues, [name]: value });
-  };
+  const onSubmit = async (data: FormValues) => {
+    const { code, startDate, endDate } = data;
 
-  const handleSave = async () => {
-    if (!formValues.code || !formValues.startDate || !formValues.endDate) {
-      toast.error("Vui lòng nhập đầy đủ thông tin!");
-      return;
-    }
-  
-    const start = new Date(formValues.startDate);
-    const end = new Date(formValues.endDate);
-  
-    if (end <= start) {
+    if (endDate <= startDate) {
       toast.error("Ngày kết thúc phải lớn hơn ngày bắt đầu!");
       return;
     }
-  
-    // Chuẩn hóa code về chữ thường để kiểm tra
-    const normalizedCode = formValues.code.toLowerCase();
-  
-    // Kiểm tra trùng lặp code trong cùng yearId, ngoại trừ chính học kỳ đang cập nhật
+
+    const normalizedCode = code.toLowerCase();
+
     const isDuplicateCode = allSemesters.some(
-      (semester) =>
-        semester.yearId === semesterDetail?.yearId &&
-        semester.code.toLowerCase() === normalizedCode &&
-        !semester.isDeleted &&
-        semester.id !== semesterId
+      (s) =>
+        s.yearId === semesterDetail?.yearId &&
+        s.code.toLowerCase() === normalizedCode &&
+        !s.isDeleted &&
+        s.id !== semesterId
     );
-  
     if (isDuplicateCode) {
-      toast.error("Mã học kỳ đã tồn tại trong năm học này !");
+      toast.error("Mã học kỳ đã tồn tại trong năm học này!");
       return;
     }
-  
-    // Kiểm tra trùng lặp ngày trong cùng yearId, ngoại trừ chính học kỳ đang cập nhật
-    const newStartDate = new Date(formValues.startDate);
-    const newEndDate = new Date(formValues.endDate);
+
     const isDateOverlap = allSemesters.some(
-      (semester) =>
-        semester.yearId === semesterDetail?.yearId &&
-        !semester.isDeleted &&
-        semester.id !== semesterId &&
-        (new Date(semester.startDate) <= newEndDate &&
-          new Date(semester.endDate) >= newStartDate)
+      (s) =>
+        s.yearId === semesterDetail?.yearId &&
+        !s.isDeleted &&
+        s.id !== semesterId &&
+        new Date(s.startDate) <= endDate &&
+        new Date(s.endDate) >= startDate
     );
-  
     if (isDateOverlap) {
-      toast.error("Khoảng thời gian của học kỳ mới giao nhau với một học kỳ hiện có trong năm học này!");
+      toast.error("Thời gian học kỳ mới bị trùng với học kỳ khác!");
       return;
     }
-  
+
     try {
-      await dispatch(updateSemester({ semesterId, updatedData: formValues })).unwrap();
+      await dispatch(
+        updateSemester({
+          semesterId,
+          updatedData: {
+            code,
+            startDate: startDate.toISOString(),
+            endDate: endDate.toISOString(),
+          },
+        })
+      ).unwrap();
       toast.success("Cập nhật học kỳ thành công!");
-      if (refetchData) refetchData();
+      refetchData?.();
       setOpen(false);
-    } catch (error: any) {
-      toast.error(`Cập nhật thất bại: ${error.message || "Đã xảy ra lỗi"}`);
+    } catch (err: any) {
+      toast.error(`Cập nhật thất bại: ${err.message || "Đã xảy ra lỗi"}`);
     }
   };
 
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <Toaster position="top-right" richColors duration={3000} />
-      <div className="bg-white rounded-lg p-6 w-full max-w-lg">
-        <h2 className="text-xl font-bold mb-4">Cập nhật học kỳ</h2>
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Mã học kỳ</label>
-            <input
-              type="text"
+    <>
+      <div className="fixed inset-0 z-50 bg-black/80" 
+       onClick={() => setOpen(false)}/>
+      <div
+        className={`fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-white p-6 shadow-lg duration-200
+        data-[state=open]:animate-in
+        data-[state=closed]:animate-out
+        data-[state=closed]:fade-out-0
+        data-[state=open]:fade-in-0
+        data-[state=closed]:zoom-out-95
+        data-[state=open]:zoom-in-95
+        data-[state=closed]:slide-out-to-left-1/2
+        data-[state=closed]:slide-out-to-top-[48%]
+        data-[state=open]:slide-in-from-left-1/2
+        data-[state=open]:slide-in-from-top-[48%]
+        sm:rounded-lg`}
+        onClick={(e) => e.stopPropagation()}
+        data-state={open ? "open" : "closed"}
+      >
+        <div className="space-y-2">
+          <h2 className="text-lg font-semibold">Cập nhật học kỳ</h2>
+          <p className="text-sm text-gray-500">
+            Chọn năm học và nhập thông tin học kỳ bên dưới. Nhấn "Lưu" để xác
+            nhận.
+          </p>
+        </div>
+        <Form {...form}>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            {/* Mã học kỳ */}
+            <FormField
+              control={form.control}
               name="code"
-              value={formValues.code}
-              onChange={handleChange}
-              placeholder="VD: Spring2025"
-              className="w-full border border-gray-300 rounded-lg p-2"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Mã học kỳ</FormLabel>
+                  <FormControl>
+                    <Input placeholder="VD: Spring2025" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Ngày bắt đầu</label>
-            <input
-              type="date"
+            {/* Ngày bắt đầu */}
+            <FormField
+              control={form.control}
               name="startDate"
-              value={formValues.startDate}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg p-2"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Ngày bắt đầu</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value
+                            ? format(field.value, "PPP", { locale: vi })
+                            : "Chọn ngày"}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent align="start" className="w-auto p-0">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) => date < new Date("2000-01-01")}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Ngày kết thúc</label>
-            <input
-              type="date"
+            {/* Ngày kết thúc */}
+            <FormField
+              control={form.control}
               name="endDate"
-              value={formValues.endDate}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg p-2"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Ngày kết thúc</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value
+                            ? format(field.value, "PPP", { locale: vi })
+                            : "Chọn ngày"}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent align="start" className="w-auto p-0">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) => date < new Date("2000-01-01")}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
-          {/* <div>
-            <label className="block text-sm font-medium mb-1">Trạng thái</label>
-            <select
-              name="status"
-              value={formValues.status}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg p-2"
-            >
-              <option value="ACTIVE">Hoạt động </option>
-              <option value="COMPLETE">Không hoạt động </option>
-              <option value="UPCOMING">Chờ đợi </option>
-            </select>
-          </div> */}
-        </div>
-
-        <div className="mt-6 flex justify-end space-x-4">
-          <button
-            onClick={() => setOpen(false)}
-            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg"
-          >
-            Hủy
-          </button>
-          <button
-            onClick={handleSave}
-            className="px-4 py-2 bg-black text-white rounded-lg"
-          >
-            Lưu cập nhật
-          </button>
-        </div>
+            <div className="mt-6 flex justify-end space-x-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setOpen(false)}
+              >
+                Hủy
+              </Button>
+              <Button type="submit" className="bg-black text-white">
+                Lưu cập nhật
+              </Button>
+            </div>
+          </form>
+        </Form>
       </div>
-    </div>
+    </>
   );
 };
