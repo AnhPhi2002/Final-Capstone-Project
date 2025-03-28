@@ -54,7 +54,7 @@ export const CreateYearSemesters: React.FC = () => {
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button variant="outline" className="bg-black text-white">
+          <Button className="bg-black text-white">
             Tạo năm học
           </Button>
         </DialogTrigger>

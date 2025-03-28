@@ -62,7 +62,7 @@ const ManualCreateGroupDialog: React.FC<Props> = ({ semesterId, students }) => {
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button variant="outline">Tạo nhóm thủ công</Button>
+        <Button >Tạo nhóm thủ công</Button>
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-md">
