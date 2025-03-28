@@ -1,81 +1,68 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
-// import { Button } from "@/components/ui/button";
-// import { ArrowUpDown } from "lucide-react";
 import { Action } from "./action";
+import { GroupWithDetails } from "@/lib/api/types";
 
-export const columns: ColumnDef<any>[] = [
+export const columns: ColumnDef<GroupWithDetails>[] = [
   {
-    accessorKey: "groupCode",
+    accessorKey: "group.groupCode",
     header: "Mã Nhóm",
   },
   {
-    accessorKey: "mentors",
     header: "Giảng Viên 1",
-    cell: ({ row }) => {
-      const mentors = row.original.mentors || [];
-      // Tìm mentor chính (mentor_main)
-      const mainMentor = mentors.find((m: any) => m.role.name === "mentor_main");
-      return <div>{mainMentor ? mainMentor.mentor.email : "N/A"}</div>;
+    accessorFn: (row) => {
+      const mainMentor = row.mentors.find((mentor) => mentor.role === "mentor_main");
+      return mainMentor ? mainMentor.email : "N/A";
     },
   },
   {
-    accessorKey: "mentors",
     header: "Giảng Viên 2",
-    cell: ({ row }) => {
-      const mentors = row.original.mentors || [];
-      // Tìm mentor phụ (mentor_sub)
-      const subMentor = mentors.find((m: any) => m.role.name === "mentor_sub");
-      return <div>{subMentor ? subMentor.mentor.email : "N/A"}</div>;
+    accessorFn: (row) => {
+      const subMentor = row.mentors.find((mentor) => mentor.role === "mentor_sub");
+      return subMentor ? subMentor.email : "N/A";
     },
   },
   {
-    accessorKey: "status",
+    accessorKey: "group.status",
     header: "Trạng Thái",
     cell: ({ row }) => {
-      const status = row.original.status;
-      let badge;
+      const status = row.original.group.status;
+      const badgeClass = {
+        ACTIVE: "bg-green-100 text-green-500",
+        PENDING: "bg-yellow-100 text-yellow-500",
+        INACTIVE: "bg-red-100 text-red-500",
+      }[status] || "bg-gray-100 text-gray-500";
 
-      if (status === "ACTIVE") {
-        badge = <Badge className="bg-green-100 text-green-500">Đang Hoạt Động</Badge>;
-      } else if (status === "PENDING") {
-        badge = <Badge className="bg-yellow-100 text-yellow-500">Chờ Xử Lý</Badge>;
-      } else {
-        badge = <Badge className="bg-red-100 text-red-500">Ngừng Hoạt Động</Badge>;
-      }
+      const statusText = {
+        ACTIVE: "Đang Hoạt Động",
+        PENDING: "Chờ Xử Lý",
+        INACTIVE: "Ngừng Hoạt Động",
+      }[status] || status;
 
-      return <div>{badge}</div>;
+      return <Badge className={badgeClass}>{statusText}</Badge>;
     },
   },
   {
-    accessorKey: "members",
     header: "Số Thành Viên Hiện Tại",
-    cell: ({ row }) => {
-      const members = row.original.members || [];
-      return <div>{members.length}</div>;
-    },
+    accessorFn: (row) => row.members.length,
   },
   {
-    accessorKey: "isMultiMajor",
+    accessorKey: "group.isMultiMajor",
     header: "Liên Ngành",
-    cell: ({ row }) => {
-      return (
-        <Badge className={row.original.isMultiMajor ? "bg-green-100 text-green-500" : "bg-red-100 text-red-500"}>
-          {row.original.isMultiMajor ? "Có" : "Không"}
-        </Badge>
-      );
-    },
+    cell: ({ row }) => (
+      <Badge className={row.original.group.isMultiMajor ? "bg-green-100 text-green-500" : "bg-red-100 text-red-500"}>
+        {row.original.group.isMultiMajor ? "Có" : "Không"}
+      </Badge>
+    ),
   },
   {
-    accessorKey: "createdAt",
+    accessorKey: "group.createdAt",
     header: "Ngày Tạo",
-    cell: ({ row }) => <div>{new Date(row.original.createdAt).toLocaleString()}</div>,
+    cell: ({ row }) => new Date(row.original.group.createdAt).toLocaleString(),
   },
   {
     id: "actions",
-    cell: ({ row }) => {
-      const group = row.original;
-      return <Action group={group} />;
-    },
+    header: "Hành động",
+    cell: ({ row }) => <Action group={row.original.group} />,
   },
 ];

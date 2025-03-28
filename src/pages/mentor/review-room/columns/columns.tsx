@@ -1,18 +1,19 @@
 // src/components/columns.tsx
 import { ColumnDef } from "@tanstack/react-table";
 import { ReviewSchedule } from "@/lib/api/types";
+import { Action } from "./action";
 
 export const columns: ColumnDef<ReviewSchedule>[] = [
   {
-    accessorKey: "schedule.council",
+    accessorKey: "schedule.council.name",
     header: "Tên hội đồng",
   },
   {
-    accessorKey: "schedule.group",
+    accessorKey: "schedule.group.groupCode",
     header: "Nhóm",
   },
   {
-    accessorKey: "schedule.topic",
+    accessorKey: "schedule.topic.topicCode",
     header: "Đề tài",
   },
   {
@@ -21,7 +22,7 @@ export const columns: ColumnDef<ReviewSchedule>[] = [
     cell: ({ row }) => {
       const date = new Date(row.original.schedule.reviewTime);
       return date.toLocaleString("vi-VN", {
-        dateStyle: "short",
+        dateStyle: "medium",
         timeStyle: "short",
       });
     },
@@ -44,18 +45,9 @@ export const columns: ColumnDef<ReviewSchedule>[] = [
       }
     },
   },
-  // {
-  //   accessorKey: "url",
-  //   header: "Link",
-  //   cell: ({ row }) => (
-  //     <a
-  //       href={row.original.url || "#"}
-  //       target="_blank"
-  //       rel="noopener noreferrer"
-  //       className="text-blue-600 hover:underline"
-  //     >
-  //       {row.original.url ? "Truy cập" : "Không có"}
-  //     </a>
-  //   ),
-  // },
+  {
+    id: "actions",
+    header: "Hành động",
+    cell: ({ row }) => <Action schedule={row.original} />, // Truyền toàn bộ ReviewSchedule object
+  },
 ];

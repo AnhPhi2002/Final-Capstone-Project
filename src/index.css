@@ -97,3 +97,7 @@
 .font-times {
   font-family: "Times New Roman", serif;
 }
+/* Fix lỗi Dialog của shadcn/ui bị đơ màn hình sau khi đóng */
+[data-state="closed"].fixed.inset-0.z-50.bg-black\/80 {
+  display: none !important;
+}

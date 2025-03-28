@@ -76,21 +76,7 @@ export interface Council {
   members: CouncilMember[];
 }
 
-export interface CouncilReviewMember {
-  id: string;
-  councilId: string;
-  roleId: string;
-  status: string;
-  userId: string;
-  roleName: string;
-  user: {
-    id: string;
-    fullName: string;
-    email: string;
-  }
 
-  isDeleted?: boolean;
-}
 
 export interface CouncilReview {
   id: string;
@@ -108,7 +94,54 @@ export interface CouncilReview {
   endDate: string,
   isDeleted?: boolean;
   members: CouncilReviewMember[];
+  sessions: CouncilReviewSessions[];
 }
+
+export interface CouncilReviewMember {
+  id: string;
+  councilId: string;
+  roleId: string;
+  status: string;
+  userId: string;
+  roleName: string;
+  user: {
+    id: string;
+    fullName: string;
+    email: string;
+  }
+
+  isDeleted?: boolean;
+}
+
+export interface CouncilReviewSessions {
+  reviewTime: string;
+  room?: string;
+  group?: {
+    id: string;
+    groupCode:string;
+  }
+  topic?: {
+    topicCode: string;
+    name: string;
+  }
+  isDeleted?: boolean;
+  assignments?: CouncilReviewAssignment[] ;
+}
+
+export interface CouncilReviewAssignment {
+  id: string;
+  score?: number;
+  feedback?: string;
+  topicId?: string;
+  status: string;
+  isDeleted?: boolean;
+  reviewer?: {
+    id: string;
+    fullName: string;
+    // email: string;
+  };
+}
+
 
 
 export interface SubmissionRound {
@@ -241,6 +274,12 @@ export interface Group {
       };
     };
   }[];
+  mentors: {
+    id: string;
+    username: string;
+    email: string;
+    role: string;
+  }[];
 }
 
 export interface Mentor {
@@ -283,18 +322,87 @@ export interface ReviewSchedule {
     room: string;
     reviewRound: number;
     status: string;
-    council: string;
-    group: string;
-    topic: string;
+    council: {
+      code: string;
+      name: string;
+    };
+    group: {
+      groupCode: string;
+    };
+    topic: {
+      topicCode: string;
+      // nameEn: string;
+    };
   };
-  assignment: {
-    id: string;
-    score: number | null;
-    status: string;
-    feedback: string | null;
-    reviewerId: string | null;
-    assignedAt: string;
-    reviewedAt: string | null;
-  };
+  assignments:  ReviewScheduleAssignment[];
   url: string | null;
+}
+
+export interface ReviewScheduleAssignment {
+  id: string;
+  score: number | null;
+  feedback: string | null;
+  status: string;
+  reviewRound: number;
+  reviewer: {
+    fullName?: string;
+    email?: string;
+  }
+}
+
+export interface GroupApiResponse {
+  message: string;
+  data: GroupWithDetails[];
+}
+
+export interface GroupWithDetails {
+  group: Group;
+  semester: {
+    code: string;
+    startDate: string;
+    endDate: string;
+  };
+  members: Member[];
+  creator: {
+    id: string;
+    fullName: string;
+    email: string;
+  };
+  mentors: Mentor[];
+  topicAssignments: TopicAssignment[];
+}
+
+export interface Group {
+  id: string;
+  groupCode: string;
+  semesterId: string;
+  status: string;
+  isAutoCreated: boolean;
+  createdBy: string;
+  maxMembers: number;
+  isMultiMajor: boolean;
+  isLocked: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Mentor {
+  mentorId: string;
+  username: string;
+  email: string;
+  role: string;
+}
+
+export interface Member {
+  studentId: string;
+  fullName: string;
+  email: string;
+  role: string;
+  status: string;
+}
+
+export interface TopicAssignment {
+  topicId: string;
+  topicName: string;
+  status: string;
 }

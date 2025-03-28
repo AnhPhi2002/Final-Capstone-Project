@@ -2,7 +2,7 @@
 // lib/api/redux/councilReviewSlice.ts
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosClient } from "@/lib/api/config/axios-client";
-import { CouncilReview, CouncilReviewMember, ReviewSchedule } from "../types";
+import { CouncilReview, CouncilReviewMember, ReviewSchedule, CouncilReviewSessions, CouncilReviewAssignment } from "../types";
 
 interface CouncilState {
     data: CouncilReview[];
@@ -16,6 +16,11 @@ interface CouncilState {
     reviewSchedulesMentor: ReviewSchedule[];
     loadingSchedulesMentor: boolean;
     errorSchedulesMentor: string | null;
+    councilSesstions: CouncilReviewSessions[];
+    loadingSessions: boolean;
+    errorSessions: string | null;
+    loadingScore: boolean;
+    errorScore: string | null;
 }
 
 const initialState: CouncilState = {
@@ -30,7 +35,34 @@ const initialState: CouncilState = {
     reviewSchedulesMentor: [],
     loadingSchedulesMentor: false,
     errorSchedulesMentor: null,
+    councilSesstions: [],
+    loadingSessions: false,
+    errorSessions: null,
+    loadingScore: false,
+    errorScore: null,
 };
+
+export const updateReviewAssignmentScore = createAsyncThunk(
+    "councils/updateReviewAssignmentScore",
+    async (
+        { assignmentId, semesterId, scoreData }: { assignmentId: string; semesterId: string; scoreData: { score: number; feedback: string; status: string } },
+        { rejectWithValue }
+    ) => {
+        try {
+            const response = await axiosClient.put(
+                `/council-review/review-assignments/${assignmentId}/update`,
+                scoreData,
+                {
+                    params: { semesterId }, // Thêm semesterId vào query params
+                }
+            );
+            return response.data.data as CouncilReviewAssignment;
+        } catch (error: any) {
+            console.error("API updateReviewAssignmentScore error:", error.response?.data || error.message);
+            return rejectWithValue(error.response?.data?.message || "Không thể cập nhật điểm số!");
+        }
+    }
+);
 
 export const createCouncilReview = createAsyncThunk(
     "councils/createCouncilReview",
@@ -237,6 +269,24 @@ const councilReviewSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
+            .addCase(updateReviewAssignmentScore.pending, (state) => {
+                state.loadingScore = true;
+                state.errorScore = null;
+            })
+            .addCase(updateReviewAssignmentScore.fulfilled, (state, action) => {
+                state.loadingScore = false;
+                // Cập nhật councilDetail nếu cần
+                if (state.councilDetail) {
+                    state.councilDetail.sessions = state.councilDetail.sessions.map((session) => {
+                        if (session.assignments) {
+                            session.assignments = session.assignments.map((assignment) =>
+                                assignment.id === action.payload.id ? action.payload : assignment
+                            );
+                        }
+                        return session;
+                    });
+                }
+            })
             .addCase(createCouncilReview.pending, (state) => {
                 state.loading = true;
                 state.error = null;
