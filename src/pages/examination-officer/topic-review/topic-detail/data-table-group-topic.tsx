@@ -1,6 +1,6 @@
-import React, { useEffect} from "react";
+import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
-import { fetchGroupDetail} from "@/lib/api/redux/groupDetailSlice";
+import { fetchGroupDetail } from "@/lib/api/redux/groupDetailSlice";
 import { columns } from "./group-student-detail/columns";
 import { DataTable } from "./group-student-detail/data-table";
 import { useParams } from "react-router";
@@ -10,14 +10,18 @@ interface DataTableGroupTopicProps {
   // semesterId?: string;
 }
 
-export const DataTableGroupTopic: React.FC<DataTableGroupTopicProps> = ({groupId}) =>{
+export const DataTableGroupTopic: React.FC<DataTableGroupTopicProps> = ({
+  groupId,
+}) => {
   const dispatch = useAppDispatch();
-  const { group, loading, error } = useAppSelector((state) => state.groupDetail);
-  const {semesterId} = useParams();
+  const { group, loading, error } = useAppSelector(
+    (state) => state.groupDetail
+  );
+  const { semesterId } = useParams();
 
   useEffect(() => {
     if (groupId && semesterId) {
-      dispatch(fetchGroupDetail({groupId, semesterId}));
+      dispatch(fetchGroupDetail({ groupId, semesterId }));
     }
   }, [dispatch, groupId, semesterId]);
 
@@ -26,9 +30,7 @@ export const DataTableGroupTopic: React.FC<DataTableGroupTopicProps> = ({groupId
 
   return (
     <div>
-      <h2 className="text-lg font-semibold">Danh sách nhóm ({group?.groupCode})</h2>
       <DataTable columns={columns} data={group?.members || []} />
     </div>
   );
 };
-

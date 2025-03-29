@@ -37,6 +37,7 @@ interface Topic {
   mainSupervisor?: string | null;
   createdBy: string | null;
   status: string;
+  // status: "PENDING" | "APPROVED" | "IMPROVED" | "REJECTED";
   reasons: string;
   reviewReason?: string | null;
   subSupervisorEmail: string | null;

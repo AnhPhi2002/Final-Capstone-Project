@@ -20,7 +20,7 @@ export default function TopicDetail() {
   const { topicDetails, loading, error } = useSelector(
     (state: RootState) => state.topics
   );
-  // const { author: auth } = useSelector((state: RootState) => state.auth);
+  const { author: auth } = useSelector((state: RootState) => state.auth);
   const { author: mainMentor } = useSelector((state: RootState) => state.auth);
   const { author: subMentor } = useSelector((state: RootState) => state.authSub);
 
@@ -131,12 +131,13 @@ export default function TopicDetail() {
                 ({topicDetails.nameEn || "Chưa có tên tiếng Anh"})
               </h3>
               <p className="text-sm text-gray-500 italic">
-                Created at:{" "}
-                {topicDetails.createdAt
-                  ? new Date(topicDetails.createdAt).toLocaleDateString()
-                  : "Không xác định"}{" "}
-                {/* by {auth?.fullName || "không có tác giả"} */}
-              </p>
+  Created at:{" "}
+  {topicDetails.createdAt
+    ? new Date(topicDetails.createdAt).toLocaleDateString()
+    : "Không xác định"}{" "}
+  <span className="font-bold">by {auth?.fullName || "không có tác giả"}</span>
+</p>
+
             </div>
           </div>
 
@@ -215,12 +216,12 @@ export default function TopicDetail() {
               </div>
             </div>
 
-            {/* <div>
+             <div>
               <p className="text-sm text-gray-500 mb-1">Description</p>
               <p className="italic text-gray-800">
                 {topicDetails.description || "Chưa có mô tả"}
               </p>
-            </div> */}
+            </div> 
           </CardContent>
 
 

@@ -28,18 +28,18 @@ export const groupColumns: ColumnDef<CouncilReviewSessions>[] = [
     accessorKey: "status",
     header: "Trạng thái",
   },
-  {
-    accessorKey: "assignments",
-    header: "Điểm",
-    cell: ({ row }) => {
-      const assignments = row.original.assignments;
-      return assignments && assignments.length > 0 && assignments[0].score !== null
-      ? assignments[0].score
-      : "Chưa chấm"
-    }
+  // {
+  //   accessorKey: "assignments",
+  //   header: "Điểm",
+  //   cell: ({ row }) => {
+  //     const assignments = row.original.assignments;
+  //     return assignments && assignments.length > 0 && assignments[0].score !== null
+  //     ? assignments[0].score
+  //     : "Chưa chấm"
+  //   }
 
-  }
-  ,
+  // }
+  // ,
   {
     id: "actions",
     header: "Hành động",
