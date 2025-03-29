@@ -56,7 +56,6 @@ export const TopicListPage = () => {
       />
 
       <div className="flex flex-col flex-1">
-        {/* Phần lọc (SelectMajor + Button) */}
         <div className="sticky top-16 bg-white z-40 p-6 rounded-md ">
           <div className="flex items-center justify-between">
             <SelectMajor onMajorChange={setSelectedMajor} />

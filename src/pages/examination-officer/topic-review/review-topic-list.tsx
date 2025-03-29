@@ -7,26 +7,60 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { resetGroupDetail } from "@/lib/api/redux/groupDetailSlice";
 
+// ✅ Trạng thái tiếng Việt
+const getVietnameseStatus = (status: string) => {
+  switch (status) {
+    case "APPROVED":
+      return "Đã duyệt";
+    case "REJECTED":
+      return "Từ chối";
+    case "PENDING":
+      return "Chờ duyệt";
+    case "IMPROVED":
+      return "Cần chỉnh sửa";
+    default:
+      return "Không xác định";
+  }
+};
+
+// ✅ Màu sắc theo trạng thái
+const getStatusClass = (status: string) => {
+  switch (status) {
+    case "APPROVED":
+      return "bg-green-100 text-green-700 hover:bg-green-200";
+    case "REJECTED":
+      return "bg-red-100 text-red-700 hover:bg-red-200";
+    case "PENDING":
+      return "bg-yellow-100 text-yellow-700 hover:bg-yellow-200";
+      case "IMPROVED":
+        return "bg-black text-white hover:bg-zinc-800"; // ✅ Chữ trắng, nền đen
+    default:
+      return "bg-gray-100 text-gray-700";
+  }
+};
+
 export const ReviewTopicList = () => {
-  const { semesterId, roundNumber } = useParams(); // ✅ Lấy `roundNumber` từ URL
+  const { semesterId, roundNumber } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const { approvalTopics: topics = [], loading: topicsLoading, error } = useSelector(
-    (state: RootState) => state.topics
-  );
+  const {
+    approvalTopics: topics = [],
+    loading: topicsLoading,
+    error,
+  } = useSelector((state: RootState) => state.topics);
 
   useEffect(() => {
     if (semesterId && roundNumber) {
       dispatch(resetGroupDetail());
-      dispatch(resetApprovalTopics()); // ✅ Xóa dữ liệu cũ trước khi gọi API mới
+      dispatch(resetApprovalTopics());
       dispatch(fetchApprovalTopics({ semesterId, round: Number(roundNumber) }));
     }
-  }, [dispatch, semesterId, roundNumber]); // ✅ Theo dõi `roundNumber` từ URL
+  }, [dispatch, semesterId, roundNumber]);
 
   return (
-    <div className="bg-background text-foreground min-h-screen p-6">
-      <div className="flex flex-1 flex-col gap-4 mt-4">
+    <div className="bg-background text-foreground min-h-scree">
+      <div className="flex flex-1 flex-col gap-4">
         {topicsLoading ? (
           <p className="text-center text-gray-500">Đang tải danh sách đề tài...</p>
         ) : error ? (
@@ -37,17 +71,25 @@ export const ReviewTopicList = () => {
           topics.map((topic) => (
             <div
               key={topic.id}
-              onClick={() => navigate(`/examination/review-topic-detail/${topic.id}/${semesterId}`)}
-              className="relative min-h-[130px] w-full rounded-lg bg-muted/50 flex items-center p-4 gap-x-6 cursor-pointer hover:bg-muted transition-all"
+              onClick={() =>
+                navigate(`/examination/review-topic-detail/${topic.id}/${semesterId}`)
+              }
+               className="relative min-h-[130px] w-full rounded-lg bg-muted/50 flex items-center p-4 gap-x-6 cursor-pointer hover:bg-muted transition-all"
             >
-              <Badge className="absolute top-4 right-6 px-2 py-1 rounded-md text-xs">
-                {topic.status}
+              <Badge
+                className={`absolute top-4 right-6 px-2 py-1 rounded-md text-xs ${getStatusClass(
+                  topic.status
+                )}`}
+              >
+                {getVietnameseStatus(topic.status)}
               </Badge>
 
               {/* Avatar */}
               <Avatar className="w-12 h-12">
                 <AvatarImage
-                  src={`https://robohash.org/${encodeURIComponent(topic.name || "Unknown")}.png?size=100x100`}
+                  src={`https://robohash.org/${encodeURIComponent(
+                    topic.name || "Unknown"
+                  )}.png?size=100x100`}
                   alt={topic.name || "No Name"}
                 />
                 <AvatarFallback>{topic.name ? topic.name.charAt(0) : "?"}</AvatarFallback>
@@ -56,7 +98,8 @@ export const ReviewTopicList = () => {
               {/* Nội dung đề tài */}
               <div className="flex-1">
                 <h4 className="font-semibold text-lg text-primary ">
-                  <span className="text-blue-500 font-medium ">Topic:</span> {topic.nameEn || "Không có tên"}
+                  <span className="text-blue-500 font-medium ">Đề tài:</span>{" "}
+                  {topic.nameEn || "Không có tên"}
                 </h4>
 
                 <p className="text-muted-foreground text-sm leading-relaxed">
@@ -65,10 +108,16 @@ export const ReviewTopicList = () => {
 
                 <div className="mt-2 text-xs text-muted-foreground">
                   <p>
-                    Ngày tạo: <span className="font-medium">{new Date(topic.createdAt).toLocaleDateString()}</span>
+                    Ngày tạo:{" "}
+                    <span className="font-medium">
+                      {new Date(topic.createdAt).toLocaleDateString("vi-VN")}
+                    </span>
                   </p>
                   <p>
-                    Được tạo bởi: <span className="font-medium">{topic.creator?.fullName || "Không xác định"}</span>
+                    Được tạo bởi:{" "}
+                    <span className="font-medium">
+                      {topic.creator?.fullName || "Không xác định"}
+                    </span>
                   </p>
                 </div>
               </div>
