@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { resetGroupDetail } from "@/lib/api/redux/groupDetailSlice";
 
 export const ReviewTopicList = () => {
-  const { semesterId, roundNumber } = useParams(); // ✅ Lấy `roundNumber` từ URL
+  const { semesterId, submissionPeriodId ,roundNumber } = useParams(); // ✅ Lấy `roundNumber` từ URL
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
@@ -17,10 +17,10 @@ export const ReviewTopicList = () => {
   );
 
   useEffect(() => {
-    if (semesterId && roundNumber) {
+    if (semesterId && submissionPeriodId &&roundNumber) {
       dispatch(resetGroupDetail());
       dispatch(resetApprovalTopics()); // ✅ Xóa dữ liệu cũ trước khi gọi API mới
-      dispatch(fetchApprovalTopics({ semesterId, round: Number(roundNumber) }));
+      dispatch(fetchApprovalTopics({ semesterId, submissionPeriodId, round: Number(roundNumber) }));
     }
   }, [dispatch, semesterId, roundNumber]); // ✅ Theo dõi `roundNumber` từ URL
 

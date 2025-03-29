@@ -37,7 +37,7 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
   };
 
   const filteredData = data.filter(
-    (round) => round.semesterId === selectedSemester
+    (round) => round.semesterId === selectedSemester && round.type === "TOPIC"
   );
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
@@ -49,10 +49,12 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
   const handleCardClick = (
     semesterId: string,
     submissionRoundId: string,
-    roundNumber: number
+    roundNumber: number,
+    type: string,
+  
   ) => {
     navigate(
-      `/lecturer/topic-list/semester/${semesterId}/submission/${submissionRoundId}/round/${roundNumber}`
+      `/lecturer/topic-list/semester/${semesterId}/submission/${submissionRoundId}/round/${roundNumber}/type/${type}`
     );
   };
 
@@ -78,7 +80,7 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
             key={round.id}
             className="w-full p-4 shadow-md border rounded-lg hover:shadow-lg transition"
             onClick={() =>
-              handleCardClick(round.semesterId, round.id, round.roundNumber)
+              handleCardClick(round.semesterId, round.id, round.roundNumber, round.type)
             }
           >
             <CardHeader>
@@ -89,7 +91,7 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
                 Học kỳ: {getSemesterCode(round.semesterId)}
               </CardDescription>
               <CardDescription>
-                Vòng nộp lần: {round.roundNumber}
+                Vòng nộp lần: {round.roundNumber}-{round.type}
               </CardDescription>
             </CardHeader>
             <CardContent>

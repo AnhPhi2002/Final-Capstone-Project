@@ -250,10 +250,10 @@ export const updateTopicForAcademic = createAsyncThunk(
 
 export const fetchApprovalTopics = createAsyncThunk(
   "topics/fetchApprovalTopics",
-  async ({ semesterId, round }: { semesterId: string; round: number }, { rejectWithValue }) => {
+  async ({ semesterId, round, submissionPeriodId }: { semesterId: string; round: number; submissionPeriodId: string }, { rejectWithValue }) => {
     try {
       const response = await axiosClient.get(`/topics/approval`, {
-        params: { semesterId, round },
+        params: { semesterId, round, submissionPeriodId },
       });
       return response.data.data;
     } catch (error: any) {

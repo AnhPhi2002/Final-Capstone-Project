@@ -305,7 +305,7 @@ const examinationMenu = {
       isActive: true,
       items: [
         {
-          title: "Thời gian đăng kí đợt đề tài",
+          title: "Quản lý thời gian",
           url: "/examination/deadline-topic",
         },
         {
@@ -377,10 +377,10 @@ const academicMenu = {
           title: "D.s giảng viên",
           url: "/academic/mentor-page",
         },
-        {
-          title: "D.s nhóm sinh viên ngẫu nhiên ",
-          url: "/academic/random-group-student-page",
-        },
+        // {
+        //   title: "D.s nhóm sinh viên ngẫu nhiên ",
+        //   url: "/academic/random-group-student-page",
+        // },
       ],
     },
     {

@@ -37,7 +37,7 @@ export const CreateReviewTopicCouncil = () => {
   const [open, setOpen] = useState(false);
   const [councilName, setCouncilName] = useState("");
   const [selectedYear, setSelectedYear] = useState("");
-  const [	selectedSemester, setSelectedSemester] = useState("");
+  const [selectedSemester, setSelectedSemester] = useState("");
   const [selectedSubmissionRound, setSelectedSubmissionRound] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -77,17 +77,17 @@ export const CreateReviewTopicCouncil = () => {
       name: councilName,
       semesterId: selectedSemester,
       submissionPeriodId: selectedSubmissionRound,
-      startDate: convertToISODate(startDate), // Sử dụng startDate
-      endDate: convertToISODate(endDate, true), // Sử dụng endDate
-      round: round?.roundNumber || 1, // Lấy roundNumber từ submissionRound hoặc mặc định là 1
+      startDate: convertToISODate(startDate),
+      endDate: convertToISODate(endDate, true),
+      round: round?.roundNumber || 1,
     };
 
-    console.log("Data gửi lên API:", newCouncil); // Debug
+    console.log("Data gửi lên API:", newCouncil);
 
     try {
       await dispatch(createCouncilReview(newCouncil)).unwrap();
       toast.success("Tạo hội đồng xét duyệt thành công!");
-      await dispatch(fetchReviewCouncilsList({ semesterId: selectedSemester })); // Fetch lại danh sách
+      await dispatch(fetchReviewCouncilsList({ semesterId: selectedSemester }));
       setOpen(false);
       setCouncilName("");
       setSelectedYear("");
@@ -96,7 +96,7 @@ export const CreateReviewTopicCouncil = () => {
       setStartDate("");
       setEndDate("");
     } catch (error) {
-      console.error("Create council failed:", error); // Debug lỗi chi tiết
+      console.error("Create council failed:", error);
       toast.error("Tạo hội đồng xét duyệt thất bại!");
     } finally {
       setCreating(false);
@@ -106,6 +106,9 @@ export const CreateReviewTopicCouncil = () => {
   const availableYears = years.filter((y) => !y.isDeleted);
   const availableSemesters = semesters.filter((s) => !s.isDeleted);
   const availableRounds = submissionRounds.filter((r) => !r.isDeleted);
+  
+  // Lọc thêm để chỉ lấy các submission rounds có type "REVIEW"
+  const filteredRounds = availableRounds.filter((r) => r.type === "REVIEW");
 
   return (
     <div>
@@ -183,11 +186,17 @@ export const CreateReviewTopicCouncil = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    {availableRounds.map((round) => (
-                      <SelectItem key={round.id} value={round.id}>
-                        {round.description}
+                    {filteredRounds.length > 0 ? (
+                      filteredRounds.map((round) => (
+                        <SelectItem key={round.id} value={round.id}>
+                          {round.description}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="none" disabled>
+                        Không có đợt nộp REVIEW
                       </SelectItem>
-                    ))}
+                    )}
                   </SelectGroup>
                 </SelectContent>
               </Select>

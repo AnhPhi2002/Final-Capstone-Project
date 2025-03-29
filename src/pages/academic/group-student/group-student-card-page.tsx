@@ -11,6 +11,15 @@ import { DataTable } from "./data-table/data-table";
 import { ExportExcelGroupStudent } from "./export-excel-group-student";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export const GroupStudentCardPage = () => {
   const { semesterId } = useParams<{ semesterId: string }>();
@@ -28,17 +37,8 @@ export const GroupStudentCardPage = () => {
   } = useAppSelector((state) => state.studentsWithoutGroup);
 
   const [currentPage, setCurrentPage] = useState(1);
-
+  const [isAutoCreatedFilter, setIsAutoCreatedFilter] = useState<string>("all"); // Thêm state cho bộ lọc
   const itemsPerPage = 10;
-
-  // Lọc các nhóm có isAutoCreated === false
-  const filteredGroups = groups.filter(
-    (group) => group.isAutoCreated === false
-  );
-  const totalPages =
-    filteredGroups.length > 0
-      ? Math.ceil(filteredGroups.length / itemsPerPage)
-      : 1;
 
   // Lấy danh sách nhóm và sinh viên chưa có nhóm
   useEffect(() => {
@@ -48,7 +48,17 @@ export const GroupStudentCardPage = () => {
     }
   }, [dispatch, semesterId]);
 
-  // Lấy các nhóm hiện tại sau khi lọc
+  // Lọc nhóm theo isAutoCreated
+  const filteredGroups = groups.filter((group) => {
+    if (isAutoCreatedFilter === "all") return true;
+    return group.isAutoCreated === (isAutoCreatedFilter === "true");
+  });
+
+  // Tính tổng số trang dựa trên filteredGroups
+  const totalPages =
+    filteredGroups.length > 0 ? Math.ceil(filteredGroups.length / itemsPerPage) : 1;
+
+  // Lấy các nhóm hiện tại cho trang hiện tại
   const currentGroups = filteredGroups.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -56,8 +66,9 @@ export const GroupStudentCardPage = () => {
 
   // Hàm xử lý khi nhấn nút Quay lại
   const handleBack = () => {
-    navigate("/academic/semester");
+    navigate("/academic/group-student");
   };
+
   if (groupsLoading || studentsLoading) return <p>Đang tải dữ liệu...</p>;
   if (groupsError) return <p className="text-red-500">Lỗi: {groupsError}</p>;
   if (studentsError)
@@ -82,7 +93,24 @@ export const GroupStudentCardPage = () => {
               Quay lại
             </Button>
           </div>
-          <div className="flex gap-x-4">
+          <div className="flex gap-x-4 items-center">
+            {/* Thêm bộ lọc isAutoCreated */}
+            <Select
+              onValueChange={setIsAutoCreatedFilter}
+              value={isAutoCreatedFilter}
+            >
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="Lọc theo cách tạo" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Lọc nhóm</SelectLabel>
+                  <SelectItem value="all">Tất cả</SelectItem>
+                  <SelectItem value="true">Tự động tạo</SelectItem>
+                  <SelectItem value="false">Thủ công tạo</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
             <ExportExcelGroupStudent />
             <ManualCreateGroupDialog
               semesterId={semesterId!}

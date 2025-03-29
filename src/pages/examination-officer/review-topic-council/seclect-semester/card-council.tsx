@@ -25,7 +25,7 @@ export const CardCouncil: React.FC<CardCouncilProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
-  // ✅ Lọc danh sách hội đồng chưa bị xóa
+  // Lọc danh sách hội đồng chưa bị xóa
   const activeCouncils = councils.filter((council) => !council.isDeleted);
 
   const totalPages = Math.ceil(activeCouncils.length / itemsPerPage);

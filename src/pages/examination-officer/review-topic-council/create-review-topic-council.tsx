@@ -106,6 +106,9 @@ export const CreateReviewTopicCouncil = () => {
   const availableSemesters = semesters.filter((s) => !s.isDeleted);
   const availableRounds = submissionRounds.filter((r) => !r.isDeleted);
 
+  // Lọc submission rounds để chỉ lấy type "CHECK-TOPIC"
+  const filteredRounds = availableRounds.filter((r) => r.type === "CHECK-TOPIC");
+
   return (
     <div>
       <Toaster position="top-right" richColors duration={3000} />
@@ -182,11 +185,17 @@ export const CreateReviewTopicCouncil = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    {availableRounds.map((round) => (
-                      <SelectItem key={round.id} value={round.id}>
-                        {round.description}
+                    {filteredRounds.length > 0 ? (
+                      filteredRounds.map((round) => (
+                        <SelectItem key={round.id} value={round.id}>
+                          {round.description}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="none" disabled>
+                        Không có đợt nộp CHECK-TOPIC
                       </SelectItem>
-                    ))}
+                    )}
                   </SelectGroup>
                 </SelectContent>
               </Select>
