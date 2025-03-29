@@ -22,6 +22,7 @@ export const CreateSubmissionRound = () => {
 
   const [open, setOpen] = useState(false);
   const [yearId, setYearId] = useState("");
+  const [type, setType] = useState<"TOPIC" | "CHECK-TOPIC" | "REVIEW" | "DEFENSE" | "">("");
   const [semesterId, setSemesterId] = useState("");
   const [roundNumber, setRoundNumber] = useState("");
   const [description, setDescription] = useState("");
@@ -47,7 +48,7 @@ export const CreateSubmissionRound = () => {
   };
 
   const handleSave = async () => {
-    if (!semesterId || !roundNumber || !startDate || !endDate || !description) {
+    if (!semesterId || !roundNumber || !startDate || !endDate || !description || !type) {
       toast.error("Vui lòng nhập đầy đủ thông tin!");
       return;
     }
@@ -68,6 +69,7 @@ export const CreateSubmissionRound = () => {
       const result = await dispatch(
         createSubmissionRound({
           semesterId,
+          type,
           roundNumber: parsedRound,
           startDate: convertToISODate(startDate),
           endDate: convertToISODate(endDate, true),
@@ -142,18 +144,48 @@ export const CreateSubmissionRound = () => {
               </Select>
             </div>
 
+            {/* Chọn loại */}
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="type" className="text-right">Loại</Label>
+              <Select onValueChange={(value: "TOPIC" | "CHECK-TOPIC" | "REVIEW" | "DEFENSE") => {
+                setType(value);
+                setRoundNumber(""); // Reset roundNumber khi thay đổi type
+              }} value={type}>
+                <SelectTrigger className="w-full col-span-3">
+                  <SelectValue placeholder="Chọn loại" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="TOPIC">TOPIC</SelectItem>
+                    <SelectItem value="CHECK-TOPIC">CHECK-TOPIC</SelectItem>
+                    <SelectItem value="REVIEW">REVIEW</SelectItem>
+                    <SelectItem value="DEFENSE">DEFENSE</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+
             {/* Lần nộp */}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="roundNumber" className="text-right">Lần nộp</Label>
-              <Select onValueChange={setRoundNumber} value={roundNumber}>
+              <Select onValueChange={setRoundNumber} value={roundNumber} disabled={!type}>
                 <SelectTrigger className="w-full col-span-3">
                   <SelectValue placeholder="Chọn lần nộp" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="1">1</SelectItem>
-                    <SelectItem value="2">2</SelectItem>
-                    <SelectItem value="3">3</SelectItem>
+                    {type === "DEFENSE" ? (
+                      <>
+                        <SelectItem value="1">1</SelectItem>
+                        <SelectItem value="2">2</SelectItem>
+                      </>
+                    ) : (
+                      <>
+                        <SelectItem value="1">1</SelectItem>
+                        <SelectItem value="2">2</SelectItem>
+                        <SelectItem value="3">3</SelectItem>
+                      </>
+                    )}
                   </SelectGroup>
                 </SelectContent>
               </Select>

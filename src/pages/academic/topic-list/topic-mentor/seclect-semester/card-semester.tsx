@@ -36,7 +36,7 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
     return semester ? semester.code : "Không xác định";
   };
 
-  const filteredData = data.filter((round) => round.semesterId === selectedSemester);
+  const filteredData = data.filter((round) => round.semesterId === selectedSemester && round.type === "TOPIC");
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
   const paginatedData = filteredData.slice(
@@ -44,8 +44,8 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
     currentPage * itemsPerPage
   );
 
-  const handleCardClick = (semesterId: string, submissionRoundId: string, roundNumber: number) => {
-    navigate(`/academic/topic-list/semester/${semesterId}/submission/${submissionRoundId}/round/${roundNumber}`);
+  const handleCardClick = (semesterId: string, submissionRoundId: string, roundNumber: number, type: string) => {
+    navigate(`/academic/topic-list/semester/${semesterId}/submission/${submissionRoundId}/round/${roundNumber}/type/${type}`);
   };
 
   if (loading) {
@@ -63,14 +63,14 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
           <Card
             key={round.id}
             className="w-full p-4 shadow-md border rounded-lg hover:shadow-lg transition"
-            onClick={() => handleCardClick(round.semesterId, round.id, round.roundNumber)}
+            onClick={() => handleCardClick(round.semesterId, round.id, round.roundNumber, round.type)}
           >
             <CardHeader>
               <CardTitle className="text-xl font-bold text-gray-800">
                 {round.description}
               </CardTitle>
               <CardDescription>Học kỳ: {getSemesterCode(round.semesterId)}</CardDescription>
-              <CardDescription>Vòng nộp lần: {round.roundNumber}</CardDescription>
+              <CardDescription>Vòng nộp lần: {round.roundNumber}-{round.type} </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-2">

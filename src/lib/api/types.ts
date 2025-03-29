@@ -146,6 +146,7 @@ export interface CouncilReviewAssignment {
 
 export interface SubmissionRound {
   id: string;
+  type: "TOPIC" | "CHECK-TOPIC" | "REVIEW" | "DEFENSE";
   semesterId: string;
   roundNumber: number;
   startDate: string;

@@ -40,7 +40,9 @@ const getStatusClass = (status: string) => {
 };
 
 export const ReviewTopicList = () => {
-  const { semesterId, roundNumber } = useParams();
+
+  const { semesterId, submissionPeriodId ,roundNumber } = useParams(); // ✅ Lấy `roundNumber` từ URL
+
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
@@ -51,10 +53,12 @@ export const ReviewTopicList = () => {
   } = useSelector((state: RootState) => state.topics);
 
   useEffect(() => {
-    if (semesterId && roundNumber) {
+    if (semesterId && submissionPeriodId &&roundNumber) {
       dispatch(resetGroupDetail());
-      dispatch(resetApprovalTopics());
-      dispatch(fetchApprovalTopics({ semesterId, round: Number(roundNumber) }));
+
+      dispatch(resetApprovalTopics()); // ✅ Xóa dữ liệu cũ trước khi gọi API mới
+      dispatch(fetchApprovalTopics({ semesterId, submissionPeriodId, round: Number(roundNumber) }));
+
     }
   }, [dispatch, semesterId, roundNumber]);
 

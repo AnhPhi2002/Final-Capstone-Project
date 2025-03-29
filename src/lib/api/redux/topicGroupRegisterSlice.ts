@@ -9,7 +9,9 @@ interface Topic {
   nameEn: string;
   description: string;
   status: string;
-  approvalStatus: string;
+  approvalStatus: string | null;       // Trạng thái gán đề tài
+  registrationStatus: string | null;   // Thêm trạng thái đăng ký
+  rejectionReason?: string | null;     // Thêm lý do từ chối (tuỳ chọn)
   semester: {
     id: string;
     code: string;

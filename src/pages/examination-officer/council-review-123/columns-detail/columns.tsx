@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { CouncilReviewSessions } from "@/lib/api/types"; // Thêm CouncilReviewSession vào types
 
+import {  CouncilReviewSessions } from "@/lib/api/types"; // Thêm CouncilReviewSession vào types
 
 
 export const groupColumns: ColumnDef<CouncilReviewSessions>[] = [
@@ -8,7 +8,6 @@ export const groupColumns: ColumnDef<CouncilReviewSessions>[] = [
     accessorKey: "group.groupCode",
     header: "Mã nhóm",
   },
-
   {
     accessorKey: "reviewTime",
     header: "Thời gian review",

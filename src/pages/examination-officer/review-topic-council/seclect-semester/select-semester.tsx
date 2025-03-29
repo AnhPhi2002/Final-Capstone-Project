@@ -76,6 +76,11 @@ export const SelectSemester: React.FC = () => {
   const availableYears = years.filter((y) => !y.isDeleted);
   const availableSemesters = semesters.filter((s) => !s.isDeleted);
 
+  // Lọc submission rounds có type là "CHECK_TOPIC"
+  const filteredSubmissionRounds = submissionRounds.filter(
+    (round) => round.type === "CHECK-TOPIC"
+  );
+
   return (
     <div className="space-y-4">
       <div className="flex flex-col md:flex-row md:items-center gap-4 mb-10">
@@ -143,14 +148,16 @@ export const SelectSemester: React.FC = () => {
               <SelectLabel>Vòng nộp</SelectLabel>
               {loadingRounds ? (
                 <SelectItem value="loading" disabled>Đang tải...</SelectItem>
-              ) : submissionRounds.length > 0 ? (
-                submissionRounds.map((round) => (
+              ) : filteredSubmissionRounds.length > 0 ? (
+                filteredSubmissionRounds.map((round) => (
                   <SelectItem key={round.id} value={round.id}>
                     {round.description}
                   </SelectItem>
                 ))
               ) : (
-                <SelectItem value="none" disabled>Không có vòng nộp</SelectItem>
+                <SelectItem value="none" disabled>
+                  Không có vòng nộp CHECK_TOPIC
+                </SelectItem>
               )}
             </SelectGroup>
           </SelectContent>

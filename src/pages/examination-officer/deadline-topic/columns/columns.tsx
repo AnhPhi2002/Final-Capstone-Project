@@ -30,6 +30,10 @@ export const columns: ColumnDef<SubmissionRound, any>[] = [
     },
   },
   {
+    accessorKey: "type",
+    header: "Loại",
+  },
+  {
     accessorKey: "status",
     header: "Trạng thái",
     cell: ({ row }) => {

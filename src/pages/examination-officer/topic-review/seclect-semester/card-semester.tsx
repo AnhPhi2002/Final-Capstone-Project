@@ -35,7 +35,7 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
     return semester ? semester.code : "Không xác định";
   };
 
-  const filteredData = data.filter((round) => round.semesterId === selectedSemester);
+  const filteredData = data.filter((round) => round.semesterId === selectedSemester && round.type === "TOPIC");
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
   const paginatedData = filteredData.slice(
     (currentPage - 1) * itemsPerPage,
@@ -85,9 +85,7 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
                 <CardDescription>
                   Học kỳ: {getSemesterCode(round.semesterId)}
                 </CardDescription>
-                <CardDescription>
-                  Vòng nộp lần: {round.roundNumber}
-                </CardDescription>
+                <CardDescription>Vòng nộp lần: {round.roundNumber}-{round.type}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center gap-2">
