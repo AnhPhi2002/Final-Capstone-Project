@@ -31,6 +31,11 @@ export interface GroupMember {
 
 export const columns: ColumnDef<GroupMember>[] = [
   {
+    id: "stt",
+    header: "STT",
+    cell: ({ row }) => <div>{row.index + 1}</div>,
+  },
+  {
     accessorKey: "student.studentCode",
     header: "Mã Sinh Viên",
     cell: ({ row }) => <div>{row.original.student.studentCode}</div>,
@@ -52,8 +57,9 @@ export const columns: ColumnDef<GroupMember>[] = [
       const role = row.original.role;
       return (
         <Badge className={
-          role.name === "leader" ? "bg-blue-100 text-blue-600 hover:bg-blue-200" :
-          "bg-gray-100 text-gray-600 hover:bg-gray-200"
+          role.name === "leader"
+            ? "bg-blue-100 text-blue-600 hover:bg-blue-200"
+            : "bg-gray-100 text-gray-600 hover:bg-gray-200"
         }>
           {role.name === "leader" ? "Trưởng Nhóm" : "Thành Viên"}
         </Badge>
@@ -65,7 +71,6 @@ export const columns: ColumnDef<GroupMember>[] = [
     header: "Ngành Học",
     cell: ({ row }) => <div>{row.original.student.user.profession}</div>,
   },
-
   {
     accessorKey: "status",
     header: "Trạng Thái",
@@ -73,14 +78,22 @@ export const columns: ColumnDef<GroupMember>[] = [
       const status = row.original.status;
       return (
         <Badge className={
-          status === "ACTIVE" ? "bg-green-100 text-green-600 hover:bg-green-200" :
-          status === "INACTIVE" ? "bg-red-100 text-red-600 hover:bg-red-200" :
-          status === "LEFT" ? "bg-yellow-100 text-yellow-600 hover:bg-yellow-200" :
-          "bg-gray-100 text-gray-600 hover:bg-gray-200"
+          status === "ACTIVE"
+            ? "bg-green-100 text-green-600 hover:bg-green-200"
+            : status === "INACTIVE"
+            ? "bg-red-100 text-red-600 hover:bg-red-200"
+            : status === "LEFT"
+            ? "bg-yellow-100 text-yellow-600 hover:bg-yellow-200"
+            : "bg-gray-100 text-gray-600 hover:bg-gray-200"
         }>
-          {status === "ACTIVE" ? "Hoạt Động" : status === "INACTIVE" ? "Ngừng Hoạt Động" : "Đã Rời Nhóm"}
+          {status === "ACTIVE"
+            ? "Hoạt Động"
+            : status === "INACTIVE"
+            ? "Ngừng Hoạt Động"
+            : "Đã Rời Nhóm"}
         </Badge>
       );
     },
   },
 ];
+

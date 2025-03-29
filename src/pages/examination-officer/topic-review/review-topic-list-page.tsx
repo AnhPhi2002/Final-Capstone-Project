@@ -52,13 +52,6 @@ export const ReviewTopicListPage = () => {
           <div className="flex items-center justify-between">
             <SelectMajor onMajorChange={setSelectedMajor} />
             <div className="flex items-center gap-4 justify-end">
-              {/* <Button onClick={handleExportExcel} variant="outline">
-                Export danh sách đề tài
-              </Button> */}
-              {/* <CreateTopic semesterId={semesterId!} /> */}
-              {/* <Link to={`/import-topic-mentor/${semesterId}`}>
-                <Button className="flex gap-3 items-center">Import đề tài</Button>
-              </Link> */}
             </div>
           </div>
         </div>
