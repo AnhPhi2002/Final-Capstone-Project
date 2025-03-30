@@ -18,7 +18,7 @@ import { CouncilMembersPage } from "@/pages/examination-officer/review-topic-cou
 import { ReviewTopicCouncilDetail } from "@/pages/examination-officer/review-topic-council/columns/review-topic-council-detail";
 import { ReviewTopicCouncilPage } from "@/pages/examination-officer/review-topic-council/review-topic-council-page";
 import { TopicDetailPage } from "@/pages/examination-officer/topic-list/topic-mentor/topic-detail/topic-detail-page";
-import UpdateTopicDetail from "@/pages/examination-officer/topic-list/topic-mentor/topic-detail/update-topic-detail";
+// import UpdateTopicDetail from "@/pages/examination-officer/topic-list/topic-mentor/topic-detail/update-topic-detail";
 import { TopicListPage } from "@/pages/examination-officer/topic-list/topic-mentor/topic-list-page";
 import { TopicPage } from "@/pages/examination-officer/topic-list/topic-mentor/topic-page";
 import { ReviewTopicListPage } from "@/pages/examination-officer/topic-review/review-topic-list-page";
@@ -68,10 +68,9 @@ export const ExaminationOfficerContainer = () => {
 
         <Route path="/topic" element={<TopicPage />} />
         <Route path="/topic/:semesterId" element={<TopicPage />} />
-
         <Route path="/topic-list/semester/:semesterId/submission/:submissionPeriodId/round/:roundNumber" element={<TopicListPage />} />
         <Route path="/topic-detail/:topicId/:semesterId" element={<TopicDetailPage />} />
-        <Route path="/topic-detail/:topicId/:semesterId/update" element={<UpdateTopicDetail />} />
+
 
         <Route path="/*" element={<NotFound />} />
       </Routes>

@@ -117,21 +117,21 @@ export const SelectSemester: React.FC = () => {
           disabled={!selectedSemester}
         >
           <SelectTrigger className="w-[220px]">
-            <SelectValue placeholder="Chọn vòng REVIEW" />
+            <SelectValue placeholder="Chọn vòng kiểm tra đồ án" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectLabel>Vòng REVIEW</SelectLabel>
+              <SelectLabel>Vòng kiểm tra đồ án</SelectLabel>
               {loadingRounds ? (
                 <SelectItem value="loading" disabled>Đang tải...</SelectItem>
               ) : availableRounds.length > 0 ? (
                 availableRounds.map((round) => (
                   <SelectItem key={round.id} value={round.id}>
-                    Lần {round.roundNumber} - {round.description}
+                  {round.description}
                   </SelectItem>
                 ))
               ) : (
-                <SelectItem value="none" disabled>Không có vòng REVIEW</SelectItem>
+                <SelectItem value="none" disabled>Không có vòng kiểm tra đồ án</SelectItem>
               )}
             </SelectGroup>
           </SelectContent>

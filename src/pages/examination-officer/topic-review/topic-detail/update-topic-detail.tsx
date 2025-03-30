@@ -13,7 +13,7 @@ import {
 import { fetchUserById } from "@/lib/api/redux/authSlice";
 import { toast } from "sonner";
 import Header from "@/components/header";
-import { Dot } from "lucide-react";
+import { ArrowLeft, Dot } from "lucide-react";
 
 import { DataTableGroupTopic } from "./data-table-group-topic";
 import {
@@ -149,10 +149,28 @@ export default function UpdateReviewTopicDetail() {
     );
   }
 
+  const handleBack = () => {
+    if (topicId && semesterId) {
+      navigate(`/examination/review-topic-detail/${topicId}/${semesterId}`);
+    } else {
+      navigate("/examination/review-topic-list"); // fallback nếu thiếu
+    }
+  };
+  
   return (
     <div>
-      <Header title="" href="/" currentPage="Cập nhật đề tài" />
-      <div className="p-6 mt-10 bg-white">
+      <Header
+        title="Chi tiết đề tài chờ xét duyệt"
+        href="/examination/review-topic-detail"
+        currentPage="Cập nhật đề tài chờ xét duyệt"
+      />
+      <div className="flex justify-start p-5 ">
+        <Button onClick={handleBack}>
+          <ArrowLeft /> Quay lại
+        </Button>
+      </div>
+
+      <div className="pr-5 pl-5  pb-5 bg-white">
         <Card className="p-6">
           <div className="flex items-center mt-4 gap-3">
             <Avatar className="w-10 h-10">
@@ -285,7 +303,7 @@ export default function UpdateReviewTopicDetail() {
                 {topicDetails.description || "Chưa có mô tả"}
               </p>
             </div>
-            
+
             <div className="pt-6">
               <h2 className="text-lg font-semibold mb-3 ">
                 Danh sách nhóm:{" "}
