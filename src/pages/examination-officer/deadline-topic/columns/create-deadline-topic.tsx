@@ -160,9 +160,9 @@ export const CreateSubmissionRound = () => {
                 <SelectContent>
                   <SelectGroup>
                     <SelectItem value="TOPIC">Đợt nộp đề tài </SelectItem>
-                    <SelectItem value="CHECK-TOPIC">Hội đồng xét duyệt đề tài </SelectItem>
-                    <SelectItem value="REVIEW">Hội đồng kiểm tra đồ án</SelectItem>
-                    <SelectItem value="DEFENSE">Hội đồng bảo vệ đồ án</SelectItem>
+                    <SelectItem value="CHECK-TOPIC">Xét duyệt đề tài </SelectItem>
+                    <SelectItem value="REVIEW">Kiểm tra đồ án</SelectItem>
+                    <SelectItem value="DEFENSE">Bảo vệ đồ án</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>

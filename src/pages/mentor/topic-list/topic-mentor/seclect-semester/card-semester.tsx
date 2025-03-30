@@ -20,6 +20,21 @@ type CardSemesterProps = {
   loading: boolean;
 };
 
+const getRoundTypeLabel = (type: string) => {
+  switch (type) {
+    case "TOPIC":
+      return "Đợt nộp đề tài";
+    case "CHECK-TOPIC":
+      return "Xét duyệt đề tài";
+    case "REVIEW":
+      return "Kiểm tra đồ án";
+    case "DEFENSE":
+      return "Bảo vệ đồ án";
+    default:
+      return "Không xác định";
+  }
+};
+
 export const CardSemester: React.FC<CardSemesterProps> = ({
   selectedSemester,
   data,
@@ -37,7 +52,10 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
   };
 
   const filteredData = data.filter(
-    (round) => round.semesterId === selectedSemester && round.type === "TOPIC" && !round.isDeleted
+    (round) =>
+      round.semesterId === selectedSemester &&
+      round.type === "TOPIC" &&
+      !round.isDeleted
   );
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
@@ -50,8 +68,7 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
     semesterId: string,
     submissionRoundId: string,
     roundNumber: number,
-    type: string,
-  
+    type: string
   ) => {
     navigate(
       `/lecturer/topic-list/semester/${semesterId}/submission/${submissionRoundId}/round/${roundNumber}/type/${type}`
@@ -80,7 +97,12 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
             key={round.id}
             className="w-full p-4 shadow-md border rounded-lg hover:shadow-lg transition"
             onClick={() =>
-              handleCardClick(round.semesterId, round.id, round.roundNumber, round.type)
+              handleCardClick(
+                round.semesterId,
+                round.id,
+                round.roundNumber,
+                round.type
+              )
             }
           >
             <CardHeader>
@@ -91,7 +113,8 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
                 Học kỳ: {getSemesterCode(round.semesterId)}
               </CardDescription>
               <CardDescription>
-                Vòng nộp lần: {round.roundNumber}-{round.type}
+                Vòng nộp lần: {round.roundNumber} -{" "}
+                {getRoundTypeLabel(round.type)}
               </CardDescription>
             </CardHeader>
             <CardContent>

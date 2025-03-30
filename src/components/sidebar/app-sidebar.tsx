@@ -325,11 +325,11 @@ const examinationMenu = {
       isActive: true,
       items: [
         {
-          title: "D.s hội chấm KLTN",
+          title: "D.s h.đ xét duyệt đề tài",
           url: "/examination/review-topic-council",
         },
         {
-          title: "D.s hội chấm Review-Topic",
+          title: "D.s h.đ kiểm tra đồ án ",
           url: "/examination/council-review",
         },
 

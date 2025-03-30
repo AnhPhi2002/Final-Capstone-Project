@@ -41,7 +41,7 @@ export const GroupStudentDetail = () => {
 
   return (
     <div className="flex flex-col h-screen">
-      <Header title="Chi tiết nhóm" href="/" currentPage="Chi tiết nhóm" />
+      <Header title="Danh sách nhóm sinh viên" href="/" currentPage="Chi tiết nhóm" />
       <div className="p-5 flex-1 overflow-auto">
         {group ? (
           <>

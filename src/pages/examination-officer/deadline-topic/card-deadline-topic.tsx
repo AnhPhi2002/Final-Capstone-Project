@@ -26,15 +26,15 @@ const TYPE_INFO: Record<string, { label: string; icon: React.ReactNode }> = {
     icon: <BookOpen className="w-5 h-5" />,
   },
   "CHECK-TOPIC": {
-    label: "Hội đồng xét duyệt đề tài",
+    label: "Xét duyệt đề tài",
     icon: <CheckCircle className="w-5 h-5" />,
   },
   REVIEW: {
-    label: "Hội đồng kiểm tra đồ án",
+    label: "Kiểm tra đồ án",
     icon: <Eye className="w-5 h-5" />,
   },
   DEFENSE: {
-    label: "Hội đồng bảo vệ đồ án",
+    label: "Bảo vệ đồ án",
     icon: <ShieldCheck className="w-5 h-5" />,
   },
 };

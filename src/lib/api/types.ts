@@ -66,6 +66,7 @@ export interface Council {
   name: string;
   round: number;
   type: string;
+  // type: "topic" | "check-topic" | "review" | "defense";
   status: string;
   createdDate: string;
   semesterId: string;
