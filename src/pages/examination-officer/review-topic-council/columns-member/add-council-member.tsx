@@ -93,7 +93,8 @@ export const AddReviewMemberTopicCouncil: React.FC<AddReviewMemberTopicCouncilPr
       if (typeof error === "string" && error.includes("Không tìm thấy")) {
         toast.error("Email không tồn tại. Vui lòng kiểm tra lại!");
       } else {
-        toast.error("Không thể thêm thành viên!");
+        // toast.error("Không thể thêm thành viên!");
+        toast.error(`${error}`);
       }
     }
   };

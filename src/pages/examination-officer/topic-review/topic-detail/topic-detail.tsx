@@ -98,22 +98,22 @@ export default function TopicDetail() {
       </p>
     );
 
-  const handleDeleteTopic = async () => {
-    if (!topicId || !semesterId) {
-      toast.error("Không thể xác định đề tài cần xóa!");
-      return;
-    }
+  // const handleDeleteTopic = async () => {
+  //   if (!topicId || !semesterId) {
+  //     toast.error("Không thể xác định đề tài cần xóa!");
+  //     return;
+  //   }
 
-    if (!confirm("Bạn có chắc muốn xóa đề tài này?")) return;
+  //   if (!confirm("Bạn có chắc muốn xóa đề tài này?")) return;
 
-    try {
-      await dispatch(deleteTopic({ topicId, semesterId })).unwrap();
-      toast.success("Xóa đề tài thành công");
-      navigate("/lecturer/topic");
-    } catch {
-      toast.error("Lỗi khi xóa đề tài!");
-    }
-  };
+  //   try {
+  //     await dispatch(deleteTopic({ topicId, semesterId })).unwrap();
+  //     toast.success("Xóa đề tài thành công");
+  //     navigate("/lecturer/topic");
+  //   } catch {
+  //     toast.error("Lỗi khi xóa đề tài!");
+  //   }
+  // };
 
   const handleOpenFile = (fileUrl: string) => {
     window.open(fileUrl, "_blank", "noopener,noreferrer");
@@ -248,11 +248,11 @@ export default function TopicDetail() {
           </div>
         </CardContent>
 
-        <div className="flex justify-end gap-4 mt-6">
+        {/* <div className="flex justify-end gap-4 mt-6">
           <Button variant="destructive" onClick={handleDeleteTopic}>
             Xóa đề tài
           </Button>
-        </div>
+        </div> */}
       </Card>
     </div>
   );

@@ -24,7 +24,7 @@ export const TopicListPage = () => {
               dispatch(resetMainMentor()); 
               dispatch(resetSubMentor());
     if (semesterId) {
-      dispatch(fetchTopics({ semesterId, majorId: selectedMajor })); // Fetch topics theo semesterId
+      dispatch(fetchTopics({ semesterId, submissionPeriodId,majorId: selectedMajor })); 
     }
   }, [dispatch, semesterId, selectedMajor]);
 
@@ -63,7 +63,7 @@ export const TopicListPage = () => {
               <Button onClick={handleExportExcel} variant="outline">
                 Export danh sách đề tài
               </Button>
-              <CreateTopic semesterId={semesterId!} />
+              <CreateTopic semesterId={semesterId!} submissionPeriodId={submissionPeriodId!}/>
               <Link to={`/import-topic-mentor/${semesterId}`}>
                 <Button className="flex gap-3 items-center">Import đề tài</Button>
               </Link>

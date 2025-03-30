@@ -33,7 +33,9 @@ export const SelectSemester: React.FC = () => {
 
   const availableYears = years.filter((year) => !year.isDeleted);
   const availableSemesters = semesters.filter((s) => !s.isDeleted);
-
+  const sortedSemesters = availableSemesters.sort((a, b) => {
+    return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
+  });
   return (
     <div className="space-y-4">
       <div className="flex flex-col md:flex-row md:items-center gap-4">
@@ -58,7 +60,7 @@ export const SelectSemester: React.FC = () => {
         </Select>
       </div>
 
-      {selectedYear && <CardSemester data={availableSemesters} />}
+      {selectedYear && <CardSemester data={sortedSemesters} />}
     </div>
   );
 };

@@ -92,8 +92,8 @@ export const fetchTopics = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosClient.get(`/topics/semester/${semesterId}/${submissionPeriodId}`, {
-        params: { majorId },
+      const response = await axiosClient.get(`/topics/semester/${semesterId}`, {
+        params: { majorId, submissionPeriodId },
       });
       return response.data.data as Topic[];
     } catch (error: unknown) {
@@ -108,19 +108,32 @@ export const fetchTopics = createAsyncThunk(
 
 export const exportTopicsToExcel = createAsyncThunk(
   "topics/exportExcel",
-  async ({submissionPeriodId, semesterId}:{submissionPeriodId:string, semesterId: string}, { rejectWithValue }) => {
+  async (
+    { submissionPeriodId, semesterId }: { submissionPeriodId: string; semesterId: string },
+    { rejectWithValue }
+  ) => {
     try {
-      const response = await axiosClient.get(
-        `/export-topic`,{
-          params: {submissionPeriodId, semesterId},
-          responseType: "blob"
-        },
-      );
+      const response = await axiosClient.get(`/export-topic`, {
+        params: { submissionPeriodId, semesterId },
+        responseType: "blob",
+      });
 
-      // Xử lý tải file về máy
+      // ✅ Nếu là lỗi: content-type JSON → parse message
+      const contentType = response.headers["content-type"];
+      if (contentType && contentType.includes("application/json")) {
+        await response.data.text();
+
+        // ✅ Convert đúng Blob → JSON
+        const text = await new Response(response.data).text();
+        const json = JSON.parse(text);
+        return rejectWithValue(json.message || "Xuất danh sách thất bại!");
+      }
+
+      // ✅ Nếu là file hợp lệ
       const blob = new Blob([response.data], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
+
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -129,14 +142,23 @@ export const exportTopicsToExcel = createAsyncThunk(
       a.click();
       document.body.removeChild(a);
 
-      return true; // Thành công
+      return true;
     } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data?.message || "Xuất danh sách thất bại!"
-      );
+      if (error?.response?.data instanceof Blob) {
+        try {
+          const text = await new Response(error.response.data).text();
+          const json = JSON.parse(text);
+          return rejectWithValue(json.message || "Xuất danh sách thất bại!");
+        } catch (parseError) {
+          return rejectWithValue("Lỗi không xác định từ server.");
+        }
+      }
+
+      return rejectWithValue("Xuất danh sách thất bại!");
     }
   }
 );
+
 
 // Fetch chi tiết topic theo topicId
 export const fetchTopicDetail = createAsyncThunk(
@@ -358,6 +380,17 @@ const topicSlice = createSlice({
         }
       )
       .addCase(fetchTopics.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(exportTopicsToExcel.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(exportTopicsToExcel.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(exportTopicsToExcel.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })

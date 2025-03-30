@@ -3,19 +3,19 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/lib/api/redux/store";
+import { useDispatch,} from "react-redux";
+import { AppDispatch } from "@/lib/api/redux/store";
 import { updateCouncil } from "@/lib/api/redux/councilReviewSlice";
 import { fetchSubmissionRounds } from "@/lib/api/redux/submissionRoundSlice";
 import { CouncilReview } from "@/lib/api/types";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectGroup,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/components/ui/select";
 
 const formSchema = z.object({
   name: z.string().min(3, "Tên hội đồng phải có ít nhất 3 ký tự"),
@@ -41,9 +41,9 @@ export const UpdateReviewTopicCouncil: React.FC<UpdateReviewTopicCouncilProps> =
   const [isLoading, setIsLoading] = useState(false);
   
   // Lấy danh sách submissionRounds từ Redux store
-  const { data: submissionRounds, loading: roundsLoading } = useSelector(
-    (state: RootState) => state.submissionRounds
-  );
+  // const { data: submissionRounds} = useSelector(
+  //   (state: RootState) => state.submissionRounds
+  // );
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -121,7 +121,7 @@ export const UpdateReviewTopicCouncil: React.FC<UpdateReviewTopicCouncilProps> =
 
   if (!open) return null;
 
-  const availableRounds = submissionRounds.filter((r) => !r.isDeleted);
+  // const availableRounds = submissionRounds.filter((r) => !r.isDeleted);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -180,7 +180,7 @@ export const UpdateReviewTopicCouncil: React.FC<UpdateReviewTopicCouncilProps> =
             )}
           </div>
 
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium mb-1">Vòng</label>
             <Select
               onValueChange={(value) => form.setValue("round", Number(value))} // Chuyển thành number
@@ -209,7 +209,7 @@ export const UpdateReviewTopicCouncil: React.FC<UpdateReviewTopicCouncilProps> =
             {form.formState.errors.round && (
               <p className="text-red-500 text-sm mt-1">{form.formState.errors.round.message}</p>
             )}
-          </div>
+          </div> */}
 
           <div className="mt-6 flex justify-end space-x-4">
             <button
