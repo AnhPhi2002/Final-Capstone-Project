@@ -1,6 +1,6 @@
 // TopicDetail.tsx
 import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router";
+import {  useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTopicDetail } from "@/lib/api/redux/topicSlice";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
