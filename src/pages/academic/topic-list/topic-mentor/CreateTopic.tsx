@@ -40,7 +40,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { debounce } from "lodash";
-import { useParams } from "react-router";
+
 
 const topicSchema = z.object({
   nameVi: z.string().min(1, "Tên tiếng Việt không được để trống"),

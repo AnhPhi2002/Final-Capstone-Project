@@ -2,12 +2,12 @@
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchTopicDetail, deleteTopic } from "@/lib/api/redux/topicSlice";
+import { fetchTopicDetail } from "@/lib/api/redux/topicSlice";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+
 import { toast } from "sonner";
 import { DataTableGroupTopic } from "./data-table-group-topic";
 import { fetchUserById } from "@/lib/api/redux/authSlice";
@@ -51,7 +51,7 @@ const getStatusClass = (status: string) => {
 export default function TopicDetail() {
   const { topicId, semesterId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate();
+  // Removed unused navigate declaration
   const { topicDetails, loading, error } = useSelector(
     (state: RootState) => state.topics
   );

@@ -5,7 +5,7 @@ import { RootState, AppDispatch } from "@/lib/api/redux/store";
 import { fetchTopicRegistrations } from "@/lib/api/redux/topicSlice";
 import { ApproveTopic } from "@/lib/api/types"; // 🔹 Đảm bảo import đúng
 import Header from "@/components/header";
-import { ToolPanel } from "./tool-panel";
+
 import { DataTable } from "./data-table";
 import { useReactTable, getCoreRowModel } from "@tanstack/react-table";
 import { columnsApproveTopic } from "./columns";
