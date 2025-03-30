@@ -52,8 +52,8 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({ approvetopic }) => {
       // ✅ Fetch lại danh sách topic registrations để UI tự động cập nhật
       dispatch(fetchTopicRegistrations({ topicId, semesterId }));
     } catch (error: any) {
-      console.error("❌ Lỗi API:", error);
-      toast.error(error?.message || "Lỗi khi cập nhật trạng thái!");
+
+      toast.error(`${error}`);
     } finally {
       setIsUpdating(false);
     }

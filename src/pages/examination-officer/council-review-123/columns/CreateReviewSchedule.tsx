@@ -93,24 +93,29 @@ export const CreateReviewSchedule: React.FC<CreateReviewScheduleProps> = ({
         })),
         room: data.room,
       };
-      console.log("Sending createReviewSchedule data:", formattedData);
       await dispatch(createReviewSchedule(formattedData)).unwrap();
       toast.success("Tạo lịch review thành công!");
       setOpen(false);
     } catch (error: any) {
-      console.error("Create review schedule failed:", error);
-      let errorMessage = error?.payload || "Tạo lịch review thất bại!";
+      let errorMessage = typeof error === "string" ? error : "Tạo lịch review thất bại!";
+    
       if (errorMessage.includes("Các nhóm chưa được phân công đề tài")) {
-        const groupIds = errorMessage.match(/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/g) || [];
-        groupIds.forEach((groupId: string) => {
+        const groupIds = errorMessage.match(
+          /[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/g
+        ) || [];
+    
+        groupIds.forEach((groupId) => {
           const group = groups.find((g: Group) => g.id === groupId);
           if (group) {
             errorMessage = errorMessage.replace(groupId, group.groupCode);
           }
         });
       }
+    
       toast.error(errorMessage);
-    } finally {
+    }
+    
+    finally {
       setIsLoading(false);
     }
   };

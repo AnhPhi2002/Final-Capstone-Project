@@ -96,8 +96,8 @@ export const CreateReviewTopicCouncil = () => {
       setStartDate("");
       setEndDate("");
     } catch (error) {
-      console.error("Create council failed:", error);
-      toast.error("Tạo hội đồng xét duyệt thất bại!");
+      // console.error("Create council failed:", error);
+      toast.error(`${error}`);
     } finally {
       setCreating(false);
     }

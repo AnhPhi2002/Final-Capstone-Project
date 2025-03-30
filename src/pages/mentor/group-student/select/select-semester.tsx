@@ -33,6 +33,9 @@ export const SelectSemester: React.FC = () => {
 
   const availableYears = years.filter((year) => !year.isDeleted);
   const availableSemesters = semesters.filter((semester) => !semester.isDeleted);
+  const sortedSemesters = availableSemesters.sort((a, b) => {
+    return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
+  });
 
   return (
     <div className="space-y-4">
@@ -60,7 +63,7 @@ export const SelectSemester: React.FC = () => {
         </Select>
       </div>
 
-      {selectedYear && <CardSemester data={availableSemesters} />}
+      {selectedYear && <CardSemester data={sortedSemesters} />}
     </div>
   );
 };

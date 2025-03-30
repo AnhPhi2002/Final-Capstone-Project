@@ -83,8 +83,7 @@ export const UpdateReviewTopicCouncil: React.FC<UpdateReviewTopicCouncilProps> =
       }
       setOpen(false);
     } catch (error) {
-      console.error("Update failed:", error); // Debug
-      toast.error("Cập nhật thất bại!");
+      toast.error(`${error}`);
     } finally {
       setIsLoading(false);
     }
@@ -123,7 +122,7 @@ export const UpdateReviewTopicCouncil: React.FC<UpdateReviewTopicCouncilProps> =
             )}
           </div>
 
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium mb-1">Trạng thái</label>
             <select
               {...form.register("status")}
@@ -133,7 +132,7 @@ export const UpdateReviewTopicCouncil: React.FC<UpdateReviewTopicCouncilProps> =
               <option value="ACTIVE">Hoạt động</option>
               <option value="INACTIVE">Không hoạt động</option>
             </select>
-          </div>
+          </div> */}
 
           <div>
             <label className="block text-sm font-medium mb-1">Ngày bắt đầu</label>

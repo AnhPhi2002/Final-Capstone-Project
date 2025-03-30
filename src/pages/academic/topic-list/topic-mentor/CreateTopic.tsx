@@ -40,6 +40,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { debounce } from "lodash";
+import { useParams } from "react-router";
 
 const topicSchema = z.object({
   nameVi: z.string().min(1, "Tên tiếng Việt không được để trống"),
@@ -56,7 +57,7 @@ const topicSchema = z.object({
 
 type TopicFormData = z.infer<typeof topicSchema>;
 
-export const CreateTopic: React.FC<{ semesterId: string;submissionPeriodId: string }> = ({ semesterId, submissionPeriodId }) => {
+export const CreateTopic: React.FC<{ semesterId: string;submissionPeriodId: string }> = ({ semesterId,  submissionPeriodId,}) => {
   const dispatch = useDispatch<AppDispatch>();
   const { data: majors, loading: majorLoading } = useSelector((state: RootState) => state.majors);
   const { mentors, loading: mentorLoading } = useSelector((state: RootState) => state.mentors);
@@ -189,6 +190,7 @@ export const CreateTopic: React.FC<{ semesterId: string;submissionPeriodId: stri
     const newTopic: Record<string, any> = {
       ...data,
       semesterId,
+      submissionPeriodId,
       businessPartner: data.isBusiness ? data.businessPartner : null,
       source: "Tự đề xuất",
       draftFileUrl: documents.length > 0 ? documents[0].draftFileUrl : null,

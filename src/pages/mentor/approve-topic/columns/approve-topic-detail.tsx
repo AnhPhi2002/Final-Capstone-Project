@@ -39,7 +39,7 @@ export const ApproveTopicDetail = () => {
           <p className="text-center text-red-500">{error}</p>
         ) : (
           <>
-            <ToolPanel table={table} />
+            {/* <ToolPanel table={table} /> */}
             <DataTable table={table} />
           </>
         )}

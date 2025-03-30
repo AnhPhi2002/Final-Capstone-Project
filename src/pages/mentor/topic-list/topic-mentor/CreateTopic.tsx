@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/api/redux/store";
-import { createTopic } from "@/lib/api/redux/topicSlice";
+import { createTopic, fetchTopics } from "@/lib/api/redux/topicSlice";
 import { fetchMajors } from "@/lib/api/redux/majorSlice";
 import { fetchMentorsBySemesterId } from "@/lib/api/redux/mentorSlice";
 import { uploadFile } from "@/lib/api/redux/uploadSlice";
@@ -29,7 +29,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) => {
+export const CreateTopic: React.FC<{ semesterId: string; submissionPeriodId: string }> = ({ semesterId,submissionPeriodId }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { data: majors, loading: majorLoading } = useSelector(
     (state: RootState) => state.majors
@@ -153,6 +153,7 @@ const { groups, loading: groupLoading } = useSelector(
       semesterId,
       majorId,
       subSupervisorEmail,
+      submissionPeriodId,
       isBusiness,
       businessPartner: isBusiness ? businessPartner : null,
       groupCode: groupCode,
@@ -163,6 +164,7 @@ const { groups, loading: groupLoading } = useSelector(
     try {
       await dispatch(createTopic(newTopic)).unwrap();
       toast.success("Đề tài đã được tạo thành công!");
+      dispatch(fetchTopics({ semesterId, submissionPeriodId}));
       setOpen(false);
       setNameVi("");
       setNameEn("");
@@ -176,7 +178,8 @@ const { groups, loading: groupLoading } = useSelector(
       setBusinessPartner(null);
       setDocumentFile(null);
     } catch (error: any) {
-      toast.error(error?.message || "Tạo đề tài thất bại!");
+      // toast.error(error?.message || "Tạo đề tài thất bại!");
+      toast.error(`${error}`);
     }
   };
 

@@ -24,7 +24,7 @@ export const TopicListPage = () => {
           dispatch(resetMainMentor()); 
           dispatch(resetSubMentor());
     if (semesterId) {
-      dispatch(fetchTopics({ semesterId, majorId: selectedMajor }));
+      dispatch(fetchTopics({ semesterId, submissionPeriodId,majorId: selectedMajor }));
     }
   
   }, [dispatch, semesterId, selectedMajor]);
@@ -39,7 +39,8 @@ export const TopicListPage = () => {
       await dispatch(exportTopicsToExcel({ submissionPeriodId, semesterId })).unwrap();
       toast.success("Xuất danh sách đề tài thành công!");
     } catch (error: any) {
-      toast.error(error?.message || "Xuất danh sách thất bại!");
+
+      toast.error(`${error}`);
     }
   };
 

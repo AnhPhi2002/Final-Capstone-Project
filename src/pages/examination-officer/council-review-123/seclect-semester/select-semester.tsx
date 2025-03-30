@@ -27,7 +27,7 @@ export const SelectSemester: React.FC = () => {
 
   const availableYears = years.filter((y) => !y.isDeleted);
   const availableSemesters = semesters.filter((s) => !s.isDeleted);
-  const availableRounds = submissionRounds.filter((r) => !r.isDeleted && r.type === "REVIEW");
+  const availableRounds = submissionRounds.filter((r) => !r.isDeleted && r.type === "REVIEW" && !r.isDeleted);
 
   const sortedSemesters = availableSemesters.sort((a, b) =>
     new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
