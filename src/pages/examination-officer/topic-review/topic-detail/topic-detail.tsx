@@ -120,7 +120,7 @@ export default function TopicDetail() {
   };
 
   return (
-    <div className="p-6 mt-10 bg-white">
+    <div className="mt-6 bg-white">
       <Card className="p-6">
         <div className="flex items-center mt-4 gap-3">
           <Avatar className="w-10 h-10">
