@@ -37,7 +37,7 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
   };
 
   const filteredData = data.filter(
-    (round) => round.semesterId === selectedSemester && round.type === "TOPIC"
+    (round) => round.semesterId === selectedSemester && round.type === "TOPIC" && !round.isDeleted
   );
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 

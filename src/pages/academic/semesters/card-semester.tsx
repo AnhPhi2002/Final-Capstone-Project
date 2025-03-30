@@ -23,13 +23,18 @@ export const CardSemester: React.FC<CardSemesterProps> = ({ data }) => {
   const navigate = useNavigate();
   const years = useSelector((state: RootState) => state.years.data);
 
-  const activeSemesters = data.filter((s) => !s.isDeleted); // 👈 Chỉ hiển thị học kỳ chưa bị xóa
+  const activeSemesters = data.filter((s) => !s.isDeleted); 
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
   const totalPages = Math.ceil(activeSemesters.length / itemsPerPage);
 
-  const paginatedData = activeSemesters.slice(
+  const sortedSemesters = activeSemesters.sort((a, b) => {
+    return new Date(a.startDate).getTime() - new Date(b.startDate).getTime(); 
+  });
+  
+
+  const paginatedData = sortedSemesters.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );

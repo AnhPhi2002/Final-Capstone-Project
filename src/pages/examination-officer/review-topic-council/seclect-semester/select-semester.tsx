@@ -78,7 +78,7 @@ export const SelectSemester: React.FC = () => {
 
   // Lọc submission rounds có type là "CHECK_TOPIC"
   const filteredSubmissionRounds = submissionRounds.filter(
-    (round) => round.type === "CHECK-TOPIC"
+    (round) => round.type === "CHECK-TOPIC" && !round.isDeleted
   );
 
   return (

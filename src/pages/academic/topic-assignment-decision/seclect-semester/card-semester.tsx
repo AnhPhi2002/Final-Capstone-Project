@@ -15,106 +15,100 @@ import { Badge } from "@/components/ui/badge";
 
 type CardSemesterProps = {
   data: Semester[];
-  submissionRounds: any[]; // ✅ Nhận danh sách vòng nộp
+  submissionRounds: any[];
+  selectedRoundId: string;
 };
 
-export const CardSemester: React.FC<CardSemesterProps> = ({ data, submissionRounds }) => {
+export const CardSemester: React.FC<CardSemesterProps> = ({
+  data,
+  submissionRounds,
+  selectedRoundId,
+}) => {
   const navigate = useNavigate();
   const years = useSelector((state: RootState) => state.years.data);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6; // Số lượng items trên mỗi trang
+  const itemsPerPage = 6;
 
-  // ✅ Chỉ lấy học kỳ có ít nhất một vòng nộp
-  const filteredSemesters = data.filter((semester) =>
-    submissionRounds.some((round) => round.semesterId === semester.id)
+  const selectedRound = submissionRounds.find(
+    (round) => round.id === selectedRoundId
   );
 
-  const totalPages = Math.ceil(filteredSemesters.length / itemsPerPage);
+  if (!selectedRound) return null;
+
+  const relatedSemesters = data.filter(
+    (semester) =>
+      semester.id === selectedRound.semesterId && !semester.isDeleted
+  );
+
+  const totalPages = Math.ceil(relatedSemesters.length / itemsPerPage);
 
   const getYearById = (yearId: string) => {
-    const foundYear = years.find((year) => year.id === yearId);
-    return foundYear ? foundYear.year : "Unknown Year";
+    const found = years.find((y) => y.id === yearId && !y.isDeleted);
+    return found ? found.year : "Unknown Year";
   };
 
-  const handleCardClick = (semesterId: string) => {
-    // Tìm vòng nộp có `semesterId` tương ứng
-    const submissionRound = submissionRounds.find(
-      (round) => round.semesterId === semesterId
-    );
-  
-    if (submissionRound) {
-      navigate(`/academic/topic-assignment-decision-detail`);
-    }
+  const handleCardClick = () => {
+    navigate(`/academic/topic-assignment-decision-detail`);
   };
-  
-  
 
-  const paginatedData = filteredSemesters.slice(
+  const paginated = relatedSemesters.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
   return (
     <div className="space-y-6">
-      {paginatedData.length === 0 ? (
-        <p className="text-gray-500 text-center col-span-full">
-          Không có học kỳ nào có vòng nộp
-        </p>
+      {paginated.length === 0 ? (
+        <p className="text-center text-gray-500">Không có học kỳ nào</p>
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {paginatedData.map((semester) => {
-              // Lọc vòng nộp theo học kỳ
-              const filteredRounds = submissionRounds.filter(round => round.semesterId === semester.id);
-              
-              return (
-                <Card
-                  key={semester.id}
-                  className="w-full p-4 shadow-md border border-gray-200 rounded-lg hover:shadow-lg transition duration-200"
-                  onClick={() => handleCardClick(semester.id)}
-                >
-                  <CardHeader>
-                    <CardTitle className="text-xl font-bold text-gray-800">
-                      Học kỳ: {semester.code}
-                    </CardTitle>
-                    <CardDescription>
-                      Năm học: {getYearById(semester.yearId)}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    {/* ✅ Hiển thị danh sách vòng nộp */}
-                      <ul className="text-sm text-gray-600">
-                        {filteredRounds.map((round) => (
-                          <li key={round.id} className="flex items-center gap-2">
-                          <span>🔹 {round.description}</span>
-                          <Badge
-                            className={
-                              round.status === "ACTIVE"
-                                ? "bg-green-100 text-green-600 hover:bg-green-200"
-                                : round.status === "COMPLETE"
-                                ? "bg-blue-100 text-blue-600 hover:bg-blue-200"
-                                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                            }
-                          >
-                            {round.status}
-                          </Badge>
-                        </li>
-                        ))}
-                      </ul>
-                  </CardContent>
-                </Card>
-              );
-            })}
+            {paginated.map((semester) => (
+              <Card
+                key={semester.id}
+                className="p-4 shadow-md border border-gray-200 rounded-lg hover:shadow-lg transition"
+                onClick={handleCardClick}
+              >
+                <CardHeader>
+                  <CardTitle className="text-xl font-bold text-gray-800">
+                    Học kỳ: {semester.code}
+                  </CardTitle>
+                  <CardDescription>
+                    Năm học: {getYearById(semester.yearId)}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ul className="text-sm text-gray-600">
+                    <li className="flex items-center gap-2">
+                      🔹 {selectedRound.description}
+                      <Badge
+                        className={
+                          selectedRound.status === "ACTIVE"
+                            ? "bg-green-100 text-green-600 hover:bg-green-200"
+                            : selectedRound.status === "COMPLETE"
+                            ? "bg-blue-100 text-blue-600 hover:bg-blue-200"
+                            : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                        }
+                      >
+                        {selectedRound.status}
+                      </Badge>
+                    </li>
+                  </ul>
+                </CardContent>
+              </Card>
+            ))}
           </div>
 
-          <div className="flex justify-end mt-6">
-            <PaginationDashboardPage
-              totalPages={totalPages}
-              currentPage={currentPage}
-              onPageChange={setCurrentPage}
-            />
-          </div>
+          {totalPages > 1 && (
+            <div className="flex justify-end mt-6">
+              <PaginationDashboardPage
+                totalPages={totalPages}
+                currentPage={currentPage}
+                onPageChange={setCurrentPage}
+              />
+            </div>
+          )}
         </>
       )}
     </div>

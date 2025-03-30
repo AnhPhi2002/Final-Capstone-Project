@@ -67,8 +67,9 @@ export default function UpdateTopicDetail() {
       toast.success("✅ Cập nhật đề tài thành công!");
       navigate(`/academic/topic-detail/${topicId}/${semesterId}`);
       dispatch(fetchTopicDetail({ topicId, semesterId }));
-    } catch (err) {
-      toast.error("Có lỗi xảy ra khi cập nhật đề tài.");
+    } catch (err:any) {
+      const message = err?.message || err || "Đã xảy ra lỗi";
+      toast.error(`Tạo thất bại: ${message}`);
     }
   };
   if (error && !topicDetails) {

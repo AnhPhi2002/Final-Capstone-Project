@@ -4,10 +4,14 @@ import { Action } from "./action";
 import { Badge } from "@/components/ui/badge";
 
 export const columns: ColumnDef<SubmissionRound, any>[] = [ 
-  {
-    accessorKey: "id",
-    header: "ID",
-    cell: ({ row }) => <span>{row.index + 1}</span>, 
+  // {
+  //   accessorKey: "id",
+  //   header: "ID",
+  //   cell: ({ row }) => <span>{row.index + 1}</span>, 
+  // },
+    {
+    accessorKey: "roundNumber",
+    header: "Vòng",
   },
   {
     accessorKey: "description",

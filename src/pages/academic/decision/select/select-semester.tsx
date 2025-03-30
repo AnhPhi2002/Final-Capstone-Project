@@ -27,6 +27,10 @@ export const SelectSemester: React.FC = () => {
   // Chỉ lấy các học kỳ chưa bị xóa
   const filteredSemesters = semesters.filter((s) => !s.isDeleted);
 
+  const sortedSemesters = filteredSemesters.sort((a, b) => {
+    return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
+  });
+
   useEffect(() => {
     dispatch(fetchAllYears());
   }, [dispatch]);
@@ -67,7 +71,7 @@ export const SelectSemester: React.FC = () => {
         </Select>
       </div>
 
-      {selectedYear && <CardSemester data={filteredSemesters} />}
+      {selectedYear && <CardSemester data={sortedSemesters} />}
     </div>
   );
 };

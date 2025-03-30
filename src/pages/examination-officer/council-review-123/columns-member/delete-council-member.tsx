@@ -28,7 +28,8 @@ export const DeleteReviewTopicCouncilMember: React.FC<DeleteReviewTopicCouncilMe
       setOpen(false);
       refetchData?.(); // Làm mới danh sách nếu có function refetch
     } catch (error: any) {
-      toast.error(error || "Xóa thành viên thất bại!");
+      // toast.error(${error} || "Xóa thành viên thất bại!");
+      toast.error(`Tạo thất bại: ${error}`);
     }
   };
 

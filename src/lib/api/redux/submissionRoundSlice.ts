@@ -59,7 +59,7 @@ export const deleteSubmissionRound = createAsyncThunk(
   "submissionRounds/deleteSubmissionRound",
   async (roundId: string, { rejectWithValue }) => {
     try {
-      await axiosClient.delete(`/submission-periods/${roundId}`);
+      await axiosClient.put(`/submission-periods/${roundId}/delete`);
       return roundId;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Không thể xóa vòng nộp");

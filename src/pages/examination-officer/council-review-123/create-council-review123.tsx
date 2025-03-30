@@ -87,7 +87,7 @@ export const CreateReviewTopicCouncil = () => {
     try {
       await dispatch(createCouncilReview(newCouncil)).unwrap();
       toast.success("Tạo hội đồng xét duyệt thành công!");
-      await dispatch(fetchReviewCouncilsList({ semesterId: selectedSemester }));
+      await dispatch(fetchReviewCouncilsList({ semesterId: selectedSemester, submissionPeriodId: selectedSubmissionRound })).unwrap();;
       setOpen(false);
       setCouncilName("");
       setSelectedYear("");
