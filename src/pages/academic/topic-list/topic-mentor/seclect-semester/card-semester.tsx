@@ -36,7 +36,9 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
     return semester ? semester.code : "Không xác định";
   };
 
-  const filteredData = data.filter((round) => round.semesterId === selectedSemester && round.type === "TOPIC");
+  const filteredData = data.filter(
+    (round) => round.semesterId === selectedSemester && round.type === "TOPIC" && !round.isDeleted
+  );
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
   const paginatedData = filteredData.slice(
@@ -44,8 +46,13 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
     currentPage * itemsPerPage
   );
 
-  const handleCardClick = (semesterId: string, submissionRoundId: string, roundNumber: number, type: string) => {
-    navigate(`/academic/topic-list/semester/${semesterId}/submission/${submissionRoundId}/round/${roundNumber}/type/${type}`);
+  const handleCardClick = (
+    semesterId: string,
+    submissionPeriodId: string
+  ) => {
+    navigate(
+      `/academic/topic-list/semester/${semesterId}/submission/${submissionPeriodId}`
+    );
   };
 
   if (loading) {
@@ -53,7 +60,11 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
   }
 
   if (paginatedData.length === 0) {
-    return <p className="text-center text-gray-500 mt-5">Chưa có vòng nộp nào cho học kỳ này.</p>;
+    return (
+      <p className="text-center text-gray-500 mt-5">
+        Chưa có vòng nộp nào cho học kỳ này.
+      </p>
+    );
   }
 
   return (
@@ -62,15 +73,19 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
         {paginatedData.map((round) => (
           <Card
             key={round.id}
-            className="w-full p-4 shadow-md border rounded-lg hover:shadow-lg transition"
-            onClick={() => handleCardClick(round.semesterId, round.id, round.roundNumber, round.type)}
+            className="w-full p-4 shadow-md border rounded-lg hover:shadow-lg transition cursor-pointer"
+            onClick={() =>
+              handleCardClick(round.semesterId, round.id)
+            }
           >
             <CardHeader>
               <CardTitle className="text-xl font-bold text-gray-800">
                 {round.description}
               </CardTitle>
               <CardDescription>Học kỳ: {getSemesterCode(round.semesterId)}</CardDescription>
-              <CardDescription>Vòng nộp lần: {round.roundNumber}-{round.type} </CardDescription>
+              <CardDescription>
+                Vòng nộp lần: {round.roundNumber}-{round.type}
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-2">

@@ -69,8 +69,9 @@ export const AddMemberReviewCouncil: React.FC<AddMemberReviewCouncilProps> = ({
             setOpen(false);
             form.reset();
         } catch (error) {
-            console.error("Add member failed:", error);
-            toast.error("Thêm thành viên thất bại!");
+            // console.error("Add member failed:", error);
+            // toast.error("Thêm thành viên thất bại!");
+            toast.error(`Tạo thất bại: ${error}`);
         } finally {
             setIsLoading(false);
         }

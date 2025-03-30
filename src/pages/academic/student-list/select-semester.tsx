@@ -47,6 +47,10 @@ export const SelectSemester: React.FC = () => {
   // Lọc các học kỳ chưa bị xóa
   const activeSemesters = semesters.filter((s) => !s.isDeleted);
 
+  const sortedSemesters = activeSemesters.sort((a, b) => {
+    return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
+  });
+
   return (
     <div className="space-y-4">
       <div className="flex flex-col md:flex-row md:items-center gap-4 mb-8">
@@ -77,7 +81,7 @@ export const SelectSemester: React.FC = () => {
         </Select>
       </div>
 
-      {selectedYear && <CardSemester data={activeSemesters} />}
+      {selectedYear && <CardSemester data={sortedSemesters} />}
     </div>
   );
 };

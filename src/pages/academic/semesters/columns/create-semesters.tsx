@@ -125,6 +125,17 @@ export const CreateSemesters = () => {
         startDate: undefined,
         endDate: undefined,
       });
+      // form.setValue("startDate", new Date(""), {
+      //   shouldValidate: false,
+      //   shouldDirty: false,
+      // });
+      
+      // form.setValue("endDate", new Date(""), {
+      //   shouldValidate: false,
+      //   shouldDirty: false,
+      // });
+      
+      setIsOpen(false);
       dispatch(fetchSemesters({ yearId }));
     } catch {
       toast.error("Có lỗi xảy ra khi tạo học kỳ!");
@@ -175,7 +186,7 @@ export const CreateSemesters = () => {
                 </p>
               </div>
 
-              <Form {...form}>
+              <Form {...form} key={isOpen ? "open" : "closed"}>
                 <form
                   onSubmit={handleSubmit(onSubmit)}
                   className="grid gap-4 py-4"

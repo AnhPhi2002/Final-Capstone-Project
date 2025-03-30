@@ -32,6 +32,9 @@ export const CreateSubmissionRound = () => {
 
   const availableYears = years.filter((y) => !y.isDeleted);
   const availableSemesters = semesters.filter((s) => !s.isDeleted);
+  const sortedSemesters = availableSemesters.sort((a, b) => {
+    return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
+  });
 
   useEffect(() => {
     dispatch(fetchAllYears());
@@ -84,7 +87,7 @@ export const CreateSubmissionRound = () => {
         throw new Error(result?.message || "Tạo thất bại!");
       }
     } catch (error: any) {
-      toast.error(`Tạo thất bại: ${error.message || "Đã xảy ra lỗi"}`);
+      toast.error(`Tạo thất bại: ${error}`);
     } finally {
       setCreating(false);
     }
@@ -136,7 +139,7 @@ export const CreateSubmissionRound = () => {
                   <SelectGroup>
                     {semesterLoading ? (
                       <SelectItem value="loading" disabled>Đang tải...</SelectItem>
-                    ) : availableSemesters.map((semester) => (
+                    ) : sortedSemesters.map((semester) => (
                       <SelectItem key={semester.id} value={semester.id}>{semester.code}</SelectItem>
                     ))}
                   </SelectGroup>

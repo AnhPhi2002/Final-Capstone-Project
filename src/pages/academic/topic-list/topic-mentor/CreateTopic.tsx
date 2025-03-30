@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { AppDispatch, RootState } from "@/lib/api/redux/store";
-import { createTopicByAcademic } from "@/lib/api/redux/topicSlice";
+import { createTopicByAcademic, fetchTopics } from "@/lib/api/redux/topicSlice";
 import { fetchMajors } from "@/lib/api/redux/majorSlice";
 import { fetchMentorsBySemesterId } from "@/lib/api/redux/mentorSlice";
 import { fetchGroupsBySemester } from "@/lib/api/redux/groupSlice"; // Thêm import
@@ -56,7 +56,7 @@ const topicSchema = z.object({
 
 type TopicFormData = z.infer<typeof topicSchema>;
 
-export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) => {
+export const CreateTopic: React.FC<{ semesterId: string;submissionPeriodId: string }> = ({ semesterId, submissionPeriodId }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { data: majors, loading: majorLoading } = useSelector((state: RootState) => state.majors);
   const { mentors, loading: mentorLoading } = useSelector((state: RootState) => state.mentors);
@@ -199,11 +199,13 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
     try {
       await dispatch(createTopicByAcademic(newTopic)).unwrap();
       toast.success("Đề tài đã được tạo thành công!");
+      dispatch(fetchTopics({ semesterId, submissionPeriodId }));
       setOpen(false);
       form.reset();
       setDocuments([]);
     } catch (error: any) {
-      toast.error(error?.message || "Tạo đề tài thất bại!");
+      toast.error(`Tạo thất bại: ${error}`);
+      // toast.error(error?.message || "Tạo đề tài thất bại!");
     }
   };
 

@@ -36,6 +36,8 @@ export const CardSemester: React.FC<CardSemesterProps> = ({ data }) => {
     navigate(`/academic/student/${id}`);
   };
 
+  
+
   const paginatedData = data.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage

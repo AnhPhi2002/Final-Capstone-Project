@@ -20,6 +20,7 @@ type ActionMenuProps = {
     description: string;
     startDate: string;
     endDate: string;
+    type: "TOPIC" | "CHECK-TOPIC" | "REVIEW" | "DEFENSE";
   };
 };
 

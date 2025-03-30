@@ -35,6 +35,7 @@ interface Topic {
   subMentorId?: string | null;
   subSupervisor?: string | null;
   mainSupervisor?: string | null;
+  submissionPeriodId: string | null;
   createdBy: string | null;
   status: string;
   // status: "PENDING" | "APPROVED" | "IMPROVED" | "REJECTED";
@@ -87,12 +88,12 @@ interface GroupInfo {
 export const fetchTopics = createAsyncThunk(
   "topics/fetchTopics",
   async (
-    { semesterId, majorId }: { semesterId: string; majorId?: string },
+    { semesterId, submissionPeriodId, majorId }: { semesterId: string; submissionPeriodId?: string; majorId?: string },
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosClient.get(`/topics/semester/${semesterId}?semesterId=${semesterId}`, {
-        params: { majorId }, // Thêm `majorId` vào params nếu có
+      const response = await axiosClient.get(`/topics/semester/${semesterId}/${submissionPeriodId}`, {
+        params: { majorId },
       });
       return response.data.data as Topic[];
     } catch (error: unknown) {
@@ -103,6 +104,7 @@ export const fetchTopics = createAsyncThunk(
     }
   }
 );
+
 
 export const exportTopicsToExcel = createAsyncThunk(
   "topics/exportExcel",
@@ -187,14 +189,11 @@ export const deleteTopic = createAsyncThunk(
   async ({ topicId, semesterId }: { topicId: string; semesterId: string }, { rejectWithValue }) => {
     try {
       console.log("🟢 Gửi API xóa đề tài:", { topicId, semesterId });
-  await axiosClient.delete(`/topics/${topicId}`, {
-        params: { semesterId }, // ✅ Truyền semesterId qua params
+  await axiosClient.put(`/topics/${topicId}/delete`, {
+        params: { semesterId },
       });
-
-      // toast.success("Xóa đề tài thành công!");
-      return topicId; // ✅ Trả về topicId để cập nhật state
+      return topicId; 
     } catch (error: any) {
-      // toast.error(error.response?.data?.message || "Không thể xóa đề tài!");
       return rejectWithValue(error.response?.data?.message || "Lỗi hệ thống!");
     }
   }
@@ -434,8 +433,8 @@ const topicSlice = createSlice({
         state.error = action.payload as string;
       })
       .addCase(updateTopicForAcademic.pending, (state) => {
-
         state.loading = true;
+        state.error = null;
       })
       .addCase(updateTopicForAcademic.fulfilled, (state, action: PayloadAction<Topic>) => {
         state.loading = false;
@@ -505,9 +504,9 @@ const topicSlice = createSlice({
           topic.registrationId === registrationId ? { ...topic, registrationStatus: status } : topic
         );
       })
-      .addCase(updateTopicRegistrationStatus.rejected, (state, action) => {
+      .addCase(updateTopicRegistrationStatus.rejected, (state) => {
         state.loading = false;
-        state.error = action.payload as string;
+        // state.error = action.payload as string;
       })
       .addCase(deleteTopic.pending, (state) => {
         state.loading = true;

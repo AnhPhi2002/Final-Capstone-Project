@@ -31,6 +31,9 @@ export const SelectSemester: React.FC = () => {
 
   const availableYears = years.filter((y) => !y.isDeleted);
   const availableSemesters = semesters.filter((s) => !s.isDeleted);
+  const sortedSemesters = availableSemesters.sort((a, b) => {
+    return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
+  });
 
   useEffect(() => {
     dispatch(fetchYears());
@@ -92,8 +95,8 @@ export const SelectSemester: React.FC = () => {
               <SelectItem value="all">Chưa chọn kỳ</SelectItem>
               {loadingSemesters ? (
                 <SelectItem value="loading" disabled>Đang tải...</SelectItem>
-              ) : availableSemesters.length > 0 ? (
-                availableSemesters.map((semester) => (
+              ) : sortedSemesters.length > 0 ? (
+                sortedSemesters.map((semester) => (
                   <SelectItem key={semester.id} value={semester.id}>
                     {semester.code}
                   </SelectItem>

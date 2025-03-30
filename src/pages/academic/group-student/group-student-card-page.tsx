@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { CreateRandomGroup } from "./create-random-group";
 
 export const GroupStudentCardPage = () => {
   const { semesterId } = useParams<{ semesterId: string }>();
@@ -111,6 +112,9 @@ export const GroupStudentCardPage = () => {
                 </SelectGroup>
               </SelectContent>
             </Select>
+            {/* <div className="flex justify-end mb-4 gap-x-4"> */}
+              {semesterId && <CreateRandomGroup semesterId={semesterId} />}
+            {/* </div> */}
             <ExportExcelGroupStudent />
             <ManualCreateGroupDialog
               semesterId={semesterId!}

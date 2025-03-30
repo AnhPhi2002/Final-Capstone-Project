@@ -3,7 +3,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
 import { fetchYears } from "@/lib/api/redux/yearSlice";
 import { fetchSemesters, clearSemesters } from "@/lib/api/redux/semesterSlice";
-import { fetchReviewCouncilsList, clearCouncils } from "@/lib/api/redux/councilReviewSlice";
+import {
+  fetchSubmissionRounds,
+  clearSubmissionRounds,
+} from "@/lib/api/redux/submissionRoundSlice";
+import {
+  fetchReviewCouncilsList,
+  clearCouncils,
+} from "@/lib/api/redux/councilReviewSlice";
+
 import {
   Select,
   SelectContent,
@@ -24,12 +32,16 @@ export const SelectSemester: React.FC = () => {
   const { data: semesters, loading: loadingSemesters } = useSelector(
     (state: RootState) => state.semesters
   );
+  const { data: submissionRounds, loading: loadingRounds } = useSelector(
+    (state: RootState) => state.submissionRounds
+  );
   const { data: councils } = useSelector(
     (state: RootState) => state.councilReview
   );
 
-  const [selectedYear, setSelectedYear] = useState<string>("");
-  const [selectedSemester, setSelectedSemester] = useState<string>("");
+  const [selectedYear, setSelectedYear] = useState("");
+  const [selectedSemester, setSelectedSemester] = useState("");
+  const [selectedSubmissionRound, setSelectedSubmissionRound] = useState("");
 
   useEffect(() => {
     dispatch(fetchYears());
@@ -39,27 +51,44 @@ export const SelectSemester: React.FC = () => {
     if (selectedYear) {
       dispatch(fetchSemesters({ yearId: selectedYear }));
       setSelectedSemester("");
+      setSelectedSubmissionRound("");
       dispatch(clearCouncils());
+      dispatch(clearSubmissionRounds());
     } else {
       dispatch(clearSemesters());
       dispatch(clearCouncils());
+      dispatch(clearSubmissionRounds());
     }
   }, [selectedYear, dispatch]);
 
   useEffect(() => {
     if (selectedSemester) {
-      dispatch(fetchReviewCouncilsList({ semesterId: selectedSemester }));
+      dispatch(fetchSubmissionRounds(selectedSemester));
+      setSelectedSubmissionRound("");
+      dispatch(clearCouncils());
     } else {
+      dispatch(clearSubmissionRounds());
       dispatch(clearCouncils());
     }
   }, [selectedSemester, dispatch]);
 
+  useEffect(() => {
+    if (selectedSemester && selectedSubmissionRound) {
+      dispatch(fetchReviewCouncilsList({
+        semesterId: selectedSemester,
+        submissionPeriodId: selectedSubmissionRound,
+      }));
+    }
+  }, [selectedSemester, selectedSubmissionRound, dispatch]);
+
   const availableYears = years.filter((y) => !y.isDeleted);
   const availableSemesters = semesters.filter((s) => !s.isDeleted);
+  const availableRounds = submissionRounds.filter((r) => !r.isDeleted);
 
   return (
     <div className="space-y-4">
       <div className="flex flex-col md:flex-row md:items-center gap-4 mb-10">
+        {/* Select năm học */}
         <Select onValueChange={setSelectedYear} value={selectedYear}>
           <SelectTrigger className="w-[200px]">
             <SelectValue placeholder="Chọn năm học" />
@@ -82,6 +111,7 @@ export const SelectSemester: React.FC = () => {
           </SelectContent>
         </Select>
 
+        {/* Select kỳ học */}
         <Select
           onValueChange={setSelectedSemester}
           value={selectedSemester}
@@ -107,10 +137,40 @@ export const SelectSemester: React.FC = () => {
             </SelectGroup>
           </SelectContent>
         </Select>
+
+        {/* Select vòng nộp */}
+        <Select
+          onValueChange={setSelectedSubmissionRound}
+          value={selectedSubmissionRound}
+          disabled={!selectedSemester}
+        >
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="Chọn vòng nộp" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Vòng nộp</SelectLabel>
+              {loadingRounds ? (
+                <SelectItem value="loading" disabled>Đang tải...</SelectItem>
+              ) : availableRounds.length > 0 ? (
+                availableRounds.map((round) => (
+                  <SelectItem key={round.id} value={round.id}>
+                    {round.description}
+                  </SelectItem>
+                ))
+              ) : (
+                <SelectItem value="none" disabled>Không có vòng nộp</SelectItem>
+              )}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
       </div>
 
-      {selectedSemester && (
-        <CardCouncil councils={councils} semesterId={selectedSemester} />
+      {selectedSubmissionRound && selectedSemester && (
+        <CardCouncil
+          councils={councils}
+          semesterId={selectedSemester}
+        />
       )}
     </div>
   );

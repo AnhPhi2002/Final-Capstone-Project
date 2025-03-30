@@ -78,10 +78,10 @@ export const createCouncilReview = createAsyncThunk(
 
 export const fetchReviewCouncilsList = createAsyncThunk(
     "councils/fetchReviewCouncils",
-    async ({ semesterId }: { semesterId: string }, { rejectWithValue }) => {
+    async ({ semesterId, submissionPeriodId }: { semesterId: string; submissionPeriodId:string }, { rejectWithValue }) => {
         try {
             const response = await axiosClient.get(`/council-review`, {
-                params: { semesterId },
+                params: { semesterId, submissionPeriodId },
             });
 
             const councils = response.data.data as CouncilReview[];

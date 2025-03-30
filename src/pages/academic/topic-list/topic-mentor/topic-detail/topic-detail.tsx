@@ -98,7 +98,8 @@ export default function TopicDetail() {
       await dispatch(deleteTopic({ topicId, semesterId })).unwrap();
       navigate("/lecturer/topic"); // ✅ Điều hướng sau khi xóa thành công
     } catch (error) {
-      toast.error("Lỗi khi xóa đề tài!");
+      // toast.error("Lỗi khi xóa đề tài!");
+      toast.error(`${error}`)
     }
   };
   const handleOpenFile = (fileUrl: string) => {
