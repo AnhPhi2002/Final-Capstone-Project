@@ -7,11 +7,15 @@ export const TopicPage = () => {
       <Header
         title="Tổng quan"
         href="/"
-        currentPage="Danh sách đề tài giảng viên "
+        currentPage="Đề tài đã xét duyệt "
       />
 
       <div className="p-5 flex-1 overflow-auto">
-        <SelectSemester />
+        <div className="flex flex-col items-end gap-4">
+          <div className="w-full mt-[52px]">
+            <SelectSemester />
+          </div>
+        </div>
       </div>
     </div>
   );

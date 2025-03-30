@@ -48,11 +48,6 @@ export default function TopicDetail() {
   
   }, [dispatch, topicId, semesterId]);
 
-  // useEffect(() => {
-  //   if (topicDetails?.createdBy && topicDetails?.semesterId) {
-  //     dispatch(fetchUserById({ userId: topicDetails.createdBy, semesterId: topicDetails.semesterId }));
-  //   }
-  // }, [dispatch, topicDetails?.createdBy, topicDetails?.semesterId]);
 
   useEffect(() => {
     if (topicDetails?.mainSupervisor && topicDetails?.semesterId) {
@@ -85,23 +80,7 @@ export default function TopicDetail() {
       </p>
     );
 
-  // const handleDeleteTopic = async () => {
 
-  //   if (!topicId || !semesterId) {
-  //     toast.error("Không thể xác định đề tài cần xóa!");
-  //     return;
-  //   }
-
-  //   if (!confirm("Bạn có chắc muốn xóa đề tài này?")) return;
-
-  //   try {
-  //     toast.success("Xóa đề tài thành công")
-  //     await dispatch(deleteTopic({ topicId, semesterId })).unwrap();
-  //     navigate("/lecturer/topic"); // ✅ Điều hướng sau khi xóa thành công
-  //   } catch (error) {
-  //     toast.error("Lỗi khi xóa đề tài!");
-  //   }
-  // };
 
   const handleOpenFile = (fileUrl: string) => {
     // Mở URL trong tab mới
@@ -118,7 +97,7 @@ export default function TopicDetail() {
   };
   return (
     <div>
-      <div className="mt-6 bg-white">
+      <div className=" bg-white">
         <Card className="p-6">
           <div className="flex items-center mt-4 gap-3">
             <Avatar className="w-10 h-10">

@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 
 import { columns } from "./columns";
@@ -10,11 +10,13 @@ import { RootState, AppDispatch } from "@/lib/api/redux/store";
 import { fetchSubmissionRounds } from "@/lib/api/redux/submissionRoundSlice";
 
 import { useReactTable, getCoreRowModel, getPaginationRowModel, getFilteredRowModel, ColumnDef } from "@tanstack/react-table";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
 export function DeadineTopicDetailPage() {
   const { semesterId, submissionId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
-
+  const navigate = useNavigate(); 
   // Lấy danh sách vòng nộp từ Redux
   const { data: submissionRounds, loading, error } = useSelector((state: RootState) => state.submissionRounds);
 
@@ -56,16 +58,25 @@ export function DeadineTopicDetailPage() {
   if (error || filteredRounds.length === 0) {
     return (
       <div className="flex flex-col h-screen">
-        <Header title="Không tìm thấy" href="/deadine-topic" currentPage="Chi tiết vòng nộp" />
+        <Header title="Không tìm thấy" href="/examination/deadline-topic" currentPage="Chi tiết vòng nộp" />
         <div className="p-5 text-center text-red-500">Không tìm thấy vòng nộp đề tài.</div>
       </div>
     );
   }
 
+  const handleBack = () => {
+    navigate("/examination/deadline-topic");
+  };
+
   return (
     <div className="flex flex-col h-screen">
-      <Header title="Chi tiết vòng nộp" href="/deadine-topic" currentPage="Quản lý hạn nộp đề tài" />
+      <Header title="Thời gian đăng kí đợt đề tài" href="/examination/deadline-topic" currentPage=" Chi tiết thời gian đăng kí đợt đề tài" />
       <div className="p-5 flex-1 overflow-auto">
+      <div className="mb-5">
+          <Button onClick={handleBack} >
+           <ArrowLeft /> Quay lại
+          </Button>
+        </div>
         <DataTable table={table} />
       </div>
     </div>
