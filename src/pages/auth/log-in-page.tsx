@@ -130,10 +130,10 @@ const LoginPage = () => {
                 control={form.control}
                 name="password"
                 render={({ field }) => (
-                  <FormItem >
+                  <FormItem>
                     <FormLabel htmlFor="password">Mật khẩu</FormLabel>
-                    <FormControl >
-                      <Input id="password" type="password"  {...field} />
+                    <FormControl>
+                      <Input id="password" type="password" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -173,7 +173,17 @@ const LoginPage = () => {
                 <GoogleLogin
                   onSuccess={handleGoogleSuccess}
                   onError={() => toast.error("Đăng nhập Google thất bại")}
+                  useOneTap // (nếu muốn one-tap)
+                  theme="outline"
+                  size="large"
+                  text="signin_with"
+                  shape="rectangular"
                 />
+
+                {/* <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={() => toast.error("Đăng nhập Google thất bại")}
+                /> */}
               </div>
 
               {error && (
