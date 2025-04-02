@@ -332,7 +332,10 @@ const examinationMenu = {
           title: "D.s h.đ kiểm tra đồ án ",
           url: "/examination/council-review",
         },
-
+        {
+          title: "D.s h.đ bảo vệ đồ án ",
+          url: "/examination/council-defense",
+        },
       ],
     },
   ],
