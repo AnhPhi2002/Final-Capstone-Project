@@ -5,7 +5,7 @@ import { flexRender, type Table as TableType } from "@tanstack/react-table";
 import { CouncilDefenseMember } from "@/lib/api/types"; // Sửa kiểu
 
 interface DataTableProps {
-  table: TableType<CouncilDefenseMember>; // Sửa kiểu từ Council thành CouncilReviewMember
+  table: TableType<CouncilDefenseMember>;
 }
 
 export const DataTable = memo(function DataTable({ table }: DataTableProps) {

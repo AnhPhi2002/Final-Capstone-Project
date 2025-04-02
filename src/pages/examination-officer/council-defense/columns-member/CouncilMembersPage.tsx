@@ -23,7 +23,7 @@ export const CouncilDefenseMembersPage: React.FC = () => {
   }>(); // Cho phép undefined
   const dispatch = useDispatch<AppDispatch>();
   const { councilDetail, loadingDetail } = useSelector(
-    (state: RootState) => state.councilReview
+    (state: RootState) => state.councilDefense
   ); // Sửa thành councilReviews nếu dùng key này trong store
   const [openAddMember, setOpenAddMember] = useState(false);
 
@@ -63,7 +63,7 @@ export const CouncilDefenseMembersPage: React.FC = () => {
     <div className="flex flex-col h-screen">
       <Header
         title="Chi tiết hội đồng kiểm tra đồ án"
-        href="/examination/council-review-member"
+        href="/examination/council-defense-member"
         currentPage="Thành viên  hội đồng kiểm tra đồ án"
       />
       <div className="p-5 flex-1 overflow-auto">

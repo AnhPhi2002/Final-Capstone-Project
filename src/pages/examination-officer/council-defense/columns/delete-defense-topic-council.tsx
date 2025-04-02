@@ -13,7 +13,7 @@ export type DeleteDefenseTopicCouncilProps = {
   refetchData?: () => void;
 };
 
-export const DeleteReviewTopicCouncil: React.FC<DeleteDefenseTopicCouncilProps> = ({
+export const DeleteDefenseTopicCouncil: React.FC<DeleteDefenseTopicCouncilProps> = ({
   open,
   setOpen,
   councilId,

@@ -2,7 +2,7 @@
 // lib/api/redux/councilReviewSlice.ts
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosClient } from "@/lib/api/config/axios-client";
-import { CouncilDefense, CouncilDefenseMember, ReviewSchedule, CouncilDefenseSessions, CouncilDefenseAssignment } from "../types";
+import { CouncilDefense, CouncilDefenseMember, ReviewSchedule, CouncilDefenseSessions} from "../types";
 
 interface CouncilState {
     data: CouncilDefense[];
