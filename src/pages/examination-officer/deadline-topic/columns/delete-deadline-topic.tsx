@@ -1,32 +1,41 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { deleteSubmissionRound } from "@/lib/api/redux/submissionRoundSlice";
-import { AppDispatch } from "@/lib/api/redux/store";
+import { AppDispatch, RootState } from "@/lib/api/redux/store";
 import { Toaster, toast } from "sonner";
-import { useNavigate } from "react-router";
-
 
 type DeleteDeadlineTopicProps = {
   roundId: string;
+  semesterId: string;
   open: boolean;
   setOpen: (open: boolean) => void;
+  onDeleted: (yearId: string, semesterId: string) => void;
 };
 
-export const DeleteDeadlineTopic: React.FC<DeleteDeadlineTopicProps> = ({ roundId, open, setOpen }) => {
+export const DeleteDeadlineTopic: React.FC<DeleteDeadlineTopicProps> = ({
+  roundId,
+  semesterId,
+  open,
+  setOpen,
+  onDeleted,
+}) => {
   const dispatch = useDispatch<AppDispatch>();
   const [deleting, setDeleting] = useState(false);
-  const navigate = useNavigate();
-  if (!open) return null; // ✅ Ngăn render nếu `open === false`
+
+  const semester = useSelector((state: RootState) =>
+    state.semesters.data.find((s) => s.id === semesterId)
+  );
+
+  if (!open) return null;
 
   const handleDelete = async () => {
     setDeleting(true);
     try {
       const resultAction = await dispatch(deleteSubmissionRound(roundId));
-  
       if (deleteSubmissionRound.fulfilled.match(resultAction)) {
         toast.success("Vòng nộp đã được xóa thành công!");
-        setOpen(false); 
-        navigate(`/examination/deadline-topic`);
+        setOpen(false);
+        onDeleted(semester?.yearId || "", semesterId);
       } else {
         throw new Error("Xóa thất bại!");
       }
@@ -36,7 +45,6 @@ export const DeleteDeadlineTopic: React.FC<DeleteDeadlineTopicProps> = ({ roundI
       setDeleting(false);
     }
   };
-  
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

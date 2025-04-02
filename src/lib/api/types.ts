@@ -8,6 +8,7 @@ export interface Semester {
   createdAt: string;
   yearId: string;
   isDeleted?: boolean;
+  
   year: {
     id: string;
     year: number;
@@ -149,6 +150,7 @@ export interface SubmissionRound {
   id: string;
   type: "TOPIC" | "CHECK-TOPIC" | "REVIEW" | "DEFENSE";
   semesterId: string;
+  // yearId: string; 
   roundNumber: number;
   startDate: string;
   endDate: string;

@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+"use client";
+
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchYears } from "@/lib/api/redux/yearSlice";
 import { fetchSemesters, clearSemesters } from "@/lib/api/redux/semesterSlice";
@@ -19,21 +21,36 @@ import {
 } from "@/components/ui/select";
 import { CardDeadlineTopic } from "./card-deadline-topic";
 
-export const SelectSemester: React.FC = () => {
+type Props = {
+  selectedYear: string;
+  selectedSemester: string;
+  onYearChange: (yearId: string) => void;
+  onSemesterChange: (semesterId: string) => void;
+};
+
+export const SelectSemester: React.FC<Props> = ({
+  selectedYear,
+  selectedSemester,
+  onYearChange,
+  onSemesterChange,
+}) => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const { data: years, loading: loadingYears } = useSelector((state: RootState) => state.years);
-  const { data: semesters, loading: loadingSemesters } = useSelector((state: RootState) => state.semesters);
-  const { data: submissionRounds, loading: loadingRounds } = useSelector((state: RootState) => state.submissionRounds);
-
-  const [selectedYear, setSelectedYear] = useState<string>("");
-  const [selectedSemester, setSelectedSemester] = useState<string>("");
+  const { data: years, loading: loadingYears } = useSelector(
+    (state: RootState) => state.years
+  );
+  const { data: semesters, loading: loadingSemesters } = useSelector(
+    (state: RootState) => state.semesters
+  );
+  const { data: submissionRounds, loading: loadingRounds } = useSelector(
+    (state: RootState) => state.submissionRounds
+  );
 
   const availableYears = years.filter((y) => !y.isDeleted);
   const availableSemesters = semesters.filter((s) => !s.isDeleted);
-  const sortedSemesters = availableSemesters.sort((a, b) => {
-    return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
-  });
+  const sortedSemesters = availableSemesters.sort(
+    (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+  );
 
   useEffect(() => {
     dispatch(fetchYears());
@@ -42,7 +59,6 @@ export const SelectSemester: React.FC = () => {
   useEffect(() => {
     if (selectedYear) {
       dispatch(fetchSemesters({ yearId: selectedYear }));
-      setSelectedSemester(""); // reset học kỳ
       dispatch(clearSubmissionRoundDetail());
     } else {
       dispatch(clearSemesters());
@@ -61,8 +77,7 @@ export const SelectSemester: React.FC = () => {
   return (
     <div className="space-y-4">
       <div className="flex flex-col md:flex-row md:items-center gap-4 mb-10">
-        {/* Select năm học */}
-        <Select onValueChange={setSelectedYear} value={selectedYear}>
+        <Select onValueChange={onYearChange} value={selectedYear}>
           <SelectTrigger className="w-[200px]">
             <SelectValue placeholder="Chọn năm học" />
           </SelectTrigger>
@@ -88,9 +103,8 @@ export const SelectSemester: React.FC = () => {
           </SelectContent>
         </Select>
 
-        {/* Select kỳ học */}
         <Select
-          onValueChange={setSelectedSemester}
+          onValueChange={onSemesterChange}
           value={selectedSemester}
           disabled={!selectedYear}
         >

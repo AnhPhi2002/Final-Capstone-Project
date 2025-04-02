@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { UpdateDeadlineTopic } from "./update-deadline-topic";
 import { DeleteDeadlineTopic } from "./delete-deadline-topic";
+import { useNavigate } from "react-router";
 
 type ActionMenuProps = {
   round: {
@@ -22,12 +23,18 @@ type ActionMenuProps = {
     endDate: string;
     type: "TOPIC" | "CHECK-TOPIC" | "REVIEW" | "DEFENSE";
   };
+  setSelectedYear: (yearId: string) => void;
+  setSelectedSemester: (semesterId: string) => void;
 };
 
-export const Action: React.FC<ActionMenuProps> = ({ round }) => {
+export const Action: React.FC<ActionMenuProps> = ({
+  round,
+  setSelectedYear,
+  setSelectedSemester,
+}) => {
   const [openUpdate, setOpenUpdate] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
-
+  const navigate = useNavigate();
   return (
     <>
       <DropdownMenu>
@@ -47,7 +54,24 @@ export const Action: React.FC<ActionMenuProps> = ({ round }) => {
       </DropdownMenu>
 
       {openUpdate && <UpdateDeadlineTopic open={openUpdate} setOpen={setOpenUpdate} round={round} />}
-      {openDelete && <DeleteDeadlineTopic open={openDelete} setOpen={setOpenDelete} roundId={round.id} />}
+      {openDelete && (
+        <DeleteDeadlineTopic
+          open={openDelete}
+          setOpen={setOpenDelete}
+          roundId={round.id}
+          semesterId={round.semesterId}
+          onDeleted={(yearId, semesterId) => {
+            setSelectedYear(yearId);
+            setSelectedSemester(semesterId);
+            navigate("/examination/deadline-topic", {
+              state: {
+                yearId,
+                semesterId,
+              },
+            });
+          }}
+        />
+      )}
     </>
   );
 };
