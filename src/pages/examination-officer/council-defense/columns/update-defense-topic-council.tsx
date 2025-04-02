@@ -31,7 +31,7 @@ interface UpdateDefenseTopicCouncilProps {
   refetchData?: () => void;
 }
 
-export const UpdateReviewTopicCouncil: React.FC<UpdateDefenseTopicCouncilProps> = ({
+export const UpdateDefenseTopicCouncil: React.FC<UpdateDefenseTopicCouncilProps> = ({
   open,
   setOpen,
   council,

@@ -12,8 +12,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { CouncilDefense } from "@/lib/api/types";
 import { useNavigate, useParams } from "react-router";
-import { DeleteReviewTopicCouncil } from "./delete-defense-topic-council";
-import { UpdateReviewTopicCouncil } from "./update-defense-topic-council";
+import { DeleteDefenseTopicCouncil } from "./delete-defense-topic-council";
+import { UpdateDefenseTopicCouncil } from "./update-defense-topic-council";
 
 type ActionMenuProps = {
   council: CouncilDefense;
@@ -56,7 +56,7 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({ council, refetchData }) 
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <DeleteReviewTopicCouncil
+      <DeleteDefenseTopicCouncil
         open={openDelete}
         setOpen={setOpenDelete}
         councilId={council.id}
@@ -65,7 +65,7 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({ council, refetchData }) 
 
 
       {openUpdate && (
-        <UpdateReviewTopicCouncil
+        <UpdateDefenseTopicCouncil
           open={openUpdate}
           setOpen={setOpenUpdate}
           council={council}

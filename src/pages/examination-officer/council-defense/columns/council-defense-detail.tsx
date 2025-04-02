@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useCallback, useState } from "react";
-import { CouncilReview } from "@/lib/api/types";
+import { CouncilDefense } from "@/lib/api/types";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
@@ -24,7 +24,7 @@ export const CouncilDefenseDetail = () => {
   }>(); // Thêm semesterId
   const dispatch = useDispatch<AppDispatch>();
   const { councilDetail, loadingDetail } = useSelector(
-    (state: RootState) => state.councilReview
+    (state: RootState) => state.councilDefense
   ); // Giả sử key là councilReviews trong store
   const [shouldRefetch, setShouldRefetch] = useState(false);
   const [openCreateSchedule, setOpenCreateSchedule] = useState(false);
@@ -55,7 +55,7 @@ export const CouncilDefenseDetail = () => {
   }, [councilDetail]);
 
   // Gọi useReactTable ở top level
-  const table = useReactTable<CouncilReview>({
+  const table = useReactTable<CouncilDefense>({
     data: tableData,
     columns: columnsCouncils,
     getCoreRowModel: getCoreRowModel(),
