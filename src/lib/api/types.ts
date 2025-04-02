@@ -410,3 +410,71 @@ export interface TopicAssignment {
   topicName: string;
   status: string;
 }
+
+export interface CouncilDefense {
+  id: string;
+  code: string;
+  name: string;
+  round: number;
+  type: string;
+  status: "ACTIVE" | "UPCOMING" | "COMPLETE" | string;
+  createdDate: string;
+  semesterId: string;
+  submissionPeriodId: string;
+  councilStartDate: string,
+  councilEndDate: string,
+  startDate: string,
+  endDate: string,
+  isDeleted?: boolean;
+  members: CouncilDefenseMember[];
+  sessions: CouncilDefenseSessions[];
+}
+
+export interface CouncilDefenseMember {
+  id: string;
+  councilId: string;
+  roleId: string;
+  status: string;
+  userId: string;
+  // roleName: string;
+  role:{
+    id: string;
+    name: string;
+  }
+  user: {
+    id: string;
+    fullName: string;
+    email: string;
+  }
+
+  isDeleted?: boolean;
+}
+
+export interface CouncilDefenseSessions {
+  reviewTime: string;
+  room?: string;
+  group?: {
+    id: string;
+    groupCode:string;
+  }
+  topic?: {
+    topicCode: string;
+    name: string;
+  }
+  isDeleted?: boolean;
+  assignments?: CouncilDefenseAssignment[] ;
+}
+
+export interface CouncilDefenseAssignment {
+  id: string;
+  score?: number;
+  feedback?: string;
+  topicId?: string;
+  status: string;
+  isDeleted?: boolean;
+  reviewer?: {
+    id: string;
+    fullName: string;
+    // email: string;
+  };
+}

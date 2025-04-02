@@ -6,6 +6,10 @@ import DashboardPage from "@/pages/admin/dashboard/dashboard-page";
 import ProfileUpdateForm from "@/pages/admin/profile-user/components/profile-update";
 
 import { ProfilePage } from "@/pages/admin/profile-user/page";
+import { CouncilDefenseGroupsPage } from "@/pages/examination-officer/council-defense/columns-detail/CouncilGroupsPage";
+import { CouncilDefenseMembersPage } from "@/pages/examination-officer/council-defense/columns-member/CouncilMembersPage";
+import { CouncilDefenseDetail } from "@/pages/examination-officer/council-defense/columns/council-defense-detail";
+import { CouncilDefensePage } from "@/pages/examination-officer/council-defense/council-defense-page";
 import { CouncilReviewGroupsPage } from "@/pages/examination-officer/council-review-123/columns-detail/CouncilGroupsPage";
 import { CouncilReviewMembersPage } from "@/pages/examination-officer/council-review-123/columns-member/CouncilMembersPage";
 import { CouncilReviewDetail } from "@/pages/examination-officer/council-review-123/columns/council-review123-detail";
@@ -65,6 +69,11 @@ export const ExaminationOfficerContainer = () => {
         <Route path="/council-review/:councilId/:semesterId" element={<CouncilReviewDetail />} />
         <Route path="/council-review-member/:councilId/:semesterId" element={<CouncilReviewMembersPage />} />
         <Route path="/council-review-group/:councilId/:semesterId" element={<CouncilReviewGroupsPage />} />
+
+        <Route path="/council-defense" element={<CouncilDefensePage />} />
+        <Route path="/council-defense/:councilId/:semesterId" element={<CouncilDefenseDetail />} />
+        <Route path="/council-defense-member/:councilId/:semesterId" element={<CouncilDefenseMembersPage />} />
+        <Route path="/council-defense-group/:councilId/:semesterId" element={<CouncilDefenseGroupsPage />} />
 
         <Route path="/topic" element={<TopicPage />} />
         <Route path="/topic/:semesterId" element={<TopicPage />} />
