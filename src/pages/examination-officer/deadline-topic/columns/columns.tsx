@@ -70,6 +70,12 @@ export const columns: ColumnDef<SubmissionRound, any>[] = [
   {
     id: "actions",
     header: "Thao tác",
-    cell: ({ row }) => <Action round={row.original} />,
+    cell: ({ row }) => (
+      <Action
+        round={row.original}
+        setSelectedYear={() => {}}
+        setSelectedSemester={() => {}}
+      />
+    ),
   },
 ];

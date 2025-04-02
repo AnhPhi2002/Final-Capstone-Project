@@ -1,40 +1,107 @@
-import { useState, useEffect } from "react";
+"use client";
+
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
 import {
-  Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue,
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
 import { fetchAllYears } from "@/lib/api/redux/yearSlice";
 import { fetchSemesters } from "@/lib/api/redux/semesterSlice";
 import { createSubmissionRound } from "@/lib/api/redux/submissionRoundSlice";
-import { Toaster, toast } from "sonner";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { CalendarIcon } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { format } from "date-fns";
+import { vi } from "date-fns/locale";
+import { cn } from "@/lib/utils";
 
-export const CreateSubmissionRound = () => {
+const submissionTypes = ["TOPIC", "CHECK-TOPIC", "REVIEW", "DEFENSE"] as const;
+// Removed unused SubmissionType type declaration
+
+const formSchema = z
+  .object({
+    yearId: z.string().min(1, "Vui lòng chọn năm học"),
+    semesterId: z.string().min(1, "Vui lòng chọn kỳ học"),
+    type: z.enum(submissionTypes, {
+      errorMap: () => ({ message: "Vui lòng chọn loại" }),
+    }),
+    roundNumber: z.string().min(1, "Vui lòng chọn lần nộp"),
+    description: z.string().min(1, "Vui lòng nhập mô tả"),
+    startDate: z.date({ required_error: "Vui lòng chọn ngày bắt đầu" }).optional(),
+    endDate: z.date({ required_error: "Vui lòng chọn ngày kết thúc" }).optional(),
+  })
+  .refine(
+    (data) => !data.endDate || !data.startDate || data.endDate > data.startDate,
+    {
+      message: "Ngày kết thúc phải lớn hơn ngày bắt đầu",
+      path: ["endDate"],
+    }
+  );
+
+type FormValues = z.infer<typeof formSchema>;
+
+const defaultValues: FormValues = {
+  yearId: "",
+  semesterId: "",
+  type: "TOPIC",
+  roundNumber: "",
+  description: "",
+  startDate: undefined,
+  endDate: undefined,
+};
+
+type CreateSubmissionRoundProps = {
+  onCreated?: (yearId: string, semesterId: string) => void;
+};
+
+export const CreateSubmissionRound: React.FC<CreateSubmissionRoundProps> = ({ onCreated }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { data: years, loading: yearLoading } = useSelector((state: RootState) => state.years);
   const { data: semesters, loading: semesterLoading } = useSelector((state: RootState) => state.semesters);
 
-  const [open, setOpen] = useState(false);
-  const [yearId, setYearId] = useState("");
-  const [type, setType] = useState<"TOPIC" | "CHECK-TOPIC" | "REVIEW" | "DEFENSE" | "">("");
-  const [semesterId, setSemesterId] = useState("");
-  const [roundNumber, setRoundNumber] = useState("");
-  const [description, setDescription] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [creating, setCreating] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues,
+  });
+
+  const { handleSubmit, watch, reset, setValue } = form;
+  const yearId = watch("yearId");
+  const semesterId = watch("semesterId");
+  const type = watch("type");
 
   const availableYears = years.filter((y) => !y.isDeleted);
-  const availableSemesters = semesters.filter((s) => !s.isDeleted);
-  const sortedSemesters = availableSemesters.sort((a, b) => {
-    return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
-  });
+  const availableSemesters = semesters.filter((s) => !s.isDeleted && s.yearId === yearId);
+  const sortedSemesters = availableSemesters.sort(
+    (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+  );
+  const selectedSemester = semesters.find((s) => s.id === semesterId);
 
   useEffect(() => {
     dispatch(fetchAllYears());
@@ -43,201 +110,306 @@ export const CreateSubmissionRound = () => {
   useEffect(() => {
     if (yearId) {
       dispatch(fetchSemesters({ yearId }));
+      setValue("semesterId", "");
+      setValue("startDate", undefined);
+      setValue("endDate", undefined);
     }
-  }, [yearId, dispatch]);
+  }, [yearId, dispatch, setValue]);
 
-  const convertToISODate = (dateString: string, isEnd = false) => {
-    return isEnd ? `${dateString}T23:59:59.999Z` : `${dateString}T00:00:00.000Z`;
-  };
+  useEffect(() => {
+    if (type) setValue("roundNumber", "");
+  }, [type, setValue]);
 
-  const handleSave = async () => {
-    if (!semesterId || !roundNumber || !startDate || !endDate || !description || !type) {
-      toast.error("Vui lòng nhập đầy đủ thông tin!");
-      return;
-    }
+  const convertToISODate = (date: Date, isEnd = false) =>
+    isEnd
+      ? new Date(date.setHours(23, 59, 59, 999)).toISOString()
+      : new Date(date.setHours(0, 0, 0, 0)).toISOString();
 
-    const parsedRound = Number(roundNumber);
-    if (isNaN(parsedRound) || parsedRound <= 0) {
-      toast.error("Lần nộp phải là số hợp lệ lớn hơn 0!");
-      return;
-    }
-
-    if (new Date(endDate) <= new Date(startDate)) {
-      toast.error("Ngày kết thúc phải lớn hơn ngày bắt đầu!");
-      return;
-    }
-
-    setCreating(true);
+  const onSubmit = async (data: FormValues) => {
+    setIsSubmitting(true);
     try {
-      const result = await dispatch(
+      const { semesterId, type, roundNumber, description, startDate, endDate } = data;
+      const parsedRound = Number(roundNumber);
+
+      if (isNaN(parsedRound) || parsedRound <= 0) {
+        toast.error("Lần nộp phải là số hợp lệ lớn hơn 0!");
+        return;
+      }
+
+      if (!startDate || !endDate) {
+        toast.error("Vui lòng chọn cả ngày bắt đầu và kết thúc!");
+        return;
+      }
+
+      if (selectedSemester) {
+        const semesterStart = new Date(selectedSemester.startDate);
+        const semesterEnd = new Date(selectedSemester.endDate);
+        if (startDate < semesterStart || endDate > semesterEnd) {
+          toast.error("Ngày phải nằm trong thời gian của học kỳ!");
+          return;
+        }
+      }
+
+      await dispatch(
         createSubmissionRound({
           semesterId,
           type,
           roundNumber: parsedRound,
+          description,
           startDate: convertToISODate(startDate),
           endDate: convertToISODate(endDate, true),
-          description,
         })
       ).unwrap();
 
-      if (result?.success) {
-        toast.success("Tạo vòng nộp thành công!");
-        setOpen(false);
-      } else {
-        throw new Error(result?.message || "Tạo thất bại!");
-      }
-    } catch (error: any) {
-      toast.error(`Tạo thất bại: ${error}`);
+      toast.success("Tạo vòng nộp thành công!");
+
+      if (onCreated) onCreated(data.yearId, data.semesterId);
+
+      setIsOpen(false);
+      reset(defaultValues);
+    } catch (err: any) {
+      toast.error(err.message || "Có lỗi xảy ra khi tạo vòng nộp!");
     } finally {
-      setCreating(false);
+      setIsSubmitting(false);
     }
+  };
+
+  const handleClose = () => {
+    setIsOpen(false);
+    reset(defaultValues);
   };
 
   return (
     <div>
-      <Toaster position="top-right" richColors duration={3000} />
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <Button className="bg-black text-white">Tạo vòng nộp mới</Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Tạo vòng nộp mới</DialogTitle>
-            <DialogDescription>
-              Chọn năm học, kỳ học và nhập thông tin vòng nộp bên dưới. Nhấn "Lưu" để xác nhận.
-            </DialogDescription>
-          </DialogHeader>
+      <Button className="bg-black text-white" onClick={() => setIsOpen(true)}>
+        Tạo vòng nộp mới
+      </Button>
 
-          <div className="grid gap-4 py-4">
-            {/* Chọn năm học */}
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="year" className="text-right">Năm học</Label>
-              <Select onValueChange={setYearId} value={yearId}>
-                <SelectTrigger className="w-full col-span-3">
-                  <SelectValue placeholder="Chọn năm học" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {yearLoading ? (
-                      <SelectItem value="loading" disabled>Đang tải...</SelectItem>
-                    ) : availableYears.map((year) => (
-                      <SelectItem key={year.id} value={year.id}>{year.year}</SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
+      {isOpen && (
+        <>
+          <div className="fixed inset-0 z-50 bg-black/80" onClick={handleClose} />
+          <div
+            className="fixed left-1/2 top-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 space-y-4 rounded-lg bg-white p-6 shadow-lg"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-lg font-semibold">Tạo vòng nộp mới</h2>
+            <p className="text-sm text-muted-foreground">
+              Chọn năm học, kỳ học và thông tin vòng nộp bên dưới.
+            </p>
 
-            {/* Chọn kỳ học */}
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="semester" className="text-right">Kỳ học</Label>
-              <Select onValueChange={setSemesterId} value={semesterId} disabled={!yearId}>
-                <SelectTrigger className="w-full col-span-3">
-                  <SelectValue placeholder="Chọn kỳ học" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {semesterLoading ? (
-                      <SelectItem value="loading" disabled>Đang tải...</SelectItem>
-                    ) : sortedSemesters.map((semester) => (
-                      <SelectItem key={semester.id} value={semester.id}>{semester.code}</SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
+            <Form {...form}>
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                {/* Năm học */}
+                <FormField
+                  control={form.control}
+                  name="yearId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Năm học</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Chọn năm học" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectGroup>
+                            {yearLoading ? (
+                              <SelectItem value="loading" disabled>Đang tải...</SelectItem>
+                            ) : availableYears.length > 0 ? (
+                              availableYears.map((year) => (
+                                <SelectItem key={year.id} value={year.id}>
+                                  {year.year}
+                                </SelectItem>
+                              ))
+                            ) : (
+                              <SelectItem value="none" disabled>Không có năm học</SelectItem>
+                            )}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            {/* Chọn loại */}
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="type" className="text-right">Loại</Label>
-              <Select onValueChange={(value: "TOPIC" | "CHECK-TOPIC" | "REVIEW" | "DEFENSE") => {
-                setType(value);
-                setRoundNumber(""); // Reset roundNumber khi thay đổi type
-              }} value={type}>
-                <SelectTrigger className="w-full col-span-3">
-                  <SelectValue placeholder="Chọn loại" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="TOPIC">Đợt nộp đề tài </SelectItem>
-                    <SelectItem value="CHECK-TOPIC">Xét duyệt đề tài </SelectItem>
-                    <SelectItem value="REVIEW">Kiểm tra đồ án</SelectItem>
-                    <SelectItem value="DEFENSE">Bảo vệ đồ án</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
+                {/* Kỳ học */}
+                <FormField
+                  control={form.control}
+                  name="semesterId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Kỳ học</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value} disabled={!yearId || semesterLoading}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Chọn kỳ học" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectGroup>
+                            {semesterLoading ? (
+                              <SelectItem value="loading" disabled>Đang tải...</SelectItem>
+                            ) : sortedSemesters.length > 0 ? (
+                              sortedSemesters.map((s) => (
+                                <SelectItem key={s.id} value={s.id}>
+                                  {s.code}
+                                </SelectItem>
+                              ))
+                            ) : (
+                              <SelectItem value="none" disabled>Không có kỳ học</SelectItem>
+                            )}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            {/* Lần nộp */}
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="roundNumber" className="text-right">Lần nộp</Label>
-              <Select onValueChange={setRoundNumber} value={roundNumber} disabled={!type}>
-                <SelectTrigger className="w-full col-span-3">
-                  <SelectValue placeholder="Chọn lần nộp" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {type === "DEFENSE" ? (
-                      <>
-                        <SelectItem value="1">1</SelectItem>
-                        <SelectItem value="2">2</SelectItem>
-                      </>
-                    ) : (
-                      <>
-                        <SelectItem value="1">1</SelectItem>
-                        <SelectItem value="2">2</SelectItem>
-                        <SelectItem value="3">3</SelectItem>
-                      </>
-                    )}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
+                {/* Loại vòng nộp */}
+                <FormField
+                  control={form.control}
+                  name="type"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Loại</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Chọn loại vòng nộp" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="TOPIC">Đợt nộp đề tài</SelectItem>
+                          <SelectItem value="CHECK-TOPIC">Xét duyệt đề tài</SelectItem>
+                          <SelectItem value="REVIEW">Kiểm tra đồ án</SelectItem>
+                          <SelectItem value="DEFENSE">Bảo vệ đồ án</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            {/* Mô tả */}
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="description" className="text-right">Mô tả</Label>
-              <Input
-                id="description"
-                placeholder="VD: Đợt đăng ký lần 2"
-                className="col-span-3"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </div>
+                {/* Lần nộp */}
+                <FormField
+                  control={form.control}
+                  name="roundNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Lần nộp</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value} disabled={!type}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Chọn lần nộp" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="1">1</SelectItem>
+                          <SelectItem value="2">2</SelectItem>
+                          {type !== "DEFENSE" && <SelectItem value="3">3</SelectItem>}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            {/* Ngày bắt đầu */}
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="startDate" className="text-right">Ngày bắt đầu</Label>
-              <Input
-                id="startDate"
-                type="date"
-                className="col-span-3"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-              />
-            </div>
+                {/* Mô tả */}
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Mô tả</FormLabel>
+                      <FormControl>
+                        <Input placeholder="VD: Đợt đăng ký lần 2" maxLength={100} {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            {/* Ngày kết thúc */}
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="endDate" className="text-right">Ngày kết thúc</Label>
-              <Input
-                id="endDate"
-                type="date"
-                className="col-span-3"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-              />
-            </div>
+                {/* Ngày bắt đầu */}
+                <FormField
+                  control={form.control}
+                  name="startDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Ngày bắt đầu</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}>
+                              {field.value ? format(field.value, "PPP", { locale: vi }) : "Chọn ngày"}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            disabled={(date) => {
+                              const endDate = form.getValues("endDate");
+                              return date < new Date("2000-01-01") || (endDate instanceof Date && date > endDate);
+                            }}
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Ngày kết thúc */}
+                <FormField
+                  control={form.control}
+                  name="endDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Ngày kết thúc</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}>
+                              {field.value ? format(field.value, "PPP", { locale: vi }) : "Chọn ngày"}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            disabled={(date) => {
+                              const startDate = form.getValues("startDate");
+                              return date < new Date("2000-01-01") || (startDate instanceof Date && date < startDate);
+                            }}
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="flex justify-end gap-2">
+                  <Button type="button" variant="outline" onClick={handleClose} disabled={isSubmitting}>
+                    Hủy
+                  </Button>
+                  <Button type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? "Đang lưu..." : "Lưu vòng nộp"}
+                  </Button>
+                </div>
+              </form>
+            </Form>
           </div>
-
-          <DialogFooter>
-            <Button onClick={handleSave} disabled={creating}>
-              {creating ? "Đang tạo..." : "Lưu vòng nộp"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        </>
+      )}
     </div>
   );
 };
