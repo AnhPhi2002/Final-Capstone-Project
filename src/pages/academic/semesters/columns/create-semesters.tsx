@@ -35,7 +35,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
-import { createSemester, fetchSemesters } from "@/lib/api/redux/semesterSlice";
+import { createSemester } from "@/lib/api/redux/semesterSlice";
 import { fetchAllYears } from "@/lib/api/redux/yearSlice";
 
 const formSchema = z.object({
@@ -47,7 +47,11 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export const CreateSemesters = () => {
+type CreateSemestersProps = {
+ onCreated?: (yearId: string, semesterId: string) => void;
+};
+
+export const CreateSemesters: React.FC<CreateSemestersProps> = ({ onCreated }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { data: years, loading: yearLoading } = useSelector(
     (state: RootState) => state.years
@@ -109,7 +113,7 @@ export const CreateSemesters = () => {
     }
 
     try {
-      await dispatch(
+      const result = await dispatch(
         createSemester({
           yearId,
           code,
@@ -125,18 +129,9 @@ export const CreateSemesters = () => {
         startDate: undefined,
         endDate: undefined,
       });
-      // form.setValue("startDate", new Date(""), {
-      //   shouldValidate: false,
-      //   shouldDirty: false,
-      // });
-      
-      // form.setValue("endDate", new Date(""), {
-      //   shouldValidate: false,
-      //   shouldDirty: false,
-      // });
-      
+
       setIsOpen(false);
-      dispatch(fetchSemesters({ yearId }));
+      if (onCreated) onCreated(yearId, result.id); // ✅ truyền cả yearId và semesterId // ✅ GỌI CALLBACK
     } catch {
       toast.error("Có lỗi xảy ra khi tạo học kỳ!");
     }
