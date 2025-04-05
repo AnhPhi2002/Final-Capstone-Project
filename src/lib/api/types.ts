@@ -30,6 +30,7 @@ export interface Student {
   status: "ACTIVE" | "PENDING" ;
   isEligible: boolean;
   semester: string;
+  block3: boolean
 }
 
 // src/types/mentor.ts
@@ -67,7 +68,6 @@ export interface Council {
   name: string;
   round: number;
   type: string;
-  // type: "topic" | "check-topic" | "review" | "defense";
   status: string;
   createdDate: string;
   semesterId: string;
@@ -78,7 +78,10 @@ export interface Council {
   members: CouncilMember[];
 }
 
-
+export interface CouncilDetail {
+  council: Council;
+  schedules?: any[];
+}
 
 export interface CouncilReview {
   id: string;
@@ -332,14 +335,21 @@ export interface ReviewSchedule {
     };
     group: {
       groupCode: string;
+      defenseRound: number | null;
+      defendStatus: string | null;
     };
     topic: {
       topicCode: string;
-      // nameEn: string;
+      name: string;
     };
   };
   assignments:  ReviewScheduleAssignment[];
-  url: string | null;
+  documents: ReviewScheduleDocument[];
+}
+
+export interface ReviewScheduleDocument {
+  fileName: string;
+  fileUrl: string;
 }
 
 export interface ReviewScheduleAssignment {
@@ -409,6 +419,8 @@ export interface TopicAssignment {
   topicId: string;
   topicName: string;
   status: string;
+  defenseRound: number | null;
+  defendStatus: string | null;
 }
 
 export interface CouncilDefense {

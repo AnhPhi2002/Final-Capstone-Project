@@ -62,8 +62,11 @@ export const TopicListPage = () => {
                 Export danh sách đề tài
               </Button>
               <CreateTopic semesterId={semesterId!} submissionPeriodId={submissionPeriodId!}/>
-              <Link to={`/import-topic-mentor/${semesterId}`}>
+              <Link to={`/academic/import-topic-mentor/${semesterId}`}>
                 <Button className="flex gap-3 items-center">Import đề tài</Button>
+              </Link>
+              <Link to={`/academic/import-business-topic/${semesterId}/submission-period/${submissionPeriodId}`}>
+                <Button className="flex gap-3 items-center">Import đề tài doanh nghiệp</Button>
               </Link>
             </div>
           </div>

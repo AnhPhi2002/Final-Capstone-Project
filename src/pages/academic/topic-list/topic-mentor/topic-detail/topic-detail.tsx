@@ -96,7 +96,7 @@ export default function TopicDetail() {
     try {
       toast.success("Xóa đề tài thành công")
       await dispatch(deleteTopic({ topicId, semesterId })).unwrap();
-      navigate("/lecturer/topic"); // ✅ Điều hướng sau khi xóa thành công
+      navigate("/academic/topic"); // ✅ Điều hướng sau khi xóa thành công
     } catch (error) {
       // toast.error("Lỗi khi xóa đề tài!");
       toast.error(`${error}`)
@@ -136,7 +136,7 @@ export default function TopicDetail() {
   {topicDetails.createdAt
     ? new Date(topicDetails.createdAt).toLocaleDateString()
     : "Không xác định"}{" "}
-  <span className="font-bold">by {auth?.fullName || "không có tác giả"}</span>
+  <span className="font-bold">by {topicDetails.creator?.fullName || "không có tác giả"}</span>
 </p>
 
             </div>
