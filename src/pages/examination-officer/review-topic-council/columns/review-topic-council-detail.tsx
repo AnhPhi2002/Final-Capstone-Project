@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useCallback, useState } from "react";
-import { Council } from "@/lib/api/types";
+import { CouncilDetail } from "@/lib/api/types";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
@@ -50,7 +50,7 @@ export const ReviewTopicCouncilDetail = () => {
   }, [councilDetail]);
 
   // Gọi useReactTable ở top level
-  const table = useReactTable<Council>({
+  const table = useReactTable<CouncilDetail>({
     data: tableData,
     columns: columnsCouncils,
     getCoreRowModel: getCoreRowModel(),

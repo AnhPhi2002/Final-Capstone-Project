@@ -93,7 +93,7 @@ export const CreateSubmissionRound: React.FC<CreateSubmissionRoundProps> = ({ on
 
   const { handleSubmit, watch, reset, setValue } = form;
   const yearId = watch("yearId");
-  const semesterId = watch("semesterId");
+  // const semesterId = watch("semesterId");
   const type = watch("type");
 
   const availableYears = years.filter((y) => !y.isDeleted);
@@ -101,7 +101,7 @@ export const CreateSubmissionRound: React.FC<CreateSubmissionRoundProps> = ({ on
   const sortedSemesters = availableSemesters.sort(
     (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
   );
-  const selectedSemester = semesters.find((s) => s.id === semesterId);
+  // const selectedSemester = semesters.find((s) => s.id === semesterId);
 
   useEffect(() => {
     dispatch(fetchAllYears());
@@ -141,14 +141,14 @@ export const CreateSubmissionRound: React.FC<CreateSubmissionRoundProps> = ({ on
         return;
       }
 
-      if (selectedSemester) {
-        const semesterStart = new Date(selectedSemester.startDate);
-        const semesterEnd = new Date(selectedSemester.endDate);
-        if (startDate < semesterStart || endDate > semesterEnd) {
-          toast.error("Ngày phải nằm trong thời gian của học kỳ!");
-          return;
-        }
-      }
+      // if (selectedSemester) {
+      //   const semesterStart = new Date(selectedSemester.startDate);
+      //   const semesterEnd = new Date(selectedSemester.endDate);
+      //   if (startDate < semesterStart || endDate > semesterEnd) {
+      //     toast.error("Ngày phải nằm trong thời gian của học kỳ!");
+      //     return;
+      //   }
+      // }
 
       await dispatch(
         createSubmissionRound({

@@ -30,7 +30,7 @@ export const CouncilMembersPage: React.FC = () => {
   const safeCouncilId = councilId || "";
 
   const table = useReactTable({
-    data: councilDetail?.members || [],
+    data: councilDetail?.council.members || [],
     columns: columnsCouncilMembers,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),

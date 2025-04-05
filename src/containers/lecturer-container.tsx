@@ -28,6 +28,11 @@ import ProfileUpdateForm from "@/pages/admin/profile-user/components/profile-upd
 import { MentorCheckReviewPage } from "@/pages/mentor/review-room/mentor-check-review-page";
 import { MentorCheckReview } from "@/pages/mentor/review-room/columns/mentor-check-review-detail";
 import { CouncilReviewGroupsPage } from "@/pages/mentor/council-mentor/columns-detail/CouncilGroupsPage";
+import { DecisionDefensePage } from "@/pages/mentor/decision-defense/decision-defense-page";
+import { DecisionDefense } from "@/pages/mentor/decision-defense/columns/mentor-decision-detail";
+import { CouncilCheckTopicPage } from "@/pages/mentor/council-check-topic/council-check-topic-page";
+import { CouncilCheckTopicDetail } from "@/pages/mentor/council-check-topic/columns/council-check-topic-detail";
+import { CouncilCheckMembersPage } from "@/pages/mentor/council-check-topic/columns-member/CouncilMembersPage";
 
 export const LecturerContainer = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -66,6 +71,11 @@ export const LecturerContainer = () => {
         <Route path="/meeting" element={<MeetingListPage />} />
         <Route path="/meeting/:semesterId" element={<MeetingPage />} />
 
+        <Route path="/council-check" element={<CouncilCheckTopicPage />} />
+        <Route path="/council-check/:councilId/:semesterId" element={<CouncilCheckTopicDetail />} />
+        <Route path="/council-check-member/:councilId/:semesterId" element={<CouncilCheckMembersPage />} />
+        {/* <Route path="/council-review-group/:councilId/:semesterId" element={<CouncilReviewGroupsPage />} /> */}
+
         <Route path="/council-review" element={<CouncilReviewMentorPage />} />
         <Route path="/council-review/:councilId/:semesterId" element={<CouncilReviewMentorDetail />} />
         <Route path="/council-review-member/:councilId/:semesterId" element={<CouncilReviewMembersPage />} />
@@ -73,6 +83,9 @@ export const LecturerContainer = () => {
 
         <Route path="/check-review/" element={<MentorCheckReviewPage />} />
         <Route path="/check-review/:semesterId" element={<MentorCheckReview/>} />
+
+        <Route path="/decision-defense/" element={<DecisionDefensePage />} />
+        <Route path="/decision-defense/:semesterId" element={<DecisionDefense/>} />
 
         <Route path="/*" element={<NotFound />} />
       </Routes>

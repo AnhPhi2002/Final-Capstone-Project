@@ -33,8 +33,10 @@ export const SelectSemester: React.FC = () => {
   const { data: submissionRounds, loading: loadingRounds } = useSelector(
     (state: RootState) => state.submissionRounds
   );
-  const { data: councils } = useSelector((state: RootState) => state.councils);
-
+  const { dataLecturer: councils } = useSelector(
+    (state: RootState) => state.councils 
+  );
+  
   const [selectedYear, setSelectedYear] = useState<string>("");
   const [selectedSemester, setSelectedSemester] = useState<string>("");
   const [selectedSubmissionRound, setSelectedSubmissionRound] = useState<string>("");
@@ -66,11 +68,11 @@ export const SelectSemester: React.FC = () => {
 
   useEffect(() => {
     if (selectedSubmissionRound) {
-      dispatch(fetchCouncils(selectedSubmissionRound));
+      dispatch(fetchCouncils({semesterId: selectedSemester, submissionPeriodId:selectedSubmissionRound}));
     } else {
       dispatch(clearCouncils());
     }
-  }, [selectedSubmissionRound, dispatch]);
+  }, [selectedSemester,selectedSubmissionRound, dispatch]);
 
   // Lọc năm học & kỳ học chưa bị xóa
   const availableYears = years.filter((y) => !y.isDeleted);

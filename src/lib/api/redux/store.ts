@@ -30,6 +30,10 @@ import councilReviewReducer from './councilReviewSlice';
 import CouncilDefenseReducer from './councilDefenseSlice';
 import decisionReducer from "./decisionSlice";
 import uploadDecisionReducer from "./uploadDecisionSlice";
+import scheduleReducer from "./scheduleSlice";
+import importBusinessTopicReducer from './importBusinessTopicSlice';
+
+
 const rootReducer = combineReducers({
   counter: counterReducer,
   auth: authReducer,
@@ -64,6 +68,8 @@ const rootReducer = combineReducers({
   councilReview: councilReviewReducer,
   councilDefense: CouncilDefenseReducer,
   decision: decisionReducer,
+  schedule: scheduleReducer,
+  importBusinessTopic: importBusinessTopicReducer,
 });
 
 // const persistedReducer = persistReducer(persistConfig, rootReducer)
