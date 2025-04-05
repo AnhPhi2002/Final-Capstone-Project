@@ -1,6 +1,7 @@
 // src/components/columns.tsx
 import { ColumnDef } from "@tanstack/react-table";
 import { ReviewSchedule } from "@/lib/api/types"; 
+import { ReportAction } from "./action";
 
 export const columns: ColumnDef<ReviewSchedule>[] = [
   {
@@ -58,4 +59,12 @@ export const columns: ColumnDef<ReviewSchedule>[] = [
   //     </a>
   //   ),
   // },
+  {
+    id: "action",
+    header: "Thao tác",
+    cell: ({ row }) => {
+      console.log("schedule:", row.original);
+      return <ReportAction schedule={row.original} />;
+    },
+  }
 ];

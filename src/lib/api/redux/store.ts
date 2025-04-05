@@ -29,6 +29,8 @@ import meetingReducer from "./meetingSlice";
 import topicGroupRegisterReducer  from './topicGroupRegisterSlice';
 import councilReviewReducer from './councilReviewSlice'; 
 import CouncilDefenseReducer from './councilDefenseSlice';
+import scheduleReducer from "./scheduleSlice";
+import importBusinessTopicReducer from './importBusinessTopicSlice';
 
 
 const rootReducer = combineReducers({
@@ -63,6 +65,8 @@ const rootReducer = combineReducers({
   topicGroupRegister: topicGroupRegisterReducer,
   councilReview: councilReviewReducer,
   councilDefense: CouncilDefenseReducer,
+  schedule: scheduleReducer,
+  importBusinessTopic: importBusinessTopicReducer,
 });
 
 // const persistedReducer = persistReducer(persistConfig, rootReducer)

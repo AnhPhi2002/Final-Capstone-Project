@@ -277,6 +277,10 @@ const lecturerMenu = {
       isActive: true,
       items: [
         {
+          title: "Hội đồng xét duyệt",
+          url: "/lecturer/council-check",
+        },
+        {
           title: "Hội đồng review",
           url: "/lecturer/council-review",
         },
@@ -291,6 +295,10 @@ const lecturerMenu = {
         {
           title: "Hội đồng review",
           url: "/lecturer/check-review",
+        },
+        {
+          title: "Quyết định bảo vệ",
+          url: "/lecturer/decision-defense",
         },
       ],
     }
@@ -439,6 +447,10 @@ const studentMenu = {
         {
           title: "D.s chưa có nhóm KLTN",
           url: "/student/not-group-student",
+        },
+        {
+          title: "Nhóm bảo vệ",
+          url: "/student/group-student-defense",
         },
       ],
     },

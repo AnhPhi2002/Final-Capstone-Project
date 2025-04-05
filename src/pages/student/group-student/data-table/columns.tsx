@@ -55,6 +55,23 @@ export const columns: ColumnDef<GroupWithDetails>[] = [
       </Badge>
     ),
   },
+  // {
+  //   header: "Đợt bảo vệ",
+  //   accessorFn: (row) => row.topicAssignments[0]?.defenseRound || "N/A",
+  // },
+  // {
+  //   header: "Trạng thái bảo vệ",
+  //   accessorFn: (row) => row.topicAssignments[0]?.defendStatus|| "N/A",
+  // },
+  // {
+  //   accessorKey: "group.isMultiMajor",
+  //   header: "Liên Ngành",
+  //   cell: ({ row }) => (
+  //     <Badge className={row.original.group.isMultiMajor ? "bg-green-100 text-green-500" : "bg-red-100 text-red-500"}>
+  //       {row.original.group.isMultiMajor ? "Có" : "Không"}
+  //     </Badge>
+  //   ),
+  // },
   {
     accessorKey: "group.createdAt",
     header: "Ngày Tạo",

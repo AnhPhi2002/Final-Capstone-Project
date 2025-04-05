@@ -3,6 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ImportStudentEligibleTab from "./import-student-eligible-page";
 import ImportStudentTab from "./import-student-tab";
 import Header from "@/components/header";
+import ImportStudentEligibleBlock3Tab from "./import-student-eligible-block3";
 
 const ImportStudentPage = () => {
   const [currentPage, setCurrentPage] = useState("Import danh sách sinh viên");
@@ -41,8 +42,7 @@ const ImportStudentPage = () => {
           <ImportStudentEligibleTab />
         </TabsContent>
         <TabsContent value="w3">
-          {/* Nội dung Block 3W */}
-          <div>Block 3W Content</div>
+          <ImportStudentEligibleBlock3Tab />
         </TabsContent>
       </Tabs>
     </div>

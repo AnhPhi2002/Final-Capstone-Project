@@ -24,6 +24,8 @@ import { MeetingStudentDetail } from "@/pages/student/meeting/meeting-student";
 import { MeetingStudentPage } from "@/pages/student/meeting/meeting-student-page";
 import ProfileUpdateForm from "@/pages/admin/profile-user/components/profile-update";
 import { RoomReviewStudent } from "@/pages/student/review-room/room-review-student";
+import { GroupStudentDefenseWithStudentPage } from "@/pages/student/group-defense/group-student-page";
+import { GroupStudentDefenseCardPage } from "@/pages/student/group-defense/group-student-card-page";
 
 
 export const StudentContainer = () => {
@@ -46,10 +48,15 @@ export const StudentContainer = () => {
         
         <Route path="/topic-student-detail/:semesterId/:topicId" element={<TopicStudentListDetail />}/>
         <Route path="/topic-student-list/:semesterId" element={<TopicStudentList />}/>
+
         <Route path="/group-student" element={<GroupStudentWithStudentPage />} />
         <Route path="/group-student/:semesterId" element={<GroupStudentCardPage />} />
         <Route path="/group-student-detail" element={<GroupStudentDetail />} />
         <Route path="/group-student-detail/:groupId/:semesterId" element={<GroupStudentDetail />} />
+
+        <Route path="/group-student-defense" element={<GroupStudentDefenseWithStudentPage />} />
+        <Route path="/group-student-defense/:semesterId" element={<GroupStudentDefenseCardPage />} />
+
         <Route path="/not-group-student" element={<NotGroupStudentPage />} />
         <Route path="/not-group-student/:semesterId" element={<NotGroupStudentDetailPage />} />
 

@@ -34,6 +34,7 @@ import { MentorPage } from "@/pages/academic/mentor/mentor-page";
 import { DecisionDetail } from "@/pages/academic/decision/decision-detail";
 import { UpdateDecision } from "@/pages/academic/decision/update-decision";
 import ProfileUpdateForm from "@/pages/admin/profile-user/components/profile-update";
+import { ImportBussinessTopicPage } from "@/pages/academic/topic-list/topic-mentor/import-bussiness-topic/import-topic-mentor-page";
 
 
 
@@ -86,6 +87,7 @@ export const AcademicOfficerContainer = () => {
         <Route path="/mentor-page" element={<MentorPage />} />
         <Route path="/mentor-page/:semesterId" element={<MentorDetail />} />
         <Route path="/import-mentor/:semesterId" element={<ImportMentorPage />} />
+        <Route path="/import-business-topic/:semesterId/submission-period/:submissionPeriodId" element={<ImportBussinessTopicPage />} />
         
 
         <Route path="/topic-assignment-decision" element={<TopicAssignmentDecisionPage />} />
