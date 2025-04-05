@@ -16,25 +16,24 @@ const initialState: MentorState = {
 };
 
 export const fetchMentorsBySemesterId = createAsyncThunk(
-  "mentors/fetchMentors",
+  'mentors/fetchMentorsBySemesterId',
   async (semesterId: string, { rejectWithValue }) => {
     try {
       const response = await axiosClient.get(`/import/lecturers?semesterId=${semesterId}`);
-      // Map API response to match Mentor type if necessary
       const mentors: Mentor[] = response.data.data.map((item: any) => ({
-        id: item.id || item.Id, // Adjust based on API response
+        id: item.id || item.Id,
         email: item.email || item.Email,
         username: item.username || item.Username,
         lecturerCode: item.lecturerCode || item.LecturerCode,
         fullName: item.fullName || item.FullName,
         isActive: item.isActive || item.IsActive,
         role: item.role || item.Role,
-        department: item.department || item.Department, // Optional
-        departmentPosition: item.departmentPosition || item.DepartmentPosition, // Optional
+        department: item.department || item.Department,
+        departmentPosition: item.departmentPosition || item.DepartmentPosition,
       }));
-      return { data: mentors }; // Wrap in an object to match previous structure
+      return mentors; // Trả về mảng mentors trực tiếp
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Không thể lấy danh sách mentor");
+      return rejectWithValue(error.response?.data?.message || 'Không thể lấy danh sách mentor');
     }
   }
 );
@@ -51,7 +50,11 @@ const mentorSlice = createSlice({
       })
       .addCase(fetchMentorsBySemesterId.fulfilled, (state, action) => {
         state.loading = false;
-        state.mentors = action.payload.data || [];
+        state.mentors = action.payload.sort((a, b) => {
+          const numA = parseInt(a.lecturerCode.replace('L', ''));
+          const numB = parseInt(b.lecturerCode.replace('L', ''));
+          return numA - numB;
+        });
       })
       .addCase(fetchMentorsBySemesterId.rejected, (state, action) => {
         state.loading = false;

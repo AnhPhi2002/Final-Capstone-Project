@@ -52,7 +52,7 @@ export function DataTable({ columns, data }: DataTableProps) {
               {headerGroup.headers.map((header) => (
                 <TableHead
                   key={header.id}
-                  className="border border-black px-4 py-2 text-center font-bold text-black" // 🏆 Căn lề trái
+                  className="border border-black px-2 py-1text-center font-bold text-black" // 🏆 Căn lề trái
                 >
                   {header.isPlaceholder
                     ? null
@@ -71,7 +71,7 @@ export function DataTable({ columns, data }: DataTableProps) {
                 {row.getVisibleCells().map((cell) => (
                   <TableCell
                     key={cell.id}
-                    className={`border border-black px-4 py-2 ${
+                    className={`border border-black px-2 py-1 ${
                       cell.column.columnDef.meta?.className || "text-left"
                     }`}
                   >

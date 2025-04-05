@@ -11,15 +11,14 @@ import importConditionsReducer from "./importConditionsSlice";
 import sendMailReducer from "./sendEmailSlice";
 import emailTemplateReducer from "./emailTemplateSlice";
 import studentsWithoutGroupReducer from './studentWithoutGroupSlice';
-// import { groupStudentReducer } from './groupStudentSlice';
+
 import { groupReducer } from './groupSlice';
 import groupDetailReducer from './groupDetailSlice';
 import { randomGroupReducer } from "./randomGroupSlice";
 import groupInviteReducer from "./groupInviteSlice";
 import majorReducer from "./majorSlice";
 import topicReducer from "./topicSlice";
-// import topicRegisterReducer from "./topicRegisterSlice";
-// import profileUserReducer from "./profileUserSlice";
+
 import submissionRoundReducer from "./submissionRoundSlice";
 import { mentorReducer } from './mentorSlice';
 import councilReducer from "./councilSlice";
@@ -29,8 +28,8 @@ import meetingReducer from "./meetingSlice";
 import topicGroupRegisterReducer  from './topicGroupRegisterSlice';
 import councilReviewReducer from './councilReviewSlice'; 
 import CouncilDefenseReducer from './councilDefenseSlice';
-
-
+import decisionReducer from "./decisionSlice";
+import uploadDecisionReducer from "./uploadDecisionSlice";
 const rootReducer = combineReducers({
   counter: counterReducer,
   auth: authReducer,
@@ -58,11 +57,13 @@ const rootReducer = combineReducers({
   councils: councilReducer,
   topicStudents: topicStudentReducer,
   upload: uploadReducer,
+   uploadDecision: uploadDecisionReducer,
   // persist: persistedReducer,
   meetings: meetingReducer,
   topicGroupRegister: topicGroupRegisterReducer,
   councilReview: councilReviewReducer,
   councilDefense: CouncilDefenseReducer,
+  decision: decisionReducer,
 });
 
 // const persistedReducer = persistReducer(persistConfig, rootReducer)

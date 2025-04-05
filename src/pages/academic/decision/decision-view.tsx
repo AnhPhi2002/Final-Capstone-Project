@@ -1,59 +1,149 @@
-  // src/pages/DecisionView.tsx
-  import { Card, CardContent } from "@/components/ui/card"; 
-  import { fetchMentorsBySemesterId } from "@/lib/api/redux/mentorSlice";
-  import { RootState } from "@/lib/api/redux/store";
-  import { useEffect } from "react";
-  import {  useSelector } from "react-redux";
-  import { useParams } from "react-router";
-  import { DataTable } from "./columns/data-table"; 
-  import { columns } from "./columns/columns";
-  import { useAppDispatch } from "@/hooks/reduxHooks";
+'use client';
 
-  export const DecisionView = () => {
-    const dispatch = useAppDispatch();
+import { Card, CardContent } from '@/components/ui/card';
+import { RootState } from '@/lib/api/redux/store';
+import { useSelector } from 'react-redux';
+import { DataTable } from './columns/data-table';
+import { columns } from './columns/columns';
+import { format } from 'date-fns';
+import Header from '@/components/header';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Menu } from './columns/menu';
 
-    const { semesterId } = useParams<{ semesterId: string }>();
-    const { mentors, loading, error } = useSelector((state: RootState) => state.mentors);
+export const DecisionView = () => {
+  const { mentors } = useSelector((state: RootState) => state.mentors);
+  const { decisions } = useSelector((state: RootState) => state.decision);
+  const { draftFile, finalFile } = useSelector((state: RootState) => state.uploadDecision);
 
-    useEffect(() => {
-      if (semesterId) {
-        dispatch(fetchMentorsBySemesterId(semesterId) as any); // Type assertion may be needed
-      }
-    }, [dispatch, semesterId]);
+  const latestDecision = decisions.length > 0 ? decisions[0] : null;
 
+  if (!latestDecision) {
     return (
+      <div>
+        <Header
+          title="Xem quyết định"
+          href="/"
+          currentPage="Xem quyết định"
+        />
+        <div className="max-w-6xl mx-auto p-8">
+          <p className="text-center">Không tìm thấy quyết định cho học kỳ này.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const textClass = 'text-[14.5pt] font-times leading-[1.5]';
+
+  return (
+    <div>
+      <Header
+        title="Xem quyết định"
+        href="/"
+        currentPage={`Xem quyết định học kỳ ${latestDecision.semesterId}`}
+      />
+<div className="max-w-6xl mx-auto px-8 mt-4">
+        <div className="flex items-center gap-6 flex-wrap">
+          {/* Loại quyết định badge */}
+          <div className="flex items-center gap-2">
+            <span className="font-bold whitespace-nowrap">Bảng:</span>
+            <Badge
+              variant={latestDecision.type === 'DRAFT' ? 'default' : 'secondary'}
+              className={
+                latestDecision.type === 'DRAFT'
+                  ? 'bg-yellow-500 text-white'
+                  : 'bg-green-500 text-white'
+              }
+            >
+              {latestDecision.type === 'DRAFT' ? 'Nháp' : 'Chính thức'}
+            </Badge>
+          </div>
+
+          {/* Hiển thị decisionURL nếu có */}
+          {latestDecision.decisionURL && (
+            <div className="flex items-center gap-2">
+              <span className="font-bold whitespace-nowrap">File quyết định:</span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => latestDecision.decisionURL && window.open(latestDecision.decisionURL, '_blank')}
+              >
+                {draftFile?.fileName || finalFile?.fileName || 'Tải file quyết định'}
+              </Button>
+            </div>
+          )}
+
+          {/* Hiển thị draftFile hoặc finalFile nếu không có decisionURL */}
+          {!latestDecision.decisionURL && (
+            <>
+              {(latestDecision.type === 'DRAFT' && draftFile?.fileUrl) && (
+                <div className="flex items-center gap-2">
+                  <span className="font-bold whitespace-nowrap">File nháp:</span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => window.open(draftFile.fileUrl, '_blank')}
+                  >
+                    {draftFile.fileName}
+                  </Button>
+                </div>
+              )}
+              {(latestDecision.type === 'FINAL' && finalFile?.fileUrl) && (
+                <div className="flex items-center gap-2">
+                  <span className="font-bold whitespace-nowrap">File chính thức:</span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => window.open(finalFile.fileUrl, '_blank')}
+                  >
+                    {finalFile.fileName}
+                  </Button>
+                </div>
+              )}
+            </>
+          )}
+             <Menu semesterId={latestDecision.semesterId} />
+        </div>
+     
+      </div>
+
       <div className="max-w-6xl mx-auto p-8">
-        <Card className="font-times text-[13pt] leading-[1.5] shadow-lg">
-          <CardContent className="p-32">
+        <Card className={`${textClass} shadow-lg`}>
+          <CardContent className="p-10">
             <div className="flex justify-between uppercase">
               <div className="w-1/2">
                 <p>TRƯỜNG ĐẠI HỌC FPT</p>
                 <p className="font-bold">PHÂN HIỆU TRƯỜNG ĐẠI HỌC FPT</p>
                 <p className="font-bold">TẠI TP. HỒ CHÍ MINH</p>
               </div>
-              <div className="w-1/2 t ext-right">
+              <div className="w-1/2 text-right">
                 <p>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</p>
                 <p className="font-bold">Độc lập - Tự do - Hạnh phúc</p>
               </div>
             </div>
 
-            <div className="mt-6 flex justify-between text-[14.5pt]">
-              <p className="indent-[1.27cm]">Số: [keynum]/QĐ-FPTUHCM</p>
+            <div className="mt-6 flex justify-between">
+              <p className="indent-[1.27cm]">
+                Số: {latestDecision.decisionName}
+              </p>
               <p className="italic pr-[0.9cm]">
-                TP. Hồ Chí Minh, ngày [keyd] tháng [keym] năm [keyy]
+                TP. Hồ Chí Minh, ngày{" "}
+                {format(
+                  new Date(latestDecision.decisionDate ?? new Date()),
+                  "dd 'tháng' MM 'năm' yyyy"
+                )}
               </p>
             </div>
 
-            <div className="mt-6 text-center">
+            <div className="text-center mt-6">
               <h1 className="text-[14.5pt] font-bold uppercase">QUYẾT ĐỊNH</h1>
               <p className="mt-2 text-[14.5pt] font-bold">
-                Về việc giao hướng dẫn khóa luận tốt nghiệp - học kỳ Spring 2025 Cơ sở Hồ Chí Minh
+                {latestDecision.decisionTitle}
               </p>
-              <p className="text-[14.5pt] font-bold">Cơ sở Hồ Chí Minh</p>
               <hr className="border-t border-black w-1/4 mx-auto mt-2" />
             </div>
 
-            <div className="mt-6 text-[14.5pt]">
+            <div className="mt-6">
               <p className="font-bold text-center">
                 HIỆU TRƯỞNG TRƯỜNG ĐẠI HỌC FPT
               </p>
@@ -62,76 +152,63 @@
                   Căn cứ Quyết định số 208/QĐ-TTg ngày 08/9/2006 của Thủ tướng
                   Chính Phủ về việc thành lập Trường Đại học FPT;
                 </p>
+                {latestDecision.basedOn?.map((item, index) => (
+                  <p key={index} className="mt-2 indent-[1.27cm]">
+                    {item}
+                  </p>
+                ))}
                 <p className="mt-2 indent-[1.27cm]">
-                  Căn cứ Nghị định số 99/2019/NĐ-CP ngày 30/12/2019 của Chính Phủ
-                  về việc Quy định chi tiết và hướng dẫn thi hành một số điều của
-                  Luật sửa đổi, bổ sung một số điều của Luật Giáo dục đại học;
-                </p>
-                <p className="mt-2 indent-[1.27cm]">
-                  Căn cứ Quyết định số 1177/QĐ-ĐHFPT ngày 09/11/2023 của Chủ tịch
-                  Hội đồng trường Trường Đại học FPT về việc ban hành Quy chế tổ
-                  chức và hoạt động của Trường Đại học FPT;
-                </p>
-                <p className="mt-2 indent-[1.27cm]">
-                  Căn cứ Quyết định số 17/QĐ-BGDĐT ngày 02/01/2020 của Bộ Giáo dục
-                  và Đào tạo về việc cho phép thành lập Phân hiệu trường Đại học
-                  FPT tại TP.HCM;
-                </p>
-                <p className="mt-2 indent-[1.27cm]">
-                  Căn cứ Quyết định số 229/QĐ-BGDĐT ngày 31/01/2020 của Bộ Giáo
-                  dục và Đào tạo về việc cho phép Phân hiệu trường Đại học FPT tại
-                  TP.HCM tổ chức hoạt động đào tạo;
-                </p>
-                <p className="mt-2 indent-[1.27cm]">
-                  Căn cứ Quyết định số 15/QĐ-ĐHFPT ngày 06/01/2020 của Chủ tịch
-                  Hội đồng trường Trường Đại học FPT về việc ban hành Quy chế tổ
-                  chức và hoạt động của Phân hiệu Trường Đại học FPT tại TP.HCM;
-                </p>
-                <p className="mt-2 indent-[1.27cm]">
-                  Căn cứ Quyết định số 10/QĐ-ĐHFPT ngày 06/01/2016 của Hiệu trưởng
-                  trường Đại học FPT về Sửa đổi bổ sung một số Điều trong Quy định
-                  về tốt nghiệp đại học chính quy của Trường Đại học FPT;
-                </p>
-                <p className="mt-2 indent-[1.27cm]">
-                  Căn cứ Quyết định số 1494/QĐ-ĐHFPT ngày 31/12/2024 của Hiệu
-                  trưởng Trường Đại học FPT về việc phân công phê duyệt, ký văn
-                  bản tại các Khối/Viện/Trung tâm;
-                </p>
-                <p className="mt-2 indent-[1.27cm]">
-                  Căn cứ Quyết định số 842/QĐ-ĐHFPT ngày 12/08/2024 của Hiệu
-                  trưởng trường Đại học FPT về việc sửa đổi một số điều và ban
-                  hành Quy chế đào tạo Hệ đại học chính quy tại Trường Đại học
-                  FPT;
-                </p>
-                <p className="mt-2 indent-[1.27cm]">
-                  Theo đề nghị của Trưởng phòng TC&QL Đào tạo.
+                  {latestDecision.proposal}
                 </p>
               </div>
             </div>
 
-            <div className="text-[14.5pt]">
+            <div>
               <p className="mt-6 font-bold text-center">QUYẾT ĐỊNH:</p>
               <p className="mt-2 indent-[1.27cm] text-justify">
-                <span className="font-bold">Điều 1. </span> Giao nhiệm vụ cho các
-                giảng viên có tên sau hướng dẫn sinh viên làm khóa luận tốt nghiệp
-                - học kỳ Spring 2025 cơ sở Hồ Chí Minh (kèm theo danh sách sinh
-                viên và đề tài).
+                <span className="font-bold">Điều 1. </span>
+                {latestDecision.content}
               </p>
             </div>
 
             <div className="mt-4">
-              {loading ? (
-                <p className="text-center">Đang tải dữ liệu...</p>
-              ) : error ? (
-                <p className="text-center text-red-500">Lỗi: {error}</p>
+              {mentors.length === 0 ? (
+                <p className="text-center">Không có dữ liệu giảng viên</p>
               ) : (
                 <DataTable columns={columns} data={mentors} />
               )}
+              <p className="mt-2 text-justify">
+                (Danh sách trên có {mentors.length} giảng viên hướng dẫn)
+              </p>
+            </div>
+
+            <div>
+              {latestDecision.clauses?.map((clause, index) => (
+                <p key={index} className="mt-2 indent-[1.27cm] text-justify">
+                  <span className="font-bold">Điều {index + 2}. </span>
+                  {clause}
+                </p>
+              ))}
+            </div>
+
+   
+            <div className="mt-8 flex justify-between">
+              <div className="w-1/2 text-[13pt]">
+                <p className="italic font-semibold">Nơi nhận:</p>
+                <p>- Như Điều 4 (để t/h);</p>
+                <p>- Lưu VT.</p>
+              </div>
+              <div className="w-1/3 text-center">
+                <p className="font-bold uppercase">TUQ. HIỆU TRƯỞNG</p>
+                <p className="font-bold uppercase">GIÁM ĐỐC</p>
+                <p className="mt-28 font-bold">{latestDecision.signature}</p>
+              </div>
             </div>
           </CardContent>
         </Card>
       </div>
-    );
-  };
+    </div>
+  );
+};
 
-  export default DecisionView;
+export default DecisionView;

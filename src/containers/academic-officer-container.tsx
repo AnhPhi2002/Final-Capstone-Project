@@ -32,8 +32,10 @@ import TemplateDetail from "@/pages/academic/templates-mail/TemplateDetail";
 import { DecisionPage } from "@/pages/academic/decision/decision-page";
 import { MentorPage } from "@/pages/academic/mentor/mentor-page";
 import { DecisionDetail } from "@/pages/academic/decision/decision-detail";
-import { UpdateDecision } from "@/pages/academic/decision/update-decision";
+// import { UpdateDecision } from "@/pages/academic/decision/update-decision";
 import ProfileUpdateForm from "@/pages/admin/profile-user/components/profile-update";
+import { CreateDecision } from "@/pages/academic/decision/create-decision";
+import DecisionView from "@/pages/academic/decision/decision-view";
 
 
 
@@ -93,7 +95,10 @@ export const AcademicOfficerContainer = () => {
 
         <Route path="/decision" element={< DecisionPage />} />
         <Route path="/decision/:semesterId" element={< DecisionDetail />} />
-        <Route path="/decision/:semesterId/update" element={<UpdateDecision />} />
+        
+        <Route path="/decision/:semesterId/view" element={< DecisionView />} />
+        {/* <Route path="/decision/:semesterId/update" element={<UpdateDecision />} /> */}
+        <Route path="/decision/:semesterId/create" element={<CreateDecision />} />
         <Route path="/*" element={<NotFound />} />
       </Routes>
     </MainLayout>
