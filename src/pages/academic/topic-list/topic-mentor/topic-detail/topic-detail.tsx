@@ -20,7 +20,7 @@ export default function TopicDetail() {
   const { topicDetails, loading, error } = useSelector(
     (state: RootState) => state.topics
   );
-  const { author: auth } = useSelector((state: RootState) => state.auth);
+  // const { author: auth } = useSelector((state: RootState) => state.auth);
   const { author: mainMentor } = useSelector((state: RootState) => state.auth);
   const { author: subMentor } = useSelector((state: RootState) => state.authSub);
 

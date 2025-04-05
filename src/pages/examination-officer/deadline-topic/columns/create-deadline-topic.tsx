@@ -93,7 +93,7 @@ export const CreateSubmissionRound: React.FC<CreateSubmissionRoundProps> = ({ on
 
   const { handleSubmit, watch, reset, setValue } = form;
   const yearId = watch("yearId");
-  const semesterId = watch("semesterId");
+  // const semesterId = watch("semesterId");
   const type = watch("type");
 
   const availableYears = years.filter((y) => !y.isDeleted);

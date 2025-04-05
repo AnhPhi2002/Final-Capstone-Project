@@ -2,11 +2,11 @@ import { ColumnDef } from "@tanstack/react-table";
 import { CouncilDetail } from "@/lib/api/types"; // 👈 dùng đúng type
 import { ActionMenu } from "./action";
 
-const formatDate = (dateString: string | undefined) => {
-  if (!dateString) return "—";
-  const date = new Date(dateString);
-  return date.toLocaleDateString("vi-VN");
-};
+// const formatDate = (dateString: string | undefined) => {
+//   if (!dateString) return "—";
+//   const date = new Date(dateString);
+//   return date.toLocaleDateString("vi-VN");
+// };
 
 export const columnsCouncils: ColumnDef<CouncilDetail, any>[] = [
   {
