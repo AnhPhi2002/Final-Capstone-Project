@@ -3,25 +3,17 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
-import { useDispatch,} from "react-redux";
+import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/api/redux/store";
-import { updateCouncil } from "@/lib/api/redux/councilReviewSlice";
+import { updateCouncilReview } from "@/lib/api/redux/councilReviewSlice";
 import { fetchSubmissionRounds } from "@/lib/api/redux/submissionRoundSlice";
 import { CouncilReview } from "@/lib/api/types";
-// import {
-//   Select,
-//   SelectContent,
-//   SelectGroup,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/components/ui/select";
 
 const formSchema = z.object({
   name: z.string().min(3, "Tên hội đồng phải có ít nhất 3 ký tự"),
   councilStartDate: z.string().min(10, "Ngày bắt đầu không hợp lệ"),
   councilEndDate: z.string().min(10, "Ngày kết thúc không hợp lệ"),
-  round: z.number().min(1, "Vòng phải là số nguyên dương"), // Giữ kiểu number cho round
+  round: z.number().min(1, "Vòng phải là số nguyên dương"),
 });
 
 interface UpdateReviewTopicCouncilProps {
@@ -39,11 +31,6 @@ export const UpdateReviewTopicCouncil: React.FC<UpdateReviewTopicCouncilProps> =
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isLoading, setIsLoading] = useState(false);
-  
-  // Lấy danh sách submissionRounds từ Redux store
-  // const { data: submissionRounds} = useSelector(
-  //   (state: RootState) => state.submissionRounds
-  // );
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -59,14 +46,12 @@ export const UpdateReviewTopicCouncil: React.FC<UpdateReviewTopicCouncilProps> =
     },
   });
 
-  // Fetch submissionRounds khi modal mở
   useEffect(() => {
     if (open && council.semesterId) {
       dispatch(fetchSubmissionRounds(council.semesterId));
     }
   }, [open, council.semesterId, dispatch]);
 
-  // Reset form khi modal mở hoặc council thay đổi
   useEffect(() => {
     if (open) {
       form.reset({
@@ -83,7 +68,6 @@ export const UpdateReviewTopicCouncil: React.FC<UpdateReviewTopicCouncilProps> =
   }, [open, council, form]);
 
   const onSubmit = async (data: any) => {
-    console.log("Submitting data:", data); // Debug
     if (new Date(data.councilEndDate) <= new Date(data.councilStartDate)) {
       toast.error("Ngày kết thúc phải lớn hơn ngày bắt đầu!");
       return;
@@ -91,37 +75,32 @@ export const UpdateReviewTopicCouncil: React.FC<UpdateReviewTopicCouncilProps> =
 
     const formattedData = {
       name: data.name,
-      semesterId: council.semesterId, // Giữ nguyên từ council
-      submissionPeriodId: council.submissionPeriodId, // Giữ nguyên từ council
-      startDate: new Date(data.councilStartDate).toISOString().split("T")[0] + "T00:00:00Z", // Định dạng đúng
-      endDate: new Date(data.councilEndDate).toISOString().split("T")[0] + "T00:00:00Z", // Định dạng đúng
-      round: Number(data.round), // Đảm bảo là số
+      semesterId: council.semesterId,
+      submissionPeriodId: council.submissionPeriodId,
+      councilStartDate: new Date(data.councilStartDate).toISOString().split("T")[0] + "T00:00:00Z",
+      councilEndDate: new Date(data.councilEndDate).toISOString().split("T")[0] + "T00:00:00Z",
+      round: Number(data.round),
     };
 
-    console.log("Formatted data to submit:", formattedData); // Debug
+    console.log("Formatted data to submit:", formattedData);
 
     setIsLoading(true);
     try {
       await dispatch(
-        updateCouncil({ councilId: council.id, updatedData: formattedData })
+        updateCouncilReview({ councilId: council.id, updatedData: formattedData })
       ).unwrap();
       toast.success("Cập nhật hội đồng thành công!");
-      if (refetchData) {
-        console.log("Triggering refetch"); // Debug
-        refetchData();
-      }
+      refetchData?.();
       setOpen(false);
     } catch (error) {
-      console.error("Update failed:", error); // Debug
-      toast.error("Cập nhật thất bại!");
+      console.error("Update failed:", error);
+      toast.error(`${error}`);
     } finally {
       setIsLoading(false);
     }
   };
 
   if (!open) return null;
-
-  // const availableRounds = submissionRounds.filter((r) => !r.isDeleted);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -179,37 +158,6 @@ export const UpdateReviewTopicCouncil: React.FC<UpdateReviewTopicCouncilProps> =
               <p className="text-red-500 text-sm mt-1">{form.formState.errors.councilEndDate.message}</p>
             )}
           </div>
-
-          {/* <div>
-            <label className="block text-sm font-medium mb-1">Vòng</label>
-            <Select
-              onValueChange={(value) => form.setValue("round", Number(value))} // Chuyển thành number
-              value={form.watch("round")?.toString()} // Chuyển number thành string để hiển thị
-              disabled={isLoading || roundsLoading}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder={roundsLoading ? "Đang tải..." : "Chọn vòng"} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  {availableRounds.length > 0 ? (
-                    availableRounds.map((round) => (
-                      <SelectItem key={round.id} value={round.roundNumber.toString()}>
-                        {round.description} (Vòng {round.roundNumber})
-                      </SelectItem>
-                    ))
-                  ) : (
-                    <SelectItem value="none" disabled>
-                      Không có vòng nào
-                    </SelectItem>
-                  )}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            {form.formState.errors.round && (
-              <p className="text-red-500 text-sm mt-1">{form.formState.errors.round.message}</p>
-            )}
-          </div> */}
 
           <div className="mt-6 flex justify-end space-x-4">
             <button

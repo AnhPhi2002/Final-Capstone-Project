@@ -335,8 +335,16 @@ export interface ReviewSchedule {
     };
     group: {
       groupCode: string;
-      defenseRound: number | null;
-      defendStatus: string | null;
+      // defenseRound: number | null;
+      // defendStatus: string | null;
+      semesterId: string;
+      topicAssignments:
+        {
+          defenseRound: number | null;
+          defendStatus: string | null;
+        }[];
+
+      
     };
     topic: {
       topicCode: string;

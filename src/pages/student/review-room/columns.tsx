@@ -5,15 +5,15 @@ import { ReportAction } from "./action";
 
 export const columns: ColumnDef<ReviewSchedule>[] = [
   {
-    accessorKey: "schedule.council.name",
+    accessorKey: "schedule.council",
     header: "Tên hội đồng",
   },
   {
-    accessorKey: "schedule.group.groupCode",
+    accessorKey: "schedule.group",
     header: "Nhóm",
   },
   {
-    accessorKey: "schedule.topic.topicCode",
+    accessorKey: "schedule.topic",
     header: "Đề tài",
   },
   {

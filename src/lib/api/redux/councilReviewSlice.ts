@@ -78,7 +78,7 @@ export const createCouncilReview = createAsyncThunk(
 
 export const fetchReviewCouncilsList = createAsyncThunk(
     "councils/fetchReviewCouncils",
-    async ({ semesterId, submissionPeriodId }: { semesterId: string; submissionPeriodId:string }, { rejectWithValue }) => {
+    async ({ semesterId, submissionPeriodId }: { semesterId: string; submissionPeriodId: string }, { rejectWithValue }) => {
         try {
             const response = await axiosClient.get(`/council-review`, {
                 params: { semesterId, submissionPeriodId },
@@ -130,8 +130,8 @@ export const fetchCouncilDetailForMentor = createAsyncThunk(
 );
 
 // Thunk để cập nhật hội đồng
-export const updateCouncil = createAsyncThunk(
-    "councils/updateCouncil",
+export const updateCouncilReview = createAsyncThunk(
+    "councils/updateCouncilReview",
     async (
         { councilId, updatedData }: { councilId: string; updatedData: Partial<CouncilReview> },
         { rejectWithValue }
@@ -139,6 +139,10 @@ export const updateCouncil = createAsyncThunk(
         try {
             const response = await axiosClient.put(`/council-review/${councilId}`, updatedData);
             console.log("API updateCouncil response:", response.data);
+            // Kiểm tra response.data.data
+            if (!response.data.data || !response.data.data.id) {
+                throw new Error("Dữ liệu trả về từ API không hợp lệ hoặc thiếu id");
+            }
             return response.data.data as CouncilReview;
         } catch (error: any) {
             console.error("API updateCouncil error:", error.response?.data || error.message);
@@ -258,6 +262,51 @@ export const fetchReviewSchedulesForMentor = createAsyncThunk(
     }
 );
 
+export const confirmDefenseRound = createAsyncThunk(
+    "councils/confirmDefenseRound",
+    async (
+      {
+        groupCode,
+        defenseRound,
+        mentorDecision,
+        semesterId,
+      }: {
+        groupCode: string;
+        defenseRound?: number | null;
+        mentorDecision: "PASS" | "NOT_PASS";
+        semesterId: string;
+      },
+      { rejectWithValue }
+    ) => {
+      try {
+        const body: any = { groupCode, mentorDecision };
+  
+        // ✅ Chỉ truyền defenseRound khi chọn PASS
+        if (mentorDecision === "PASS" && defenseRound != null) {
+          body.defenseRound = defenseRound;
+        }
+  
+        // Khi chọn NOT_PASS thì body KHÔNG có defenseRound
+  
+        const response = await axiosClient.post(
+          `/council-review/defense/confirm-defense-round?semesterId=${semesterId}`,
+          body
+        );
+  
+        console.log("API confirmDefenseRound response:", response.data);
+  
+        return {
+          groupCode,
+          defendStatus: mentorDecision === "PASS" ? "CONFIRMED" : "NOT_PASSED",
+          defenseRound: mentorDecision === "PASS" ? defenseRound : undefined, // ✅ undefined thay vì null
+        };
+      } catch (error: any) {
+        console.error("API confirmDefenseRound error:", error.response?.data || error.message);
+        return rejectWithValue(error.response?.data?.message || "Không thể xác nhận vòng bảo vệ!");
+      }
+    }
+  );
+  
 const councilReviewSlice = createSlice({
     name: "councils",
     initialState,
@@ -336,21 +385,37 @@ const councilReviewSlice = createSlice({
                 state.loadingDetail = false;
                 state.error = action.payload as string;
             })
-            .addCase(updateCouncil.pending, (state) => {
+            .addCase(updateCouncilReview.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(updateCouncil.fulfilled, (state, action) => {
+            .addCase(updateCouncilReview.fulfilled, (state, action) => {
                 state.loading = false;
                 const updatedCouncil = action.payload;
-                state.data = state.data.map((council) =>
-                    council.id === updatedCouncil.id ? updatedCouncil : council
-                );
+
+                // Kiểm tra updatedCouncil có hợp lệ không
+                if (!updatedCouncil || !updatedCouncil.id) {
+                    state.error = "Dữ liệu hội đồng cập nhật không hợp lệ";
+                    console.error("Updated council is invalid:", updatedCouncil);
+                    return;
+                }
+
+                // Kiểm tra state.data có phải mảng không
+                if (Array.isArray(state.data)) {
+                    state.data = state.data.map((council) =>
+                        council.id === updatedCouncil.id ? updatedCouncil : council
+                    );
+                } else {
+                    console.warn("state.data is not an array, initializing with updatedCouncil");
+                    state.data = [updatedCouncil]; // Khởi tạo nếu state.data chưa là mảng
+                }
+
+                // Cập nhật councilDetail nếu cần
                 if (state.councilDetail?.id === updatedCouncil.id) {
                     state.councilDetail = updatedCouncil;
                 }
             })
-            .addCase(updateCouncil.rejected, (state, action) => {
+            .addCase(updateCouncilReview.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
             })
@@ -439,6 +504,43 @@ const councilReviewSlice = createSlice({
                 state.loadingSchedulesMentor = false;
                 state.errorSchedulesMentor = action.payload as string;
                 state.reviewSchedulesMentor = [];
+            })
+            .addCase(confirmDefenseRound.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(confirmDefenseRound.fulfilled, (state, action) => {
+                state.loading = false;
+                const { groupCode, defendStatus, defenseRound } = action.payload;
+              
+                state.reviewSchedulesMentor = state.reviewSchedulesMentor.map(schedule => {
+                  if (schedule.schedule.group.groupCode === groupCode) {
+                    const updatedTopicAssignments = schedule.schedule.group.topicAssignments.map(ta => ({
+                      ...ta,
+                      defendStatus,
+                      defenseRound: defenseRound !== undefined ? defenseRound : null,
+                    }));
+              
+                    return {
+                      ...schedule,
+                      schedule: {
+                        ...schedule.schedule,
+                        group: {
+                          ...schedule.schedule.group,
+                          topicAssignments: updatedTopicAssignments,
+                        },
+                      },
+                    };
+                  }
+                  return schedule;
+                });
+              
+                state.reviewSchedulesMentor = [...state.reviewSchedulesMentor]; // đảm bảo tạo array mới
+              })
+              
+            .addCase(confirmDefenseRound.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
             });
         ;
     },

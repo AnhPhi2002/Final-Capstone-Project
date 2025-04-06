@@ -1,4 +1,3 @@
-// src/components/mentor-check-review.tsx
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
@@ -47,12 +46,12 @@ export const DecisionDefense: React.FC = () => {
   );
   const { semesterId } = useParams<{ semesterId?: string }>(); // Lấy semesterId từ URL
 
-  // Fetch schedules khi component mount hoặc semesterId thay đổi
   useEffect(() => {
     if (semesterId) {
       dispatch(fetchReviewSchedulesForMentor({ semesterId }));
     }
   }, [dispatch, semesterId]);
+
 
   // Cấu hình bảng
   const table = useReactTable({
@@ -61,7 +60,9 @@ export const DecisionDefense: React.FC = () => {
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getRowId: (row) => `${row.schedule.id}-${row.schedule.group.groupCode}-${row.schedule.group.topicAssignments[0]?.defenseRound}-${row.schedule.group.topicAssignments[0]?.defendStatus}`, // ✅ Chỉ thêm dòng này
   });
+  
 
   // Kiểm tra semesterId hợp lệ
   if (!semesterId) {
@@ -83,7 +84,7 @@ export const DecisionDefense: React.FC = () => {
         ) : !reviewSchedulesMentor || reviewSchedulesMentor.length === 0 ? (
           <p className="text-center text-gray-500">Không có lịch xét duyệt nào.</p>
         ) : (
-          <DataTable table={table} />
+          <DataTable table={table} refetchData={() => dispatch(fetchReviewSchedulesForMentor({ semesterId }))} />
         )}
       </div>
     </div>

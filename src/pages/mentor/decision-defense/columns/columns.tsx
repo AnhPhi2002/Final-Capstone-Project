@@ -1,13 +1,16 @@
-// src/components/columns.tsx
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, CellContext } from "@tanstack/react-table";
 import { ReviewSchedule } from "@/lib/api/types";
 import { Action } from "./action";
 
+type ExtendedCellContext<TData, TValue> = CellContext<TData, TValue> & {
+  refetchData?: () => void;
+};
+
 export const columns: ColumnDef<ReviewSchedule>[] = [
-  {
-    accessorKey: "schedule.council.name",
-    header: "Tên hội đồng",
-  },
+  // {
+  //   accessorKey: "schedule.council.name",
+  //   header: "Tên hội đồng",
+  // },
   {
     accessorKey: "schedule.group.groupCode",
     header: "Nhóm",
@@ -16,41 +19,32 @@ export const columns: ColumnDef<ReviewSchedule>[] = [
     accessorKey: "schedule.topic.topicCode",
     header: "Đề tài",
   },
-
-  // {
-  //   accessorKey: "schedule.reviewTime",
-  //   header: "Thời gian xét duyệt",
-  //   cell: ({ row }) => {
-  //     const date = new Date(row.original.schedule.reviewTime);
-  //     return date.toLocaleString("vi-VN", {
-  //       dateStyle: "medium",
-  //       timeStyle: "short",
-  //     });
-  //   },
-  // },
-  // {
-  //   accessorKey: "schedule.room",
-  //   header: "Phòng",
-  // },
   {
-    accessorKey: "schedule.reviewRound",
-    header: "Đợt xét duyệt",
+    accessorKey: "schedule.group.topicAssignments[0].defenseRound",
+    header: "Đợt bảo vệ",
+    cell: ({ row }) => {
+      const defenseRound = row.original.schedule.group.topicAssignments[0]?.defenseRound;
+      return defenseRound ?? "N/A";
+    }
   },
   {
     accessorKey: "schedule.group.defendStatus",
     header: "Trạng thái",
     cell: ({ row }) => {
-      const status = row.original.schedule.group.defendStatus;
-      if (status === "CONFIRMED") {
-        return <span className="text-green-600">Cho phép bảo vệ</span>;
-      } else
-        return <span className="text-red-600">Chưa bảo vệ</span>;
-
+      const status = row.original.schedule.group.topicAssignments[0]?.defendStatus;
+      return status === "CONFIRMED"
+        ? <span className="text-green-600">Cho phép bảo vệ</span>
+        : status === "UN_CONFIRMED"
+          ? <span className="text-red-600">Không cho phép bảo vệ</span>
+          : <span className="text-gray-500">Không xác định</span>;
     },
   },
   {
     id: "actions",
     header: "Hành động",
-    cell: ({ row }) => <Action schedule={row.original} />, // Truyền toàn bộ ReviewSchedule object
+    cell: (info) => {
+      const { row, refetchData } = info as ExtendedCellContext<ReviewSchedule, unknown>;
+      return <Action schedule={row.original} refetchData={refetchData} />;
+    },
   },
 ];

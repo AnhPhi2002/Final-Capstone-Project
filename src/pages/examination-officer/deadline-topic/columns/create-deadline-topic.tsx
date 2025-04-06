@@ -168,7 +168,7 @@ export const CreateSubmissionRound: React.FC<CreateSubmissionRoundProps> = ({ on
       setIsOpen(false);
       reset(defaultValues);
     } catch (err: any) {
-      toast.error(err.message || "Có lỗi xảy ra khi tạo vòng nộp!");
+      toast.error(`${err}`);
     } finally {
       setIsSubmitting(false);
     }
