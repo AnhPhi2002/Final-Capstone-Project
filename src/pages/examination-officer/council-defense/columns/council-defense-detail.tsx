@@ -75,7 +75,7 @@ export const CouncilDefenseDetail = () => {
     );
   }
   const handleBack = () => {
-    navigate("/examination/council-review");
+    navigate("/examination/council-defense");
   };
   return (
     <div className="flex flex-col h-screen">
@@ -100,7 +100,7 @@ export const CouncilDefenseDetail = () => {
                 onClick={() => setOpenCreateSchedule(true)}
                 disabled={loadingDetail}
               >
-                Tạo lịch review
+                Tạo lịch bảo vệ
               </Button>
             </div>
 
@@ -110,6 +110,7 @@ export const CouncilDefenseDetail = () => {
               setOpen={setOpenCreateSchedule}
               councilId={councilId}
               semesterId={semesterId}
+              defenseRound={councilDetail?.round ?? 1}
             />
 
             <DataTable table={table} />

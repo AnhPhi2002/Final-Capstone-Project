@@ -57,11 +57,22 @@ export const columns: ColumnDef<GroupWithDetails>[] = [
   // },
   {
     header: "Đợt bảo vệ",
-    accessorFn: (row) => row.topicAssignments[0]?.defenseRound || "N/A",
+    accessorFn: (row) => {
+      const defenseRound = row.topicAssignments[0]?.defenseRound;
+      return defenseRound !== null && defenseRound !== undefined ? defenseRound : "N/A";
+    },
   },
   {
     header: "Trạng thái bảo vệ",
-    accessorFn: (row) => row.topicAssignments[0]?.defendStatus|| "N/A",
+    accessorFn: (row) => {
+      const defendStatus = row.topicAssignments[0]?.defendStatus;
+      if (defendStatus === "CONFIRMED") {
+        return "Đã xác nhận";
+      } else if (defendStatus === "UN_CONFIRMED") {
+        return "Chưa xác nhận";
+      }
+      return "N/A"; 
+    },
   },
   // {
   //   accessorKey: "group.isMultiMajor",

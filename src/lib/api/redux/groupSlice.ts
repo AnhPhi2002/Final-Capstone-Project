@@ -25,7 +25,7 @@ export const fetchGroupsBySemester = createAsyncThunk(
   async (semesterId: string, { rejectWithValue }) => {
     try {
       const response = await axiosClient.get(`/groups/semester/${semesterId}`);
-      return response.data.groups; // Trả về danh sách nhóm
+      return response.data.groups;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Lỗi khi lấy danh sách nhóm!");
     }

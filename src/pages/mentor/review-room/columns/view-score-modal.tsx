@@ -1,3 +1,4 @@
+// src/components/ViewScoreModal.tsx
 import React from "react";
 import {
   Dialog,
@@ -22,6 +23,17 @@ export const ViewScoreModal: React.FC<ViewScoreModalProps> = ({
   schedule,
 }) => {
   const assignment = schedule.assignments?.[0];
+  const doc = schedule.documents?.[0];
+
+  // Hàm tải tài liệu
+  const handleDownloadDocument = (url: string, fileName: string) => {
+    const link = window.document.createElement("a"); // Dùng window.document để rõ ràng
+    link.href = url;
+    link.download = fileName;
+    window.document.body.appendChild(link);
+    link.click();
+    window.document.body.removeChild(link);
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -63,10 +75,34 @@ export const ViewScoreModal: React.FC<ViewScoreModalProps> = ({
               {assignment?.feedback || "Chưa có nhận xét"}
             </p>
           </div>
+          <div>
+            <Label>Tài liệu</Label>
+            {doc ? (
+              <div className="flex items-center gap-2">
+                <p className="text-sm text-green-500">
+                  {doc.fileName || "Tài liệu không có tên"}
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    handleDownloadDocument(
+                      doc.fileUrl,
+                      doc.fileName || `document-${schedule.schedule.id}`
+                    )
+                  }
+                  disabled={!doc.fileUrl} // Vô hiệu hóa nếu không có fileUrl
+                >
+                  Tải tài liệu
+                </Button>
+              </div>
+            ) : (
+              <p className="text-sm text-gray-700">Chờ nhóm trưởng nộp tài liệu</p>
+            )}
+          </div>
         </div>
 
         <DialogFooter>
-          {/* Đây là điểm quan trọng nhất để sửa lỗi bị đơ màn hình */}
           <Button variant="outline" onClick={() => setOpen(false)}>
             Đóng
           </Button>

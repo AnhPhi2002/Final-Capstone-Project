@@ -1,11 +1,11 @@
-// components/data-table.tsx
+// src/components/data-table.tsx
 import { memo } from "react";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import { flexRender, type Table as TableType } from "@tanstack/react-table";
-import { CouncilReviewSessions } from "@/lib/api/types"; // Sửa kiểu
+import { CouncilReviewSessions } from "@/lib/api/types";
 
 interface DataTableProps {
-  table: TableType<CouncilReviewSessions>; // Sửa kiểu từ Council thành CouncilReviewMember
+  table: TableType<CouncilReviewSessions>;
 }
 
 export const DataTable = memo(function DataTable({ table }: DataTableProps) {

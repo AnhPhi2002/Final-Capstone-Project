@@ -10,18 +10,19 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { ReviewSchedule } from "@/lib/api/types";
-import { ViewScoreModal } from "./view-score-modal";
+// import { ViewScoreModal } from "./view-score-modal";
+import { Decision } from "./decision"; // Import Decision
 
 type ActionProps = {
   schedule: ReviewSchedule;
+  refetchData?: () => void;
 };
 
-export const Action: React.FC<ActionProps> = ({ schedule }) => {
-  const [openViewScore, setOpenViewScore] = useState(false);
+export const Action: React.FC<ActionProps> = ({ schedule, refetchData }) => {
+  const [openDecision, setOpenDecision] = useState(false);
 
-  const handleOpenViewScore = () => {
-    setTimeout(() => setOpenViewScore(true), 0); 
-  };
+  const handleOpenDecision = () => setOpenDecision(true);
+  const handleCloseDecision = () => setOpenDecision(false);
 
   return (
     <>
@@ -34,17 +35,21 @@ export const Action: React.FC<ActionProps> = ({ schedule }) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleOpenViewScore}>
-            Xem điểm
+          <DropdownMenuItem onClick={handleOpenDecision}>
+            Xác nhận vòng bảo vệ
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <ViewScoreModal
-        open={openViewScore}
-        setOpen={setOpenViewScore}
-        schedule={schedule}
-      />
+      {openDecision && (
+        <Decision
+          schedule={schedule}
+          open={openDecision}
+          setOpen={handleCloseDecision}
+          refetchData={refetchData}
+        />
+      )}
     </>
   );
 };
+

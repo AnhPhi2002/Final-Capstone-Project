@@ -27,7 +27,13 @@ export const fetchCouncils = createAsyncThunk(
       const response = await axiosClient.get(`/council-topic`, {
         params: { semesterId, submissionPeriodId },
       });
-      return response.data.data as CouncilDetail[];
+      const councils = response.data.data as Council[];
+      const result: CouncilDetail[] = councils.map((council) => ({
+        council,
+        schedules: [],
+      }));
+      return result;
+
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Không thể tải danh sách hội đồng!");
     }

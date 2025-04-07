@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { X } from "lucide-react"; // Icon đóng
+import { X } from "lucide-react";
 
 type CreateMeetingProps = {
   semesterId: string;
@@ -34,6 +34,13 @@ export const CreateMeeting: React.FC<CreateMeetingProps> = ({ semesterId, onClos
     url: "",
   });
 
+  const [errors, setErrors] = useState({
+    groupId: "",
+    meetingTime: "",
+    location: "",
+    agenda: "",
+  });
+
   useEffect(() => {
     if (semesterId) {
       dispatch(fetchGroupsBySemester(semesterId));
@@ -42,23 +49,57 @@ export const CreateMeeting: React.FC<CreateMeetingProps> = ({ semesterId, onClos
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    let formattedValue = value;
     if (name === "meetingTime" && value) {
-      setNewMeeting({ ...newMeeting, [name]: `${value}:00Z` });
-    } else {
-      setNewMeeting({ ...newMeeting, [name]: value });
+      formattedValue = `${value}:00Z`;
+    }
+    setNewMeeting({ ...newMeeting, [name]: formattedValue });
+
+    if (value.trim() || name === "meetingTime") {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
   const handleGroupChange = (value: string) => {
     setNewMeeting({ ...newMeeting, groupId: value });
+    if (value) {
+      setErrors((prev) => ({ ...prev, groupId: "" }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {
+      groupId: newMeeting.groupId ? "" : "Vui lòng chọn nhóm",
+      meetingTime: newMeeting.meetingTime ? "" : "Vui lòng chọn thời gian họp",
+      location: newMeeting.location?.trim() ? "" : "Vui lòng nhập địa điểm",
+      agenda: newMeeting.agenda?.trim() ? "" : "Vui lòng nhập chủ đề",
+    };
+    setErrors(newErrors);
+    return !Object.values(newErrors).some((error) => error);
   };
 
   const handleCreateMeeting = async () => {
-    if (semesterId && newMeeting.groupId) {
-      await dispatch(createMeeting({ semesterId, meetingData: newMeeting as Meeting }));
+    if (validateForm() && semesterId && newMeeting.groupId) {
+      const meetingDataBase = {
+        groupId: newMeeting.groupId,
+        meetingTime: newMeeting.meetingTime,
+        location: newMeeting.location,
+        agenda: newMeeting.agenda,
+      };
+      const meetingData = newMeeting.url?.trim()
+        ? { ...meetingDataBase, url: newMeeting.url }
+        : meetingDataBase;
+  
+      await dispatch(createMeeting({ semesterId, meetingData: meetingData as Meeting }));
       onClose();
     }
   };
+
+  const isFormValid = () =>
+    newMeeting.groupId &&
+    newMeeting.meetingTime &&
+    newMeeting.location?.trim() &&
+    newMeeting.agenda?.trim();
 
   return (
     <div className="fixed inset-0 bg-gray-900 bg-opacity-60 flex justify-center items-center z-50">
@@ -73,7 +114,7 @@ export const CreateMeeting: React.FC<CreateMeetingProps> = ({ semesterId, onClos
         <div className="space-y-5">
           <div className="space-y-2">
             <Label htmlFor="groupId" className="text-sm font-medium text-gray-700">
-              Nhóm
+              Nhóm <span className="text-red-500">*</span>
             </Label>
             <Select onValueChange={handleGroupChange} value={newMeeting.groupId}>
               <SelectTrigger className="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
@@ -100,11 +141,12 @@ export const CreateMeeting: React.FC<CreateMeetingProps> = ({ semesterId, onClos
                 </SelectGroup>
               </SelectContent>
             </Select>
+            {errors.groupId && <p className="text-red-500 text-xs">{errors.groupId}</p>}
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="meetingTime" className="text-sm font-medium text-gray-700">
-              Thời gian họp
+              Thời gian họp <span className="text-red-500">*</span>
             </Label>
             <Input
               id="meetingTime"
@@ -114,11 +156,12 @@ export const CreateMeeting: React.FC<CreateMeetingProps> = ({ semesterId, onClos
               value={newMeeting.meetingTime?.replace(":00Z", "") || ""}
               onChange={handleInputChange}
             />
+            {errors.meetingTime && <p className="text-red-500 text-xs">{errors.meetingTime}</p>}
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="location" className="text-sm font-medium text-gray-700">
-              Địa điểm
+              Địa điểm <span className="text-red-500">*</span>
             </Label>
             <Input
               id="location"
@@ -128,11 +171,12 @@ export const CreateMeeting: React.FC<CreateMeetingProps> = ({ semesterId, onClos
               placeholder="Nhập địa điểm (VD: NVH302)"
               className="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
             />
+            {errors.location && <p className="text-red-500 text-xs">{errors.location}</p>}
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="agenda" className="text-sm font-medium text-gray-700">
-              Chủ đề
+              Chủ đề <span className="text-red-500">*</span>
             </Label>
             <Input
               id="agenda"
@@ -142,6 +186,7 @@ export const CreateMeeting: React.FC<CreateMeetingProps> = ({ semesterId, onClos
               placeholder="Nhập chủ đề (VD: Thảo luận tiến độ dự án)"
               className="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
             />
+            {errors.agenda && <p className="text-red-500 text-xs">{errors.agenda}</p>}
           </div>
 
           <div className="space-y-2">
@@ -168,8 +213,8 @@ export const CreateMeeting: React.FC<CreateMeetingProps> = ({ semesterId, onClos
             </Button>
             <Button
               onClick={handleCreateMeeting}
-              disabled={!newMeeting.groupId}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm"
+              disabled={!isFormValid()}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               Tạo
             </Button>

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
-import { fetchCouncilDetailForMentor } from "@/lib/api/redux/councilDefenseSlice";
+import { fetchCouncilDefenseDetailForMentor } from "@/lib/api/redux/councilDefenseSlice";
 import {
   useReactTable,
   getCoreRowModel,
@@ -21,7 +21,7 @@ export const CouncilDefenseGroupsPage: React.FC = () => {
   // Fetch dữ liệu nếu chưa có
   useEffect(() => {
     if (councilId && semesterId && !councilDetail) {
-      dispatch(fetchCouncilDetailForMentor({ councilId, semesterId }));
+      dispatch(fetchCouncilDefenseDetailForMentor({ councilId, semesterId }));
     }
   }, [dispatch, councilId, semesterId, councilDetail]);
 

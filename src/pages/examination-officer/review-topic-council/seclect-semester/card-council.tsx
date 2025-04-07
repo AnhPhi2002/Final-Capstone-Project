@@ -1,7 +1,8 @@
+// components/card-council.tsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { Dot } from "lucide-react";
-import { Council } from "@/lib/api/types";
+import { CouncilDetail } from "@/lib/api/types";
 import {
   Card,
   CardHeader,
@@ -13,15 +14,15 @@ import { Badge } from "@/components/ui/badge";
 import { PaginationDashboardPage } from "@/pages/admin/pagination";
 
 type CardCouncilProps = {
-  councils: Council[];
+  councils: CouncilDetail[];
   semesterId: string;
 };
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
-  return date.toLocaleDateString("vi-VN"); // Format: DD/MM/YYYY
+  return date.toLocaleDateString("vi-VN");
 };
-// Chuyển type sang tiếng Việt
+
 const getRoundTypeLabel = (type?: string) => {
   switch (type?.trim()) {
     case "topic":
@@ -45,7 +46,9 @@ export const CardCouncil: React.FC<CardCouncilProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
-  const activeCouncils = councils.filter((council) => !council.isDeleted);
+  const activeCouncils = councils.filter(
+    (council) => !council.council.isDeleted
+  );
   const totalPages = Math.ceil(activeCouncils.length / itemsPerPage);
 
   const paginatedData = activeCouncils.slice(
@@ -65,22 +68,23 @@ export const CardCouncil: React.FC<CardCouncilProps> = ({
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {paginatedData.map((council) => {
-              const roundTypeLabel = getRoundTypeLabel(council.type);
+              const { council: c } = council;
+              const roundTypeLabel = getRoundTypeLabel(c.type);
               return (
                 <Card
-                  key={council.id}
+                  key={c.id}
                   className="w-full p-4 shadow-md border border-gray-200 rounded-lg hover:shadow-lg transition duration-200"
-                  onClick={() => handleCardClick(council.id)}
+                  onClick={() => handleCardClick(c.id)}
                 >
                   <CardHeader>
                     <CardTitle className="text-xl font-bold text-gray-800">
-                      {council.name}
+                      {c.name}
                     </CardTitle>
                     <CardDescription>
-                      Bắt đầu: {formatDate(council.councilStartDate)} - Kết thúc {formatDate(council.councilEndDate)}
+                      Bắt đầu: {formatDate(c.councilStartDate)} - Kết thúc {formatDate(c.councilEndDate)}
                     </CardDescription>
                     <CardDescription>
-                      Vòng nộp lần: {council.round} - {roundTypeLabel}
+                      Vòng nộp lần: {c.round} - {roundTypeLabel}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -89,11 +93,11 @@ export const CardCouncil: React.FC<CardCouncilProps> = ({
                         <Dot
                           size={40}
                           className={
-                            council.status === "ACTIVE"
+                            c.status === "ACTIVE"
                               ? "text-green-600"
-                              : council.status === "UPCOMING"
+                              : c.status === "UPCOMING"
                               ? "text-yellow-600"
-                              : council.status === "COMPLETE"
+                              : c.status === "COMPLETE"
                               ? "text-blue-600"
                               : "text-gray-600"
                           }
@@ -102,20 +106,20 @@ export const CardCouncil: React.FC<CardCouncilProps> = ({
                       </span>
                       <Badge
                         className={
-                          council.status === "ACTIVE"
+                          c.status === "ACTIVE"
                             ? "bg-green-100 text-green-600 border border-green-500 hover:bg-green-200"
-                            : council.status === "UPCOMING"
+                            : c.status === "UPCOMING"
                             ? "bg-yellow-100 text-yellow-600 border border-yellow-500 hover:bg-yellow-200"
-                            : council.status === "COMPLETE"
+                            : c.status === "COMPLETE"
                             ? "bg-blue-100 text-blue-600 border border-blue-500 hover:bg-blue-200"
                             : "bg-gray-100 text-gray-600 border border-gray-500 hover:bg-gray-200"
                         }
                       >
-                        {council.status === "ACTIVE"
+                        {c.status === "ACTIVE"
                           ? "Đang hoạt động"
-                          : council.status === "UPCOMING"
+                          : c.status === "UPCOMING"
                           ? "Sắp diễn ra"
-                          : council.status === "COMPLETE"
+                          : c.status === "COMPLETE"
                           ? "Hoàn thành"
                           : "Không xác định"}
                       </Badge>

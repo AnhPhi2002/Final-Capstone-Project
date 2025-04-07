@@ -1,3 +1,4 @@
+// src/components/ReportAction.tsx
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -75,6 +76,12 @@ export const ReportAction = ({ schedule }: ReportActionProps) => {
     document.body.removeChild(link);
   };
 
+  // Hàm trích xuất tên file từ URL
+  const getFileNameFromUrl = (url: string) => {
+    const parts = url.split("/");
+    return parts[parts.length - 1]; // Lấy phần cuối của URL (tên file)
+  };
+
   const UploadModalContent = () => (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
@@ -129,7 +136,6 @@ export const ReportAction = ({ schedule }: ReportActionProps) => {
   const ResultModalContent = () => {
     if (!schedule) return null;
 
-    // Lấy assignment đầu tiên từ mảng assignments
     const assignment = schedule.assignments?.[0];
 
     return (
@@ -168,19 +174,25 @@ export const ReportAction = ({ schedule }: ReportActionProps) => {
 
           <div className="mb-4">
             <p className="font-semibold">Tài liệu:</p>
-            {schedule.documents && schedule.documents.length > 0 ? (
-              <ul>
-                {schedule.documents.map((doc, index) => (
-                  <li key={index} className="mb-2">
-                    <p className="text-green-500 break-all">{doc.fileName}</p>
-                    <Button
-                      onClick={() => handleDownloadReport(doc.fileUrl, doc.fileName)}
-                    >
-                      Tải tài liệu
-                    </Button>
-                  </li>
-                ))}
-              </ul>
+            {schedule.url ? (
+              <div>
+                <p className="text-green-500 break-all">
+                  {getFileNameFromUrl(schedule.url)}
+                </p>
+                <Button
+                  onClick={() => {
+                    if (schedule.url) {
+                      handleDownloadReport(
+                        schedule.url,
+                        getFileNameFromUrl(schedule.url)
+                      );
+                    }
+                  }}
+                  disabled={!schedule.url} // Vô hiệu hóa nút nếu không có URL
+                >
+                  Tải tài liệu
+                </Button>
+              </div>
             ) : (
               <p>Chưa có tài liệu</p>
             )}
