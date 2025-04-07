@@ -281,9 +281,14 @@ const lecturerMenu = {
           url: "/lecturer/council-check",
         },
         {
-          title: "Hội đồng review",
+          title: "Hội đồng kiểm tra",
           url: "/lecturer/council-review",
         },
+        {
+          title: "Hội đồng bảo vệ",
+          url: "/lecturer/council-defense",
+        },
+
       ],
     },
     {
@@ -293,8 +298,12 @@ const lecturerMenu = {
       isActive: true,
       items: [
         {
-          title: "Hội đồng review",
+          title: "Hội đồng kiểm tra",
           url: "/lecturer/check-review",
+        },
+        {
+          title: "Hội đồng bảo vệ",
+          url: "/lecturer/check-defense",
         },
         {
           title: "Quyết định bảo vệ",
@@ -485,8 +494,12 @@ const studentMenu = {
           url: "/student/meeting-student",
         },
         {
-          title: "Phòng Review",
+          title: "Phòng kiểm tra",
           url: "/student/review-student",
+        },
+        {
+          title: "Phòng Bảo vệ",
+          url: "/student/review-defense",
         },
       ],
     },

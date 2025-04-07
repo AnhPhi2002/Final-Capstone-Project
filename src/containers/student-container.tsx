@@ -26,6 +26,7 @@ import ProfileUpdateForm from "@/pages/admin/profile-user/components/profile-upd
 import { RoomReviewStudent } from "@/pages/student/review-room/room-review-student";
 import { GroupStudentDefenseWithStudentPage } from "@/pages/student/group-defense/group-student-page";
 import { GroupStudentDefenseCardPage } from "@/pages/student/group-defense/group-student-card-page";
+import { RoomDefenseStudent } from "@/pages/student/defense-room/room-defense-student";
 
 
 export const StudentContainer = () => {
@@ -40,14 +41,14 @@ export const StudentContainer = () => {
     <MainLayout>
       <Routes>
 
-               <Route path="/profile-page" element={<ProfilePage />} />
-               <Route path="/profile-page/update" element={<ProfileUpdateForm />} />
+        <Route path="/profile-page" element={<ProfilePage />} />
+        <Route path="/profile-page/update" element={<ProfileUpdateForm />} />
         <Route path="/topic-student" element={<TopicStudentPage />} />
-        <Route path="/topic-student/:semesterId" element={<TopicStudentPage />}/>
-        <Route path="/topic-student-detail" element={<TopicStudentListDetail />}/>
-        
-        <Route path="/topic-student-detail/:semesterId/:topicId" element={<TopicStudentListDetail />}/>
-        <Route path="/topic-student-list/:semesterId" element={<TopicStudentList />}/>
+        <Route path="/topic-student/:semesterId" element={<TopicStudentPage />} />
+        <Route path="/topic-student-detail" element={<TopicStudentListDetail />} />
+
+        <Route path="/topic-student-detail/:semesterId/:topicId" element={<TopicStudentListDetail />} />
+        <Route path="/topic-student-list/:semesterId" element={<TopicStudentList />} />
 
         <Route path="/group-student" element={<GroupStudentWithStudentPage />} />
         <Route path="/group-student/:semesterId" element={<GroupStudentCardPage />} />
@@ -66,10 +67,12 @@ export const StudentContainer = () => {
         <Route path="/topic-group-register-detail" element={<TopicGroupRegisterPage />} />
         <Route path="/topic-group-register-detail/:topicId/:semesterId" element={<TopicGroupRegisterDetail />} />
 
-        <Route path="/meeting-student" element={<MeetingStudentPage/>} />
+        <Route path="/meeting-student" element={<MeetingStudentPage />} />
         <Route path="/meeting-student/:id" element={<MeetingStudentDetail />} />
 
         <Route path="/review-student" element={<RoomReviewStudent />} />
+
+        <Route path="/review-defense" element={<RoomDefenseStudent />} />
 
 
         <Route path="/*" element={<NotFound />} />

@@ -5,7 +5,7 @@ import * as z from "zod";
 import { toast } from "sonner";
 import { useDispatch,} from "react-redux";
 import { AppDispatch } from "@/lib/api/redux/store";
-import { updateCouncil } from "@/lib/api/redux/councilDefenseSlice";
+import { updateCouncilDefense } from "@/lib/api/redux/councilDefenseSlice";
 import { fetchSubmissionRounds } from "@/lib/api/redux/submissionRoundSlice";
 import { CouncilDefense } from "@/lib/api/types";
 // import {
@@ -83,41 +83,35 @@ export const UpdateDefenseTopicCouncil: React.FC<UpdateDefenseTopicCouncilProps>
   }, [open, council, form]);
 
   const onSubmit = async (data: any) => {
-    console.log("Submitting data:", data); // Debug
     if (new Date(data.councilEndDate) <= new Date(data.councilStartDate)) {
       toast.error("Ngày kết thúc phải lớn hơn ngày bắt đầu!");
       return;
     }
-
+  
     const formattedData = {
       name: data.name,
-      semesterId: council.semesterId, // Giữ nguyên từ council
-      submissionPeriodId: council.submissionPeriodId, // Giữ nguyên từ council
-      startDate: new Date(data.councilStartDate).toISOString().split("T")[0] + "T00:00:00Z", // Định dạng đúng
-      endDate: new Date(data.councilEndDate).toISOString().split("T")[0] + "T00:00:00Z", // Định dạng đúng
-      round: Number(data.round), // Đảm bảo là số
+      semesterId: council.semesterId,
+      submissionPeriodId: council.submissionPeriodId,
+      councilStartDate: new Date(data.councilStartDate).toISOString().split("T")[0] + "T00:00:00Z",
+      councilEndDate: new Date(data.councilEndDate).toISOString().split("T")[0] + "T00:00:00Z",
+      round: Number(data.round),
     };
-
-    console.log("Formatted data to submit:", formattedData); // Debug
-
+  
     setIsLoading(true);
     try {
       await dispatch(
-        updateCouncil({ councilId: council.id, updatedData: formattedData })
+        updateCouncilDefense({ councilId: council.id, updatedData: formattedData })
       ).unwrap();
       toast.success("Cập nhật hội đồng thành công!");
-      if (refetchData) {
-        console.log("Triggering refetch"); // Debug
-        refetchData();
-      }
+      if (refetchData) refetchData();
       setOpen(false);
     } catch (error) {
-      console.error("Update failed:", error); // Debug
-      toast.error("Cập nhật thất bại!");
+      toast.error(`${error}`);
     } finally {
       setIsLoading(false);
     }
   };
+  
 
   if (!open) return null;
 

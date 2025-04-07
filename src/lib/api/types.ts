@@ -498,3 +498,56 @@ export interface CouncilDefenseAssignment {
     // email: string;
   };
 }
+
+export interface DefenseSchedule {
+  schedule: {
+    id: string;
+    councilId: string;
+    groupId: string;
+    topicId: string;
+    reviewTime: string;
+    room: string;
+    reviewRound: number;
+    status: string;
+    council: {
+      code: string;
+      name: string;
+    };
+    group: {
+      groupCode: string;
+      // defenseRound: number | null;
+      // defendStatus: string | null;
+      semesterId: string;
+      topicAssignments:
+        {
+          defenseRound: number | null;
+          defendStatus: string | null;
+        }[];
+
+      
+    };
+    topic: {
+      topicCode: string;
+      name: string;
+    };
+  };
+  assignments:  DefenseScheduleAssignment[];
+  documents: DefenseScheduleDocument[];
+}
+
+export interface DefenseScheduleDocument {
+  fileName: string;
+  fileUrl: string;
+}
+
+export interface DefenseScheduleAssignment {
+  id: string;
+  score: number | null;
+  feedback: string | null;
+  status: string;
+  reviewRound: number;
+  reviewer: {
+    fullName?: string;
+    email?: string;
+  }
+}

@@ -33,6 +33,12 @@ import { DecisionDefense } from "@/pages/mentor/decision-defense/columns/mentor-
 import { CouncilCheckTopicPage } from "@/pages/mentor/council-check-topic/council-check-topic-page";
 import { CouncilCheckTopicDetail } from "@/pages/mentor/council-check-topic/columns/council-check-topic-detail";
 import { CouncilCheckMembersPage } from "@/pages/mentor/council-check-topic/columns-member/CouncilMembersPage";
+import { MentorCheckDefensePage } from "@/pages/mentor/defense-room/mentor-check-defense-page";
+import { MentorCheckDefense } from "@/pages/mentor/defense-room/columns/mentor-check-defense-detail";
+import { CouncilDefenseMentorPage } from "@/pages/mentor/council-defense/council-defense-mentor-page";
+import { CouncilDefenseMentorDetail } from "@/pages/mentor/council-defense/columns/council-defense-mentor-detail";
+import { CouncilDefenseMembersPage } from "@/pages/mentor/council-defense/columns-member/CouncilMembersPage";
+import { CouncilDefenseGroupsPage } from "@/pages/mentor/council-defense/columns-detail/CouncilGroupsPage";
 
 export const LecturerContainer = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -81,8 +87,16 @@ export const LecturerContainer = () => {
         <Route path="/council-review-member/:councilId/:semesterId" element={<CouncilReviewMembersPage />} />
         <Route path="/council-review-group/:councilId/:semesterId" element={<CouncilReviewGroupsPage />} />
 
+        <Route path="/council-defense" element={<CouncilDefenseMentorPage />} />
+        <Route path="/council-defense/:councilId/:semesterId" element={<CouncilDefenseMentorDetail />} />
+        <Route path="/council-defense-member/:councilId/:semesterId" element={<CouncilDefenseMembersPage />} />
+        <Route path="/council-defense-group/:councilId/:semesterId" element={<CouncilDefenseGroupsPage />} />
+
         <Route path="/check-review/" element={<MentorCheckReviewPage />} />
         <Route path="/check-review/:semesterId" element={<MentorCheckReview/>} />
+
+        <Route path="/check-defense/" element={<MentorCheckDefensePage />} />
+        <Route path="/check-defense/:semesterId" element={<MentorCheckDefense/>} />
 
         <Route path="/decision-defense/" element={<DecisionDefensePage />} />
         <Route path="/decision-defense/:semesterId" element={<DecisionDefense/>} />
