@@ -21,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { toast } from "sonner"; // Thêm import toast nếu chưa có
 
 export function MeetingPage() {
   const { semesterId } = useParams<{ semesterId: string }>();
@@ -76,10 +77,17 @@ export function MeetingPage() {
     setSelectedGroupId(value);
   };
 
-  // Sao chép mảng trước khi sắp xếp và lọc
-  const sortedAndFilteredMeetings = [...meetings] // Tạo bản sao
-    .sort((a, b) => new Date(a.meetingTime).getTime() - new Date(b.meetingTime).getTime()) // Sắp xếp
-    .filter((meeting) => selectedGroupId === "all" || meeting.groupId === selectedGroupId); // Lọc
+  // const handleJoinMeeting = (url: string | undefined) => {
+  //   if (!url) {
+  //     toast.error("Không có phòng họp online");
+  //     return;
+  //   }
+  //   window.open(url, "_blank", "noopener,noreferrer");
+  // };
+
+  const sortedAndFilteredMeetings = [...meetings]
+    .sort((a, b) => new Date(a.meetingTime).getTime() - new Date(b.meetingTime).getTime())
+    .filter((meeting) => selectedGroupId === "all" || meeting.groupId === selectedGroupId);
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
@@ -200,15 +208,25 @@ export function MeetingPage() {
                       {groupCodes[meeting.groupId] || (groupLoading ? "Đang tải..." : "N/A")}
                     </p>
                   </div>
-                  <Button
-                    asChild
-                    variant="outline"
-                    className="w-full border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold py-2 rounded-lg transition-colors"
-                  >
-                    <a href={meeting.url} target="_blank" rel="noopener noreferrer">
+                  {meeting.url ? (
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="w-full border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold py-2 rounded-lg transition-colors"
+                    >
+                      <a href={meeting.url} target="_blank" rel="noopener noreferrer">
+                        Tham gia phòng
+                      </a>
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      className="w-full border-gray-400 text-gray-600 font-semibold py-2 rounded-lg cursor-not-allowed"
+                      onClick={() => toast.error("Không có phòng họp online")}
+                    >
                       Tham gia phòng
-                    </a>
-                  </Button>
+                    </Button>
+                  )}
                 </CardContent>
               </Card>
             ))}
