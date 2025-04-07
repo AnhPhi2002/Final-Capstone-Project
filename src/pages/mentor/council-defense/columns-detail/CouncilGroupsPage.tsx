@@ -28,7 +28,7 @@ export const CouncilDefenseGroupsPage: React.FC = () => {
 
   const table = useReactTable<DefenseSchedule>({
     data: councilDetail?.defenseSchedules || [],
-    columns: groupColumns(semesterId || ""), // Truyền semesterId vào groupColumns
+    columns: groupColumns(semesterId || "", councilId || ""), // Truyền thêm councilId
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),

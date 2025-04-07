@@ -131,6 +131,7 @@ export interface CouncilReviewSessions {
   }
   isDeleted?: boolean;
   assignments?: CouncilReviewAssignment[] ;
+  documents?: ReviewScheduleDocument[]; // Thêm trường documents vào đây
 }
 
 export interface CouncilReviewAssignment {
@@ -352,6 +353,7 @@ export interface ReviewSchedule {
     };
   };
   assignments:  ReviewScheduleAssignment[];
+  url: string | null;
   documents: ReviewScheduleDocument[];
 }
 

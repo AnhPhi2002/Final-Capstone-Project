@@ -1,4 +1,3 @@
-// src/components/action.tsx
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,11 +11,12 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/api/redux/store";
 import { uploadFile } from "@/lib/api/redux/uploadSlice";
-import { addReportUrl } from "@/lib/api/redux/scheduleSlice";
+import { addReportDefenseUrl } from "@/lib/api/redux/scheduleSlice";
 import { useState } from "react";
 import { toast } from "sonner";
 import { createPortal } from "react-dom";
 import { DefenseSchedule } from "@/lib/api/redux/types/defenseSchedule";
+import { Label } from "@/components/ui/label";
 
 interface ReportActionProps {
   schedule: DefenseSchedule;
@@ -54,7 +54,7 @@ export const ReportAction = ({ schedule }: ReportActionProps) => {
       const uploadedUrl = uploadResult as string;
 
       await dispatch(
-        addReportUrl({ scheduleId: schedule.id, url: uploadedUrl })
+        addReportDefenseUrl({ scheduleId: schedule.id, url: uploadedUrl })
       ).unwrap();
 
       toast.success("Báo cáo đã được gửi thành công!");
@@ -67,14 +67,14 @@ export const ReportAction = ({ schedule }: ReportActionProps) => {
     }
   };
 
-  // const handleDownloadReport = (url: string, fileName: string) => {
-  //   const link = document.createElement("a");
-  //   link.href = url;
-  //   link.download = fileName;
-  //   document.body.appendChild(link);
-  //   link.click();
-  //   document.body.removeChild(link);
-  // };
+  const handleDownloadDocument = (url: string, fileName: string) => {
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   const UploadModalContent = () => (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
@@ -132,6 +132,7 @@ export const ReportAction = ({ schedule }: ReportActionProps) => {
 
     // Lấy memberResult đầu tiên từ mảng memberResults
     const memberResult = schedule.memberResults?.[0];
+    const doc = schedule.documents?.[0]; // Đổi tên để tránh nhầm lẫn với DOM
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
@@ -139,47 +140,46 @@ export const ReportAction = ({ schedule }: ReportActionProps) => {
           <h2 className="text-lg font-bold mb-4">Kết quả bảo vệ</h2>
 
           {memberResult ? (
-            <>
-              <div className="mb-2">
-                <p className="font-semibold">Kết quả:</p>
-                <p>{memberResult.result || "Chưa có kết quả"}</p>
+            <div className="space-y-4">
+              <div>
+                <Label>Kết quả</Label>
+                <p className="text-sm text-gray-700">{memberResult.result || "Chưa có kết quả"}</p>
               </div>
-
-              <div className="mb-2">
-                <p className="font-semibold">Phản hồi:</p>
-                <p>{memberResult.feedback || "Chưa có phản hồi"}</p>
+              <div>
+                <Label>Phản hồi</Label>
+                <p className="text-sm text-gray-700">{memberResult.feedback || "Chưa có phản hồi"}</p>
               </div>
-
-              {/* <div className="mb-2">
-                <p className="font-semibold">Người đánh giá:</p>
-                <p>{memberResult.evaluatedBy || "Chưa có người đánh giá"}</p>
-              </div> */}
-            </>
+              <div>
+                <Label>Tài liệu</Label>
+                {doc ? (
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm text-green-500">
+                      {doc.fileName || "Tài liệu không có tên"}
+                    </p>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() =>
+                        handleDownloadDocument(
+                          doc.fileUrl,
+                          doc.fileName || `document-${schedule.group?.groupCode || "unknown"}`
+                        )
+                      }
+                      disabled={!doc.fileUrl}
+                    >
+                      Tải tài liệu
+                    </Button>
+                  </div>
+                ) : (
+                  <p className="text-sm text-gray-700">Chưa có tài liệu</p>
+                )}
+              </div>
+            </div>
           ) : (
             <p>Không có thông tin kết quả bảo vệ.</p>
           )}
 
-          {/* <div className="mb-4">
-            <p className="font-semibold">Tài liệu:</p>
-            {schedule.documents && schedule.documents.length > 0 ? (
-              <ul>
-                {schedule.documents.map((doc, index) => (
-                  <li key={index} className="mb-2">
-                    <p className="text-green-500 break-all">{doc.fileName}</p>
-                    <Button
-                      onClick={() => handleDownloadReport(doc.fileUrl, doc.fileName)}
-                    >
-                      Tải tài liệu
-                    </Button>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>Chưa có tài liệu</p>
-            )}
-          </div> */}
-
-          <div className="flex justify-end">
+          <div className="flex justify-end mt-4">
             <Button variant="outline" onClick={() => setIsResultModalOpen(false)}>
               Đóng
             </Button>

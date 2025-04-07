@@ -1,4 +1,3 @@
-// src/components/action.tsx
 import React, { useState } from "react";
 import { MoreHorizontal } from "lucide-react";
 import {
@@ -13,15 +12,18 @@ import { Button } from "@/components/ui/button";
 import { DefenseSchedule } from "@/lib/api/redux/types/defenseSchedule";
 import { ScoreModal } from "./score-modal";
 import { ViewScoreModal } from "./view-score-modal";
+import { MeetingStatusModal } from "./MeetingStatusModal";
 
 type ActionProps = {
   schedule: DefenseSchedule;
   semesterId: string;
+  councilId: string;
 };
 
-export const Action: React.FC<ActionProps> = ({ schedule, semesterId }) => {
+export const Action: React.FC<ActionProps> = ({ schedule, semesterId, councilId }) => {
   const [openScore, setOpenScore] = useState(false);
   const [viewScore, setViewScore] = useState(false);
+  const [openMeetingStatus, setOpenMeetingStatus] = useState(false); // Thêm state cho modal mới
 
   const handleOpenScore = () => {
     setTimeout(() => setOpenScore(true), 0);
@@ -29,6 +31,10 @@ export const Action: React.FC<ActionProps> = ({ schedule, semesterId }) => {
 
   const handleViewScore = () => {
     setTimeout(() => setViewScore(true), 0);
+  };
+
+  const handleOpenMeetingStatus = () => {
+    setTimeout(() => setOpenMeetingStatus(true), 0);
   };
 
   return (
@@ -44,11 +50,30 @@ export const Action: React.FC<ActionProps> = ({ schedule, semesterId }) => {
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={handleOpenScore}>Chấm điểm</DropdownMenuItem>
           <DropdownMenuItem onClick={handleViewScore}>Xem điểm</DropdownMenuItem>
+          <DropdownMenuItem onClick={handleOpenMeetingStatus}>
+            Trạng thái phòng họp
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <ScoreModal open={openScore} setOpen={setOpenScore} session={schedule} semesterId={semesterId} />
-      <ViewScoreModal open={viewScore} setOpen={setViewScore} scheduleId={schedule.id} />
+      <ScoreModal
+        open={openScore}
+        setOpen={setOpenScore}
+        session={schedule}
+        semesterId={semesterId}
+      />
+      <ViewScoreModal
+        open={viewScore}
+        setOpen={setViewScore}
+        scheduleId={schedule.id}
+      />
+      <MeetingStatusModal
+        open={openMeetingStatus}
+        setOpen={setOpenMeetingStatus}
+        schedule={schedule}
+        semesterId={semesterId}
+        councilId={councilId}
+      />
     </>
   );
 };

@@ -3,7 +3,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DefenseSchedule } from "@/lib/api/redux/types/defenseSchedule";
 import { Action } from "./action";
 
-export const groupColumns = (semesterId: string): ColumnDef<DefenseSchedule>[] => [
+export const groupColumns = (semesterId: string, councilId: string): ColumnDef<DefenseSchedule>[] => [
   {
     accessorKey: "group.groupCode",
     header: "Mã nhóm",
@@ -43,8 +43,12 @@ export const groupColumns = (semesterId: string): ColumnDef<DefenseSchedule>[] =
     },
   },
   {
+    accessorKey: "notes",
+    header: "Ghi chú",
+  },
+  {
     id: "actions",
     header: "Hành động",
-    cell: ({ row }) => <Action schedule={row.original} semesterId={semesterId} />,
+    cell: ({ row }) => <Action schedule={row.original} semesterId={semesterId} councilId={councilId} />,
   },
 ];

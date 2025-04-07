@@ -1,3 +1,4 @@
+// src/components/score-modal.tsx
 import React, { useState } from "react";
 import {
   Dialog,
@@ -21,12 +22,14 @@ type ScoreModalProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
   session: CouncilReviewSessions;
+  refetchData?: () => void; // Thêm prop refetchData
 };
 
 export const ScoreModal: React.FC<ScoreModalProps> = ({
   open,
   setOpen,
   session,
+  refetchData,
 }) => {
   const [score, setScore] = useState<number | string>("");
   const [feedback, setFeedback] = useState("");
@@ -55,9 +58,14 @@ export const ScoreModal: React.FC<ScoreModalProps> = ({
     try {
       await dispatch(updateReviewAssignmentScore({ assignmentId, semesterId, scoreData })).unwrap();
       toast.success("Chấm điểm thành công!");
-      setScore(""); // Reset score
-      setFeedback(""); // Reset feedback
+      setScore("");
+      setFeedback("");
       setOpen(false);
+
+      // Gọi refetchData để làm mới dữ liệu
+      if (refetchData) {
+        refetchData();
+      }
     } catch (error) {
       toast.error("Có lỗi xảy ra khi chấm điểm: " + (errorScore || "Lỗi không xác định"));
     }

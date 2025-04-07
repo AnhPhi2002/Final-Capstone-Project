@@ -1,3 +1,4 @@
+// src/components/action.tsx
 import React, { useState } from "react";
 import { MoreHorizontal } from "lucide-react";
 import {
@@ -12,22 +13,26 @@ import { Button } from "@/components/ui/button";
 import { CouncilReviewSessions } from "@/lib/api/types";
 import { ScoreModal } from "./score-modal";
 import { ViewScoreModal } from "./view-score-modal";
+import { Table } from "@tanstack/react-table"; // Import kiểu Table từ @tanstack/react-table
 
 type ActionProps = {
   session: CouncilReviewSessions;
+  table?: Table<CouncilReviewSessions>; // Cập nhật kiểu cụ thể thay vì ReturnType
 };
 
-export const Action: React.FC<ActionProps> = ({ session }) => {
+export const Action: React.FC<ActionProps> = ({ session, table }) => {
   const [openScore, setOpenScore] = useState(false);
   const [viewScore, setViewScore] = useState(false);
 
   const handleOpenScore = () => {
-    setTimeout(() => setOpenScore(true), 0); // Fix triệt để lỗi màn hình đơ
+    setTimeout(() => setOpenScore(true), 0);
   };
 
   const handleViewScore = () => {
-    setTimeout(() => setViewScore(true), 0); // Fix triệt để lỗi màn hình đơ
+    setTimeout(() => setViewScore(true), 0);
   };
+
+  const refetchData = table?.options.meta?.refetchData;
 
   return (
     <>
@@ -53,6 +58,7 @@ export const Action: React.FC<ActionProps> = ({ session }) => {
         open={openScore}
         setOpen={setOpenScore}
         session={session}
+        refetchData={refetchData}
       />
       <ViewScoreModal
         open={viewScore}
