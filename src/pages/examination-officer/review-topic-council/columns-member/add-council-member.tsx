@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/api/redux/store";
 import { addCouncilMember } from "@/lib/api/redux/councilSlice";
 import { fetchMentorsBySemesterId } from "@/lib/api/redux/mentorSlice";
+import { Mentor } from "@/lib/api/types";
+
 import {
   Dialog,
   DialogContent,
@@ -15,44 +17,45 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Toaster, toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Form,
   FormField,
   FormItem,
   FormLabel,
-  // FormControl,
+  FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { debounce } from "lodash";
+import { Button } from "@/components/ui/button";
+import { Toaster, toast } from "sonner";
 
-// Schema validation với Zod
 const formSchema = z.object({
-  email: z.string().email("Email không hợp lệ"),
+  email: z.string().email("Email không hợp lệ").min(1, "Vui lòng chọn email"),
 });
 
 interface AddReviewMemberTopicCouncilProps {
   councilId: string;
-  refetchData?: () => void;
   semesterId: string;
+  refetchData?: () => void;
 }
 
 export const AddReviewMemberTopicCouncil: React.FC<AddReviewMemberTopicCouncilProps> = ({
   councilId,
-  refetchData,
   semesterId,
+  refetchData,
 }) => {
   const [open, setOpen] = useState(false);
-  const [filteredEmails, setFilteredEmails] = useState<string[]>([]);
   const dispatch = useDispatch<AppDispatch>();
-  const { mentors, loading: mentorLoading } = useSelector((state: RootState) => state.mentors);
 
-  // Fetch mentors theo semesterId
-  useEffect(() => {
-    dispatch(fetchMentorsBySemesterId(semesterId));
-  }, [dispatch, semesterId]);
+  const { mentors, loading: mentorLoading } = useSelector(
+    (state: RootState) => state.mentors
+  );
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -61,41 +64,21 @@ export const AddReviewMemberTopicCouncil: React.FC<AddReviewMemberTopicCouncilPr
     },
   });
 
-  // Hàm lọc email với debounce
-  const filterEmails = debounce((input: string) => {
-    if (!input?.trim()) {
-      setFilteredEmails([]);
-    } else {
-      const filtered = mentors
-        .map((mentor) => mentor.email)
-        .filter((email) => email.toLowerCase().startsWith(input.toLowerCase()));
-      setFilteredEmails(filtered);
+  useEffect(() => {
+    if (open && semesterId) {
+      dispatch(fetchMentorsBySemesterId(semesterId));
     }
-  }, 300);
+  }, [open, semesterId, dispatch]);
 
-  // Xử lý khi chọn email từ danh sách gợi ý
-  const handleSelectMainEmail = (selectedEmail: string) => {
-    form.setValue("email", selectedEmail, { shouldDirty: true });
-    setFilteredEmails([]); // Xóa danh sách gợi ý sau khi chọn
-  };
-
-  // Xử lý submit form
   const onSubmit = async (data: { email: string }) => {
     try {
-      await dispatch(
-        addCouncilMember({ councilId, email: data.email, semesterId })
-      ).unwrap();
+      await dispatch(addCouncilMember({ councilId, email: data.email, semesterId })).unwrap();
       toast.success("Thêm thành viên vào hội đồng thành công!");
-      setOpen(false);
       form.reset();
       refetchData?.();
+      setOpen(false);
     } catch (error: any) {
-      if (typeof error === "string" && error.includes("Không tìm thấy")) {
-        toast.error("Email không tồn tại. Vui lòng kiểm tra lại!");
-      } else {
-        // toast.error("Không thể thêm thành viên!");
-        toast.error(`${error}`);
-      }
+      toast.error(typeof error === "string" ? error : "Không thể thêm thành viên!");
     }
   };
 
@@ -110,7 +93,7 @@ export const AddReviewMemberTopicCouncil: React.FC<AddReviewMemberTopicCouncilPr
           <DialogHeader>
             <DialogTitle>Thêm thành viên hội đồng</DialogTitle>
             <DialogDescription>
-              Nhập email thành viên muốn mời vào hội đồng. Nhấn "Lưu" để xác nhận.
+              Chọn mentor để mời vào hội đồng. Nhấn "Lưu" để xác nhận.
             </DialogDescription>
           </DialogHeader>
 
@@ -120,35 +103,32 @@ export const AddReviewMemberTopicCouncil: React.FC<AddReviewMemberTopicCouncilPr
                 control={form.control}
                 name="email"
                 render={({ field }) => (
-                  <FormItem className="relative">
+                  <FormItem>
                     <FormLabel>Email giảng viên</FormLabel>
-                    {/* <FormControl> */}
-                    <div className="relative">
-                    <Input
-                        placeholder="Email giảng viên"
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
                         value={field.value}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          field.onChange(val); // Cập nhật giá trị form
-                          filterEmails(val); // Lọc email dựa trên input
-                        }}
-                      />
-                    {/* </FormControl> */}
-                    {filteredEmails.length > 0 && (
-                      <ul className="absolute z-10 w-full bg-white border rounded-md shadow-lg max-h-40 overflow-y-auto mt-1">
-                        {filteredEmails.map((email) => (
-                          <li
-                            key={email}
-                            className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
-                            onClick={() => handleSelectMainEmail(email)}
-                          >
-                            {email}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                    </div>
-                      
+                        disabled={mentorLoading}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Chọn email mentor" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {mentors?.length > 0 ? (
+                            mentors.map((mentor: Mentor) => (
+                              <SelectItem key={mentor.id} value={mentor.email}>
+                                {mentor.fullName} ({mentor.email})
+                              </SelectItem>
+                            ))
+                          ) : (
+                            <SelectItem value="none" disabled>
+                              Không có mentor nào
+                            </SelectItem>
+                          )}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -156,15 +136,15 @@ export const AddReviewMemberTopicCouncil: React.FC<AddReviewMemberTopicCouncilPr
 
               <FormItem>
                 <FormLabel>Vai trò</FormLabel>
-                <Input value="council_member" disabled />
+                <input
+                  value="council_member"
+                  disabled
+                  className="w-full px-3 py-2 text-sm border rounded-md bg-gray-100"
+                />
               </FormItem>
 
               <DialogFooter>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setOpen(false)}
-                >
+                <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                   Hủy
                 </Button>
                 <Button type="submit" disabled={mentorLoading}>

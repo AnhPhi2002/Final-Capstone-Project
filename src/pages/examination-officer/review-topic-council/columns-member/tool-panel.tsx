@@ -1,19 +1,19 @@
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectGroup,
+//   SelectItem,
+//   SelectLabel,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/components/ui/select";
 import { AddReviewMemberTopicCouncil } from "./add-council-member";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
 
 export function ToolPanel({
-  table,
+  // table,
   councilId,
   refetchData,
   semesterId,
@@ -23,9 +23,9 @@ export function ToolPanel({
   refetchData: () => void;
   semesterId: string;
 }) {
-  const handleSemesterFilter = (value: string) => {
-    table.getColumn("code")?.setFilterValue?.(value === "all" ? "" : value);
-  };
+  // const handleSemesterFilter = (value: string) => {
+  //   table.getColumn("code")?.setFilterValue?.(value === "all" ? "" : value);
+  // };
 
   const handleBack = () => {
    
@@ -49,7 +49,7 @@ export function ToolPanel({
           semesterId={semesterId}
         />
 
-        <Select onValueChange={handleSemesterFilter}>
+        {/* <Select onValueChange={handleSemesterFilter}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Select a semester" />
           </SelectTrigger>
@@ -62,7 +62,7 @@ export function ToolPanel({
               <SelectItem value="Fall2025">Fall 2025</SelectItem>
             </SelectGroup>
           </SelectContent>
-        </Select>
+        </Select> */}
       </div>
     </div>
   );
