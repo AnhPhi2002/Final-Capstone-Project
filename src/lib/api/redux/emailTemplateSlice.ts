@@ -7,7 +7,7 @@ export const fetchEmailTemplates = createAsyncThunk(
   "emailTemplates/fetchAll",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosClient.get("/email-templates/templates");
+      const response = await axiosClient.get("/templates");
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Không thể tải danh sách templates");
@@ -20,7 +20,7 @@ export const fetchEmailTemplateById = createAsyncThunk(
   "emailTemplates/fetchById",
   async (id: string, { rejectWithValue }) => {
     try {
-      const response = await axiosClient.get(`/email-templates/templates/${id}`);
+      const response = await axiosClient.get(`/templates/${id}`);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Không thể tải chi tiết template");
@@ -33,7 +33,7 @@ export const updateEmailTemplate = createAsyncThunk(
   "emailTemplates/update",
   async ({ id, data }: { id: string; data: any }, { rejectWithValue }) => {
     try {
-      await axiosClient.put(`/email-templates/${id}`, data);
+      await axiosClient.put(`/templates/${id}`, data);
       toast.success("Cập nhật template thành công!");
       return { id, data };
     } catch (error: any) {
@@ -47,7 +47,7 @@ export const deleteEmailTemplate = createAsyncThunk(
   "emailTemplates/delete",
   async (id: string, { rejectWithValue }) => {
     try {
-      await axiosClient.delete(`/email-templates/${id}`);
+      await axiosClient.delete(`/templates/${id}`);
       toast.success("Xóa template thành công!");
       return id;
     } catch (error: any) {
@@ -61,7 +61,7 @@ export const createEmailTemplate = createAsyncThunk(
   "emailTemplates/create",
   async (data: any, { rejectWithValue }) => {
     try {
-      const response = await axiosClient.post("/email-templates/templates", data);
+      const response = await axiosClient.post("/templates", data);
       toast.success("Tạo template mới thành công!");
       return response.data;
     } catch (error: any) {

@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { SelectMajor } from "./SelectMajor";
 import { resetMainMentor } from "@/lib/api/redux/authSlice";
 import { resetSubMentor } from "@/lib/api/redux/authSubSlice";
+import SendMailButton from "./send-mail-button";
 
 export const TopicListPage = () => {
   const { semesterId, submissionPeriodId } = useParams<{ semesterId: string; submissionPeriodId: string }>(); // Type-safe params
@@ -20,13 +21,13 @@ export const TopicListPage = () => {
 
   // Fetch topics khi semesterId hoặc selectedMajor thay đổi
   useEffect(() => {
-       dispatch(resetTopicDetail());
-          dispatch(resetMainMentor()); 
-          dispatch(resetSubMentor());
+    dispatch(resetTopicDetail());
+    dispatch(resetMainMentor());
+    dispatch(resetSubMentor());
     if (semesterId) {
-      dispatch(fetchTopics({ semesterId, submissionPeriodId,majorId: selectedMajor }));
+      dispatch(fetchTopics({ semesterId, submissionPeriodId, majorId: selectedMajor }));
     }
-  
+
   }, [dispatch, semesterId, selectedMajor]);
 
   const handleExportExcel = async () => {
@@ -58,10 +59,13 @@ export const TopicListPage = () => {
           <div className="flex items-center justify-between">
             <SelectMajor onMajorChange={setSelectedMajor} />
             <div className="flex items-center gap-4 justify-end">
+              <div className="col-span-3">
+                {semesterId && <SendMailButton semesterId={semesterId} />}
+              </div>
               <Button onClick={handleExportExcel} variant="outline" disabled={topicsLoading}>
                 Export danh sách đề tài
               </Button>
-              <CreateTopic semesterId={semesterId!} submissionPeriodId={submissionPeriodId!}/>
+              <CreateTopic semesterId={semesterId!} submissionPeriodId={submissionPeriodId!} />
               <Link to={`/academic/import-topic-mentor/${semesterId}`}>
                 <Button className="flex gap-3 items-center">Import đề tài</Button>
               </Link>

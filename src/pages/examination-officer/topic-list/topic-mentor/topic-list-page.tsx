@@ -10,6 +10,7 @@ import { resetMainMentor } from "@/lib/api/redux/authSlice";
 import { resetSubMentor } from "@/lib/api/redux/authSubSlice";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import SendMailButton from "./send-mail-button";
 
 export const TopicListPage = () => {
   const { semesterId } = useParams<{
@@ -48,8 +49,13 @@ export const TopicListPage = () => {
                 <ArrowLeft /> Quay lại
               </Button>
             </div>
+
             <div className="flex items-center justify-end">
-              <SelectMajor onMajorChange={setSelectedMajor} />
+              <div className="flex items-center gap-x-4">
+                {semesterId && <SendMailButton semesterId={semesterId} />}
+                <SelectMajor onMajorChange={setSelectedMajor} />
+              </div>
+
             </div>
           </div>
         </div>

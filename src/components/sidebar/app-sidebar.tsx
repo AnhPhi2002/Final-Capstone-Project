@@ -345,14 +345,14 @@ const examinationMenu = {
           title: "D.s h.đ xét duyệt đề tài",
           url: "/examination/review-topic-council",
         },
-        {
-          title: "D.s h.đ kiểm tra đồ án ",
-          url: "/examination/council-review",
-        },
-        {
-          title: "D.s h.đ bảo vệ đồ án ",
-          url: "/examination/council-defense",
-        },
+        // {
+        //   title: "D.s h.đ kiểm tra đồ án ",
+        //   url: "/examination/council-review",
+        // },
+        // {
+        //   title: "D.s h.đ bảo vệ đồ án ",
+        //   url: "/examination/council-defense",
+        // },
       ],
     },
   ],
@@ -509,17 +509,29 @@ const graduationThesisMenu = {
   navMain: [
     {
       title: "Danh sách sinh viên ",
-      url: "/student/council-member",
+      url: "/graduation-thesis/council-member",
       icon: List,
       isActive: true,
       items: [
         {
-          title: "D.s hội chấm KLTN",
-          url: "/council-member",
+          title: "Quản lý thời gian",
+          url: "/graduation-thesis/deadline-topic",
+        },
+      ],
+    },
+    {
+      title: "Quản lý hội chấm KLTN",
+      url: "/graduation-thesis/review-topic-council",
+      icon: List,
+      isActive: true,
+      items: [
+        {
+          title: "D.s h.đ kiểm tra đồ án ",
+          url: "/graduation-thesis/council-review",
         },
         {
-          title: "D.s g.v hướng dẫn KLTN",
-          url: "/mentor-page",
+          title: "D.s h.đ bảo vệ đồ án ",
+          url: "/graduation-thesis/council-defense",
         },
       ],
     },

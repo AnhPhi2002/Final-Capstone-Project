@@ -81,9 +81,13 @@ export const CardDeadlineTopic: React.FC<CardDeadlineTopicProps> = ({
     return acc;
   }, {} as Record<string, SubmissionRound[]>);
 
-  const types = Object.keys(groupedData);
+  // Chỉ lấy các type là "TOPIC" và "CHECK-TOPIC"
+  const types = Object.keys(groupedData).filter((type) =>
+    ["TOPIC", "CHECK-TOPIC"].includes(type)
+  );
+
   const maxItems = Math.max(
-    ...types.map((type) => groupedData[type].length),
+    ...types.map((type) => groupedData[type]?.length || 0),
     0
   );
   const totalPages = Math.ceil(maxItems / itemsPerPage);
@@ -129,7 +133,7 @@ export const CardDeadlineTopic: React.FC<CardDeadlineTopicProps> = ({
           return (
             <div key={type} className="mb-8">
               <div
-                className={`flex items-center gap-2 mb-4 font-bold  italic  text-xl`}
+                className={`flex items-center gap-2 mb-4 font-bold italic text-xl`}
               >
                 {/* {typeInfo.icon} */}
                 <span>{typeInfo.label}</span>
