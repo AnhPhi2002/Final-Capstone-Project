@@ -10,29 +10,39 @@ import {
 import { Link, useParams } from "react-router";
 import SendMailButton from "./send-mail-button";
 import { DeleteStudentList } from "./delete-student-list";
-
-const ToolPanel = () => {
+interface ToolPanelProps {
+  onFilterChange: (value: string) => void;
+  onSearchChange: (text: string) => void;
+}
+const ToolPanel = ({ onFilterChange, onSearchChange }: ToolPanelProps) => {
   const { semesterId } = useParams<{ semesterId: string }>();
 
   return (
     <div className="grid grid-cols-12 pb-5 gap-5">
       <div className="col-span-4 flex gap-3">
-        <Input placeholder="Nhập để tìm kiếm" />
+      <Input
+          placeholder="Nhập để tìm kiếm"
+          onChange={(e) => onSearchChange(e.target.value)}
+        />
         <DeleteStudentList semesterId={semesterId} />
       </div>
 
       <div className="col-span-3">
         {semesterId && <SendMailButton semesterId={semesterId} />}
       </div>
+    
+
       <div className="col-span-3">
-        <Select>
+        <Select onValueChange={onFilterChange}>
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Trạng thái sinh viên" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="*">Tất cả</SelectItem>
-            <SelectItem value="Qualified">Đạt</SelectItem>
-            <SelectItem value="Not Qualified">Không đạt</SelectItem>
+            <SelectItem value="qualified">Đủ điều kiện</SelectItem>
+            <SelectItem value="not-qualified">Không đủ điều kiện</SelectItem>
+            <SelectItem value="block-3">Block 3</SelectItem>
+            <SelectItem value="block-10">Block 10</SelectItem>
           </SelectContent>
         </Select>
       </div>

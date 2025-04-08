@@ -2,27 +2,63 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Student } from "@/lib/api/types";
 
-export const columns: ColumnDef<Student>[] = [
-  // {
-  //   id: "id",
-  //   header: "STT",
-  //   cell: ({ row }) => row.index + 1,
-  // },  
-  {
-    accessorKey: "id",
-    header: "ID",
-    cell: ({ row }) => <span>{row.getValue("id")}</span>,
-  },
-  {
-    accessorKey: "email",
-    header: "Email",
-    cell: ({ row }) => <span>{row.getValue("email")}</span>,
-  },
-  {
-    accessorKey: "studentCode",
-    header: "Mã sinh viên",
-    cell: ({ row }) => <span>{row.getValue("studentCode")}</span>,
-  },
+export const getStudentColumns = (
+  currentPage: number,
+  itemsPerPage: number,
+  searchText: string
+): ColumnDef<Student>[] => {
+  const highlight = (value: string) => {
+    const keyword = searchText.trim().toLowerCase();
+    const text = value.trim();
+    const lower = text.toLowerCase();
+    const index = lower.indexOf(keyword);
+  
+
+    if (index === -1) return value;
+
+    return (
+      <>
+        {value.substring(0, index)}
+        <mark className="bg-yellow-200 text-black font-bold">
+          {value.substring(index, index + keyword.length)}
+        </mark>
+        {value.substring(index + keyword.length)}
+      </>
+    );
+  };
+
+  return [
+    {
+      id: "stt-id",
+      accessorKey: "id",
+      header: "STT",
+      cell: ({ row }) => {
+        const index = row.index + 1 + (currentPage - 1) * itemsPerPage;
+        const id = row.getValue("id") as string;
+        return (
+          <div className="flex flex-col">
+            <span className="font-medium">{index}</span>
+            <span className="text-xs text-muted-foreground break-all">{id}</span>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "email",
+      header: "Email",
+      cell: ({ row }) => {
+        const value = row.getValue("email") as string;
+        return <span>{highlight(value)}</span>;
+      },
+    },
+    {
+      accessorKey: "studentCode",
+      header: "Mã sinh viên",
+      cell: ({ row }) => {
+        const value = row.getValue("studentCode") as string;
+        return <span>{highlight(value)}</span>;
+      },
+    },
   {
     accessorKey: "studentName",
     header: "Tên sinh viên",
@@ -31,12 +67,18 @@ export const columns: ColumnDef<Student>[] = [
   {
     accessorKey: "major",
     header: "Ngành học",
-    cell: ({ row }) => <span>{row.getValue("major")}</span>,
+    cell: ({ row }) => {
+      const value = row.getValue("major") as string;
+      return <span>{highlight(value)}</span>;
+    },
   },
   {
     accessorKey: "specialization",
     header: "Chuyên ngành",
-    cell: ({ row }) => <span>{row.getValue("specialization")}</span>,
+    cell: ({ row }) => {
+      const value = row.getValue("specialization") as string;
+      return <span>{highlight(value)}</span>;
+    },
   },
   {
     accessorKey: "block3",
@@ -123,3 +165,4 @@ export const columns: ColumnDef<Student>[] = [
   },
   
 ];
+};
