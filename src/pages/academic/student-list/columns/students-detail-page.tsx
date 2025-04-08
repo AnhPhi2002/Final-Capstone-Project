@@ -20,7 +20,7 @@ export const StudentsDetailPage = () => {
   const [searchText, setSearchText] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; // Define the number of items per page
+  const [itemsPerPage, setItemsPerPage] = useState(10); // Define the number of items per page
   const [filterStatus, setFilterStatus] = useState("*");
 
   useEffect(() => {
@@ -85,6 +85,8 @@ export const StudentsDetailPage = () => {
         <ToolPanel
           onFilterChange={setFilterStatus}
           onSearchChange={setSearchText}
+          onItemsPerPageChange={setItemsPerPage}
+          itemsPerPage={itemsPerPage}
         />
 
         {loading ? (
