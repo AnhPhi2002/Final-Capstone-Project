@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -27,16 +29,15 @@ type SendMailButtonProps = {
 
 const SendMailButton = ({ semesterId }: SendMailButtonProps) => {
   const dispatch = useAppDispatch();
-  const { templates, loading: loadingTemplates } = useAppSelector(
-    (state) => state.emailTemplates
-  ) || { templates: [], loading: false };
+  const { templates, loading: loadingTemplates } =
+    useAppSelector((state) => state.emailTemplates) || {
+      templates: [],
+      loading: false,
+    };
 
   const { loading } = useAppSelector((state) => state.sendEmail);
 
-  // const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
-  const [emailType, setEmailType] = useState<string | null>(null);
-  const [qualificationStatus, setQualificationStatus] =
-    useState<string>("qualified");
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,16 +46,12 @@ const SendMailButton = ({ semesterId }: SendMailButtonProps) => {
     }
   }, [dispatch, templates.length]);
 
-  // Khi chọn template, chỉ lấy `name` làm `emailType`
   const handleTemplateChange = (templateId: string) => {
-    const template = templates.find((t) => t.id === templateId);
-    if (template) {
-      setEmailType(template.name);
-    }
+    setSelectedTemplateId(templateId);
   };
 
   const handleSendEmails = async () => {
-    if (!emailType) {
+    if (!selectedTemplateId) {
       toast.error("Vui lòng chọn template email!");
       return;
     }
@@ -68,8 +65,7 @@ const SendMailButton = ({ semesterId }: SendMailButtonProps) => {
       await dispatch(
         sendEmails({
           semesterId,
-          qualificationStatus,
-          emailType,
+          templateId: selectedTemplateId,
         })
       ).unwrap();
       toast.success("Gửi email thành công!");
@@ -93,34 +89,8 @@ const SendMailButton = ({ semesterId }: SendMailButtonProps) => {
             Gửi mail thông báo
           </DialogTitle>
           <DialogDescription>
-            <div className="mb-4">
-              <span className="font-semibold">Chọn loại thông báo:</span>{" "}
-              {/* ✅ Dùng <span> thay vì <p> */}
-              <div className="flex gap-4 mt-2">
-                <Button
-                  variant={
-                    qualificationStatus === "qualified" ? "default" : "outline"
-                  }
-                  onClick={() => setQualificationStatus("qualified")}
-                >
-                  Đủ điều kiện
-                </Button>
-                <Button
-                  variant={
-                    qualificationStatus === "not qualified"
-                      ? "default"
-                      : "outline"
-                  }
-                  onClick={() => setQualificationStatus("not qualified")}
-                >
-                  Không đủ điều kiện
-                </Button>
-              </div>
-            </div>
-
             <div className="flex justify-between items-center mb-4">
-              <span className="font-semibold">Chọn mẫu email:</span>{" "}
-              {/* ✅ Thay <p> bằng <span> */}
+              <span className="font-semibold">Chọn mẫu email:</span>
               <Button
                 variant="outline"
                 onClick={() => navigate("/academic/template-detail")}
@@ -130,8 +100,7 @@ const SendMailButton = ({ semesterId }: SendMailButtonProps) => {
             </div>
 
             <div className="mb-4">
-              <span className="font-semibold">Chọn mẫu email:</span>{" "}
-              {/* ✅ Thay <p> bằng <span> */}
+              <span className="font-semibold">Chọn mẫu email:</span>
               <Select onValueChange={handleTemplateChange}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Chọn mẫu email" />

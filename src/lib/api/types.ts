@@ -119,6 +119,7 @@ export interface CouncilReviewMember {
 }
 
 export interface CouncilReviewSessions {
+  id: string;
   reviewTime: string;
   room?: string;
   group?: {

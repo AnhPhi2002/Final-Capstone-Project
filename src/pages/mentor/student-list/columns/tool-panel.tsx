@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Link, useParams } from "react-router";
-import SendMailButton from "./send-mail-button";
+// import SendMailButton from "./send-mail-button";
 import { DeleteStudentList } from "./delete-student-list";
 
 const ToolPanel = () => {
@@ -21,9 +21,9 @@ const ToolPanel = () => {
         <DeleteStudentList semesterId={semesterId} />
       </div>
 
-      <div className="col-span-3">
+      {/* <div className="col-span-3">
         {semesterId && <SendMailButton semesterId={semesterId} />}
-      </div>
+      </div> */}
       <div className="col-span-3">
         <Select>
           <SelectTrigger className="w-full">

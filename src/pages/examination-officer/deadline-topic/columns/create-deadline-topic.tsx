@@ -39,8 +39,8 @@ import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 
-const submissionTypes = ["TOPIC", "CHECK-TOPIC", "REVIEW", "DEFENSE"] as const;
-// Removed unused SubmissionType type declaration
+// Chỉ lấy "TOPIC" và "CHECK-TOPIC"
+const submissionTypes = ["TOPIC", "CHECK-TOPIC"] as const;
 
 const formSchema = z
   .object({
@@ -67,7 +67,7 @@ type FormValues = z.infer<typeof formSchema>;
 const defaultValues: FormValues = {
   yearId: "",
   semesterId: "",
-  type: "TOPIC",
+  type: "TOPIC", // Giữ nguyên vì "TOPIC" nằm trong danh sách cho phép
   roundNumber: "",
   description: "",
   startDate: undefined,
@@ -93,7 +93,6 @@ export const CreateSubmissionRound: React.FC<CreateSubmissionRoundProps> = ({ on
 
   const { handleSubmit, watch, reset, setValue } = form;
   const yearId = watch("yearId");
-  // const semesterId = watch("semesterId");
   const type = watch("type");
 
   const availableYears = years.filter((y) => !y.isDeleted);
@@ -101,7 +100,6 @@ export const CreateSubmissionRound: React.FC<CreateSubmissionRoundProps> = ({ on
   const sortedSemesters = availableSemesters.sort(
     (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
   );
-  // const selectedSemester = semesters.find((s) => s.id === semesterId);
 
   useEffect(() => {
     dispatch(fetchAllYears());
@@ -140,15 +138,6 @@ export const CreateSubmissionRound: React.FC<CreateSubmissionRoundProps> = ({ on
         toast.error("Vui lòng chọn cả ngày bắt đầu và kết thúc!");
         return;
       }
-
-      // if (selectedSemester) {
-      //   const semesterStart = new Date(selectedSemester.startDate);
-      //   const semesterEnd = new Date(selectedSemester.endDate);
-      //   if (startDate < semesterStart || endDate > semesterEnd) {
-      //     toast.error("Ngày phải nằm trong thời gian của học kỳ!");
-      //     return;
-      //   }
-      // }
 
       await dispatch(
         createSubmissionRound({
@@ -283,8 +272,6 @@ export const CreateSubmissionRound: React.FC<CreateSubmissionRoundProps> = ({ on
                         <SelectContent>
                           <SelectItem value="TOPIC">Đợt nộp đề tài</SelectItem>
                           <SelectItem value="CHECK-TOPIC">Xét duyệt đề tài</SelectItem>
-                          <SelectItem value="REVIEW">Kiểm tra đồ án</SelectItem>
-                          <SelectItem value="DEFENSE">Bảo vệ đồ án</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -308,7 +295,7 @@ export const CreateSubmissionRound: React.FC<CreateSubmissionRoundProps> = ({ on
                         <SelectContent>
                           <SelectItem value="1">1</SelectItem>
                           <SelectItem value="2">2</SelectItem>
-                          {type !== "DEFENSE" && <SelectItem value="3">3</SelectItem>}
+                          <SelectItem value="3">3</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />

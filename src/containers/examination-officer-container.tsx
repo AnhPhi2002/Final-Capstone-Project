@@ -21,6 +21,7 @@ import { CouncilMembersPage } from "@/pages/examination-officer/review-topic-cou
 
 import { ReviewTopicCouncilDetail } from "@/pages/examination-officer/review-topic-council/columns/review-topic-council-detail";
 import { ReviewTopicCouncilPage } from "@/pages/examination-officer/review-topic-council/review-topic-council-page";
+import TemplateDetail from "@/pages/examination-officer/templates-mail/TemplateDetail";
 import { TopicDetailPage } from "@/pages/examination-officer/topic-list/topic-mentor/topic-detail/topic-detail-page";
 // import UpdateTopicDetail from "@/pages/examination-officer/topic-list/topic-mentor/topic-detail/update-topic-detail";
 import { TopicListPage } from "@/pages/examination-officer/topic-list/topic-mentor/topic-list-page";
@@ -49,6 +50,8 @@ export const ExaminationOfficerContainer = () => {
         <Route path="/profile-page/update" element={<ProfileUpdateForm />} />
 
         <Route path="/review-topic-detail/:topicId/:semesterId/update" element={<UpdateReviewTopicDetail />} />
+
+        <Route path="/template-detail" element={<TemplateDetail />} />
 
         <Route path="/review-topic-page" element={<ReviewTopicPage />} />
         <Route path="/review-topic-page/:semesterId" element={<ReviewTopicPage />} />
