@@ -39,7 +39,6 @@ const decisionSchema = z.object({
   clauses: z.array(z.string()).refine((arr) => arr.every((item) => item.trim() !== ''), {
     message: 'Điều khoản không được để trống',
   }),
-  proposal: z.string().min(1, { message: 'Đề xuất không được để trống' }),
   signature: z.string().min(1, { message: 'Chữ ký không được để trống' }),
   participants: z.string().optional(),
 });
@@ -80,7 +79,6 @@ export const CreateDecision = () => {
     basedOn: [''],
     content: '',
     clauses: [''],
-    proposal: '',
     signature: '',
     participants: '',
     decisionURL: '',
@@ -195,7 +193,6 @@ export const CreateDecision = () => {
       basedOn: formData.basedOn.filter((item) => item.trim() !== ''),
       content: formData.content,
       clauses: formData.clauses.filter((item) => item.trim() !== ''),
-      proposal: formData.proposal,
       signature: formData.signature,
       semesterId,
       draftFile: formData.type === 'DRAFT' ? formData.decisionURL : "",
@@ -245,9 +242,7 @@ export const CreateDecision = () => {
   <div className="flex items-center gap-6">
     {/* Decision Type Selection */}
     <div className="flex flex-col items-end">
-      <Label className={`${textClass} mb-2 font-medium text-gray-700`}>
-        Loại quyết định
-      </Label>
+
       <Select
         value={formData.type}
         onValueChange={(value) => updateField('type', value as 'DRAFT' | 'FINAL')}
@@ -344,21 +339,21 @@ export const CreateDecision = () => {
 
               <div className="mt-6 flex justify-between">
                 <div>
-                  <Label className={`${textClass} mb-1`}>Số quyết định</Label>
+             
                   <div className="flex items-center gap-2">
+                  <Label className={`${textClass} mb-1`}>Số quyết định</Label>
                     <Input
                       value={formData.decisionName}
                       onChange={(e) => updateField('decisionName', e.target.value)}
                       className={`${textClass} inline-block w-32 sm:w-40 border border-black px-2 h-[32px]`}
                     />
-                    <span className={`${textClass}`}>/QĐ-FPTUHCM</span>
+                    <span className={`${textClass}`}></span>
                   </div>
                   {formErrors.decisionName && (
                     <p className="text-red-500 text-sm mt-1">{formErrors.decisionName}</p>
                   )}
                 </div>
                 <div>
-                  <Label className={`${textClass} mb-1`}>Ngày ban hành</Label>
                   <p className="italic pr-[0.9cm]">
                     TP. Hồ Chí Minh, ngày{' '}
                     <Popover>
@@ -393,7 +388,6 @@ export const CreateDecision = () => {
 
               <div className="text-center mt-6">
                 <h1 className="text-[14.5pt] font-bold uppercase">QUYẾT ĐỊNH</h1>
-                <Label className={`${textClass} mb-1 block`}>Tiêu đề quyết định</Label>
                 <Textarea
                   value={formData.decisionTitle}
                   onChange={(e) => updateField('decisionTitle', e.target.value)}
@@ -463,21 +457,15 @@ export const CreateDecision = () => {
                   >
                     + Thêm căn cứ
                   </Button>
-                  <Label className={`${textClass} mt-4 block`}>Đề xuất</Label>
-                  <Textarea
-                    value={formData.proposal}
-                    onChange={(e) => updateField('proposal', e.target.value)}
-                    className={`${textClass} border border-black w-full px-2 mt-2 indent-[1.27cm]`}
-                    rows={3}
-                  />
-                  {formErrors.proposal && (
-                    <p className="text-red-500 text-sm mt-1">{formErrors.proposal}</p>
-                  )}
+               
                 </div>
+                <p className="mt-2 indent-[1.27cm]">
+                    Theo đề nghị của Trưởng phòng TC&QL Đào tạo.
+                  </p>
               </div>
 
               <div>
-                <p className="mt-6 font-bold text-center">QUYẾT ĐỊNH:</p>
+                <p className="mt-6 font-bold text-center">QUYẾT ĐỊNH</p>
                 <Label className={`${textClass} mt-2 block font-bold`}>Điều 1:</Label>
                 <Textarea
                   value={formData.content}
