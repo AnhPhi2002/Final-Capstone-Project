@@ -37,6 +37,7 @@ import ProfileUpdateForm from "@/pages/admin/profile-user/components/profile-upd
 import { CreateDecision } from "@/pages/academic/decision/create-decision";
 import DecisionView from "@/pages/academic/decision/decision-view";
 import { ImportBussinessTopicPage } from "@/pages/academic/topic-list/topic-mentor/import-bussiness-topic/import-topic-mentor-page";
+import { DecisionListTopPage } from "@/pages/academic/decision-list-top/decision-list-top-page";
 
 
 
@@ -97,10 +98,15 @@ export const AcademicOfficerContainer = () => {
 
         <Route path="/decision" element={< DecisionPage />} />
         <Route path="/decision/:semesterId" element={< DecisionDetail />} />
-        
         <Route path="/decision/:semesterId/view" element={< DecisionView />} />
         <Route path="/decision/:semesterId/update" element={<UpdateDecision />} />
         <Route path="/decision/:semesterId/create" element={<CreateDecision />} />
+
+        <Route path="/decision-list-top" element={< DecisionListTopPage />} />
+        <Route path="/decision-list-top/:semesterId" element={< DecisionDetail />} />
+        <Route path="/decision-list-top/:semesterId/view" element={< DecisionView />} />
+        <Route path="/decision-list-top/:semesterId/update" element={<UpdateDecision />} />
+        <Route path="/decision-list-top/:semesterId/create" element={<CreateDecision />} />
         <Route path="/*" element={<NotFound />} />
       </Routes>
     </MainLayout>
