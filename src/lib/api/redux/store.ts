@@ -32,6 +32,7 @@ import decisionReducer from "./decisionSlice";
 import uploadDecisionReducer from "./uploadDecisionSlice";
 import scheduleReducer from "./scheduleSlice";
 import importBusinessTopicReducer from './importBusinessTopicSlice';
+import configReducer from "./configSlice";
 
 
 const rootReducer = combineReducers({
@@ -70,6 +71,7 @@ const rootReducer = combineReducers({
   decision: decisionReducer,
   schedule: scheduleReducer,
   importBusinessTopic: importBusinessTopicReducer,
+  config: configReducer,
 });
 
 // const persistedReducer = persistReducer(persistConfig, rootReducer)

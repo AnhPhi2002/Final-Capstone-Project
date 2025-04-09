@@ -136,7 +136,7 @@ export const CouncilReviewDetail = () => {
                             </SelectItem>
                           ))
                       ) : (
-                        <SelectItem value="" disabled>
+                        <SelectItem value="no-data" disabled>
                           Không có phiên review
                         </SelectItem>
                       )}

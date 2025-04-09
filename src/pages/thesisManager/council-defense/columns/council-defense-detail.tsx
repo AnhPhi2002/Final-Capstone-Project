@@ -139,7 +139,7 @@ export const CouncilDefenseDetail = () => {
                             </SelectItem>
                           ))
                       ) : (
-                        <SelectItem value="" disabled>
+                        <SelectItem value="no-data" disabled>
                           Không có lịch bảo vệ
                         </SelectItem>
                       )}

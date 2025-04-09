@@ -253,9 +253,18 @@ const lecturerMenu = {
           url: "/lecturer/topic",
         },
         {
-          title: "Ds. phê duyệt đề tài ",
+          title: "G.V hướng dẫn duyệt cho nhóm",
           url: "/lecturer/approve-topic",
         },
+        {
+          title: "Đề tài chờ xét duyệt",
+          url: "/lecturer/review-topic-page",
+          
+        },
+        {
+          title: "Đề tài đã xét duyệt",
+          url: "/lecturer/topic-approved",
+        }
       ],
     },
     {
@@ -469,10 +478,10 @@ const studentMenu = {
       icon: List,
       isActive: true,
       items: [
-        {
-          title: "Danh sách đề tài có thể đăng ký",
-          url: "/student/topic-student",
-        },
+        // {
+        //   title: "Danh sách đề tài có thể đăng ký",
+        //   url: "/student/topic-student",
+        // },
         {
           title: "Toàn bộ đề tài",
           url: "/student/all-topics-student",

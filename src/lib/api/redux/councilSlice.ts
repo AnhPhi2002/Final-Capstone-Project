@@ -96,6 +96,7 @@ export const updateCouncil = createAsyncThunk(
   }
 );
 
+
 // export const deleteCouncil = createAsyncThunk(
 //   "councils/deleteCouncil",
 //   async (councilId: string, { rejectWithValue }) => {

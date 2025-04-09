@@ -12,14 +12,25 @@ import { useSelector } from "react-redux";
 import { Route, Routes, useNavigate } from "react-router";
 
 export const AdminContainer = () => {
+  // const user = useSelector((state: RootState) => state.auth.user);
+  // const navigate = useNavigate();
+  // useEffect(() => {
+  //   if (!user?.roles.find((role) => role.name === "admin")) {
+  //     navigate("/access-denied");
+  //   }
+  // }, []);
+  // console.log("AdminContainer");
   const user = useSelector((state: RootState) => state.auth.user);
+  const currentRole = useSelector((state: RootState) => state.auth.currentRole);
   const navigate = useNavigate();
+
   useEffect(() => {
-    if (!user?.roles.find((role) => role.name === "admin")) {
+    if (user && currentRole !== "admin") {
       navigate("/access-denied");
     }
-  }, []);
-  console.log("AdminContainer");
+  }, [user, currentRole, navigate]);
+
+  if (!user) return <p>Đang tải...</p>;
   return (
     <MainLayout>
       <Routes>
