@@ -10,6 +10,7 @@ import { Menu } from "./columns/menu";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/api/redux/store";
 import { Badge } from "@/components/ui/badge";
+import SendMailButton from "./send-mail-button";
 
 export const DecisionDetail = () => {
   const { semesterId } = useParams<{ semesterId: string }>();
@@ -37,6 +38,7 @@ export const DecisionDetail = () => {
             {/* Loại quyết định badge */}
             <div className="flex items-center gap-2">
               {/* <span className="font-bold whitespace-nowrap">Bảng:</span> */}
+               {semesterId && <SendMailButton semesterId={semesterId} />}
               {latestDecision?.type && (
                 <Badge
                   variant={
@@ -113,7 +115,7 @@ export const DecisionDetail = () => {
         </div>
 
         <div className="mt-6">
-          <DecisionView />
+          <DecisionView semesterId={semesterId!} />
         </div>
       </div>
     </div>

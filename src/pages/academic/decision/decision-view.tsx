@@ -1,17 +1,54 @@
 "use client";
 
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Card, CardContent } from "@/components/ui/card";
-import { RootState } from "@/lib/api/redux/store";
-import { useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/lib/api/redux/store";
 import { DataTable } from "./columns/data-table";
 import { columns } from "./columns/columns";
 import { format } from "date-fns";
+import { fetchMentorsBySemesterId } from "@/lib/api/redux/mentorSlice";
+import { fetchDecisionsBySemesterId } from "@/lib/api/redux/decisionSlice";
 
-export const DecisionView = () => {
-  const { mentors } = useSelector((state: RootState) => state.mentors);
-  const { decisions } = useSelector((state: RootState) => state.decision);
+type DecisionViewProps = {
+  semesterId: string; // Thêm prop semesterId
+};
 
-  const latestDecision = decisions.length > 0 ? decisions[0] : null;
+export const DecisionView = ({ semesterId }: DecisionViewProps) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { mentors, loading: mentorsLoading, error: mentorsError } = useSelector(
+    (state: RootState) => state.mentors
+  );
+  const { decisions, loading: decisionsLoading, error: decisionsError } = useSelector(
+    (state: RootState) => state.decision
+  );
+
+  // Lấy latestDecision dựa trên semesterId
+  const latestDecision = decisions.find((d) => d.semesterId === semesterId) || null;
+
+  // Fetch dữ liệu khi component mount
+  useEffect(() => {
+    if (semesterId) {
+      dispatch(fetchDecisionsBySemesterId(semesterId)); // Fetch decisions
+      dispatch(fetchMentorsBySemesterId(semesterId)); // Fetch mentors
+    }
+  }, [dispatch, semesterId]);
+
+  if (decisionsLoading || mentorsLoading) {
+    return (
+      <div className="flex justify-center items-center">
+        <p className="text-center text-lg">Đang tải dữ liệu...</p>
+      </div>
+    );
+  }
+
+  if (decisionsError) {
+    return (
+      <div className="flex justify-center items-center">
+        <p className="text-center text-lg text-red-500">Lỗi: {decisionsError}</p>
+      </div>
+    );
+  }
 
   if (!latestDecision) {
     return (
@@ -70,27 +107,27 @@ export const DecisionView = () => {
                 HIỆU TRƯỞNG TRƯỜNG ĐẠI HỌC FPT
               </p>
               <div className="italic text-justify">
-              <p className="mt-2 indent-[1.27cm]">
-                    Căn cứ Quyết định số 208/QĐ-TTg ngày 08/9/2006 của Thủ tướng Chính Phủ về việc thành lập Trường Đại học FPT;
-                  </p>
-                  <p className="mt-2 indent-[1.27cm]">
-                    Căn cứ Nghị định số 99/2019/NĐ-CP ngày 30/12/2019 của Chính Phủ về việc Quy định chi tiết và hướng dẫn thi hành một số điều của Luật sửa đổi, bổ sung một số điều của Luật Giáo dục đại học;
-                  </p>
-                  <p className="mt-2 indent-[1.27cm]">
-                    Căn cứ Quyết định số 1177/QĐ-ĐHFPT ngày 09/11/2023 của Chủ tịch Hội đồng trường Trường Đại học FPT về việc ban hành Quy chế tổ chức và hoạt động của Trường Đại học FPT;
-                  </p>
-                  <p className="mt-2 indent-[1.27cm]">
-                    Căn cứ Quyết định số 17/QĐ-BGDĐT ngày 02/01/2020 của Bộ Giáo dục và Đào tạo về việc cho phép thành lập Phân hiệu trường Đại học FPT tại TP.HCM;
-                  </p>
-                  <p className="mt-2 indent-[1.27cm]">
-                    Căn cứ Quyết định số 229/QĐ-BGDĐT ngày 31/01/2020 của Bộ Giáo dục và Đào tạo về việc cho phép Phân hiệu trường Đại học FPT tại TP.HCM tổ chức hoạt động đào tạo;
-                  </p>
-                  <p className="mt-2 indent-[1.27cm]">
-                    Căn cứ Quyết định số 15/QĐ-ĐHFPT ngày 06/01/2020 của Chủ tịch Hội đồng trường Trường Đại học FPT về việc ban hành Quy chế tổ chức và hoạt động của Phân hiệu Trường Đại học FPT tại TP.HCM;
-                  </p>
-                  <p className="mt-2 indent-[1.27cm]">
-                    Căn cứ Quyết định số 10/QĐ-ĐHFPT ngày 06/01/2016 của Hiệu trưởng trường Đại học FPT về Sửa đổi bổ sung một số Điều trong Quy định về tốt nghiệp đại học chính quy của Trường Đại học FPT;
-                  </p>
+                <p className="mt-2 indent-[1.27cm]">
+                  Căn cứ Quyết định số 208/QĐ-TTg ngày 08/9/2006 của Thủ tướng Chính Phủ về việc thành lập Trường Đại học FPT;
+                </p>
+                <p className="mt-2 indent-[1.27cm]">
+                  Căn cứ Nghị định số 99/2019/NĐ-CP ngày 30/12/2019 của Chính Phủ về việc Quy định chi tiết và hướng dẫn thi hành một số điều của Luật sửa đổi, bổ sung một số điều của Luật Giáo dục đại học;
+                </p>
+                <p className="mt-2 indent-[1.27cm]">
+                  Căn cứ Quyết định số 1177/QĐ-ĐHFPT ngày 09/11/2023 của Chủ tịch Hội đồng trường Trường Đại học FPT về việc ban hành Quy chế tổ chức và hoạt động của Trường Đại học FPT;
+                </p>
+                <p className="mt-2 indent-[1.27cm]">
+                  Căn cứ Quyết định số 17/QĐ-BGDĐT ngày 02/01/2020 của Bộ Giáo dục và Đào tạo về việc cho phép thành lập Phân hiệu trường Đại học FPT tại TP.HCM;
+                </p>
+                <p className="mt-2 indent-[1.27cm]">
+                  Căn cứ Quyết định số 229/QĐ-BGDĐT ngày 31/01/2020 của Bộ Giáo dục và Đào tạo về việc cho phép Phân hiệu trường Đại học FPT tại TP.HCM tổ chức hoạt động đào tạo;
+                </p>
+                <p className="mt-2 indent-[1.27cm]">
+                  Căn cứ Quyết định số 15/QĐ-ĐHFPT ngày 06/01/2020 của Chủ tịch Hội đồng trường Trường Đại học FPT về việc ban hành Quy chế tổ chức và hoạt động của Phân hiệu Trường Đại học FPT tại TP.HCM;
+                </p>
+                <p className="mt-2 indent-[1.27cm]">
+                  Căn cứ Quyết định số 10/QĐ-ĐHFPT ngày 06/01/2016 của Hiệu trưởng trường Đại học FPT về Sửa đổi bổ sung một số Điều trong Quy định về tốt nghiệp đại học chính quy của Trường Đại học FPT;
+                </p>
                 {latestDecision.basedOn?.map((item, index) => (
                   <p key={index} className="mt-2 indent-[1.27cm]">
                     {item}
@@ -111,7 +148,9 @@ export const DecisionView = () => {
             </div>
 
             <div className="mt-4">
-              {mentors.length === 0 ? (
+              {mentorsError ? (
+                <p className="text-center text-red-500">Lỗi: {mentorsError}</p>
+              ) : mentors.length === 0 ? (
                 <p className="text-center">Không có dữ liệu giảng viên</p>
               ) : (
                 <DataTable columns={columns} data={mentors} />

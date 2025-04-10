@@ -24,7 +24,6 @@ interface Topic {
   nameVi: string;
   nameEn: string;
   name: string;
-  topicCode?: string;
   groupCode?: string;
   description: string;
   isBusiness: boolean;
