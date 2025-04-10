@@ -35,13 +35,24 @@ import { useSelector } from "react-redux";
 import { Route, Routes, useNavigate } from "react-router";
 
 export const ExaminationOfficerContainer = () => {
+  // const user = useSelector((state: RootState) => state.auth.user);
+  // const navigate = useNavigate();
+  // useEffect(() => {
+  //   if (!user?.roles.find((role) => role.name === "examination_officer")) {
+  //     navigate("/access-denied");
+  //   }
+  // }, []);
   const user = useSelector((state: RootState) => state.auth.user);
+  const currentRole = useSelector((state: RootState) => state.auth.currentRole);
   const navigate = useNavigate();
+
   useEffect(() => {
-    if (!user?.roles.find((role) => role.name === "examination_officer")) {
+    if (user && currentRole !== "examination_officer") {
       navigate("/access-denied");
     }
-  }, []);
+  }, [user, currentRole, navigate]);
+
+  if (!user) return <p>Đang tải...</p>;
   return (
     <MainLayout>
       <Routes>
@@ -49,7 +60,7 @@ export const ExaminationOfficerContainer = () => {
         <Route path="/profile-page" element={<ProfilePage />} />
         <Route path="/profile-page/update" element={<ProfileUpdateForm />} />
 
-        <Route path="/review-topic-detail/:topicId/:semesterId/update" element={<UpdateReviewTopicDetail />} />
+
 
         <Route path="/template-detail" element={<TemplateDetail />} />
 
@@ -58,6 +69,7 @@ export const ExaminationOfficerContainer = () => {
         <Route path="/review-topic-list" element={<ReviewTopicListPage />} />
         <Route path="/review-topic-list/:semesterId/submission/:submissionPeriodId/round/:roundNumber" element={<ReviewTopicListPage />} />
         <Route path="/review-topic-detail/:topicId/:semesterId" element={<ReviewTopicDetailPage />} />
+        <Route path="/review-topic-detail/:topicId/:semesterId/update" element={<UpdateReviewTopicDetail />} />
 
         <Route path="deadline-topic" element={<DeadineTopicPage />} />
         <Route path="deadline-topic/:semesterId" element={<DeadineTopicDetailPage />} />

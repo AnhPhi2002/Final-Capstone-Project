@@ -22,13 +22,24 @@ import { useSelector } from "react-redux";
 import { Route, Routes, useNavigate } from "react-router";
 
 export const GraduationThesisManagerContainer = () => {
+  // const user = useSelector((state: RootState) => state.auth.user);
+  // const navigate = useNavigate();
+  // useEffect(() => {
+  //   if (!user?.roles.find((role) => role.name === "graduation_thesis_manager")) {
+  //     navigate("/access-denied");
+  //   }
+  // }, []);
   const user = useSelector((state: RootState) => state.auth.user);
+  const currentRole = useSelector((state: RootState) => state.auth.currentRole);
   const navigate = useNavigate();
+
   useEffect(() => {
-    if (!user?.roles.find((role) => role.name === "graduation_thesis_manager")) {
+    if (user && currentRole !== "graduation_thesis_manager") {
       navigate("/access-denied");
     }
-  }, []);
+  }, [user, currentRole, navigate]);
+
+  if (!user) return <p>Đang tải...</p>;
   return (
     <MainLayout>
       <Routes>

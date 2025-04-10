@@ -292,7 +292,7 @@ export const updateTopicStatus = createAsyncThunk(
   "topics/updateTopicStatus",
   async ({ topicId, updatedData}: { topicId: string; updatedData: { status: string; reviewReason: string }}, { rejectWithValue }) => {
     try {
-      const response = await axiosClient.put(`/topics/${topicId}/status`, updatedData); // ✅ Đảm bảo topicId đúng
+      const response = await axiosClient.put(`/council-topic/topics/${topicId}/review`, updatedData); // ✅ Đảm bảo topicId đúng
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Không thể cập nhật trạng thái.");

@@ -1,4 +1,5 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+// authSlice.ts
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { axiosClient } from "../config/axios-client";
 
 // ==== Type Definitions ====
@@ -30,7 +31,7 @@ interface AuthState {
   loading: boolean;
   error: string | null;
   author: User | null;
-  currentRole: string | null; // 🔥 Thêm dòng này
+  currentRole: string | null;
 }
 
 // ==== Initial State ====
@@ -40,12 +41,10 @@ const initialState: AuthState = {
   loading: false,
   error: null,
   author: null,
-  currentRole: localStorage.getItem("currentRole") || null, // 🔥 Thêm dòng này
+  currentRole: localStorage.getItem("currentRole") || null,
 };
 
 // ==== Thunks ====
-
-// Lấy profile người dùng
 export const fetchUserProfile = createAsyncThunk(
   "auth/fetchUserProfile",
   async (_, { rejectWithValue }) => {
@@ -58,7 +57,6 @@ export const fetchUserProfile = createAsyncThunk(
   }
 );
 
-// Đăng nhập
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (credentials: { email: string; password: string }, { rejectWithValue }) => {
@@ -71,7 +69,6 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-// Đăng xuất (API)
 export const logoutUser = createAsyncThunk(
   "auth/logoutUser",
   async (refreshToken: string, { rejectWithValue }) => {
@@ -84,7 +81,6 @@ export const logoutUser = createAsyncThunk(
   }
 );
 
-// Đăng nhập bằng Google
 export const loginWithGoogle = createAsyncThunk(
   "auth/loginWithGoogle",
   async (idToken: string, { rejectWithValue }) => {
@@ -97,7 +93,6 @@ export const loginWithGoogle = createAsyncThunk(
   }
 );
 
-// Cập nhật hồ sơ người dùng
 export const updateUserProfile = createAsyncThunk(
   "auth/updateUserProfile",
   async (updatedData: Partial<User>, { rejectWithValue }) => {
@@ -110,7 +105,6 @@ export const updateUserProfile = createAsyncThunk(
   }
 );
 
-// Lấy người dùng theo ID
 export const fetchUserById = createAsyncThunk(
   "auth/fetchUserById",
   async ({ userId, semesterId }: { userId: string; semesterId: string }, { rejectWithValue }) => {
@@ -128,10 +122,10 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    resetMainMentor: (state) => {
+    resetMainMentor: (state: AuthState) => {
       state.author = null;
     },
-    setCurrentRole: (state, action) => {
+    setCurrentRole: (state: AuthState, action: PayloadAction<string>) => {
       state.currentRole = action.payload;
       localStorage.setItem("currentRole", action.payload);
     },
@@ -139,93 +133,92 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       // === FETCH PROFILE ===
-      .addCase(fetchUserProfile.pending, (state) => {
+      .addCase(fetchUserProfile.pending, (state: AuthState) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchUserProfile.fulfilled, (state, action) => {
+      .addCase(fetchUserProfile.fulfilled, (state: AuthState, action: PayloadAction<User>) => {
         state.loading = false;
         state.user = action.payload;
       })
-      .addCase(fetchUserProfile.rejected, (state, action) => {
+      .addCase(fetchUserProfile.rejected, (state: AuthState, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
 
       // === LOGIN ===
-      .addCase(loginUser.pending, (state) => {
+      .addCase(loginUser.pending, (state: AuthState) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(loginUser.fulfilled, (state, action) => {
+      .addCase(loginUser.fulfilled, (state: AuthState, action: PayloadAction<{ accessToken: string; refreshToken: string; user: User }>) => {
         state.loading = false;
         state.token = action.payload.accessToken;
         state.user = action.payload.user;
-        state.currentRole = action.payload.user.roles[0]?.name || null;//
-        localStorage.setItem("currentRole", state.currentRole || ""); //
-        
+        state.currentRole = action.payload.user.roles[0]?.name || null;
+        localStorage.setItem("currentRole", state.currentRole || "");
         localStorage.setItem("token", action.payload.accessToken);
         localStorage.setItem("user", JSON.stringify(action.payload.user));
         localStorage.setItem("refreshToken", action.payload.refreshToken);
-        
       })
-      .addCase(loginUser.rejected, (state, action) => {
+      .addCase(loginUser.rejected, (state: AuthState, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
 
       // === LOGOUT ===
-      .addCase(logoutUser.fulfilled, (state) => {
+      .addCase(logoutUser.fulfilled, (state: AuthState) => {
         state.user = null;
         state.token = null;
-        state.currentRole = null; // 🔥 Reset role
+        state.currentRole = null;
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         localStorage.removeItem("refreshToken");
-        localStorage.removeItem("currentRole"); // 🔥 Xoá khỏi localStorage
+        localStorage.removeItem("currentRole");
       })
-      .addCase(logoutUser.rejected, (state, action) => {
+      .addCase(logoutUser.rejected, (state: AuthState, action) => {
         state.error = action.payload as string;
       })
 
       // === LOGIN GOOGLE ===
-      .addCase(loginWithGoogle.pending, (state) => {
+      .addCase(loginWithGoogle.pending, (state: AuthState) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(loginWithGoogle.fulfilled, (state, action) => {
+      .addCase(loginWithGoogle.fulfilled, (state: AuthState, action: PayloadAction<{ accessToken: string; refreshToken: string; user: User }>) => {
         state.loading = false;
         state.token = action.payload.accessToken;
         state.user = action.payload.user;
-
+        state.currentRole = action.payload.user.roles[0]?.name || null;
         localStorage.setItem("token", action.payload.accessToken);
         localStorage.setItem("user", JSON.stringify(action.payload.user));
         localStorage.setItem("refreshToken", action.payload.refreshToken);
+        localStorage.setItem("currentRole", state.currentRole || "");
       })
-      .addCase(loginWithGoogle.rejected, (state, action) => {
+      .addCase(loginWithGoogle.rejected, (state: AuthState, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
 
       // === UPDATE PROFILE ===
-      .addCase(updateUserProfile.fulfilled, (state, action) => {
+      .addCase(updateUserProfile.fulfilled, (state: AuthState, action: PayloadAction<User>) => {
         state.user = action.payload;
         localStorage.setItem("user", JSON.stringify(action.payload));
       })
-      .addCase(updateUserProfile.rejected, (state, action) => {
+      .addCase(updateUserProfile.rejected, (state: AuthState, action) => {
         state.error = action.payload as string;
       })
 
       // === GET USER BY ID ===
-      .addCase(fetchUserById.pending, (state) => {
+      .addCase(fetchUserById.pending, (state: AuthState) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchUserById.fulfilled, (state, action) => {
+      .addCase(fetchUserById.fulfilled, (state: AuthState, action: PayloadAction<User>) => {
         state.loading = false;
         state.author = action.payload;
       })
-      .addCase(fetchUserById.rejected, (state, action) => {
+      .addCase(fetchUserById.rejected, (state: AuthState, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

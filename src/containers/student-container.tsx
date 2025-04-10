@@ -31,12 +31,16 @@ import { RoomDefenseStudent } from "@/pages/student/defense-room/room-defense-st
 
 export const StudentContainer = () => {
   const user = useSelector((state: RootState) => state.auth.user);
+  const currentRole = useSelector((state: RootState) => state.auth.currentRole);
   const navigate = useNavigate();
+
   useEffect(() => {
-    if (!user?.roles.find((role) => role.name === "student")) {
+    if (user && currentRole !== "student") {
       navigate("/access-denied");
     }
-  }, []);
+  }, [user, currentRole, navigate]);
+
+  if (!user) return <p>Đang tải...</p>;
   return (
     <MainLayout>
       <Routes>

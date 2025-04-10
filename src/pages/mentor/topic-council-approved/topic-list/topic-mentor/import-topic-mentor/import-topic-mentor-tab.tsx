@@ -5,7 +5,8 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { useParams, useNavigate } from "react-router";
 import { toast } from "sonner";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
-import { importTopicUpdate, resetState } from "@/lib/api/redux/importTopicSlice"; // Import từ topicSlice
+import { importStudents, resetState } from "@/lib/api/redux/importStudentSlice";
+
 
 export const ImportTopicMentorTab = () => {
   const { semesterId } = useParams<{ semesterId: string }>();
@@ -13,7 +14,7 @@ export const ImportTopicMentorTab = () => {
   const dispatch = useAppDispatch();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  const { loading, error } = useAppSelector((state) => state.importTopic); // Lấy state từ topic slice
+  const { loading, error } = useAppSelector((state) => state.importStudents);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
@@ -32,12 +33,13 @@ export const ImportTopicMentorTab = () => {
 
     const formData = new FormData();
     formData.append("file", selectedFile);
+    formData.append("semesterId", semesterId!);
     for (let pair of formData.entries()) {
       console.log(`${pair[0]}: ${pair[1]}`);
     }
 
     try {
-      await dispatch(importTopicUpdate({ formData, semesterId: semesterId! })).unwrap();
+      await dispatch(importStudents({ formData })).unwrap();
       toast.success("Import thành công!");
       setTimeout(() => {
         navigate(`/topic/${semesterId}`);

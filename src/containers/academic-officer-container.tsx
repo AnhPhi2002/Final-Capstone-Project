@@ -37,6 +37,9 @@ import ProfileUpdateForm from "@/pages/admin/profile-user/components/profile-upd
 import { CreateDecision } from "@/pages/academic/decision/create-decision";
 import DecisionView from "@/pages/academic/decision/decision-view";
 import { ImportBussinessTopicPage } from "@/pages/academic/topic-list/topic-mentor/import-bussiness-topic/import-topic-mentor-page";
+
+import { ImportTopicMentorPage } from "@/pages/academic/topic-list/topic-mentor/import-topic-mentor/import-topic-mentor-page";
+
 import { DecisionListTopPage } from "@/pages/academic/decision-list-top/decision-list-top-page";
 // import { DecisionListTopView } from "@/pages/academic/decision-list-top/decision-list-top-view";
 import { CreateDecisionListTopic } from "@/pages/academic/decision-list-top/create-decision-list-topic";
@@ -46,15 +49,26 @@ import { DecisionListTopDetail } from "@/pages/academic/decision-list-top/decisi
 
 
 
+
 export const AcademicOfficerContainer = () => {
+  // const user = useSelector((state: RootState) => state.auth.user);
+  // const navigate = useNavigate();
+  // useEffect(() => {
+  //   if (!user?.roles.find((role) => role.name === "academic_officer")) {
+  //     navigate("/access-denied");
+  //   }
+  // }, []);
   const user = useSelector((state: RootState) => state.auth.user);
+  const currentRole = useSelector((state: RootState) => state.auth.currentRole);
   const navigate = useNavigate();
+
   useEffect(() => {
-    if (!user?.roles.find((role) => role.name === "academic_officer")) {
+    if (user && currentRole !== "academic_officer") {
       navigate("/access-denied");
     }
-  }, []);
+  }, [user, currentRole, navigate]);
 
+  if (!user) return <p>Đang tải...</p>;
   return (
     <MainLayout>
       <Routes>
@@ -95,8 +109,9 @@ export const AcademicOfficerContainer = () => {
         <Route path="/mentor-page/:semesterId" element={<MentorDetail />} />
         <Route path="/import-mentor/:semesterId" element={<ImportMentorPage />} />
         <Route path="/import-business-topic/:semesterId/submission-period/:submissionPeriodId" element={<ImportBussinessTopicPage />} />
-        
 
+        <Route path="/import-topic-mentor/:semesterId" element={<ImportTopicMentorPage />} />
+        
         <Route path="/topic-assignment-decision" element={<TopicAssignmentDecisionPage />} />
         <Route path="/topic-assignment-decision-detail" element={<TopicAssignmentDecisionDetail />} />
 

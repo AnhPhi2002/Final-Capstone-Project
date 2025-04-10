@@ -1,10 +1,11 @@
+// LoginPage.tsx
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, Link } from "react-router";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
-import { loginUser, loginWithGoogle } from "@/lib/api/redux/authSlice";
+import { loginUser, loginWithGoogle, fetchUserProfile } from "@/lib/api/redux/authSlice";
 import { toast } from "react-toastify";
 import { GoogleLogin } from "@react-oauth/google";
 import { motion } from "framer-motion";
@@ -22,6 +23,22 @@ import {
 } from "@/components/ui/form";
 import backgroundImage from "@/assets/images/bg.jpg";
 
+interface User {
+  id: string;
+  email: string;
+  username: string;
+  fullName: string;
+  avatar: string | null;
+  roles: { id: string; name: string; isActive: boolean }[];
+  gender?: string | null;
+  phone?: string | null;
+  personal_Email?: string | null;
+  profession?: string | null;
+  specialty?: string | null;
+  programming_language?: string | null;
+  updatedAt?: string;
+}
+
 const formSchema = z.object({
   email: z.string().email("Email không hợp lệ"),
   password: z.string().min(5, "Mật khẩu phải chứa ít nhất 5 ký tự"),
@@ -38,6 +55,27 @@ const LoginPage = () => {
     defaultValues: { email: "", password: "" },
   });
 
+  const isProfileIncomplete = (user: User | null): boolean => {
+    return (
+      !user?.fullName ||
+      !user?.gender ||
+      !user?.phone ||
+      !user?.personal_Email ||
+      !user?.profession ||
+      !user?.specialty ||
+      !user?.programming_language
+    );
+  };
+
+  const rolePathMap: Record<string, string> = {
+    admin: "/admin/admin-config",
+    lecturer: "/lecturer/group-student",
+    student: "/student/group-student",
+    academic_officer: "/academic/year-semester",
+    examination_officer: "/examination/deadline-topic",
+    graduation_thesis_manager: "/graduation-thesis/deadline-topic",
+  };
+
   // Xử lý đăng nhập Email/Mật khẩu
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     const result = await dispatch(loginUser(data));
@@ -45,7 +83,22 @@ const LoginPage = () => {
     if (loginUser.fulfilled.match(result)) {
       toast.success("Đăng nhập thành công!");
       if (rememberMe) localStorage.setItem("rememberMe", data.email);
-      navigate("/");
+
+      const currentRole = result.payload.user.roles[0]?.name;
+      const profileResult = await dispatch(fetchUserProfile());
+
+      if (fetchUserProfile.fulfilled.match(profileResult)) {
+        const userData = profileResult.payload as User;
+
+        if (currentRole === "student" && isProfileIncomplete(userData)) {
+          navigate("/student/profile-page/update");
+        } else {
+          navigate(rolePathMap[currentRole] || "/");
+        }
+      } else {
+        toast.error("Không thể lấy thông tin profile");
+        navigate(rolePathMap[currentRole] || "/");
+      }
     } else {
       toast.error(
         typeof result.payload === "string"
@@ -62,7 +115,22 @@ const LoginPage = () => {
 
     if (loginWithGoogle.fulfilled.match(result)) {
       toast.success("Đăng nhập Google thành công!");
-      navigate("/");
+
+      const currentRole = result.payload.user.roles[0]?.name;
+      const profileResult = await dispatch(fetchUserProfile());
+
+      if (fetchUserProfile.fulfilled.match(profileResult)) {
+        const userData = profileResult.payload as User;
+
+        if (currentRole === "student" && isProfileIncomplete(userData)) {
+          navigate("/student/profile-page/update");
+        } else {
+          navigate(rolePathMap[currentRole] || "/");
+        }
+      } else {
+        toast.error("Không thể lấy thông tin profile");
+        navigate(rolePathMap[currentRole] || "/");
+      }
     } else {
       toast.error(
         typeof result.payload === "string"
@@ -74,24 +142,22 @@ const LoginPage = () => {
 
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
-      {/* Cột chứa form */}
       <div className="flex flex-col gap-4 p-6">
         <motion.div className="overflow-hidden whitespace-nowrap">
           <motion.p
             className="py-2 text-3xl font-bold text-primary inline-block"
-            initial={{ x: "100%" }} // Bắt đầu từ ngoài màn hình bên phải
-            animate={{ x: "-100%" }} // Chạy hết màn hình sang bên trái
+            initial={{ x: "100%" }}
+            animate={{ x: "-100%" }}
             transition={{
-              repeat: Infinity, // Lặp vô hạn
-              duration: 8, // Chạy trong 8 giây, có thể tăng hoặc giảm
-              ease: "linear", // Chạy đều, không bị giật
+              repeat: Infinity,
+              duration: 8,
+              ease: "linear",
             }}
           >
             {/* WELCOME TO FU FCPRIMS HCM Management System */}
           </motion.p>
         </motion.div>
 
-        {/* Form đăng nhập */}
         <div className="w-full max-w-md mx-auto mt-6">
           <Form {...form}>
             <form
@@ -173,17 +239,12 @@ const LoginPage = () => {
                 <GoogleLogin
                   onSuccess={handleGoogleSuccess}
                   onError={() => toast.error("Đăng nhập Google thất bại")}
-                  useOneTap // (nếu muốn one-tap)
+                  useOneTap
                   theme="outline"
                   size="large"
                   text="signin_with"
                   shape="rectangular"
                 />
-
-                {/* <GoogleLogin
-                  onSuccess={handleGoogleSuccess}
-                  onError={() => toast.error("Đăng nhập Google thất bại")}
-                /> */}
               </div>
 
               {error && (
@@ -194,7 +255,6 @@ const LoginPage = () => {
         </div>
       </div>
 
-      {/* Cột chứa hình ảnh */}
       <div className="relative hidden bg-muted lg:block">
         <img
           src={backgroundImage}

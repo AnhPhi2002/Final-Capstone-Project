@@ -32,7 +32,12 @@ import decisionReducer from "./decisionSlice";
 import uploadDecisionReducer from "./uploadDecisionSlice";
 import scheduleReducer from "./scheduleSlice";
 import importBusinessTopicReducer from './importBusinessTopicSlice';
+
+import configReducer from "./configSlice";
+import importTopicReducer from './importTopicSlice';
+
 import decisionListReducer from './decisionListTopicSlice';
+
 
 import groupDetailV2Reducer from './groupDetailSliceV2';
 import topicV2Reducer from './topicV2Slice';
@@ -79,6 +84,8 @@ const rootReducer = combineReducers({
   
   schedule: scheduleReducer,
   importBusinessTopic: importBusinessTopicReducer,
+  config: configReducer,
+  importTopic: importTopicReducer,
 });
 
 // const persistedReducer = persistReducer(persistConfig, rootReducer)
