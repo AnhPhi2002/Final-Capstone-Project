@@ -134,8 +134,8 @@ export const DecisionView = ({ semesterId }: DecisionViewProps) => {
                   </p>
                 ))}
                 <p className="mt-2 indent-[1.27cm]">
-                  {latestDecision.proposal}
-                </p>
+                    Theo đề nghị của Trưởng phòng TC&QL Đào tạo.
+                  </p>
               </div>
             </div>
 

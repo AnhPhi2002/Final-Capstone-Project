@@ -104,7 +104,7 @@ export const DecisionView = ({ semesterId }: DecisionViewProps) => {
 
             <div className="mt-6">
               <p className="font-bold text-center">
-                HIỆU TRƯỞNG TRƯỜNG ĐẠI HỌC FPT
+                HIỆU TRƯỞNG TRƯỜNG ĐẠI HỌC FPT 
               </p>
               <div className="italic text-justify">
                 <p className="mt-2 indent-[1.27cm]">
@@ -134,9 +134,10 @@ export const DecisionView = ({ semesterId }: DecisionViewProps) => {
                   </p>
                 ))}
                 <p className="mt-2 indent-[1.27cm]">
-                  {latestDecision.proposal}
-                </p>
+                    Theo đề nghị của Trưởng phòng TC&QL Đào tạo.
+                  </p>
               </div>
+           
             </div>
 
             <div>
