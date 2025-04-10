@@ -21,7 +21,7 @@ const CreateGroup: React.FC<CreateGroupProps> = ({ semesterId }) => {
   
     setLoading(true);
     try {
-      await dispatch(createGroup(semesterId)).unwrap();
+      await dispatch(createGroup()).unwrap();
       toast.success("Nhóm KLTN đã được tạo thành công!");
       
       await dispatch(fetchGroupsBySemester(semesterId)); // Fetch lại danh sách nhóm mới nhất
