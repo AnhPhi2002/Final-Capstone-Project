@@ -54,9 +54,9 @@ export const fetchGroupsWithoutSemester = createAsyncThunk(
 // Action để tạo nhóm mới
 export const createGroup = createAsyncThunk(
   "groups/create",
-  async (semesterId: string, { rejectWithValue }) => {
+  async (__,{ rejectWithValue }) => {
     try {
-      const response = await axiosClient.post(`/groups/create?semesterId=${semesterId}`, { semesterId });
+      const response = await axiosClient.post(`/groups/create`);
       return response.data.group; // Trả về nhóm mới được tạo
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Lỗi khi tạo nhóm!");
@@ -144,9 +144,9 @@ const groupSlice = createSlice({
         }
       })
       
-      .addCase(createGroup.rejected, (state, action) => {
+      .addCase(createGroup.rejected, (state) => {
         state.loading = false;
-        state.error = action.payload as string;
+        // state.error = action.payload as string;
       })
       .addCase(createGroupForAcademic.pending, (state) => {
         state.loading = true;
