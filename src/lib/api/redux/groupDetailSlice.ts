@@ -42,8 +42,8 @@ interface GroupDetailState {
     mentor2Id: string | null;
     members: GroupMember[];
   } | null;
+  
   loading: boolean;
-  // updatingMember: boolean;
   error: string | null;
 }
 

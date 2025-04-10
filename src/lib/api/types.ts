@@ -26,7 +26,7 @@ export interface Student {
   studentName: string;
   major: string;
   specialization: string;
-  qualificationStatus: "qualified" | "not qualified" | "processing";
+  qualificationStatus: "qualified" | "not qualified" ;
   status: "ACTIVE" | "PENDING" ;
   isEligible: boolean;
   semester: string;

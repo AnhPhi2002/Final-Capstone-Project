@@ -1,5 +1,5 @@
 import { FilePlus, FilePenLine } from "lucide-react";
-import { Link } from "react-router"; // Đổi sang react-router-dom nếu dùng React Router v6
+import { Link } from "react-router";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,8 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useState } from "react";
-import { DeleteDecision } from "../delete-decision";
+// import { useState } from "react";
 
 export const Menu = ({
   semesterId,
@@ -19,7 +18,7 @@ export const Menu = ({
   semesterId: string;
   decisionId?: string;
 }) => {
-  const [openDelete, setOpenDelete] = useState(false);
+  // const [setOpenDelete] = useState(false);
 
   return (
     <>
@@ -30,7 +29,6 @@ export const Menu = ({
         <DropdownMenuContent className="w-34">
           <DropdownMenuLabel>Quyết định học kỳ</DropdownMenuLabel>
           <DropdownMenuSeparator />
-
           <DropdownMenuItem asChild>
             {decisionId ? (
               <span className="text-gray-400 cursor-not-allowed flex items-center">
@@ -38,16 +36,15 @@ export const Menu = ({
                 <span>Tạo bảng (Đã có quyết định)</span>
               </span>
             ) : (
-              <Link to={`/academic/decision/${semesterId}/create`}>
+              <Link to={`/academic/decision-list-top/${semesterId}/create`}>
                 <FilePlus className="mr-2 h-4 w-4" />
                 <span>Tạo bảng</span>
               </Link>
             )}
           </DropdownMenuItem>
-
           <DropdownMenuItem asChild>
             {decisionId ? (
-              <Link to={`/academic/decision/${semesterId}/update`}>
+              <Link to={`/academic/decision-list-top/${semesterId}/update`}>
                 <FilePenLine className="mr-2 h-4 w-4" />
                 <span>Chỉnh sửa</span>
               </Link>
@@ -58,23 +55,14 @@ export const Menu = ({
               </span>
             )}
           </DropdownMenuItem>
-
-          {decisionId && (
+          {/* {decisionId && (
             <DropdownMenuItem onClick={() => setOpenDelete(true)}>
               <FilePenLine className="mr-2 h-4 w-4" />
               <span>Xóa bảng</span>
             </DropdownMenuItem>
-          )}
+          )} */}
         </DropdownMenuContent>
       </DropdownMenu>
-
-      {decisionId && (
-        <DeleteDecision
-          decisionId={decisionId}
-          open={openDelete}
-          setOpen={setOpenDelete}
-        />
-      )}
     </>
   );
 };

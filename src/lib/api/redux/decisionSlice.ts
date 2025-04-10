@@ -6,7 +6,7 @@ export interface Decision {
   id: string;
   decisionName?: string;
   decisionTitle?: string;
-  decisionDate?: string;
+  decisionDate: string;
   proposal?: string;
   content?: string;
   draftFile?: string | null;
@@ -26,7 +26,7 @@ export interface Decision {
 export interface CreateDecisionPayload {
   decisionName?: string;
   decisionTitle?: string;
-  decisionDate?: string;
+  decisionDate: string;
   type?: 'DRAFT' | 'FINAL';
   basedOn?: string[];
   content?: string;
@@ -90,7 +90,10 @@ export const fetchDecisionsBySemesterId = createAsyncThunk(
         (decision: Decision) => decision.semesterId === semesterId && !decision.isDeleted
       );
       if (filteredDecisions.length === 0) {
-        throw new Error('Không tìm thấy quyết định cho học kỳ này');
+        if (filteredDecisions.length === 0) {
+          return []; // Trả về mảng rỗng, không phải lỗi
+        }
+        
       }
       return filteredDecisions;
     } catch (err: any) {

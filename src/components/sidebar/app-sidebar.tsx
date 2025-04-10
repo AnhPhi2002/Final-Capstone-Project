@@ -443,8 +443,12 @@ const academicMenu = {
       isActive: true,
       items: [
         {
-          title: "D.s quyết định",
+          title: "D.s quyết định g.v hướng dẫn",
           url: "/academic/decision",
+        },
+        {
+          title: "D.s quyết định đề tài ",
+          url: "/academic/decision-list-top",
         },
       ],
     },

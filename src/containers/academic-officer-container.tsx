@@ -32,12 +32,20 @@ import TemplateDetail from "@/pages/academic/templates-mail/TemplateDetail";
 import { DecisionPage } from "@/pages/academic/decision/decision-page";
 import { MentorPage } from "@/pages/academic/mentor/mentor-page";
 import { DecisionDetail } from "@/pages/academic/decision/decision-detail";
-// import { UpdateDecision } from "@/pages/academic/decision/update-decision";
+import { UpdateDecision } from "@/pages/academic/decision/update-decision";
 import ProfileUpdateForm from "@/pages/admin/profile-user/components/profile-update";
 import { CreateDecision } from "@/pages/academic/decision/create-decision";
 import DecisionView from "@/pages/academic/decision/decision-view";
 import { ImportBussinessTopicPage } from "@/pages/academic/topic-list/topic-mentor/import-bussiness-topic/import-topic-mentor-page";
+
 import { ImportTopicMentorPage } from "@/pages/academic/topic-list/topic-mentor/import-topic-mentor/import-topic-mentor-page";
+
+import { DecisionListTopPage } from "@/pages/academic/decision-list-top/decision-list-top-page";
+// import { DecisionListTopView } from "@/pages/academic/decision-list-top/decision-list-top-view";
+import { CreateDecisionListTopic } from "@/pages/academic/decision-list-top/create-decision-list-topic";
+import { UpdateDecisionLitsTopic } from "@/pages/academic/decision-list-top/update-decision-lits-topic";
+import { DecisionListTopDetail } from "@/pages/academic/decision-list-top/decision-list-top-detail";
+
 
 
 
@@ -109,10 +117,15 @@ export const AcademicOfficerContainer = () => {
 
         <Route path="/decision" element={< DecisionPage />} />
         <Route path="/decision/:semesterId" element={< DecisionDetail />} />
-        
-        <Route path="/decision/:semesterId/view" element={< DecisionView />} />
-        {/* <Route path="/decision/:semesterId/update" element={<UpdateDecision />} /> */}
+        <Route path="/decision/:semesterId/view" element={<DecisionView semesterId={":semesterId"} />} />
+        <Route path="/decision/:semesterId/update" element={<UpdateDecision />} />
         <Route path="/decision/:semesterId/create" element={<CreateDecision />} />
+
+        <Route path="/decision-list-top" element={< DecisionListTopPage />} />
+        <Route path="/decision-list-top/:semesterId" element={< DecisionListTopDetail />} />
+        {/* <Route path="/decision-list-top/:semesterId/view" element={< DecisionListTopView />} /> */}
+        <Route path="/decision-list-top/:semesterId/update" element={<UpdateDecisionLitsTopic />} />
+        <Route path="/decision-list-top/:semesterId/create" element={<CreateDecisionListTopic />} />
         <Route path="/*" element={<NotFound />} />
       </Routes>
     </MainLayout>
