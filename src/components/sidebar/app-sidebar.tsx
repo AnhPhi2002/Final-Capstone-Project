@@ -319,7 +319,35 @@ const lecturerMenu = {
           url: "/lecturer/decision-defense",
         },
       ],
-    }
+    },
+    {
+      title: "Qlý. phân công đề tài",
+      url: "/lecturer/topic-assignment-decision",
+      icon: List,
+      isActive: true,
+      items: [
+        {
+          title: "Ds. quyết định",
+          url: "/lecturer/topic-assignment-decision",
+        },
+      ],
+    },
+    {
+      title: "Bảng quyết định",
+      url: "/lecturer/decision",
+      icon: List,
+      isActive: true,
+      items: [
+        {
+          title: "D.s quyết định g.v hướng dẫn",
+          url: "/lecturer/decision",
+        },
+        {
+          title: "D.s quyết định đề tài ",
+          url: "/lecturer/decision-list-top",
+        },
+      ],
+    },
   ],
 };
 const examinationMenu = {
