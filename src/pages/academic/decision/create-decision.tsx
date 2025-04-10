@@ -224,7 +224,7 @@ export const CreateDecision = () => {
       <div>
         <Header title="Tạo quyết định" href="/" currentPage="Tạo quyết định" />
         <div className="max-w-5xl mx-auto p-8 text-center text-red-500">
-          Không tìm thấy semesterId.
+          Không tìm thấy kỳ học.
         </div>
       </div>
     );

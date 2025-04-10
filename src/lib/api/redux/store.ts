@@ -32,8 +32,10 @@ import decisionReducer from "./decisionSlice";
 import uploadDecisionReducer from "./uploadDecisionSlice";
 import scheduleReducer from "./scheduleSlice";
 import importBusinessTopicReducer from './importBusinessTopicSlice';
+import decisionListReducer from './decisionListTopicSlice';
 
-
+import groupDetailV2Reducer from './groupDetailSliceV2';
+import topicV2Reducer from './topicV2Slice';
 const rootReducer = combineReducers({
   counter: counterReducer,
   auth: authReducer,
@@ -51,6 +53,10 @@ const rootReducer = combineReducers({
   // groupStudents: groupStudentReducer,
   groups: groupReducer,
   groupDetail:  groupDetailReducer,
+
+  groupDetailV2:  groupDetailV2Reducer,
+  topicV2: topicV2Reducer,
+
   randomGroups: randomGroupReducer,
   groupInvite: groupInviteReducer,
   majors: majorReducer,
@@ -67,7 +73,10 @@ const rootReducer = combineReducers({
   topicGroupRegister: topicGroupRegisterReducer,
   councilReview: councilReviewReducer,
   councilDefense: CouncilDefenseReducer,
+
   decision: decisionReducer,
+  decisionList: decisionListReducer,
+  
   schedule: scheduleReducer,
   importBusinessTopic: importBusinessTopicReducer,
 });
