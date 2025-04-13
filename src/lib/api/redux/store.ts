@@ -34,8 +34,13 @@ import scheduleReducer from "./scheduleSlice";
 import importBusinessTopicReducer from './importBusinessTopicSlice';
 import configReducer from "./configSlice";
 import importTopicReducer from './importTopicSlice';
+
 import decisionListReducer from './decisionListTopicSlice';
 import progressReportReducer from './progressReportSlice';
+
+import decisionTableReducer from './getDecisionListTableSlice';
+import decisionListTopReducer from './decisionListTopc';
+
 import groupDetailV2Reducer from './groupDetailSliceV2';
 import topicV2Reducer from './topicV2Slice';
 import mentorProgressReportReducer from './mentorProgressReportSlice';
@@ -72,15 +77,16 @@ const rootReducer = combineReducers({
   councils: councilReducer,
   topicStudents: topicStudentReducer,
   upload: uploadReducer,
-   uploadDecision: uploadDecisionReducer,
-  // persist: persistedReducer,
+  uploadDecision: uploadDecisionReducer,
+ 
   meetings: meetingReducer,
   topicGroupRegister: topicGroupRegisterReducer,
   councilReview: councilReviewReducer,
   councilDefense: CouncilDefenseReducer,
 
   decision: decisionReducer,
-  decisionList: decisionListReducer,
+  decisionTable: decisionTableReducer,
+  decisionListTop: decisionListTopReducer,
   
   schedule: scheduleReducer,
   importBusinessTopic: importBusinessTopicReducer,

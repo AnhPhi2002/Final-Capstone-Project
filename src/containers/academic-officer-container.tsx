@@ -41,10 +41,14 @@ import { ImportBussinessTopicPage } from "@/pages/academic/topic-list/topic-ment
 import { ImportTopicMentorPage } from "@/pages/academic/topic-list/topic-mentor/import-topic-mentor/import-topic-mentor-page";
 
 import { DecisionListTopPage } from "@/pages/academic/decision-list-top/decision-list-top-page";
-// import { DecisionListTopView } from "@/pages/academic/decision-list-top/decision-list-top-view";
-import { CreateDecisionListTopic } from "@/pages/academic/decision-list-top/create-decision-list-topic";
-import { UpdateDecisionLitsTopic } from "@/pages/academic/decision-list-top/update-decision-lits-topic";
-import { DecisionListTopDetail } from "@/pages/academic/decision-list-top/decision-list-top-detail";
+import DecisionListTopView from "@/pages/academic/decision-list-top/decision-list-top-view";
+import DecisionListTopDetail from "@/pages/academic/decision-list-top/decision-list-top-detail";
+import CreateDecisionListTopic from "@/pages/academic/decision-list-top/create-decision-list-topic";
+import UpdateDecisionListTopic from "@/pages/academic/decision-list-top/update-decision-lits-topic";
+
+// import { CreateDecisionListTopic } from "@/pages/academic/decision-list-top/create-decision-list-topic";
+// import { UpdateDecisionLitsTopic } from "@/pages/academic/decision-list-top/update-decision-lits-topic";
+// import { DecisionListTopDetail } from "@/pages/academic/decision-list-top/decision-list-top-detail";
 
 
 
@@ -73,8 +77,8 @@ export const AcademicOfficerContainer = () => {
     <MainLayout>
       <Routes>
         <Route path="/" element={<DashboardPage />} />
-                <Route path="/profile-page" element={<ProfilePage />} />
-                <Route path="/profile-page/update" element={<ProfileUpdateForm />} />
+        <Route path="/profile-page" element={<ProfilePage />} />
+        <Route path="/profile-page/update" element={<ProfileUpdateForm />} />
         <Route path="/semester" element={<SemestersPage />} />
         <Route path="/semester/:semesterId" element={<SemestersDetailPage />} />
         <Route path="/year-semester" element={<YearSemesterPage />} />
@@ -122,10 +126,11 @@ export const AcademicOfficerContainer = () => {
         <Route path="/decision/:semesterId/create" element={<CreateDecision />} />
 
         <Route path="/decision-list-top" element={< DecisionListTopPage />} />
-        <Route path="/decision-list-top/:semesterId" element={< DecisionListTopDetail />} />
-        {/* <Route path="/decision-list-top/:semesterId/view" element={< DecisionListTopView />} /> */}
-        <Route path="/decision-list-top/:semesterId/update" element={<UpdateDecisionLitsTopic />} />
+        <Route path="/decision-list-top/:semesterId" element={<DecisionListTopDetail />} />
+        <Route path="/decision-list-top/:semesterId/:decisionId" element={<DecisionListTopDetail />} />
+        <Route path="/decision-list-top/:semesterId/view" element={<DecisionListTopView  />} />
         <Route path="/decision-list-top/:semesterId/create" element={<CreateDecisionListTopic />} />
+        <Route path="/decision-list-top/:semesterId/:decisionId/update" element={<UpdateDecisionListTopic />} />
         <Route path="/*" element={<NotFound />} />
       </Routes>
     </MainLayout>

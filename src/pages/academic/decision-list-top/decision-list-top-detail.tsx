@@ -1,43 +1,43 @@
-import Header from "@/components/header";
-
-import { useParams } from "react-router";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/lib/api/redux/store";
-import { fetchAllDecisions } from "@/lib/api/redux/decisionListTopicSlice";
+import Header from "@/components/header";
 import DecisionListTopView from "./decision-list-top-view";
 import { Menu } from "./columns/menu";
+import { useParams } from "react-router";
+import { AppDispatch, RootState } from "@/lib/api/redux/store";
+import { fetchDecisions } from "@/lib/api/redux/decisionListTopc";
 
-
-export const DecisionListTopDetail = () => {
-  const { semesterId } = useParams<{ semesterId: string }>();
+export const DecisionListTopDetail: React.FC = () => {
+  const { decisionId, semesterId } = useParams<{ decisionId?: string; semesterId: string }>();
   const dispatch = useDispatch<AppDispatch>();
-  const { decisions } = useSelector((state: RootState) => state.decisionList);
+  const { decisions, loading, error } = useSelector((state: RootState) => state.decisionListTop);
 
+  // Fetch decisions for the semester
   useEffect(() => {
     if (semesterId) {
-      dispatch(fetchAllDecisions()); // Lấy tất cả quyết định
+      dispatch(fetchDecisions({ semesterId }));
     }
-  }, [dispatch, semesterId]);
+  }, [semesterId, dispatch]);
 
-  const latestDecision = decisions.find((d) => d.semesterId === semesterId);
+  // Determine the decisionId to use
+  const effectiveDecisionId = decisionId || (decisions.length > 0 ? decisions[0].id : undefined);
+
+  // Add a check for semesterId to avoid undefined errors
+  if (!semesterId) {
+    return <div>Lỗi: Không tìm thấy semesterId</div>;
+  }
 
   return (
     <div className="flex flex-col h-screen">
       <Header title="Tổng quan" href="/" currentPage="Bảng quyết định" />
+      <div className="flex justify-end p-5 gap-x-2">
+        <Menu semesterId={semesterId} decisionId={effectiveDecisionId} />
+      </div>
       <div className="p-5 flex-1 overflow-auto">
-        <div className="flex justify-end mt-5 gap-x-2">
-          <Menu semesterId={semesterId || ""} decisionId={latestDecision?.id} />
-        </div>
         <div className="mt-6">
-          {semesterId && (
-            <DecisionListTopView
-              semesterId={semesterId}
-              submissionPeriodId={undefined}
-              majorId={undefined}
-              decisionId={latestDecision?.id}
-            />
-          )}
+          {loading && <p>Đang tải quyết định...</p>}
+          {error && <p className="text-red-500">{error}</p>}
+          <DecisionListTopView semesterId={semesterId} decisionId={effectiveDecisionId} />
         </div>
       </div>
     </div>

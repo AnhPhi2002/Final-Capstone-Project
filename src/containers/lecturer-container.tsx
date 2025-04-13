@@ -51,6 +51,7 @@ import { DecisionDetail } from "@/pages/mentor/decision/decision-detail";
 import DecisionView from "@/pages/mentor/decision/decision-view";
 import UpdateDecision from "@/pages/mentor/decision/update-decision";
 import CreateDecision from "@/pages/mentor/decision/create-decision";
+
 import { DecisionListTopPage } from "@/pages/mentor/decision-list-top/decision-list-top-page";
 import DecisionListTopDetail from "@/pages/mentor/decision-list-top/decision-list-top-detail";
 import { UpdateDecisionLitsTopic } from "@/pages/mentor/decision-list-top/update-decision-lits-topic";
@@ -59,8 +60,8 @@ import { ProgressReportPage } from "@/pages/mentor/progress-report-mentor/progre
 import { MentorProgressReportPage } from "@/pages/mentor/progress-report-mentor/data-table/MentorProgressReportPage";
 import { ProgressReportDetailPage } from "@/pages/mentor/progress-report-mentor/ProgressReportDetailPage";
 
-export const LecturerContainer = () => {
 
+export const LecturerContainer = () => {
   const user = useSelector((state: RootState) => state.auth.user);
   const currentRole = useSelector((state: RootState) => state.auth.currentRole);
   const navigate = useNavigate();
@@ -81,58 +82,133 @@ export const LecturerContainer = () => {
         <Route path="/topic" element={<TopicPage />} />
         <Route path="/topic/:semesterId" element={<TopicPage />} />
         <Route path="/topic-list" element={<TopicListPage />} />
-        <Route path="/topic-list/semester/:semesterId/submission/:submissionPeriodId/round/:roundNumber/type/:type" element={<TopicListPage />} />
-        <Route path="/topic-detail/:topicId/:semesterId" element={<TopicDetailPage />} />
-        <Route path="/topic-detail/:topicId/:semesterId/update" element={<UpdateTopicDetail />}
+        <Route
+          path="/topic-list/semester/:semesterId/submission/:submissionPeriodId/round/:roundNumber/type/:type"
+          element={<TopicListPage />}
+        />
+        <Route
+          path="/topic-detail/:topicId/:semesterId"
+          element={<TopicDetailPage />}
+        />
+        <Route
+          path="/topic-detail/:topicId/:semesterId/update"
+          element={<UpdateTopicDetail />}
         />
         <Route path="/not-group-student" element={<NotGroupStudentPage />} />
-        <Route path="/not-group-student/:semesterId" element={<NotGroupStudentDetailPage />} />
+        <Route
+          path="/not-group-student/:semesterId"
+          element={<NotGroupStudentDetailPage />}
+        />
 
-        <Route path="/group-student" element={<GroupStudentWithStudentPage />} />
-        <Route path="/group-student" element={<GroupStudentWithStudentPage />} />
-        <Route path="/group-student/:semesterId" element={<GroupStudentCardPage />} />
+        <Route
+          path="/group-student"
+          element={<GroupStudentWithStudentPage />}
+        />
+        <Route
+          path="/group-student"
+          element={<GroupStudentWithStudentPage />}
+        />
+        <Route
+          path="/group-student/:semesterId"
+          element={<GroupStudentCardPage />}
+        />
         <Route path="/group-student-detail" element={<GroupStudentDetail />} />
-        <Route path="/group-student-detail/:groupId/:semesterId" element={<GroupStudentDetail />} />
+        <Route
+          path="/group-student-detail/:groupId/:semesterId"
+          element={<GroupStudentDetail />}
+        />
 
         <Route path="/approve-topic" element={<ApproveTopicPage />} />
-        <Route path="/approve-topic-list/:semesterId/submission/:submissionPeriodId/round/:roundNumber" element={<ApproveTopicList />} />
-        <Route path="/approve-topic-detail/:topicId/:semesterId" element={<ApproveTopicDetail />} />
+        <Route
+          path="/approve-topic-list/:semesterId/submission/:submissionPeriodId/round/:roundNumber"
+          element={<ApproveTopicList />}
+        />
+        <Route
+          path="/approve-topic-detail/:topicId/:semesterId"
+          element={<ApproveTopicDetail />}
+        />
 
         <Route path="/meeting" element={<MeetingListPage />} />
         <Route path="/meeting/:semesterId" element={<MeetingPage />} />
 
         <Route path="/council-check" element={<CouncilCheckTopicPage />} />
-        <Route path="/council-check/:councilId/:semesterId" element={<CouncilCheckTopicDetail />} />
-        <Route path="/council-check-member/:councilId/:semesterId" element={<CouncilCheckMembersPage />} />
+        <Route
+          path="/council-check/:councilId/:semesterId"
+          element={<CouncilCheckTopicDetail />}
+        />
+        <Route
+          path="/council-check-member/:councilId/:semesterId"
+          element={<CouncilCheckMembersPage />}
+        />
         {/* <Route path="/council-review-group/:councilId/:semesterId" element={<CouncilReviewGroupsPage />} /> */}
 
         <Route path="/council-review" element={<CouncilReviewMentorPage />} />
-        <Route path="/council-review/:councilId/:semesterId" element={<CouncilReviewMentorDetail />} />
-        <Route path="/council-review-member/:councilId/:semesterId" element={<CouncilReviewMembersPage />} />
-        <Route path="/council-review-group/:councilId/:semesterId" element={<CouncilReviewGroupsPage />} />
+        <Route
+          path="/council-review/:councilId/:semesterId"
+          element={<CouncilReviewMentorDetail />}
+        />
+        <Route
+          path="/council-review-member/:councilId/:semesterId"
+          element={<CouncilReviewMembersPage />}
+        />
+        <Route
+          path="/council-review-group/:councilId/:semesterId"
+          element={<CouncilReviewGroupsPage />}
+        />
 
         <Route path="/council-defense" element={<CouncilDefenseMentorPage />} />
-        <Route path="/council-defense/:councilId/:semesterId" element={<CouncilDefenseMentorDetail />} />
-        <Route path="/council-defense-member/:councilId/:semesterId" element={<CouncilDefenseMembersPage />} />
-        <Route path="/council-defense-group/:councilId/:semesterId" element={<CouncilDefenseGroupsPage />} />
+        <Route
+          path="/council-defense/:councilId/:semesterId"
+          element={<CouncilDefenseMentorDetail />}
+        />
+        <Route
+          path="/council-defense-member/:councilId/:semesterId"
+          element={<CouncilDefenseMembersPage />}
+        />
+        <Route
+          path="/council-defense-group/:councilId/:semesterId"
+          element={<CouncilDefenseGroupsPage />}
+        />
 
         <Route path="/check-review/" element={<MentorCheckReviewPage />} />
-        <Route path="/check-review/:semesterId" element={<MentorCheckReview />} />
+        <Route
+          path="/check-review/:semesterId"
+          element={<MentorCheckReview />}
+        />
 
         <Route path="/check-defense/" element={<MentorCheckDefensePage />} />
-        <Route path="/check-defense/:semesterId" element={<MentorCheckDefense />} />
+        <Route
+          path="/check-defense/:semesterId"
+          element={<MentorCheckDefense />}
+        />
 
         <Route path="/decision-defense/" element={<DecisionDefensePage />} />
-        <Route path="/decision-defense/:semesterId" element={<DecisionDefense />} />
+        <Route
+          path="/decision-defense/:semesterId"
+          element={<DecisionDefense />}
+        />
 
         <Route path="/review-topic-page" element={<ReviewTopicPage />} />
-        <Route path="/review-topic-page/:semesterId" element={<ReviewTopicPage />} />
+        <Route
+          path="/review-topic-page/:semesterId"
+          element={<ReviewTopicPage />}
+        />
         <Route path="/review-topic-list" element={<ReviewTopicListPage />} />
-        <Route path="/review-topic-list/:semesterId/submission/:submissionPeriodId/round/:roundNumber" element={<ReviewTopicListPage />} />
-        <Route path="/review-topic-detail/:topicId/:semesterId" element={<ReviewTopicDetailPage />} />
-        <Route path="/review-topic-detail/:topicId/:semesterId/update" element={<UpdateReviewTopicDetail />} />
+        <Route
+          path="/review-topic-list/:semesterId/submission/:submissionPeriodId/round/:roundNumber"
+          element={<ReviewTopicListPage />}
+        />
+        <Route
+          path="/review-topic-detail/:topicId/:semesterId"
+          element={<ReviewTopicDetailPage />}
+        />
+        <Route
+          path="/review-topic-detail/:topicId/:semesterId/update"
+          element={<UpdateReviewTopicDetail />}
+        />
 
         <Route path="/topic-approved" element={<TopicApprovedPage />} />
+
         <Route path="/topic-approved/:semesterId" element={<TopicApprovedPage />} />
         <Route path="/topic-list-approved/semester/:semesterId/submission/:submissionPeriodId/round/:roundNumber" element={<TopicListApprovedPage />} />
         <Route path="/topic-detail-approved/:topicId/:semesterId" element={<TopicDetailApprovedPage />} />
@@ -152,6 +228,35 @@ export const LecturerContainer = () => {
         <Route path="/progress-report-mentor" element={<ProgressReportPage />} />
         <Route path="/progress-report-mentor/:semesterId" element={<MentorProgressReportPage />} />
         <Route path="/progress-report-mentor/:semesterId/detail/:reportId" element={<ProgressReportDetailPage />} />
+
+        <Route
+          path="/topic-approved/:semesterId"
+          element={<TopicApprovedPage />}
+        />
+        <Route
+          path="/topic-list-approved/semester/:semesterId/submission/:submissionPeriodId/round/:roundNumber"
+          element={<TopicListApprovedPage />}
+        />
+        <Route
+          path="/topic-detail-approved/:topicId/:semesterId"
+          element={<TopicDetailApprovedPage />}
+        />
+
+        <Route path="/decision" element={<DecisionPage />} />
+        <Route path="/decision/:semesterId" element={<DecisionDetail />} />
+        <Route
+          path="/decision/:semesterId/view"
+          element={<DecisionView semesterId={":semesterId"} />}
+        />
+        <Route
+          path="/decision/:semesterId/update"
+          element={<UpdateDecision />}
+        />
+        <Route
+          path="/decision/:semesterId/create"
+          element={<CreateDecision />}
+        />
+
 
         <Route path="/*" element={<NotFound />} />
       </Routes>
