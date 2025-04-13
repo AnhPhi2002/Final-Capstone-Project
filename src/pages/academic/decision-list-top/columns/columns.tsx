@@ -2,31 +2,26 @@ import { ColumnDef } from "@tanstack/react-table";
 
 export const columns: ColumnDef<any>[] = [
   {
-    accessorKey: "STT",
+    accessorKey: "stt",
     header: "STT",
-    cell: ({ row }) => row.index + 1,
-    meta: { className: "text-center" }, 
+    cell: ({ row }) => row.original.stt || row.index + 1,
+    meta: { className: "text-center" },
   },
   {
-    accessorKey: "student.studentCode",
+    accessorKey: "mssv",
     header: "MSSV",
     meta: { className: "text-center" },
-    cell: ({ row }) => row.original.student?.studentCode || "N/A",
+    cell: ({ row }) => row.original.mssv || "N/A",
   },
-  
   {
-    accessorKey: "student.user.username",
+    accessorKey: "studentName",
     header: "Họ và tên SV",
     meta: { className: "text-left" },
-    cell: ({ row }) => {
-      const user = row.original.student?.user;
-      return user?.fullName || user?.username || "N/A";
-    },
-  }
-,  
+    cell: ({ row }) => row.original.studentName || "N/A",
+  },
   {
     accessorKey: "groupCode",
-    header: "Mã nhóm",
+    header: "Mã nhóm",
     meta: { className: "text-center" },
     cell: ({ row }) => row.original.groupCode || "N/A",
   },
@@ -36,34 +31,31 @@ export const columns: ColumnDef<any>[] = [
     meta: { className: "text-center" },
     cell: ({ row }) => row.original.topicCode || "N/A",
   },
-
   {
-    accessorKey: "nameEn",
+    accessorKey: "topicNameEnglish",
     header: "Tên đề tài Tiếng Anh",
     meta: { className: "text-left" },
-    cell: ({ row }) => row.original.nameEn || "N/A",
+    cell: ({ row }) => row.original.topicNameEnglish || "N/A",
   },
   {
-    accessorKey: "nameVi",
+    accessorKey: "topicNameVietnamese",
     header: "Tên đề tài Tiếng Việt",
     meta: { className: "text-left" },
-    cell: ({ row }) => row.original.nameVi || "N/A",
+    cell: ({ row }) => row.original.topicNameVietnamese || "N/A",
   },
   {
-    id: "gvhd", // <- Thêm ID này!
-    accessorKey: "creator.fullName",
+    id: "gvhd",
+    accessorKey: "mentor",
     header: "GVHD",
     meta: { className: "text-left" },
-    cell: ({ row }) => row.original.creator?.fullName || "Chưa phân công",
+    cell: ({ row }) => row.original.mentor || "Chưa phân công",
   },
-  
   {
-    accessorKey: "majors",
+    accessorKey: "major",
     header: "Ngành",
     meta: { className: "text-left" },
-    cell: ({ row }) => (row.original.majors || []).map((major: any) => major.name).join(", ") || "N/A",
+    cell: ({ row }) => row.original.major || "N/A",
   },
-
 ];
 
 export default columns;
