@@ -52,10 +52,6 @@ import DecisionView from "@/pages/mentor/decision/decision-view";
 import UpdateDecision from "@/pages/mentor/decision/update-decision";
 import CreateDecision from "@/pages/mentor/decision/create-decision";
 
-import { DecisionListTopPage } from "@/pages/mentor/decision-list-top/decision-list-top-page";
-import DecisionListTopDetail from "@/pages/mentor/decision-list-top/decision-list-top-detail";
-import { UpdateDecisionLitsTopic } from "@/pages/mentor/decision-list-top/update-decision-lits-topic";
-import CreateDecisionListTopic from "@/pages/mentor/decision-list-top/create-decision-list-topic";
 import { ProgressReportPage } from "@/pages/mentor/progress-report-mentor/progress-report-page";
 import { MentorProgressReportPage } from "@/pages/mentor/progress-report-mentor/data-table/MentorProgressReportPage";
 import { ProgressReportDetailPage } from "@/pages/mentor/progress-report-mentor/ProgressReportDetailPage";
@@ -219,11 +215,6 @@ export const LecturerContainer = () => {
         <Route path="/decision/:semesterId/update" element={<UpdateDecision />} />
         <Route path="/decision/:semesterId/create" element={<CreateDecision />} />
 
-        <Route path="/decision-list-top" element={< DecisionListTopPage />} />
-        <Route path="/decision-list-top/:semesterId" element={< DecisionListTopDetail />} />
-        {/* <Route path="/decision-list-top/:semesterId/view" element={< DecisionListTopView />} /> */}
-        <Route path="/decision-list-top/:semesterId/update" element={<UpdateDecisionLitsTopic />} />
-        <Route path="/decision-list-top/:semesterId/create" element={<CreateDecisionListTopic />} />
 
         <Route path="/progress-report-mentor" element={<ProgressReportPage />} />
         <Route path="/progress-report-mentor/:semesterId" element={<MentorProgressReportPage />} />

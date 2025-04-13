@@ -35,7 +35,6 @@ import importBusinessTopicReducer from './importBusinessTopicSlice';
 import configReducer from "./configSlice";
 import importTopicReducer from './importTopicSlice';
 
-import decisionListReducer from './decisionListTopicSlice';
 import progressReportReducer from './progressReportSlice';
 
 import decisionTableReducer from './getDecisionListTableSlice';

@@ -34,11 +34,19 @@ export const DecisionListTopDetail: React.FC = () => {
         <Menu semesterId={semesterId} decisionId={effectiveDecisionId} />
       </div>
       <div className="p-5 flex-1 overflow-auto">
-        <div className="mt-6">
-          {loading && <p>Đang tải quyết định...</p>}
-          {error && <p className="text-red-500">{error}</p>}
-          <DecisionListTopView semesterId={semesterId} decisionId={effectiveDecisionId} />
-        </div>
+      <div className="mt-6">
+  {loading && <p>Đang tải quyết định...</p>}
+  {error && <p className="text-red-500">{error}</p>}
+
+  {!loading && !effectiveDecisionId && (
+    <p className="text-lg text-center ">Chưa có quyết định hướng dẫn đề tài nào được tạo cho học kỳ này.</p>
+  )}
+
+  {!loading && effectiveDecisionId && (
+    <DecisionListTopView semesterId={semesterId} decisionId={effectiveDecisionId} />
+  )}
+</div>
+
       </div>
     </div>
   );
