@@ -32,14 +32,20 @@ import decisionReducer from "./decisionSlice";
 import uploadDecisionReducer from "./uploadDecisionSlice";
 import scheduleReducer from "./scheduleSlice";
 import importBusinessTopicReducer from './importBusinessTopicSlice';
-
 import configReducer from "./configSlice";
 import importTopicReducer from './importTopicSlice';
+
+import decisionListReducer from './decisionListTopicSlice';
+import progressReportReducer from './progressReportSlice';
+
 import decisionTableReducer from './getDecisionListTableSlice';
 import decisionListTopReducer from './decisionListTopc';
 
 import groupDetailV2Reducer from './groupDetailSliceV2';
 import topicV2Reducer from './topicV2Slice';
+import mentorProgressReportReducer from './mentorProgressReportSlice';
+
+
 const rootReducer = combineReducers({
   counter: counterReducer,
   auth: authReducer,
@@ -86,6 +92,8 @@ const rootReducer = combineReducers({
   importBusinessTopic: importBusinessTopicReducer,
   config: configReducer,
   importTopic: importTopicReducer,
+  progressReport: progressReportReducer,
+  mentorProgressReport: mentorProgressReportReducer,
 });
 
 // const persistedReducer = persistReducer(persistConfig, rootReducer)

@@ -38,8 +38,7 @@ export const SelectSemester: React.FC = () => {
 
   const [selectedYear, setSelectedYear] = useState<string>("");
   const [selectedSemester, setSelectedSemester] = useState<string>("");
-  const [selectedSubmissionRound, setSelectedSubmissionRound] =
-    useState<string>("");
+  const [selectedSubmissionRound, setSelectedSubmissionRound] = useState<string>("");
 
   useEffect(() => {
     dispatch(fetchYears());
@@ -51,9 +50,11 @@ export const SelectSemester: React.FC = () => {
       setSelectedSemester("");
       setSelectedSubmissionRound("");
       dispatch(clearSubmissionRounds());
+      dispatch(clearCouncils());
     } else {
       dispatch(clearSemesters());
       dispatch(clearSubmissionRounds());
+      dispatch(clearCouncils());
     }
   }, [selectedYear, dispatch]);
 
@@ -61,29 +62,37 @@ export const SelectSemester: React.FC = () => {
     if (selectedSemester) {
       dispatch(fetchSubmissionRounds(selectedSemester));
       setSelectedSubmissionRound("");
+      dispatch(clearCouncils());
     } else {
       dispatch(clearSubmissionRounds());
+      dispatch(clearCouncils());
     }
   }, [selectedSemester, dispatch]);
 
   useEffect(() => {
     if (selectedSubmissionRound) {
-      dispatch(
-        fetchCouncils({
-          semesterId: selectedSemester,
-          submissionPeriodId: selectedSubmissionRound,
-        })
+      const selectedRound = submissionRounds.find(
+        (round) => round.id === selectedSubmissionRound
       );
+      if (selectedRound) {
+        dispatch(
+          fetchCouncils({
+            semesterId: selectedSemester,
+            submissionPeriodId: selectedSubmissionRound,
+            round: selectedRound.roundNumber,
+          })
+        );
+      }
     } else {
       dispatch(clearCouncils());
     }
-  }, [selectedSemester, selectedSubmissionRound, dispatch]);
+  }, [selectedSubmissionRound, selectedSemester, submissionRounds, dispatch]);
 
   const availableYears = years.filter((y) => !y.isDeleted);
   const availableSemesters = semesters.filter((s) => !s.isDeleted);
 
   const filteredSubmissionRounds = submissionRounds.filter(
-    (round) => round.type === "CHECK-TOPIC" && !round.isDeleted
+    (round) => round.type === "TOPIC" && !round.isDeleted
   );
 
   return (

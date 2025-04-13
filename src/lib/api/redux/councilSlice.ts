@@ -22,10 +22,10 @@ const initialState: CouncilState = {
 
 export const fetchCouncils = createAsyncThunk(
   "councils/fetchCouncils",
-  async ({ semesterId, submissionPeriodId }: { semesterId: string, submissionPeriodId: string }, { rejectWithValue }) => {
+  async ({ semesterId, submissionPeriodId, round }: { semesterId: string, submissionPeriodId: string, round: number }, { rejectWithValue }) => {
     try {
       const response = await axiosClient.get(`/council-topic`, {
-        params: { semesterId, submissionPeriodId },
+        params: { semesterId, submissionPeriodId, round },
       });
       const councils = response.data.data as Council[];
       const result: CouncilDetail[] = councils.map((council) => ({
@@ -132,7 +132,7 @@ export const deleteCouncil = createAsyncThunk(
   async (councilId: string, { rejectWithValue }) => {
     console.log("🔴 Xóa hội đồng ID:", councilId); // Debug
     try {
-      const response = await axiosClient.delete(`/council-topic/${councilId}`);
+      const response = await axiosClient.put(`/council-topic/${councilId}/delete`);
       console.log("✅ API Response:", response); // Debug response
       return councilId;
     } catch (error: any) {

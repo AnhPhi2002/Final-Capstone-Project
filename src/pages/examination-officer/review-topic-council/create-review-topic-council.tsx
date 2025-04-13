@@ -73,16 +73,33 @@ export const CreateReviewTopicCouncil = () => {
     setCreating(true);
 
     const round = submissionRounds.find((r) => r.id === selectedSubmissionRound);
+    if (!round) {
+      toast.error("Không tìm thấy đợt nộp được chọn!");
+      setCreating(false);
+      return;
+    }
+
+    // Tìm submission có type "TOPIC", roundNumber khớp, và isDeleted là false
+    const relatedSubmission = submissionRounds.find(
+      (r) => r.type === "TOPIC" && r.roundNumber === round.roundNumber && r.isDeleted === false
+    );
+
+    if (!relatedSubmission) {
+      toast.error("Không tìm thấy đợt nộp TOPIC hợp lệ");
+      setCreating(false);
+      return;
+    }
 
     const newCouncil = {
       name: councilName,
       semesterId: selectedSemester,
       submissionPeriodId: selectedSubmissionRound,
+      relatedSubmissionPeriodId: relatedSubmission.id,
       startDate: convertToISODate(startDate),
       endDate: convertToISODate(endDate, true),
       status,
       type: "topic",
-      round: round?.roundNumber || 1,
+      round: round.roundNumber || 1,
     };
 
     try {

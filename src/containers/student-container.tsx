@@ -27,6 +27,8 @@ import { RoomReviewStudent } from "@/pages/student/review-room/room-review-stude
 import { GroupStudentDefenseWithStudentPage } from "@/pages/student/group-defense/group-student-page";
 import { GroupStudentDefenseCardPage } from "@/pages/student/group-defense/group-student-card-page";
 import { RoomDefenseStudent } from "@/pages/student/defense-room/room-defense-student";
+import ProgressReportPage from "@/pages/student/progress-report/progress-report-page";
+import ProgressReportDetail from "@/pages/student/progress-report/ProgressReportDetail";
 
 
 export const StudentContainer = () => {
@@ -77,6 +79,9 @@ export const StudentContainer = () => {
         <Route path="/review-student" element={<RoomReviewStudent />} />
 
         <Route path="/review-defense" element={<RoomDefenseStudent />} />
+
+        <Route path="/progress-report" element={<ProgressReportPage />} />
+        <Route path="/progress-report/:id" element={<ProgressReportDetail />} />
 
 
         <Route path="/*" element={<NotFound />} />

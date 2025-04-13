@@ -65,8 +65,12 @@ export const AddReviewMemberTopicCouncil: React.FC<AddReviewMemberTopicCouncilPr
   });
 
   useEffect(() => {
+    console.log("🔍 AddReviewMemberTopicCouncil - open:", open, "semesterId:", semesterId);
     if (open && semesterId) {
-      dispatch(fetchMentorsBySemesterId(semesterId));
+      dispatch(fetchMentorsBySemesterId(semesterId))
+        .then(() => {
+          console.log("✅ fetchMentorsBySemesterId called for semesterId:", semesterId);
+        });
     }
   }, [open, semesterId, dispatch]);
 
@@ -112,7 +116,11 @@ export const AddReviewMemberTopicCouncil: React.FC<AddReviewMemberTopicCouncilPr
                         disabled={mentorLoading}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Chọn email mentor" />
+                          <SelectValue
+                            placeholder={
+                              mentorLoading ? "Đang tải danh sách mentor..." : "Chọn email mentor"
+                            }
+                          />
                         </SelectTrigger>
                         <SelectContent>
                           {mentors?.length > 0 ? (
@@ -137,7 +145,7 @@ export const AddReviewMemberTopicCouncil: React.FC<AddReviewMemberTopicCouncilPr
               <FormItem>
                 <FormLabel>Vai trò</FormLabel>
                 <input
-                  value="council_member"
+                  value="Thành viên" // Thay "council_member" thành "Thành viên"
                   disabled
                   className="w-full px-3 py-2 text-sm border rounded-md bg-gray-100"
                 />

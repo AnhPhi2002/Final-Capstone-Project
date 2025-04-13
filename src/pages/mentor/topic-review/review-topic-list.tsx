@@ -53,7 +53,7 @@ export const ReviewTopicList = () => {
   } = useSelector((state: RootState) => state.topics);
 
   useEffect(() => {
-    if (semesterId && submissionPeriodId &&roundNumber) {
+    if (semesterId && submissionPeriodId && roundNumber) {
       dispatch(resetGroupDetail());
 
       dispatch(resetApprovalTopics()); 

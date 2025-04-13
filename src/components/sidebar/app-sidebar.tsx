@@ -318,6 +318,10 @@ const lecturerMenu = {
           title: "Quyết định bảo vệ",
           url: "/lecturer/decision-defense",
         },
+        {
+          title: "Báo cáo tiến độ",
+          url: "/lecturer/progress-report-mentor",
+        },
       ],
     },
     {
@@ -542,6 +546,19 @@ const studentMenu = {
           title: "Phòng Bảo vệ",
           url: "/student/review-defense",
         },
+      ],
+    },
+    {
+      title: "Báo cáo tiến độ",
+      url: "/student/council-member",
+      icon: List,
+      isActive: true,
+      items: [
+        {
+          title: "Báo cáo",
+          url: "/student/progress-report",
+        },
+
       ],
     },
   ],
