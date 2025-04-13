@@ -275,7 +275,7 @@ export const fetchApprovalTopics = createAsyncThunk(
   "topics/fetchApprovalTopics",
   async ({ semesterId, round, submissionPeriodId }: { semesterId: string; round: number; submissionPeriodId: string }, { rejectWithValue }) => {
     try {
-      const response = await axiosClient.get(`/topics/approval`, {
+      const response = await axiosClient.get(`/council-topic/topics/approval`, {
         params: { semesterId, round, submissionPeriodId },
       });
       return response.data.data;

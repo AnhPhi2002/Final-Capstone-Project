@@ -26,7 +26,7 @@ export const DeleteReviewTopicCouncil: React.FC<DeleteReviewTopicCouncilProps> =
       await dispatch(deleteCouncil(councilId)).unwrap();
       toast.success("Hội đồng review đã được xóa thành công!");
       setOpen(false);
-      refetchData?.(); // Refetch danh sách nếu có function refetch
+      refetchData?.();
     } catch (error: any) {
       toast.error(error || "Xóa hội đồng thất bại!");
     }
