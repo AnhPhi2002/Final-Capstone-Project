@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { axiosClient } from "../config/axios-client";
+import { fetchGuidanceList } from './getDecisionListTableSlice';
 
 interface Decision {
   id: string;
@@ -11,7 +12,7 @@ interface Decision {
   isDeleted: boolean;
   type: string;
   semesterId?: string;
-  decisionURL?: string; // Added decisionURL property
+  decisionURL?: string;
 }
 
 interface ThesisAssignment {
@@ -19,21 +20,26 @@ interface ThesisAssignment {
   thesisTitle: string;
   studentName: string;
   supervisor: string;
-  // Add other fields based on /thesis-assignments/:decisionId response
 }
 
 interface DecisionState {
   decisions: Decision[];
+  decisionDetails: Decision | null;
   thesisAssignments: ThesisAssignment[];
   loading: boolean;
   error: string | null;
+  isGuidanceFetched: boolean;
+  hasFetchedDecisions: boolean; // Flag mới
 }
 
 const initialState: DecisionState = {
   decisions: [],
+  decisionDetails: null,
   thesisAssignments: [],
   loading: false,
   error: null,
+  isGuidanceFetched: false,
+  hasFetchedDecisions: false,
 };
 
 // Lấy danh sách quyết định theo semesterId
@@ -151,8 +157,17 @@ const decisionListTopSlice = createSlice({
   reducers: {
     clearDecisions: (state) => {
       state.decisions = [];
+      state.decisionDetails = null;
       state.thesisAssignments = [];
       state.error = null;
+      state.isGuidanceFetched = false;
+      state.hasFetchedDecisions = false;
+    },
+    resetGuidanceFetched: (state) => {
+      state.isGuidanceFetched = false;
+    },
+    resetHasFetchedDecisions: (state) => {
+      state.hasFetchedDecisions = false;
     },
   },
   extraReducers: (builder) => {
@@ -165,10 +180,12 @@ const decisionListTopSlice = createSlice({
       .addCase(fetchDecisions.fulfilled, (state, action: PayloadAction<Decision[]>) => {
         state.loading = false;
         state.decisions = action.payload;
+        state.hasFetchedDecisions = true; // Đánh dấu đã fetch decisions
       })
       .addCase(fetchDecisions.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+        state.hasFetchedDecisions = true; // Đánh dấu đã fetch (dù lỗi)
       })
       // Xử lý fetchThesisAssignments
       .addCase(fetchThesisAssignments.pending, (state) => {
@@ -190,6 +207,7 @@ const decisionListTopSlice = createSlice({
       })
       .addCase(fetchDecisionById.fulfilled, (state, action: PayloadAction<Decision>) => {
         state.loading = false;
+        state.decisionDetails = action.payload;
         const index = state.decisions.findIndex((d) => d.id === action.payload.id);
         if (index >= 0) {
           state.decisions[index] = action.payload;
@@ -209,6 +227,8 @@ const decisionListTopSlice = createSlice({
       .addCase(createDecision.fulfilled, (state, action: PayloadAction<Decision>) => {
         state.loading = false;
         state.decisions.push(action.payload);
+        state.isGuidanceFetched = false;
+        state.hasFetchedDecisions = false; // Reset để fetch lại decisions sau khi tạo
       })
       .addCase(createDecision.rejected, (state, action) => {
         state.loading = false;
@@ -225,6 +245,9 @@ const decisionListTopSlice = createSlice({
         if (index >= 0) {
           state.decisions[index] = action.payload;
         }
+        if (state.decisionDetails?.id === action.payload.id) {
+          state.decisionDetails = action.payload;
+        }
       })
       .addCase(updateDecision.rejected, (state, action) => {
         state.loading = false;
@@ -238,13 +261,21 @@ const decisionListTopSlice = createSlice({
       .addCase(deleteDecision.fulfilled, (state, action: PayloadAction<Decision>) => {
         state.loading = false;
         state.decisions = state.decisions.filter((d) => d.id !== action.payload.id);
+        if (state.decisionDetails?.id === action.payload.id) {
+          state.decisionDetails = null;
+        }
+        state.hasFetchedDecisions = false; // Reset để fetch lại decisions sau khi xóa
       })
       .addCase(deleteDecision.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+      // Xử lý fetchGuidanceList để cập nhật isGuidanceFetched
+      .addCase(fetchGuidanceList.fulfilled, (state) => {
+        state.isGuidanceFetched = true;
       });
   },
 });
 
-export const { clearDecisions } = decisionListTopSlice.actions;
+export const { clearDecisions, resetGuidanceFetched, resetHasFetchedDecisions } = decisionListTopSlice.actions;
 export default decisionListTopSlice.reducer;

@@ -1,27 +1,20 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-
+import React from "react";
+import { useSelector } from "react-redux";
 import { Card, CardContent } from "@/components/ui/card";
 import { DataTable } from "./columns/data-table";
 import { columns } from "./columns/columns";
-import { fetchGuidanceList } from "@/lib/api/redux/getDecisionListTableSlice";
-import { fetchThesisAssignments, fetchDecisionById } from "@/lib/api/redux/decisionListTopc";
-import { AppDispatch, RootState } from "@/lib/api/redux/store";
+import { RootState } from "@/lib/api/redux/store";
 import { format } from "date-fns";
 
 interface DecisionListTopViewProps {
-  submissionPeriodId?: string;
-  majorId?: string;
   decisionId?: string;
   semesterId?: string;
 }
 
 export const DecisionListTopView: React.FC<DecisionListTopViewProps> = ({
   decisionId,
-  semesterId,
-}) => {
-  const dispatch = useDispatch<AppDispatch>();
 
+}) => {
   const {
     guidanceList,
     loading: guidanceLoading,
@@ -30,37 +23,27 @@ export const DecisionListTopView: React.FC<DecisionListTopViewProps> = ({
 
   const {
     thesisAssignments,
-    decisions,
+    decisionDetails,
     loading: decisionListLoading,
     error: decisionListError,
   } = useSelector((state: RootState) => state.decisionListTop);
 
   const textClass = "text-[14.5pt] font-times leading-[1.5]";
 
-  useEffect(() => {
-    if (semesterId) {
-      dispatch(fetchGuidanceList({ semesterId, includeAI: false }));
-    }
-    if (decisionId) {
-      dispatch(fetchThesisAssignments(decisionId));
-      dispatch(fetchDecisionById(decisionId)); // Fetch decision details
-    }
-  }, [semesterId, decisionId, dispatch]);
-
   const isLoading = guidanceLoading || decisionListLoading;
   const error = guidanceError || decisionListError;
 
-  // Find the decision by decisionId
-  const decision = decisions.find((d) => d.id === decisionId);
+  // Sử dụng decisionDetails thay vì tìm trong decisions
+  const decision = decisionDetails;
 
-  // Format decision date for display in Vietnamese style (e.g., "ngày 01 tháng 04 năm 2025")
+  // Định dạng ngày quyết định theo kiểu Việt Nam
   const formatDecisionDate = (dateString: string) => {
     if (!dateString) return "ngày ___ tháng ___ năm ___";
     const date = new Date(dateString);
     return `ngày ${format(date, "dd")} tháng ${format(date, "MM")} năm ${format(date, "yyyy")}`;
   };
 
-  // ✅ Prioritize thesisAssignments if available, otherwise fallback to guidanceList
+  // Ưu tiên thesisAssignments nếu có, nếu không dùng guidanceList
   const data =
     decisionId && thesisAssignments.length > 0
       ? thesisAssignments
@@ -84,14 +67,18 @@ export const DecisionListTopView: React.FC<DecisionListTopViewProps> = ({
           </div>
 
           <div className="mt-6">
-            {isLoading && <p>Đang tải...</p>}
-            {error && <p className="text-red-500">{error}</p>}
+            {isLoading && <p className="text-center">Đang tải...</p>}
+            {error && <p className="text-red-500 text-center">{error}</p>}
             {!isLoading && !error && data.length > 0 ? (
               <DataTable columns={columns} data={data} />
             ) : (
               !isLoading &&
               !error && (
-                <p className="text-center">Không có dữ liệu để hiển thị</p>
+                <p className="text-center">
+                  {decisionId
+                    ? "Không có dữ liệu cho quyết định này"
+                    : "Không có dữ liệu để hiển thị"}
+                </p>
               )
             )}
           </div>

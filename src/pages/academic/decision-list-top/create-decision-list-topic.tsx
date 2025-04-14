@@ -239,7 +239,7 @@ const CreateDecisionListTopic: React.FC = () => {
                     <Input
                       value={formData.decisionName}
                       onChange={(e) => updateField("decisionName", e.target.value)}
-                      placeholder="VD: QD-2025-01"
+                      placeholder="VD: 123/QĐ-FPTUHCM "
                       className={`${textClass} inline-block w-32 sm:w-40 border border-black px-2 h-[32px]`}
                     />
                     {formErrors.decisionName && (
