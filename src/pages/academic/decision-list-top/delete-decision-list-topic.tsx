@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
@@ -10,7 +8,7 @@ import { deleteDecision } from "@/lib/api/redux/decisionListTopc";
 interface DeleteDecisionListTopicProps {
   decisionId: string;
   semesterId: string;
-  onClose: () => void; // Callback to close the modal
+  onClose: () => void;
 }
 
 export const DeleteDecisionListTopic: React.FC<DeleteDecisionListTopicProps> = ({
@@ -28,8 +26,8 @@ export const DeleteDecisionListTopic: React.FC<DeleteDecisionListTopicProps> = (
       await dispatch(deleteDecision(decisionId)).unwrap();
       toast.success("Xóa quyết định thành công");
       setOpen(false);
-      onClose(); // Close the modal
-      navigate(`/academic/decision-list-top/${semesterId}`); // Navigate back to the decision list
+      onClose();
+      navigate(`/academic/decision-list-top/${semesterId}`);
     } catch (error: any) {
       toast.error("Lỗi khi xóa quyết định", { description: error });
     }
@@ -37,10 +35,9 @@ export const DeleteDecisionListTopic: React.FC<DeleteDecisionListTopicProps> = (
 
   const handleCancel = () => {
     setOpen(false);
-    onClose(); // Close the modal
+    onClose();
   };
 
-  // Prevent rendering if modal is closed
   if (!open) return null;
 
   return (
