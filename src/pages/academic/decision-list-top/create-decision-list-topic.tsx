@@ -194,7 +194,7 @@ const CreateDecisionListTopic: React.FC = () => {
               ref={fileInputRef}
               onChange={handleFileChange}
               className="hidden"
-              accept=".pdf,.doc,.docx"
+               accept=".xlsx,.xls,.doc,.docx,.pdf"
             />
             {formData.decisionURL && (
               <div className="flex items-center gap-2 mt-1">
