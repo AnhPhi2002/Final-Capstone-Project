@@ -22,7 +22,7 @@ import { Label } from '@/components/ui/label';
 import { Toaster, toast } from 'sonner';
 import { z } from 'zod';
 import { fetchUserProfile } from '@/lib/api/redux/authSlice';
-import { uploadDecisionFile, resetUploadDecision } from '@/lib/api/redux/uploadDecisionSlice';
+import { uploadDecisionFile, resetUploadDecision, resetSpecificFile } from '@/lib/api/redux/uploadDecisionSlice';
 
 // Định nghĩa schema Zod cho formData
 const decisionSchema = z.object({
@@ -142,7 +142,7 @@ export const CreateDecision = () => {
         .unwrap()
         .then((result: { fileUrl: string; fileName: string }) => {
           updateField('decisionURL', result.fileUrl);
-          toast.success('Tải file thành công!');
+          toast.success(`Tải file ${formData.type === 'DRAFT' ? 'nháp' : 'chính thức'} thành công!`);
         })
         .catch((error: string) => {
           toast.error(`Lỗi khi tải file: ${error}`);
@@ -152,6 +152,13 @@ export const CreateDecision = () => {
 
   const handleUploadClick = () => {
     fileInputRef.current?.click();
+  };
+
+  const handleRemoveFile = () => {
+    dispatch(resetSpecificFile(formData.type)); // Xóa file trong Redux store dựa trên type
+    updateField('decisionURL', '');
+    if (fileInputRef.current) fileInputRef.current.value = '';
+    toast.info('Đã xóa file');
   };
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -195,8 +202,8 @@ export const CreateDecision = () => {
       clauses: formData.clauses.filter((item) => item.trim() !== ''),
       signature: formData.signature,
       semesterId,
-      draftFile: formData.type === 'DRAFT' ? formData.decisionURL : "",
-      finalFile: formData.type === 'FINAL' ? formData.decisionURL : "",
+      draftFile: formData.type === 'DRAFT' ? formData.decisionURL : '',
+      finalFile: formData.type === 'FINAL' ? formData.decisionURL : '',
       decisionURL: formData.decisionURL,
       createdBy: user.id,
       createdAt: new Date().toISOString(),
@@ -230,6 +237,9 @@ export const CreateDecision = () => {
     );
   }
 
+  // Xác định file hiển thị dựa trên type
+  const displayedFile = formData.type === 'DRAFT' ? draftFile : finalFile;
+
   return (
     <div>
       <Toaster position="top-right" richColors />
@@ -238,89 +248,93 @@ export const CreateDecision = () => {
         href="/"
         currentPage={`Tạo quyết định học kỳ ${semesterId}`}
       />
-<div className="flex justify-end mt-6 mr-6">
-  <div className="flex items-center gap-6">
-    {/* Decision Type Selection */}
-    <div className="flex flex-col items-end">
+      <div className="flex justify-end mt-6 mr-6">
+        <div className="flex items-center gap-6">
+          {/* Decision Type Selection */}
+          <div className="flex flex-col items-end">
+            <Select
+              value={formData.type}
+              onValueChange={(value) => updateField('type', value as 'DRAFT' | 'FINAL')}
+            >
+              <SelectTrigger
+                className={`
+                  ${textClass} 
+                  w-[180px] 
+                  border-gray-300 
+                  bg-white 
+                  rounded-md 
+                  shadow-sm 
+                  focus:border-blue-500 
+                  focus:ring-1 
+                  focus:ring-blue-500
+                `}
+              >
+                <SelectValue placeholder="Chọn loại" />
+              </SelectTrigger>
+              <SelectContent className="bg-white border-gray-300 rounded-md shadow-lg">
+                <SelectItem value="DRAFT">Nháp</SelectItem>
+                <SelectItem value="FINAL">Chính thức</SelectItem>
+              </SelectContent>
+            </Select>
+            {formErrors.type && (
+              <p className="text-red-500 text-xs mt-1 text-right">{formErrors.type}</p>
+            )}
+          </div>
 
-      <Select
-        value={formData.type}
-        onValueChange={(value) => updateField('type', value as 'DRAFT' | 'FINAL')}
-      >
-        <SelectTrigger 
-          className={`
-            ${textClass} 
-            w-[180px] 
-            border-gray-300 
-            bg-white 
-            rounded-md 
-            shadow-sm 
-            focus:border-blue-500 
-            focus:ring-1 
-            focus:ring-blue-500
-          `}
-        >
-          <SelectValue placeholder="Chọn loại" />
-        </SelectTrigger>
-        <SelectContent className="bg-white border-gray-300 rounded-md shadow-lg">
-          <SelectItem value="DRAFT">Nháp</SelectItem>
-          <SelectItem value="FINAL">Chính thức</SelectItem>
-        </SelectContent>
-      </Select>
-      {formErrors.type && (
-        <p className="text-red-500 text-xs mt-1 text-right">{formErrors.type}</p>
-      )}
-    </div>
-
-    {/* File Upload Section */}
-    {(formData.type === 'DRAFT' || formData.type === 'FINAL') && (
-      <div className="flex flex-col items-end">
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={handleUploadClick}
-          disabled={uploadDecisionLoading}
-          className={`
-            border-gray-300 
-            text-gray-700 
-            hover:bg-gray-50 
-            hover:border-gray-400 
-            rounded-md 
-            px-4 
-            py-1
-            ${uploadDecisionLoading ? 'opacity-60 cursor-not-allowed' : ''}
-          `}
-        >
-          {uploadDecisionLoading 
-            ? 'Đang tải...' 
-            : `Tải file ${formData.type === 'DRAFT' ? 'nháp' : 'chính thức'}`
-          }
-        </Button>
-        <input
-          type="file"
-          ref={fileInputRef}
-          onChange={handleFileChange}
-          className="hidden"
-          accept=".xlsx,.xls,.doc,.docx,.pdf"
-        />
-        {uploadDecisionError && (
-          <p className="text-red-500 text-xs mt-1 text-right">{uploadDecisionError}</p>
-        )}
-        {(formData.type === 'DRAFT' && draftFile?.fileUrl) && (
-          <p className="text-green-600 text-xs mt-1 text-right truncate max-w-[200px]">
-            File nháp: {draftFile.fileName}
-          </p>
-        )}
-        {(formData.type === 'FINAL' && finalFile?.fileUrl) && (
-          <p className="text-green-600 text-xs mt-1 text-right truncate max-w-[200px]">
-            File chính thức: {finalFile.fileName}
-          </p>
-        )}
+          {/* File Upload Section */}
+          {(formData.type === 'DRAFT' || formData.type === 'FINAL') && (
+            <div className="flex flex-col items-end">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleUploadClick}
+                disabled={uploadDecisionLoading}
+                className={`
+                  border-gray-300 
+                  text-gray-700 
+                  hover:bg-gray-50 
+                  hover:border-gray-400 
+                  rounded-md 
+                  px-4 
+                  py-1
+                  ${uploadDecisionLoading ? 'opacity-60 cursor-not-allowed' : ''}
+                `}
+              >
+                {uploadDecisionLoading
+                  ? 'Đang tải...'
+                  : `Tải file ${formData.type === 'DRAFT' ? 'nháp' : 'chính thức'}`
+                }
+              </Button>
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                className="hidden"
+                accept=".xlsx,.xls,.doc,.docx,.pdf"
+              />
+              {displayedFile?.fileUrl && (
+                <div className="flex items-center gap-2 mt-1">
+                  <p className="text-green-600 text-xs truncate max-w-[200px]">
+                    {formData.type === 'DRAFT' ? 'File nháp' : 'File chính thức'}: {displayedFile.fileName}
+                  </p>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleRemoveFile}
+                    className="text-red-600 hover:text-red-800"
+                  >
+                    Xóa
+                  </Button>
+                </div>
+              )}
+              {uploadDecisionError && (
+                <p className="text-red-500 text-xs mt-1 text-right">{uploadDecisionError}</p>
+              )}
+            </div>
+          )}
+        </div>
       </div>
-    )}
-  </div>
-</div>
       <div className="max-w-5xl mx-auto p-8">
         <Card className={`${textClass} shadow-lg`}>
           <CardContent className="p-10">
@@ -339,9 +353,8 @@ export const CreateDecision = () => {
 
               <div className="mt-6 flex justify-between">
                 <div>
-             
                   <div className="flex items-center gap-2">
-                  <Label className={`${textClass} mb-1`}>Số quyết định</Label>
+                    <Label className={`${textClass} mb-1`}>Số quyết định</Label>
                     <Input
                       value={formData.decisionName}
                       onChange={(e) => updateField('decisionName', e.target.value)}
@@ -457,11 +470,10 @@ export const CreateDecision = () => {
                   >
                     + Thêm căn cứ
                   </Button>
-               
-                </div>
-                <p className="mt-2 indent-[1.27cm]">
+                  <p className="mt-2 indent-[1.27cm]">
                     Theo đề nghị của Trưởng phòng TC&QL Đào tạo.
                   </p>
+                </div>
               </div>
 
               <div>

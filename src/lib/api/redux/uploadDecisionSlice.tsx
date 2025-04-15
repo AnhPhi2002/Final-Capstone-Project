@@ -7,8 +7,8 @@ interface UploadedDecisionFile {
 }
 
 interface UploadDecisionState {
-  draftFile: UploadedDecisionFile | null; // Lưu file cho DRAFT
-  finalFile: UploadedDecisionFile | null; // Lưu file cho FINAL
+  draftFile: UploadedDecisionFile | null;
+  finalFile: UploadedDecisionFile | null;
   loading: boolean;
   error: string | null;
 }
@@ -20,9 +20,8 @@ const initialState: UploadDecisionState = {
   error: null,
 };
 
-// 🔹 API upload file cho quyết định
 export const uploadDecisionFile = createAsyncThunk(
-  'uploadDecision/uploadDecisionFile', // Đổi tên action
+  'uploadDecision/uploadDecisionFile',
   async ({ file, type }: { file: File; type: 'DRAFT' | 'FINAL' }, { rejectWithValue }) => {
     const formData = new FormData();
     formData.append('file', file);
@@ -47,7 +46,7 @@ export const uploadDecisionFile = createAsyncThunk(
 );
 
 const uploadDecisionSlice = createSlice({
-  name: 'uploadDecision', // Đổi tên slice
+  name: 'uploadDecision',
   initialState,
   reducers: {
     resetUploadDecision: (state) => {
@@ -55,6 +54,14 @@ const uploadDecisionSlice = createSlice({
       state.finalFile = null;
       state.error = null;
       state.loading = false;
+    },
+    resetSpecificFile: (state, action: { payload: 'DRAFT' | 'FINAL' }) => {
+      if (action.payload === 'DRAFT') {
+        state.draftFile = null;
+      } else if (action.payload === 'FINAL') {
+        state.finalFile = null;
+      }
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
@@ -80,5 +87,5 @@ const uploadDecisionSlice = createSlice({
   },
 });
 
-export const { resetUploadDecision } = uploadDecisionSlice.actions;
+export const { resetUploadDecision, resetSpecificFile } = uploadDecisionSlice.actions;
 export default uploadDecisionSlice.reducer;
