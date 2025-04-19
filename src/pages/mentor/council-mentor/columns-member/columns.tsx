@@ -15,6 +15,10 @@ export const memberColumns: ColumnDef<CouncilReviewMember>[] = [
   {
     accessorKey: "roleName",
     header: "Vai trò",
+    cell: ({ row }) => {
+      const roleName = row.getValue("roleName") as string | null;
+      return roleName === "council_member" ? "Thành viên" : roleName || "Không xác định";
+    },
   },
   {
     accessorKey: "status",

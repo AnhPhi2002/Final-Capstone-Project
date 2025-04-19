@@ -26,7 +26,7 @@ export const CouncilDefenseMembersPage: React.FC = () => {
   }, [dispatch, councilId, semesterId, councilDetail]);
 
   const table = useReactTable({
-    data: councilDetail?.members || [],
+    data: (councilDetail?.members || []).filter((member) => !member.isDeleted) || [],
     columns: memberColumns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),

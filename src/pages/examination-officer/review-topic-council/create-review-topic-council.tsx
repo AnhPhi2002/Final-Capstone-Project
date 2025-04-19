@@ -98,7 +98,7 @@ export const CreateReviewTopicCouncil = () => {
       startDate: convertToISODate(startDate),
       endDate: convertToISODate(endDate, true),
       status,
-      type: "topic",
+      type: "CHECK-TOPIC",
       round: round.roundNumber || 1,
     };
 

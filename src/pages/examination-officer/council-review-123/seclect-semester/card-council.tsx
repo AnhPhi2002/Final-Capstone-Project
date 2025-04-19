@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dot } from "lucide-react";
-import { PaginationDashboardPage } from "@/pages/admin/pagination";
+import { PaginationDashboardPage } from "@/pages/admin/pagination"
 
 type CardCouncilProps = {
   councils: CouncilReview[];
@@ -46,6 +46,7 @@ export const CardCouncil: React.FC<CardCouncilProps> = ({
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
+console.log(councils);
 
   const activeCouncils = councils.filter((council) => !council.isDeleted);
   const totalPages = Math.ceil(activeCouncils.length / itemsPerPage);

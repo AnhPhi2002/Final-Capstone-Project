@@ -52,10 +52,21 @@ export const DecisionDefense: React.FC = () => {
     }
   }, [dispatch, semesterId]);
 
+  // 1. Trích xuất chỉ một row cho mỗi groupCode
+const uniqueGroupSchedules = React.useMemo(() => {
+  const seen = new Set<string>();
+  return (reviewSchedulesMentor || []).filter((item) => {
+    const groupCode = item.schedule.group.groupCode;
+    if (seen.has(groupCode)) return false;
+    seen.add(groupCode);
+    return true;
+  });
+}, [reviewSchedulesMentor]);
+
 
   // Cấu hình bảng
   const table = useReactTable({
-    data: reviewSchedulesMentor || [],
+    data: uniqueGroupSchedules,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
