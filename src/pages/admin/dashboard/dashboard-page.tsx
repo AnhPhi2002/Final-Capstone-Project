@@ -1,16 +1,16 @@
 import Header from "@/components/header";
-// import Overview from "./overview";
-import Revenue from "./revenue";
-// import BestSelling from "./best-selling";
+import { SelectSemester } from "./seclect-semester/select-semester";
 
 const DashboardPage = () => {
   return (
     <div>
       <Header title="Tổng quan" href="/" currentPage="Dashboard" />
-      <div className="grid grid-cols-12 gap-5 p-5">
-        {/* <Overview /> */}
-        <Revenue />
-        {/* <BestSelling /> */}
+      <div className="p-5 flex-1 overflow-auto">
+        <div className="flex flex-col items-end gap-4">
+          <div className="w-full mt-[52px]">
+            <SelectSemester />
+          </div>
+        </div>
       </div>
     </div>
   );

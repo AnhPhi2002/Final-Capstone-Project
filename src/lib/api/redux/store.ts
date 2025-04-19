@@ -43,13 +43,13 @@ import decisionListTopReducer from './decisionListTopc';
 import groupDetailV2Reducer from './groupDetailSliceV2';
 import topicV2Reducer from './topicV2Slice';
 import mentorProgressReportReducer from './mentorProgressReportSlice';
-
+import { statisticsReducer } from './statisticsSlice';
 
 const rootReducer = combineReducers({
   counter: counterReducer,
   auth: authReducer,
   authSub: authSubReducer,
-
+  statistics: statisticsReducer,
   // profileUser: profileUserReducer,
   years: yearReducer,
   semesters: semesterReducer,
