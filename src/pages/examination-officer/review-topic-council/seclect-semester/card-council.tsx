@@ -1,4 +1,3 @@
-// components/card-council.tsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { Dot } from "lucide-react";
@@ -45,9 +44,11 @@ export const CardCouncil: React.FC<CardCouncilProps> = ({
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
+  console.log("Councils:", councils); // Ghi log để kiểm tra dữ liệu
 
-  const activeCouncils = councils.filter(
-    (council) => !council.council.isDeleted
+  // ✅ Kiểm tra an toàn để tránh undefined/null
+  const activeCouncils = (councils || []).filter(
+    (council) => council && council.council && !council.council.isDeleted
   );
   const totalPages = Math.ceil(activeCouncils.length / itemsPerPage);
 
@@ -81,7 +82,8 @@ export const CardCouncil: React.FC<CardCouncilProps> = ({
                       {c.name}
                     </CardTitle>
                     <CardDescription>
-                      Bắt đầu: {formatDate(c.councilStartDate)} - Kết thúc {formatDate(c.councilEndDate)}
+                      Bắt đầu: {formatDate(c.councilStartDate)} - Kết thúc{" "}
+                      {formatDate(c.councilEndDate)}
                     </CardDescription>
                     <CardDescription>
                       Vòng nộp lần: {c.round} - {roundTypeLabel}

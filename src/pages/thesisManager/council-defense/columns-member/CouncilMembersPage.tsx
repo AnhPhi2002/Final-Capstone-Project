@@ -12,7 +12,7 @@ import {
 import { DataTable } from "./data-table";
 import { memberColumns } from "./columns";
 import Header from "@/components/header";
-import { AddMemberReviewCouncil } from "./add-council-member";
+import { AddMemberDefenseCouncil } from "./add-council-member";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
@@ -40,7 +40,7 @@ export const CouncilDefenseMembersPage: React.FC = () => {
   }, [councilId, dispatch]);
 
   const table = useReactTable({
-    data: councilDetail?.members || [],
+    data: (councilDetail?.members || []).filter((member) => !member.isDeleted),
     columns: memberColumns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -84,7 +84,7 @@ export const CouncilDefenseMembersPage: React.FC = () => {
         </div>
 
         {/* Tích hợp AddMemberReviewCouncil */}
-        <AddMemberReviewCouncil
+        <AddMemberDefenseCouncil
           open={openAddMember}
           setOpen={setOpenAddMember}
           councilId={councilId}

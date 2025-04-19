@@ -18,6 +18,10 @@ export const columnsCouncilMembers: ColumnDef<CouncilMember, any>[] = [
   {
     accessorKey: "roleName",
     header: "Vai trò",
+    cell: ({ row }) => {
+      const roleName = row.getValue("roleName") as string;
+      return roleName === "council_member" ? "Thành viên" : roleName;
+    },
   },
   {
     accessorKey: "status",

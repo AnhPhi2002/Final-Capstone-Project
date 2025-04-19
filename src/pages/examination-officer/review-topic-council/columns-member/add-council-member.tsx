@@ -18,13 +18,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Form,
   FormField,
   FormItem,
@@ -34,9 +27,20 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Toaster, toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
+// Định nghĩa schema
 const formSchema = z.object({
-  email: z.string().email("Email không hợp lệ").min(1, "Vui lòng chọn email"),
+  emails: z
+    .array(z.string().email("Email không hợp lệ"))
+    .min(1, "Vui lòng chọn ít nhất một mentor")
+    .max(2, "Chỉ được chọn tối đa 2 mentor"),
 });
 
 interface AddReviewMemberTopicCouncilProps {
@@ -57,27 +61,41 @@ export const AddReviewMemberTopicCouncil: React.FC<AddReviewMemberTopicCouncilPr
     (state: RootState) => state.mentors
   );
 
-  const form = useForm({
+  // Khai báo kiểu rõ ràng cho form
+  const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
+      emails: [] as string[],
     },
   });
 
   useEffect(() => {
     console.log("🔍 AddReviewMemberTopicCouncil - open:", open, "semesterId:", semesterId);
     if (open && semesterId) {
-      dispatch(fetchMentorsBySemesterId(semesterId))
-        .then(() => {
-          console.log("✅ fetchMentorsBySemesterId called for semesterId:", semesterId);
-        });
+      dispatch(fetchMentorsBySemesterId(semesterId)).then(() => {
+        console.log("✅ fetchMentorsBySemesterId called for semesterId:", semesterId);
+      });
     }
   }, [open, semesterId, dispatch]);
 
-  const onSubmit = async (data: { email: string }) => {
+  // Xử lý chọn/bỏ chọn email
+  const handleSelectChange = (email: string, currentEmails: string[]) => {
+    let updatedEmails: string[];
+    if (currentEmails.includes(email)) {
+      updatedEmails = currentEmails.filter((e) => e !== email);
+    } else {
+      updatedEmails = [...currentEmails, email];
+    }
+    form.setValue("emails", updatedEmails, { shouldValidate: true });
+  };
+
+  const onSubmit = async (data: { emails: string[] }) => {
     try {
-      await dispatch(addCouncilMember({ councilId, email: data.email, semesterId })).unwrap();
-      toast.success("Thêm thành viên vào hội đồng thành công!");
+      // Gửi từng email đến addCouncilMember
+      for (const email of data.emails) {
+        await dispatch(addCouncilMember({ councilId, email, semesterId })).unwrap();
+      }
+      toast.success(`Thêm ${data.emails.length} thành viên vào hội đồng thành công!`);
       form.reset();
       refetchData?.();
       setOpen(false);
@@ -97,7 +115,7 @@ export const AddReviewMemberTopicCouncil: React.FC<AddReviewMemberTopicCouncilPr
           <DialogHeader>
             <DialogTitle>Thêm thành viên hội đồng</DialogTitle>
             <DialogDescription>
-              Chọn mentor để mời vào hội đồng. Nhấn "Lưu" để xác nhận.
+              Chọn một hoặc nhiều mentor để mời vào hội đồng. Nhấn "Lưu" để xác nhận.
             </DialogDescription>
           </DialogHeader>
 
@@ -105,37 +123,47 @@ export const AddReviewMemberTopicCouncil: React.FC<AddReviewMemberTopicCouncilPr
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
-                name="email"
+                name="emails"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Email giảng viên</FormLabel>
                     <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                        disabled={mentorLoading}
-                      >
-                        <SelectTrigger>
-                          <SelectValue
-                            placeholder={
-                              mentorLoading ? "Đang tải danh sách mentor..." : "Chọn email mentor"
-                            }
-                          />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {mentors?.length > 0 ? (
-                            mentors.map((mentor: Mentor) => (
-                              <SelectItem key={mentor.id} value={mentor.email}>
-                                {mentor.fullName} ({mentor.email})
+                      <div className="space-y-2">
+                        <Select
+                          onValueChange={(value) => handleSelectChange(value, field.value)}
+                          disabled={mentorLoading}
+                        >
+                          <SelectTrigger>
+                            <SelectValue
+                              placeholder={
+                                mentorLoading
+                                  ? "Đang tải danh sách mentor..."
+                                  : "Chọn mentor (có thể chọn nhiều)"
+                              }
+                            />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {mentors?.length > 0 ? (
+                              mentors.map((mentor: Mentor) => (
+                                <SelectItem key={mentor.id} value={mentor.email}>
+                                  {mentor.fullName} ({mentor.email})
+                                  {field.value.includes(mentor.email) && " ✓"}
+                                </SelectItem>
+                              ))
+                            ) : (
+                              <SelectItem value="none" disabled>
+                                Không có mentor nào
                               </SelectItem>
-                            ))
-                          ) : (
-                            <SelectItem value="none" disabled>
-                              Không có mentor nào
-                            </SelectItem>
-                          )}
-                        </SelectContent>
-                      </Select>
+                            )}
+                          </SelectContent>
+                        </Select>
+                        {/* Hiển thị danh sách đã chọn */}
+                        {field.value.length > 0 && (
+                          <div className="text-sm text-gray-600">
+                            Đã chọn:<br /> {field.value.join(", ")} 
+                          </div>
+                        )}
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -145,7 +173,7 @@ export const AddReviewMemberTopicCouncil: React.FC<AddReviewMemberTopicCouncilPr
               <FormItem>
                 <FormLabel>Vai trò</FormLabel>
                 <input
-                  value="Thành viên" // Thay "council_member" thành "Thành viên"
+                  value="Thành viên"
                   disabled
                   className="w-full px-3 py-2 text-sm border rounded-md bg-gray-100"
                 />

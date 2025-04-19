@@ -81,6 +81,7 @@ export interface Council {
 export interface CouncilDetail {
   council: Council;
   schedules?: any[];
+  isDeleted?: boolean;
 }
 
 export interface CouncilReview {

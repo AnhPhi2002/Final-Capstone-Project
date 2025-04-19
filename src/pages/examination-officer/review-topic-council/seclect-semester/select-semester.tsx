@@ -92,7 +92,7 @@ export const SelectSemester: React.FC = () => {
   const availableSemesters = semesters.filter((s) => !s.isDeleted);
 
   const filteredSubmissionRounds = submissionRounds.filter(
-    (round) => round.type === "TOPIC" && !round.isDeleted
+    (round) => round.type === "CHECK-TOPIC" && !round.isDeleted
   );
 
   return (
