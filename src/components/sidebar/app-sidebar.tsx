@@ -438,10 +438,7 @@ const academicMenu = {
           title: "D.s giảng viên",
           url: "/academic/mentor-page",
         },
-        // {
-        //   title: "D.s nhóm sinh viên ngẫu nhiên ",
-        //   url: "/academic/random-group-student-page",
-        // },
+
       ],
     },
     {
@@ -482,6 +479,19 @@ const academicMenu = {
           title: "D.s quyết định đề tài ",
           url: "/academic/decision-list-top",
         },
+      ],
+    },
+    {
+      title: "Quản lý thống kê",
+      url: "/academic/dashboard-page",
+      icon: List,
+      isActive: true,
+      items: [
+        {
+          title: "Thống kê ",
+          url: "/academic/dashboard-page",
+        },
+        
       ],
     },
   ],

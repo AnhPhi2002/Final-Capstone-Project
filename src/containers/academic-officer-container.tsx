@@ -77,6 +77,7 @@ export const AcademicOfficerContainer = () => {
     <MainLayout>
       <Routes>
         <Route path="/" element={<DashboardPage />} />
+        <Route path="/dashboard-page" element={<DashboardPage />} />
         <Route path="/profile-page" element={<ProfilePage />} />
         <Route path="/profile-page/update" element={<ProfileUpdateForm />} />
         <Route path="/semester" element={<SemestersPage />} />
