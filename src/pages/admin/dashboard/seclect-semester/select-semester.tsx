@@ -4,10 +4,6 @@ import { RootState, AppDispatch } from "@/lib/api/redux/store";
 import { fetchYears } from "@/lib/api/redux/yearSlice";
 import { fetchSemesters, clearSemesters } from "@/lib/api/redux/semesterSlice";
 import {
-  fetchSubmissionRounds,
-  clearSubmissionRounds,
-} from "@/lib/api/redux/submissionRoundSlice";
-import {
   Select,
   SelectContent,
   SelectGroup,
@@ -23,7 +19,6 @@ export const SelectSemester: React.FC = () => {
 
   const { data: years, loading: loadingYears } = useSelector((state: RootState) => state.years);
   const { data: semesters, loading: loadingSemesters } = useSelector((state: RootState) => state.semesters);
-  const { data: submissionRounds, loading: loadingRounds } = useSelector((state: RootState) => state.submissionRounds);
 
   const [selectedYear, setSelectedYear] = useState<string>("");
   const [selectedSemester, setSelectedSemester] = useState<string>("");
@@ -36,20 +31,10 @@ export const SelectSemester: React.FC = () => {
     if (selectedYear) {
       dispatch(fetchSemesters({ yearId: selectedYear }));
       setSelectedSemester("");
-      dispatch(clearSubmissionRounds());
     } else {
       dispatch(clearSemesters());
-      dispatch(clearSubmissionRounds());
     }
   }, [selectedYear, dispatch]);
-
-  useEffect(() => {
-    if (selectedSemester) {
-      dispatch(fetchSubmissionRounds(selectedSemester));
-    } else {
-      dispatch(clearSubmissionRounds());
-    }
-  }, [selectedSemester, dispatch]);
 
   // Lọc dữ liệu không bị xóa
   const filteredYears = years.filter((y) => !y.isDeleted);
@@ -119,8 +104,8 @@ export const SelectSemester: React.FC = () => {
 
       {selectedSemester && (
         <CardSemester
-          data={submissionRounds}
-          loading={loadingRounds}
+          data={filteredSemesters.filter((s) => s.id === selectedSemester)}
+          loading={loadingSemesters}
           selectedSemester={selectedSemester}
         />
       )}

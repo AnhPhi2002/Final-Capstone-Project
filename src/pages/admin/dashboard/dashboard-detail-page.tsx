@@ -1,16 +1,16 @@
-import Header from "@/components/header"
-import Overview from "./overview"
-import Revenue from "./revenue"
+// src/pages/academic/DashboardDetailPage.tsx
+import Header from "@/components/header";
+import StatisticsOverview from "./StatisticsOverview";
 
 export const DashboardDetailPage = () => {
   return (
-    <div> 
+    <div>
       <Header title="Tổng quan" href="/" currentPage="Dashboard" />
-      <div className="grid grid-cols-12 gap-5 p-5">
-        <Overview />
-        <Revenue />
-        {/* <BestSelling /> */}
-      </div>  
+      <div className="p-5">
+        <StatisticsOverview />
+      </div>
     </div>
-  )
-}
+  );
+};
+
+export default DashboardDetailPage;

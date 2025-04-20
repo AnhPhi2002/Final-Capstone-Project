@@ -212,6 +212,10 @@ const adminMenu = {
           title: "Cấu hình",
           url: "/admin/admin-config",
         },
+        {
+          title: "Thống kê",
+          url: "/admin/dashboard-page",
+        },
       ],
     },
     {
