@@ -1,166 +1,211 @@
-// store/statisticsSlice.ts
-import { createSlice, createAsyncThunk, AnyAction } from '@reduxjs/toolkit';
-import { axiosClient } from '@/lib/api/config/axios-client';
-
-interface StatisticItem {
-  status?: string;
-  round?: string;
-  total: number;
-}
+// src/lib/api/redux/statisticsSlice.ts
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { RootState } from "./store";
+import { axiosClient } from "../config/axios-client";
+import { StudentQualificationStatus, GroupStatus, TopicStatus, ReviewRound, DefenseRound,StudentGroupStatus,GroupTopicStatus } from "./types/staticDashboard";
 
 interface StatisticsState {
-  studentQualification: StatisticItem[];
-  groupStatus: StatisticItem[];
-  topicStatus: StatisticItem[];
-  reviewRounds: StatisticItem[];
-  defenseRounds: StatisticItem[];
-  studentGroupStatus: StatisticItem[];
-  groupTopicStatus: StatisticItem[];
-  loading: boolean;
-  error: string | null;
+  studentQualification: { data: StudentQualificationStatus[]; loading: boolean; error: string | null };
+  groupStatus: { data: GroupStatus[]; loading: boolean; error: string | null };
+  topicStatus: { data: TopicStatus[]; loading: boolean; error: string | null };
+  reviewRounds: { data: ReviewRound[]; loading: boolean; error: string | null };
+  defenseRounds: { data: DefenseRound[]; loading: boolean; error: string | null };
+  studentGroupStatus: { data: StudentGroupStatus[]; loading: boolean; error: string | null };
+  groupTopicStatus: { data: GroupTopicStatus[]; loading: boolean; error: string | null };
 }
 
 const initialState: StatisticsState = {
-  studentQualification: [],
-  groupStatus: [],
-  topicStatus: [],
-  reviewRounds: [],
-  defenseRounds: [],
-  studentGroupStatus: [],
-  groupTopicStatus: [],
-  loading: false,
-  error: null,
+  studentQualification: { data: [], loading: false, error: null },
+  groupStatus: { data: [], loading: false, error: null },
+  topicStatus: { data: [], loading: false, error: null },
+  reviewRounds: { data: [], loading: false, error: null },
+  defenseRounds: { data: [], loading: false, error: null },
+  studentGroupStatus: { data: [], loading: false, error: null },
+  groupTopicStatus: { data: [], loading: false, error: null },
 };
 
-// ================== ASYNC THUNKS ==================
-
+// Async thunks for each API
 export const fetchStudentQualification = createAsyncThunk(
-  'statistics/fetchStudentQualification',
+  "statistics/fetchStudentQualification",
   async (semesterId: string) => {
-    const res = await axiosClient.get('/api/statistics/student-qualification-status', {
+    const response = await axiosClient.get(`/statistics/student-qualification-status`, {
       params: { semesterId },
     });
-    return res.data as StatisticItem[];
+    return response.data as StudentQualificationStatus[];
   }
 );
 
 export const fetchGroupStatus = createAsyncThunk(
-  'statistics/fetchGroupStatus',
+  "statistics/fetchGroupStatus",
   async (semesterId: string) => {
-    const res = await axiosClient.get('/api/statistics/group-statuses', {
+    const response = await axiosClient.get(`/statistics/group-statuses`, {
       params: { semesterId },
     });
-    return res.data as StatisticItem[];
+    return response.data as GroupStatus[];
   }
 );
 
 export const fetchTopicStatus = createAsyncThunk(
-  'statistics/fetchTopicStatus',
+  "statistics/fetchTopicStatus",
   async (semesterId: string) => {
-    const res = await axiosClient.get('/api/statistics/topic-statuses', {
+    const response = await axiosClient.get(`/statistics/topic-statuses`, {
       params: { semesterId },
     });
-    return res.data as StatisticItem[];
+    return response.data as TopicStatus[];
   }
 );
 
 export const fetchReviewRounds = createAsyncThunk(
-  'statistics/fetchReviewRounds',
+  "statistics/fetchReviewRounds",
   async (semesterId: string) => {
-    const res = await axiosClient.get('/api/statistics/review-rounds', {
+    const response = await axiosClient.get(`/statistics/review-rounds`, {
       params: { semesterId },
     });
-    return res.data as StatisticItem[];
+    return response.data as ReviewRound[];
   }
 );
 
 export const fetchDefenseRounds = createAsyncThunk(
-  'statistics/fetchDefenseRounds',
+  "statistics/fetchDefenseRounds",
   async (semesterId: string) => {
-    const res = await axiosClient.get('/api/statistics/defense-rounds', {
+    const response = await axiosClient.get(`/statistics/defense-rounds`, {
       params: { semesterId },
     });
-    return res.data as StatisticItem[];
+    return response.data as DefenseRound[];
   }
 );
 
 export const fetchStudentGroupStatus = createAsyncThunk(
-  'statistics/fetchStudentGroupStatus',
+  "statistics/fetchStudentGroupStatus",
   async (semesterId: string) => {
-    const res = await axiosClient.get('/api/statistics/student-group-status', {
+    const response = await axiosClient.get(`/statistics/student-group-status`, {
       params: { semesterId },
     });
-    return res.data as StatisticItem[];
+    return response.data as StudentGroupStatus[];
   }
 );
 
 export const fetchGroupTopicStatus = createAsyncThunk(
-  'statistics/fetchGroupTopicStatus',
+  "statistics/fetchGroupTopicStatus",
   async (semesterId: string) => {
-    const res = await axiosClient.get('/api/statistics/group-topic-status', {
+    const response = await axiosClient.get(`/statistics/group-topic-status`, {
       params: { semesterId },
     });
-    return res.data as StatisticItem[];
+    return response.data as GroupTopicStatus[];
   }
 );
 
-// ================== SLICE ==================
-
 const statisticsSlice = createSlice({
-  name: 'statistics',
+  name: "statistics",
   initialState,
-  reducers: {
-    clearStatistics(state) {
-      Object.assign(state, initialState);
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
+    // Student Qualification
     builder
+      .addCase(fetchStudentQualification.pending, (state) => {
+        state.studentQualification.loading = true;
+        state.studentQualification.error = null;
+      })
       .addCase(fetchStudentQualification.fulfilled, (state, action) => {
-        state.studentQualification = action.payload;
-        state.loading = false;
+        state.studentQualification.loading = false;
+        state.studentQualification.data = action.payload;
+      })
+      .addCase(fetchStudentQualification.rejected, (state, action) => {
+        state.studentQualification.loading = false;
+        state.studentQualification.error = action.error.message || "Failed to fetch";
+      });
+
+    // Group Status
+    builder
+      .addCase(fetchGroupStatus.pending, (state) => {
+        state.groupStatus.loading = true;
+        state.groupStatus.error = null;
       })
       .addCase(fetchGroupStatus.fulfilled, (state, action) => {
-        state.groupStatus = action.payload;
-        state.loading = false;
+        state.groupStatus.loading = false;
+        state.groupStatus.data = action.payload;
+      })
+      .addCase(fetchGroupStatus.rejected, (state, action) => {
+        state.groupStatus.loading = false;
+        state.groupStatus.error = action.error.message || "Failed to fetch";
+      });
+
+    // Topic Status
+    builder
+      .addCase(fetchTopicStatus.pending, (state) => {
+        state.topicStatus.loading = true;
+        state.topicStatus.error = null;
       })
       .addCase(fetchTopicStatus.fulfilled, (state, action) => {
-        state.topicStatus = action.payload;
-        state.loading = false;
+        state.topicStatus.loading = false;
+        state.topicStatus.data = action.payload;
+      })
+      .addCase(fetchTopicStatus.rejected, (state, action) => {
+        state.topicStatus.loading = false;
+        state.topicStatus.error = action.error.message || "Failed to fetch";
+      });
+
+    // Review Rounds
+    builder
+      .addCase(fetchReviewRounds.pending, (state) => {
+        state.reviewRounds.loading = true;
+        state.reviewRounds.error = null;
       })
       .addCase(fetchReviewRounds.fulfilled, (state, action) => {
-        state.reviewRounds = action.payload;
-        state.loading = false;
+        state.reviewRounds.loading = false;
+        state.reviewRounds.data = action.payload;
+      })
+      .addCase(fetchReviewRounds.rejected, (state, action) => {
+        state.reviewRounds.loading = false;
+        state.reviewRounds.error = action.error.message || "Failed to fetch";
+      });
+
+    // Defense Rounds
+    builder
+      .addCase(fetchDefenseRounds.pending, (state) => {
+        state.defenseRounds.loading = true;
+        state.defenseRounds.error = null;
       })
       .addCase(fetchDefenseRounds.fulfilled, (state, action) => {
-        state.defenseRounds = action.payload;
-        state.loading = false;
+        state.defenseRounds.loading = false;
+        state.defenseRounds.data = action.payload;
+      })
+      .addCase(fetchDefenseRounds.rejected, (state, action) => {
+        state.defenseRounds.loading = false;
+        state.defenseRounds.error = action.error.message || "Failed to fetch";
+      });
+
+    // Student Group Status
+    builder
+      .addCase(fetchStudentGroupStatus.pending, (state) => {
+        state.studentGroupStatus.loading = true;
+        state.studentGroupStatus.error = null;
       })
       .addCase(fetchStudentGroupStatus.fulfilled, (state, action) => {
-        state.studentGroupStatus = action.payload;
-        state.loading = false;
+        state.studentGroupStatus.loading = false;
+        state.studentGroupStatus.data = action.payload;
+      })
+      .addCase(fetchStudentGroupStatus.rejected, (state, action) => {
+        state.studentGroupStatus.loading = false;
+        state.studentGroupStatus.error = action.error.message || "Failed to fetch";
+      });
+
+    // Group Topic Status
+    builder
+      .addCase(fetchGroupTopicStatus.pending, (state) => {
+        state.groupTopicStatus.loading = true;
+        state.groupTopicStatus.error = null;
       })
       .addCase(fetchGroupTopicStatus.fulfilled, (state, action) => {
-        state.groupTopicStatus = action.payload;
-        state.loading = false;
+        state.groupTopicStatus.loading = false;
+        state.groupTopicStatus.data = action.payload;
       })
-      .addMatcher(
-        (action: AnyAction) => action.type.startsWith('statistics/') && action.type.endsWith('/pending'),
-        (state) => {
-          state.loading = true;
-          state.error = null;
-        }
-      )
-      .addMatcher(
-        (action: AnyAction) => action.type.startsWith('statistics/') && action.type.endsWith('/rejected'),
-        (state, action: { error: { message?: string } }) => {
-          state.loading = false;
-          state.error = action.error?.message ?? 'Something went wrong';
-        }
-      );
+      .addCase(fetchGroupTopicStatus.rejected, (state, action) => {
+        state.groupTopicStatus.loading = false;
+        state.groupTopicStatus.error = action.error.message || "Failed to fetch";
+      });
   },
 });
 
-// ================== EXPORTS ==================
-export const { clearStatistics } = statisticsSlice.actions;
-export const statisticsReducer = statisticsSlice.reducer;
+export const selectStatistics = (state: RootState) => state.statistics;
+export default statisticsSlice.reducer;
