@@ -205,7 +205,7 @@ export const AddMemberDefenseCouncil: React.FC<AddMemberReviewCouncilProps> = ({
                                 <SelectContent>
                                   <SelectItem value="council_chairman">Chủ tịch hội đồng</SelectItem>
                                   <SelectItem value="council_secretary">Thư ký hội đồng</SelectItem>
-                                  <SelectItem value="council_member">Thành viên thường</SelectItem>
+                                  <SelectItem value="council_member">Thành viên</SelectItem>
                                 </SelectContent>
                               </Select>
                             </div>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -60,29 +60,60 @@ export const ScoreModal: React.FC<ScoreModalProps> = ({ open, setOpen, session, 
   const dispatch = useDispatch<AppDispatch>();
   const { loadingScore, errorScore } = useSelector((state: RootState) => state.councilDefense);
 
-  // Tạo map để lấy email từ group.members dựa trên studentId
-  const studentEmailMap = new Map(
-    session.group.members.map((member) => [member.studentId, member.student.user.email])
+  // Tạo map để lấy status và email từ group.members dựa trên studentId
+  const studentStatusMap = new Map<string, { status: string; studentCode: string; email: string }>(
+    session.group.members.map((member) => [
+      member.studentId,
+      {
+        status: member.status,
+        studentCode: member.student.studentCode,
+        email: member.student.user.email,
+      },
+    ])
   );
 
-  // Khởi tạo form với dữ liệu mặc định từ session.memberResults
+  // Danh sách sinh viên INACTIVE để hiển thị trong toast
+  const inactiveStudents = session.memberResults
+    .filter((result) => studentStatusMap.get(result.studentId)?.status === "INACTIVE")
+    .map((result) => ({
+      studentCode: studentStatusMap.get(result.studentId)?.studentCode || "N/A",
+      email: studentStatusMap.get(result.studentId)?.email || "N/A",
+    }));
+
+  // Khởi tạo form với dữ liệu mặc định
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       evaluations: session.memberResults.map((result) => ({
         studentId: result.studentId,
-        result: "" as "PASS" | "NOT_PASS",
+        result:
+          studentStatusMap.get(result.studentId)?.status === "INACTIVE"
+            ? "NOT_PASS"
+            : undefined, // undefined cho ACTIVE, NOT_PASS cho INACTIVE
         feedback: "",
       })),
     },
   });
 
+  // Hiển thị thông báo khi có sinh viên INACTIVE
+  useEffect(() => {
+    if (open && inactiveStudents.length > 0) {
+      const message = `Các sinh viên sau ở trạng thái INACTIVE và sẽ tự động được đặt kết quả NOT_PASS: ${inactiveStudents
+        .map((s) => `${s.studentCode} (${s.email})`)
+        .join(", ")}.`;
+      toast.info(message);
+    }
+  }, [open, inactiveStudents]);
+
   const handleSubmit: SubmitHandler<FormData> = async (data) => {
     try {
-      // Kiểm tra nếu có sinh viên chưa được chọn kết quả
-      const hasEmptyResult = data.evaluations.some((evaluation) => !evaluation.result);
+      // Kiểm tra nếu có sinh viên ACTIVE chưa được chọn kết quả
+      const hasEmptyResult = data.evaluations.some(
+        (evaluation) =>
+          studentStatusMap.get(evaluation.studentId)?.status === "ACTIVE" && !evaluation.result
+      );
       if (hasEmptyResult) {
-        toast.error("Vui lòng chọn kết quả cho tất cả sinh viên!");
+        toast.error("Vui lòng chọn kết quả cho tất cả sinh viên ACTIVE!");
         return;
       }
 
@@ -140,7 +171,9 @@ export const ScoreModal: React.FC<ScoreModalProps> = ({ open, setOpen, session, 
                         const student = session.memberResults.find(
                           (result) => result.studentId === evaluation.studentId
                         )?.student;
-                        const email = studentEmailMap.get(evaluation.studentId) ?? "Chưa có email";
+                        const studentInfo = studentStatusMap.get(evaluation.studentId);
+                        const email = studentInfo?.email ?? "Chưa có email";
+                        const isActive = studentInfo?.status === "ACTIVE";
 
                         return (
                           <div
@@ -149,34 +182,38 @@ export const ScoreModal: React.FC<ScoreModalProps> = ({ open, setOpen, session, 
                           >
                             <div className="flex items-center justify-between">
                               <span className="font-medium">
-                                {student?.studentCode} - {email}
+                                {student?.studentCode} - {email} ({studentInfo?.status})
                               </span>
                             </div>
                             <div>
                               <FormLabel>Kết quả</FormLabel>
                               <FormControl>
-                                <Select
-                                  value={evaluation.result}
-                                  onValueChange={(value) => {
-                                    const updatedEvaluations = [...field.value];
-                                    updatedEvaluations[index] = {
-                                      ...updatedEvaluations[index],
-                                      result: value as "PASS" | "NOT_PASS",
-                                    };
-                                    form.setValue("evaluations", updatedEvaluations, {
-                                      shouldValidate: true,
-                                    });
-                                  }}
-                                  disabled={loadingScore}
-                                >
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Chọn kết quả" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="PASS">PASS</SelectItem>
-                                    <SelectItem value="NOT_PASS">NOT_PASS</SelectItem>
-                                  </SelectContent>
-                                </Select>
+                                {isActive ? (
+                                  <Select
+                                    value={evaluation.result}
+                                    onValueChange={(value) => {
+                                      const updatedEvaluations = [...field.value];
+                                      updatedEvaluations[index] = {
+                                        ...updatedEvaluations[index],
+                                        result: value as "PASS" | "NOT_PASS",
+                                      };
+                                      form.setValue("evaluations", updatedEvaluations, {
+                                        shouldValidate: true,
+                                      });
+                                    }}
+                                    disabled={loadingScore}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Chọn kết quả" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="PASS">PASS</SelectItem>
+                                      <SelectItem value="NOT_PASS">NOT_PASS</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                ) : (
+                                  <Input value="NOT_PASS" disabled />
+                                )}
                               </FormControl>
                               <FormMessage />
                             </div>
@@ -193,10 +230,11 @@ export const ScoreModal: React.FC<ScoreModalProps> = ({ open, setOpen, session, 
                                     };
                                     form.setValue("evaluations", updatedEvaluations, {
                                       shouldValidate: true,
+                                      shouldDirty: true,
                                     });
                                   }}
                                   placeholder="Nhập nhận xét..."
-                                  disabled={loadingScore}
+                                  disabled={loadingScore || !isActive}
                                 />
                               </FormControl>
                             </div>

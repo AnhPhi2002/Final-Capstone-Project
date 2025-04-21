@@ -150,7 +150,7 @@ export const CreateSubmissionRound: React.FC<CreateSubmissionRoundProps> = ({ on
         })
       ).unwrap();
 
-      toast.success("Tạo vòng nộp thành công!");
+      toast.success("Tạo thành công!");
 
       if (onCreated) onCreated(data.yearId, data.semesterId);
 
@@ -171,7 +171,7 @@ export const CreateSubmissionRound: React.FC<CreateSubmissionRoundProps> = ({ on
   return (
     <div>
       <Button className="bg-black text-white" onClick={() => setIsOpen(true)}>
-        Tạo vòng nộp mới
+        Tạo vòng mới
       </Button>
 
       {isOpen && (
@@ -181,9 +181,9 @@ export const CreateSubmissionRound: React.FC<CreateSubmissionRoundProps> = ({ on
             className="fixed left-1/2 top-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 space-y-4 rounded-lg bg-white p-6 shadow-lg"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-lg font-semibold">Tạo vòng nộp mới</h2>
+            <h2 className="text-lg font-semibold">Tạo vòng mới</h2>
             <p className="text-sm text-muted-foreground">
-              Chọn năm học, kỳ học và thông tin vòng nộp bên dưới.
+              Chọn năm học, kỳ học và thông tin vòng bên dưới.
             </p>
 
             <Form {...form}>
@@ -285,7 +285,7 @@ export const CreateSubmissionRound: React.FC<CreateSubmissionRoundProps> = ({ on
                   name="roundNumber"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Lần nộp</FormLabel>
+                      <FormLabel>Lần </FormLabel>
                       <Select onValueChange={field.onChange} value={field.value} disabled={!type}>
                         <FormControl>
                           <SelectTrigger>
@@ -389,7 +389,7 @@ export const CreateSubmissionRound: React.FC<CreateSubmissionRoundProps> = ({ on
                     Hủy
                   </Button>
                   <Button type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? "Đang lưu..." : "Lưu vòng nộp"}
+                    {isSubmitting ? "Đang lưu..." : "Lưu vòng"}
                   </Button>
                 </div>
               </form>
