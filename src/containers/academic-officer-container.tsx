@@ -45,6 +45,7 @@ import DecisionListTopView from "@/pages/academic/decision-list-top/decision-lis
 import DecisionListTopDetail from "@/pages/academic/decision-list-top/decision-list-top-detail";
 import CreateDecisionListTopic from "@/pages/academic/decision-list-top/create-decision-list-topic";
 import UpdateDecisionListTopic from "@/pages/academic/decision-list-top/update-decision-lits-topic";
+// import DashboardDetailPage from "@/pages/admin/dashboard/dashboard-detail-page";
 
 // import { CreateDecisionListTopic } from "@/pages/academic/decision-list-top/create-decision-list-topic";
 // import { UpdateDecisionLitsTopic } from "@/pages/academic/decision-list-top/update-decision-lits-topic";
@@ -78,6 +79,7 @@ export const AcademicOfficerContainer = () => {
       <Routes>
         <Route path="/" element={<DashboardPage />} />
         <Route path="/dashboard-page" element={<DashboardPage />} />
+        {/* <Route path="/dashboard-detail" element={<DashboardDetailPage />} /> */}
         <Route path="/profile-page" element={<ProfilePage />} />
         <Route path="/profile-page/update" element={<ProfileUpdateForm />} />
         <Route path="/semester" element={<SemestersPage />} />
