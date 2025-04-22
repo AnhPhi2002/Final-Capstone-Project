@@ -120,7 +120,7 @@ export const CardDeadlineTopic: React.FC<CardDeadlineTopicProps> = ({
     <div>
       {types.length === 0 ? (
         <p className="text-center text-gray-500 text-lg font-semibold mt-5">
-          Chưa có vòng nộp nào cho kỳ học này.
+          Chưa có vòng nào cho kỳ học này.
         </p>
       ) : (
         types.map((type) => {

@@ -231,7 +231,7 @@ const { groups, loading: groupLoading } = useSelector(
             <Input
               value={subSupervisorEmail}
               onChange={(e) => setSubSupervisorEmail(e.target.value)}
-              placeholder="Email giảng viên phụ trách"
+              placeholder="Email giảng viên phụ"
             />
             {filteredEmails.length > 0 && (
               <ul className="absolute z-10 w-full bg-white border rounded-md shadow-lg max-h-40 overflow-y-auto">

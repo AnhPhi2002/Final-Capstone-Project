@@ -123,7 +123,7 @@ export const CouncilReviewDetail = () => {
                 <div className="flex items-center gap-2">
                   <span className="font-semibold">Chọn phiên review:</span>
                   <Select onValueChange={handleSessionChange} value={selectedSessionId || ""}>
-                    <SelectTrigger className="w-[200px]">
+                    <SelectTrigger className="w-[300px]"> {/* Increased width to accommodate more content */}
                       <SelectValue placeholder="Chọn phiên" />
                     </SelectTrigger>
                     <SelectContent>
@@ -132,7 +132,20 @@ export const CouncilReviewDetail = () => {
                           .filter((session) => !session.isDeleted)
                           .map((session) => (
                             <SelectItem key={session.id} value={session.id}>
-                              {formatReviewTime(session.reviewTime)} - {session.room || "Chưa có phòng"}
+                              <div className="flex items-center justify-between gap-2">
+                                <span>
+                                  {formatReviewTime(session.reviewTime)} - {session.room || "Chưa có phòng"}
+                                </span>
+                                {session.group ? (
+                                  <span className="text-gray-600 font-medium">
+                                    (Nhóm: {session.group.groupCode})
+                                  </span>
+                                ) : (
+                                  <span className="text-gray-400 italic">
+                                    (Chưa có nhóm)
+                                  </span>
+                                )}
+                              </div>
                             </SelectItem>
                           ))
                       ) : (

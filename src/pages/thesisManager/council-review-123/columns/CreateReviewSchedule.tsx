@@ -44,6 +44,7 @@ interface CreateReviewScheduleProps {
   setOpen: (open: boolean) => void;
   councilId: string;
   semesterId: string;
+  onSuccess?: () => void;
 }
 
 export const CreateReviewSchedule: React.FC<CreateReviewScheduleProps> = ({
@@ -51,6 +52,7 @@ export const CreateReviewSchedule: React.FC<CreateReviewScheduleProps> = ({
   setOpen,
   councilId,
   semesterId,
+  onSuccess,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { groups, loading: groupLoading } = useSelector((state: RootState) => state.groups);
@@ -96,6 +98,7 @@ export const CreateReviewSchedule: React.FC<CreateReviewScheduleProps> = ({
       await dispatch(createReviewSchedule(formattedData)).unwrap();
       toast.success("Tạo lịch review thành công!");
       setOpen(false);
+      onSuccess?.();
     } catch (error: any) {
       let errorMessage = typeof error === "string" ? error : "Tạo lịch review thất bại!";
     

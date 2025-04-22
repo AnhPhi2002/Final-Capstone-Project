@@ -67,7 +67,7 @@ export default function AllTopicDetail() {
   if (!topicDetails) return <p className="text-center text-gray-500">Không tìm thấy đề tài.</p>;
 
   return (
-    <div className="mt-6 bg-white">
+    <div className="mt-6 bg-white mx-6">
       <Card className="p-6">
         <div className="flex items-center mt-4 gap-3">
           <Avatar className="w-10 h-10">
