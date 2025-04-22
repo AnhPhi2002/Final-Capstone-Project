@@ -20,9 +20,9 @@ export const DeadineTopicPage = () => {
   return (
     <div className="flex flex-col h-screen">
       <Header
-        title="Dashboard"
+        title="Tổng quan"
         href="/"
-        currentPage="Thời gian đăng kí đợt đề tài"
+        currentPage="Thời gian đăng ký và duyệt đề tài"
       />
       <div className="p-5 flex-1 overflow-auto">
         <div className="flex flex-col items-end gap-4">

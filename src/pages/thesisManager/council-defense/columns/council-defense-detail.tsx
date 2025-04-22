@@ -168,6 +168,7 @@ export const CouncilDefenseDetail = () => {
               councilId={councilId}
               semesterId={semesterId}
               defenseRound={councilDetail?.round ?? 1}
+              onSuccess={handleRefetch}
             />
 
             <DataTable table={table} />

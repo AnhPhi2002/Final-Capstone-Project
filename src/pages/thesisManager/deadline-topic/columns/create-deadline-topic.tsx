@@ -183,7 +183,7 @@ export const CreateSubmissionRound: React.FC<CreateSubmissionRoundProps> = ({ on
           >
             <h2 className="text-lg font-semibold">Tạo thời gian</h2>
             <p className="text-sm text-muted-foreground">
-              Chọn năm học, kỳ học và thông tin vòng nộp bên dưới.
+              Chọn năm học, kỳ học và thông tin bên dưới.
             </p>
 
             <Form {...form}>
@@ -285,7 +285,7 @@ export const CreateSubmissionRound: React.FC<CreateSubmissionRoundProps> = ({ on
                   name="roundNumber"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Lần nộp</FormLabel>
+                      <FormLabel>Lần</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value} disabled={!type}>
                         <FormControl>
                           <SelectTrigger>
@@ -389,7 +389,7 @@ export const CreateSubmissionRound: React.FC<CreateSubmissionRoundProps> = ({ on
                     Hủy
                   </Button>
                   <Button type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? "Đang lưu..." : "Lưu vòng nộp"}
+                    {isSubmitting ? "Đang lưu..." : "Lưu vòng"}
                   </Button>
                 </div>
               </form>
