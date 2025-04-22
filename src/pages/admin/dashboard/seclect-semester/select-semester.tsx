@@ -12,7 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CardSemester } from "./card-semester";
+import Overview from "../overview";
+
 
 export const SelectSemester: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -36,14 +37,16 @@ export const SelectSemester: React.FC = () => {
     }
   }, [selectedYear, dispatch]);
 
-  // Lọc dữ liệu không bị xóa
+  const handleSemesterChange = (semesterId: string) => {
+    setSelectedSemester(semesterId); // Không dùng navigate
+  };
+
   const filteredYears = years.filter((y) => !y.isDeleted);
   const filteredSemesters = semesters.filter((s) => !s.isDeleted);
 
   return (
     <div className="space-y-4">
       <div className="flex flex-col md:flex-row md:items-center gap-4 mb-10">
-        {/* Select năm học */}
         <Select onValueChange={setSelectedYear} value={selectedYear}>
           <SelectTrigger className="w-[200px]">
             <SelectValue placeholder="Chọn năm học" />
@@ -70,9 +73,8 @@ export const SelectSemester: React.FC = () => {
           </SelectContent>
         </Select>
 
-        {/* Select kỳ học */}
         <Select
-          onValueChange={setSelectedSemester}
+          onValueChange={handleSemesterChange}
           value={selectedSemester}
           disabled={!selectedYear}
         >
@@ -103,11 +105,9 @@ export const SelectSemester: React.FC = () => {
       </div>
 
       {selectedSemester && (
-        <CardSemester
-          data={filteredSemesters.filter((s) => s.id === selectedSemester)}
-          loading={loadingSemesters}
-          selectedSemester={selectedSemester}
-        />
+        <div className="mt-6">
+          <Overview semesterId={selectedSemester} />
+        </div>
       )}
     </div>
   );

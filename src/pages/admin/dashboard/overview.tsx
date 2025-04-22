@@ -1,89 +1,59 @@
-import { formatCurrencyVND } from "@/layouts/lib/currency";
-import { TrendingDown, TrendingUp } from "lucide-react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "@/lib/api/redux/store";
+import {
+  fetchStudentQualification,
+  fetchStudentGroupStatus,
+  selectStatistics,
+} from "@/lib/api/redux/statisticsSlice";
 
-const data = {
-  totalSales: 510_000_000,
-  lastTotalSales: 451_000_000,
-  totalOrders: 12_499,
-  lastTotalOrders: 10_407,
-  numOfvisitors: 12_499,
-  lastNumOfVisitors: 14_358,
-  numOfRefunded: 1_499,
-  lastNumOfRefunded: 1326,
-};
-const Card = ({
-  value,
-  title,
-  incrementalPercentage,
-}: {
-  value: string;
-  title: string;
-  incrementalPercentage: number;
-}) => {
+interface OverviewProps {
+  semesterId: string;
+}
+
+interface CardProps {
+  status: string;
+  total: number;
+}
+
+const Card: React.FC<CardProps> = ({ status, total }) => {
   return (
     <div className="col-span-3 bg-white rounded-lg p-3 shadow">
-      <h3 className="text-sm">{title}</h3>
-      <p className="text-2xl font-bold py-3">{value}</p>
-      <div className="flex gap-5 text-xs items-center">
-        {incrementalPercentage > 0 ? (
-          <div className="text-green-600 flex gap-2 items-center">
-            <TrendingUp />
-            <p>{incrementalPercentage.toFixed(2)}%</p>
-          </div>
-        ) : (
-          <div className="text-red-600 flex gap-2 items-center">
-            <TrendingDown />
-            <p>{incrementalPercentage.toFixed(2)}%</p>
-          </div>
-        )}
-        <div>So với tháng trước</div>
-      </div>
+      <h3 className="text-sm">{status}</h3>
+      <p className="text-2xl font-bold py-3">{total}</p>
     </div>
   );
 };
 
-function calculatePercentageIncrement(original: number, newNumber: number) {
-  const increment = newNumber - original;
-  const percentageIncrement = (increment / original) * 100;
-  return percentageIncrement;
-}
+const Overview: React.FC<OverviewProps> = ({ semesterId }) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { studentQualification, studentGroupStatus } = useSelector(selectStatistics);
 
-const Overview = () => {
+  useEffect(() => {
+    if (semesterId) {
+      dispatch(fetchStudentQualification(semesterId));
+      dispatch(fetchStudentGroupStatus(semesterId));
+    }
+  }, [semesterId, dispatch]);
+
+  const loading = studentQualification.loading || studentGroupStatus.loading;
+  const error = studentQualification.error || studentGroupStatus.error;
+
+  if (loading) return <p>Đang tải dữ liệu...</p>;
+  if (error) return <p className="text-red-600">Lỗi: {error}</p>;
+
+  const qualified = studentQualification.data.find((s) => s.status === "Qualified")?.total ?? 0;
+  const notQualified = studentQualification.data.find((s) => s.status === "Not Qualified")?.total ?? 0;
+  const hasGroup = studentGroupStatus.data.find((s) => s.status === "Has Group")?.total ?? 0;
+  const noGroup = studentGroupStatus.data.find((s) => s.status === "No Group")?.total ?? 0;
+
   return (
-    <>
-      <Card
-        title="Tổng doanh thu"
-        value={formatCurrencyVND(data.totalSales)}
-        incrementalPercentage={calculatePercentageIncrement(
-          data.lastTotalSales,
-          data.totalSales
-        )}
-      />
-      <Card
-        title="Tổng số đơn hàng"
-        value={data.totalOrders.toLocaleString()}
-        incrementalPercentage={calculatePercentageIncrement(
-          data.lastTotalOrders,
-          data.totalOrders
-        )}
-      />
-      <Card
-        title="Tổng lượt truy cập"
-        value={data.numOfvisitors.toLocaleString()}
-        incrementalPercentage={calculatePercentageIncrement(
-          data.lastNumOfVisitors,
-          data.numOfvisitors
-        )}
-      />
-      <Card
-        title="Tổng lượt hoàn trả"
-        value={data.numOfRefunded.toLocaleString()}
-        incrementalPercentage={calculatePercentageIncrement(
-          data.lastNumOfRefunded,
-          data.numOfRefunded
-        )}
-      />
-    </>
+    <div className="grid grid-cols-12 gap-5">
+      <Card status="Tổng số sinh viên đủ điều kiện" total={qualified} />
+      <Card status="Tổng số sinh viên không đủ điều kiện" total={notQualified} />
+      <Card status="Tổng số sinh viên có nhóm" total={hasGroup} />
+      <Card status="Tổng số sinh viên chưa có nhóm" total={noGroup} />
+    </div>
   );
 };
 

@@ -3,7 +3,7 @@ import MainLayout from "@/layouts/main-layout";
 import { RootState } from "@/lib/api/redux/store";
 import { AdminConfigPage } from "@/pages/admin/admin-confix/admin-config-page";
 import { AdminConfigUpdate } from "@/pages/admin/admin-confix/admin-config-update";
-import DashboardDetailPage from "@/pages/admin/dashboard/dashboard-detail-page";
+// import DashboardDetailPage from "@/pages/admin/dashboard/dashboard-detail-page";
 import DashboardPage from "@/pages/admin/dashboard/dashboard-page";
 import ProfileUpdateForm from "@/pages/admin/profile-user/components/profile-update";
 import { ProfilePage } from "@/pages/admin/profile-user/page";
@@ -45,7 +45,7 @@ export const AdminContainer = () => {
         <Route path="/user/:userId" element={<UserDetail />} />
 
         <Route path="/dashboard-page" element={<DashboardPage />} />
-        <Route path="/dashboard-detail/:semesterId" element={<DashboardDetailPage />} />
+        {/* <Route path="/dashboard-detail/:semesterId" element={<DashboardDetailPage />} /> */}
 
         <Route path="/*" element={<NotFound />} />
       </Routes>
