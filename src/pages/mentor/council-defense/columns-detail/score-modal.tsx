@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -95,13 +95,20 @@ export const ScoreModal: React.FC<ScoreModalProps> = ({ open, setOpen, session, 
     },
   });
 
-  // Hiển thị thông báo khi có sinh viên INACTIVE
+  // Sử dụng useRef để theo dõi trạng thái hiển thị toast
+  const hasShownToast = useRef(false);
+
+  // Hiển thị thông báo khi có sinh viên INACTIVE, chỉ khi modal mở lần đầu
   useEffect(() => {
-    if (open && inactiveStudents.length > 0) {
+    if (open && inactiveStudents.length > 0 && !hasShownToast.current) {
       const message = `Các sinh viên sau ở trạng thái INACTIVE và sẽ tự động được đặt kết quả NOT_PASS: ${inactiveStudents
         .map((s) => `${s.studentCode} (${s.email})`)
         .join(", ")}.`;
       toast.info(message);
+      hasShownToast.current = true;
+    } else if (!open) {
+      // Reset hasShownToast khi modal đóng để cho phép hiển thị lại khi mở lại
+      hasShownToast.current = false;
     }
   }, [open, inactiveStudents]);
 
