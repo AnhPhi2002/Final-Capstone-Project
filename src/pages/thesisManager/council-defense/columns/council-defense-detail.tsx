@@ -135,7 +135,21 @@ export const CouncilDefenseDetail = () => {
                           .filter((schedule) => !schedule.isDeleted)
                           .map((schedule) => (
                             <SelectItem key={schedule.id} value={schedule.id}>
-                              {formatDefenseTime(schedule.defenseTime)} - {schedule.room || "Chưa có phòng"}
+                               <div className="flex items-center justify-between gap-2">
+
+                                <span>
+                                  {formatDefenseTime(schedule.defenseTime)} - {schedule.room || "Chưa có phòng"}
+                                </span>
+                                {schedule.group ? (
+                                  <span className="text-gray-600 font-medium">
+                                    (Nhóm: {schedule.group.groupCode})
+                                  </span>
+                                ) : (
+                                  <span className="text-gray-500">Chưa có nhóm</span>
+                                )}
+                               </div>
+                              
+                            
                             </SelectItem>
                           ))
                       ) : (

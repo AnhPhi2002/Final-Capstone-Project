@@ -35,8 +35,11 @@ export const AllTopicList = () => {
               onClick={() => navigate(`/student/all-topics-student/${topic.id}/${topic.semester.id}`)}
               className="relative min-h-[130px] w-full rounded-lg bg-muted/50 flex items-center p-4 gap-x-6 cursor-pointer hover:bg-muted transition-all"
             >
-              <Badge className="absolute top-4 right-6 px-2 py-1 rounded-md text-xs">
-                {topic.status}
+              <Badge
+                className={`absolute top-4 right-6 px-2 py-1 rounded-md text-xs ${topic.group ? "bg-green-500 text-white" : "bg-gray-500 text-white"
+                  }`}
+              >
+                {topic.group ? "Đã giao" : "Chưa giao"}
               </Badge>
 
               {/* Avatar */}
@@ -51,12 +54,12 @@ export const AllTopicList = () => {
               {/* Nội dung đề tài */}
               <div className="flex-1">
                 <h4 className="font-semibold text-lg text-primary ">
-                <span>Tên tiếng anh: </span>
+                  <span>Tên tiếng anh: </span>
                   {topic.nameEn || "Không có tên"}
                 </h4>
 
                 <p className="text-muted-foreground text-sm leading-relaxed">
-                    <span>Mổ tả: </span>
+                  <span>Mổ tả: </span>
                   {topic.description || "Không có mô tả"}
                 </p>
               </div>
