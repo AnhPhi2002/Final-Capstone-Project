@@ -16,6 +16,12 @@ import { CouncilReviewDetail } from "@/pages/thesisManager/council-review-123/co
 import { CouncilReviewPage } from "@/pages/thesisManager/council-review-123/council-review123-page";
 import { DeadineTopicDetailPage } from "@/pages/thesisManager/deadline-topic/columns/deadine-topic-detail-page";
 import { DeadineTopicPage } from "@/pages/thesisManager/deadline-topic/deadine-topic-page";
+import DecisionListTopDetail from "@/pages/thesisManager/decision-list-top/decision-list-top-detail";
+import { DecisionListTopPage } from "@/pages/thesisManager/decision-list-top/decision-list-top-page";
+import DecisionListTopView from "@/pages/thesisManager/decision-list-top/decision-list-top-view";
+import { DecisionDetail } from "@/pages/thesisManager/decision/decision-detail";
+import { DecisionPage } from "@/pages/thesisManager/decision/decision-page";
+import DecisionView from "@/pages/thesisManager/decision/decision-view";
 import TemplateDetail from "@/pages/thesisManager/templates-mail/TemplateDetail";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
@@ -43,7 +49,8 @@ export const GraduationThesisManagerContainer = () => {
   return (
     <MainLayout>
       <Routes>
-        <Route path="/" element={<DashboardPage />} />
+      <Route path="/" element={<DashboardPage />} />
+      <Route path="/dashboard-page" element={<DashboardPage />} />
         <Route path="/profile-page" element={<ProfilePage />} />
         <Route path="/profile-page/update" element={<ProfileUpdateForm />} />
         {/* <Route path="deadline-topic/:semesterId" element={<DeadineTopicDetailPage />}/>
@@ -67,6 +74,19 @@ export const GraduationThesisManagerContainer = () => {
         <Route path="/council-defense/:councilId/:semesterId" element={<CouncilDefenseDetail />} />
         <Route path="/council-defense-member/:councilId/:semesterId" element={<CouncilDefenseMembersPage />} />
         <Route path="/council-defense-group/:councilId/:semesterId" element={<CouncilDefenseGroupsPage />} />
+
+        <Route path="/decision" element={< DecisionPage />} />
+        <Route path="/decision/:semesterId" element={< DecisionDetail />} />
+        <Route path="/decision/:semesterId/view" element={<DecisionView semesterId={":semesterId"} />} />
+        {/* <Route path="/decision/:semesterId/update" element={<UpdateDecision />} />
+        <Route path="/decision/:semesterId/create" element={<CreateDecision />} /> */}
+
+        <Route path="/decision-list-top" element={< DecisionListTopPage />} />
+        <Route path="/decision-list-top/:semesterId" element={<DecisionListTopDetail />} />
+        <Route path="/decision-list-top/:semesterId/:decisionId" element={<DecisionListTopDetail />} />
+        <Route path="/decision-list-top/:semesterId/view" element={<DecisionListTopView  />} />
+        {/* <Route path="/decision-list-top/:semesterId/create" element={<CreateDecisionListTopic />} />
+        <Route path="/decision-list-top/:semesterId/:decisionId/update" element={<UpdateDecisionListTopic />} /> */}
 
         <Route path="/*" element={<NotFound />} />
       </Routes>

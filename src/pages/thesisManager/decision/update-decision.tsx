@@ -1,148 +1,180 @@
-'use client';
+"use client";
 
-import { useDispatch, useSelector } from 'react-redux';
-import { Card, CardContent } from '@/components/ui/card';
-import Header from '@/components/header';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
-import { useNavigate, useParams } from 'react-router';
-import { format } from 'date-fns';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
-import { useEffect, useState, useRef } from 'react';
-import { AppDispatch, RootState } from '@/lib/api/redux/store';
-import { createDecision, CreateDecisionPayload } from '@/lib/api/redux/decisionSlice';
-import { fetchMentorsBySemesterId } from '@/lib/api/redux/mentorSlice';
-import { DataTable } from './columns/data-table';
-import { columns } from './columns/columns';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
-import { Toaster, toast } from 'sonner';
-import { z } from 'zod';
-import { fetchUserProfile } from '@/lib/api/redux/authSlice';
-import { uploadDecisionFile, resetUploadDecision, resetSpecificFile } from '@/lib/api/redux/uploadDecisionSlice';
+import { useDispatch, useSelector } from "react-redux";
+import { Card, CardContent } from "@/components/ui/card";
+import Header from "@/components/header";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { useNavigate, useParams } from "react-router";
+import { format, parse } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { useEffect, useState, useRef } from "react";
+import { AppDispatch, RootState } from "@/lib/api/redux/store";
+import { fetchDecisionById, updateDecision, Decision } from "@/lib/api/redux/decisionSlice";
+import { fetchMentorsBySemesterId } from "@/lib/api/redux/mentorSlice";
+import { DataTable } from "./columns/data-table";
+import { columns } from "./columns/columns";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Toaster, toast } from "sonner";
+import { z } from "zod";
+import { fetchUserProfile } from "@/lib/api/redux/authSlice";
+import { uploadDecisionFile, resetUploadDecision } from "@/lib/api/redux/uploadDecisionSlice";
 
-// Định nghĩa schema Zod cho formData
+// Schema xác thực bằng Zod
 const decisionSchema = z.object({
-  decisionName: z.string().min(1, { message: 'Mã quyết định không được để trống' }),
-  decisionTitle: z.string().min(1, { message: 'Tiêu đề quyết định không được để trống' }),
-  decisionDate: z.date().refine((date) => date >= new Date(), {
-    message: 'Ngày quyết định không được là ngày trong quá khứ',
+  decisionName: z.string().min(1, { message: "Mã quyết định không được để trống" }),
+  decisionTitle: z.string().min(1, { message: "Tiêu đề quyết định không được để trống" }),
+  decisionDate: z.string().refine((date) => {
+    const parsed = parse(date, "dd/MM/yyyy", new Date());
+    return !isNaN(parsed.getTime()) && parsed >= new Date("2000-01-01");
+  }, { message: "Ngày quyết định không hợp lệ" }),
+  type: z.enum(["DRAFT", "FINAL"], { message: "Loại quyết định phải là DRAFT hoặc FINAL" }),
+  basedOn: z.array(z.string()).refine((arr) => arr.every((item) => item.trim() !== ""), {
+    message: "Căn cứ không được để trống",
   }),
-  type: z.enum(['DRAFT', 'FINAL'], { message: 'Loại quyết định phải là DRAFT hoặc FINAL' }),
-  basedOn: z.array(z.string()).refine((arr) => arr.every((item) => item.trim() !== ''), {
-    message: 'Căn cứ không được để trống',
+  content: z.string().min(1, { message: "Nội dung quyết định không được để trống" }),
+  clauses: z.array(z.string()).refine((arr) => arr.every((item) => item.trim() !== ""), {
+    message: "Điều khoản không được để trống",
   }),
-  content: z.string().min(1, { message: 'Nội dung quyết định không được để trống' }),
-  clauses: z.array(z.string()).refine((arr) => arr.every((item) => item.trim() !== ''), {
-    message: 'Điều khoản không được để trống',
-  }),
-  signature: z.string().min(1, { message: 'Chữ ký không được để trống' }),
+  signature: z.string().min(1, { message: "Chữ ký không được để trống" }),
   participants: z.string().optional(),
 });
 
-export const CreateDecision = () => {
+export const UpdateDecision = () => {
   const { semesterId } = useParams<{ semesterId: string }>();
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, error } = useSelector((state: RootState) => state.decision);
-  const { mentors, loading: mentorsLoading, error: mentorsError } = useSelector(
-    (state: RootState) => state.mentors
-  );
-  const { draftFile, finalFile, loading: uploadDecisionLoading, error: uploadDecisionError } = useSelector(
-    (state: RootState) => state.uploadDecision
-  );
-  const user = useSelector((state: RootState) => state.auth.user);
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const { loading, error, decisions } = useSelector((state: RootState) => state.decision);
+  const { mentors, loading: mentorsLoading, error: mentorsError } = useSelector(
+    (state: RootState) => state.mentors
+  );
+  const { draftFile, finalFile, loading: uploadDecisionLoading, error: uploadDecisionError } =
+    useSelector((state: RootState) => state.uploadDecision);
+  const user = useSelector((state: RootState) => state.auth.user);
+
+  const latestDecision = decisions.find((d) => d.semesterId === semesterId);
+  const decisionId = latestDecision?.id;
+
+  const [formData, setFormData] = useState<Partial<Decision>>({
+    decisionName: "",
+    decisionTitle: "",
+    decisionDate: "",
+    type: "DRAFT",
+    basedOn: [""],
+    content: "",
+    clauses: [""],
+    signature: "",
+    participants: "",
+    decisionURL: "",
+  });
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+
+  const textClass = "text-[14.5pt] font-times leading-[1.5]";
+
   useEffect(() => {
-    if (semesterId && !user) {
+    if (!semesterId) {
+      toast.error("Thiếu semesterId");
+      navigate("/academic/decision");
+      return;
+    }
+
+    if (!user) {
       dispatch(fetchUserProfile())
         .unwrap()
         .catch(() => {
-          toast.error('Vui lòng đăng nhập để tiếp tục');
-          navigate('/login');
+          toast.error("Vui lòng đăng nhập để tiếp tục");
+          navigate("/login");
         });
     }
-    if (semesterId) {
-      dispatch(fetchMentorsBySemesterId(semesterId));
+
+    if (decisionId) {
+      dispatch(fetchDecisionById(decisionId))
+        .unwrap()
+        .then((decision) => {
+          const apiDate = decision.decisionDate || "";
+          const displayDate =
+            apiDate && apiDate.includes("-")
+              ? format(new Date(apiDate), "dd/MM/yyyy")
+              : apiDate;
+          setFormData({
+            decisionName: decision.decisionName || "",
+            decisionTitle: decision.decisionTitle || "",
+            decisionDate: displayDate,
+            type: decision.type || "DRAFT",
+            basedOn: decision.basedOn?.length ? decision.basedOn : [""],
+            content: decision.content || "",
+            clauses: decision.clauses?.length ? decision.clauses : [""],
+            signature: decision.signature || "",
+            participants: decision.participants || "",
+            decisionURL: decision.decisionURL || decision.draftFile || decision.finalFile || "",
+          });
+        })
+        .catch(() => {
+          toast.error("Không thể tải thông tin quyết định");
+          navigate(`/academic/decision/${semesterId}`);
+        });
+    } else {
+      toast.warning("Chưa có quyết định nào để chỉnh sửa cho học kỳ này");
     }
-  }, [dispatch, semesterId, user, navigate]);
 
-  const [formData, setFormData] = useState({
-    decisionName: '',
-    decisionTitle: '',
-    decisionDate: new Date(),
-    type: 'DRAFT' as 'DRAFT' | 'FINAL',
-    basedOn: [''],
-    content: '',
-    clauses: [''],
-    signature: '',
-    participants: '',
-    decisionURL: '',
-  });
-
-  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
-
-  const textClass = 'text-[14.5pt] font-times leading-[1.5]';
+    dispatch(fetchMentorsBySemesterId(semesterId));
+  }, [dispatch, semesterId, decisionId, user, navigate]);
 
   const updateField = (field: keyof typeof formData, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    setFormErrors((prev) => ({ ...prev, [field]: '' }));
+    setFormErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
   const handleAppendBasedOn = () => {
-    setFormData((prev) => ({ ...prev, basedOn: [...prev.basedOn, ''] }));
+    setFormData((prev) => ({ ...prev, basedOn: [...(prev.basedOn || []), ""] }));
   };
 
   const handleAppendClause = () => {
-    setFormData((prev) => ({ ...prev, clauses: [...prev.clauses, ''] }));
+    setFormData((prev) => ({ ...prev, clauses: [...(prev.clauses || []), ""] }));
   };
 
   const updateBasedOn = (index: number, value: string) => {
-    const newBasedOn = [...formData.basedOn];
+    const newBasedOn = [...(formData.basedOn || [])];
     newBasedOn[index] = value;
     setFormData((prev) => ({ ...prev, basedOn: newBasedOn }));
-    setFormErrors((prev) => ({ ...prev, basedOn: '' }));
+    setFormErrors((prev) => ({ ...prev, basedOn: "" }));
   };
 
   const updateClause = (index: number, value: string) => {
-    const newClauses = [...formData.clauses];
+    const newClauses = [...(formData.clauses || [])];
     newClauses[index] = value;
     setFormData((prev) => ({ ...prev, clauses: newClauses }));
-    setFormErrors((prev) => ({ ...prev, clauses: '' }));
+    setFormErrors((prev) => ({ ...prev, clauses: "" }));
   };
 
   const handleRemoveBasedOn = (index: number) => {
     setFormData((prev) => ({
       ...prev,
-      basedOn: prev.basedOn.filter((_, i) => i !== index),
+      basedOn: (prev.basedOn || []).filter((_, i) => i !== index),
     }));
-    if (formData.basedOn.every((item, i) => i === index || item.trim() !== '')) {
-      setFormErrors((prev) => ({ ...prev, basedOn: '' }));
-    }
   };
 
   const handleRemoveClause = (index: number) => {
     setFormData((prev) => ({
       ...prev,
-      clauses: prev.clauses.filter((_, i) => i !== index),
+      clauses: (prev.clauses || []).filter((_, i) => i !== index),
     }));
-    if (formData.clauses.every((item, i) => i === index || item.trim() !== '')) {
-      setFormErrors((prev) => ({ ...prev, clauses: '' }));
-    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      dispatch(uploadDecisionFile({ file, type: formData.type }))
+      dispatch(uploadDecisionFile({ file, type: formData.type || "DRAFT" }))
         .unwrap()
         .then((result: { fileUrl: string; fileName: string }) => {
-          updateField('decisionURL', result.fileUrl);
-          toast.success(`Tải file ${formData.type === 'DRAFT' ? 'nháp' : 'chính thức'} thành công!`);
+          updateField("decisionURL", result.fileUrl);
+          toast.success("Tải file thành công!");
         })
         .catch((error: string) => {
           toast.error(`Lỗi khi tải file: ${error}`);
@@ -154,24 +186,11 @@ export const CreateDecision = () => {
     fileInputRef.current?.click();
   };
 
-  const handleRemoveFile = () => {
-    dispatch(resetSpecificFile(formData.type)); // Xóa file trong Redux store dựa trên type
-    updateField('decisionURL', '');
-    if (fileInputRef.current) fileInputRef.current.value = '';
-    toast.info('Đã xóa file');
-  };
-
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!semesterId) {
-      setFormErrors({ semesterId: 'semesterId không được để trống' });
-      toast.error('semesterId không được để trống');
-      return;
-    }
 
-    if (!user) {
-      toast.error('Vui lòng đăng nhập để tạo quyết định');
-      navigate('/login');
+    if (!semesterId || !decisionId) {
+      toast.error("Thiếu semesterId hoặc chưa có quyết định để cập nhật");
       return;
     }
 
@@ -183,91 +202,78 @@ export const CreateDecision = () => {
         errors[path] = err.message;
       });
       setFormErrors(errors);
-      toast.error('Vui lòng kiểm tra lại dữ liệu nhập');
+      toast.error("Vui lòng kiểm tra lại dữ liệu nhập");
       return;
     }
 
     const participantsText =
       mentors.length > 0
         ? `(Danh sách trên có ${mentors.length} giảng viên hướng dẫn)`
-        : 'Không có giảng viên hướng dẫn';
+        : "Không có giảng viên hướng dẫn";
 
-    const payload: CreateDecisionPayload = {
+    const payload: Partial<Decision> = {
       decisionName: formData.decisionName,
       decisionTitle: formData.decisionTitle,
-      decisionDate: format(formData.decisionDate, 'yyyy-MM-dd'),
+      decisionDate: formData.decisionDate
+        ? format(parse(formData.decisionDate, "dd/MM/yyyy", new Date()), "yyyy-MM-dd")
+        : "",
       type: formData.type,
-      basedOn: formData.basedOn.filter((item) => item.trim() !== ''),
+      basedOn: formData.basedOn?.filter((item) => item.trim() !== ""),
       content: formData.content,
-      clauses: formData.clauses.filter((item) => item.trim() !== ''),
+      clauses: formData.clauses?.filter((item) => item.trim() !== ""),
       signature: formData.signature,
       semesterId,
-      draftFile: formData.type === 'DRAFT' ? formData.decisionURL : '',
-      finalFile: formData.type === 'FINAL' ? formData.decisionURL : '',
+      draftFile: formData.type === "DRAFT" ? formData.decisionURL : "",
+      finalFile: formData.type === "FINAL" ? formData.decisionURL : "",
       decisionURL: formData.decisionURL,
-      createdBy: user.id,
-      createdAt: new Date().toISOString(),
-      isDeleted: false,
       participants: participantsText,
     };
 
-    console.log('Payload gửi lên:', payload);
-    console.log('Loading state:', loading);
+    console.log("Payload gửi đi:", payload);
 
     try {
-      await dispatch(createDecision(payload)).unwrap();
-      toast.success('Tạo quyết định thành công!');
-      dispatch(resetUploadDecision()); // Reset uploadDecision state sau khi tạo thành công
+      const result = await dispatch(updateDecision({ id: decisionId, data: payload })).unwrap();
+      console.log("Dữ liệu nhận về từ API:", result);
+      toast.success("Cập nhật quyết định thành công!");
+      dispatch(resetUploadDecision());
       navigate(`/academic/decision/${semesterId}`);
     } catch (err: any) {
-      const errorMessage = err.message || 'Không xác định';
-      toast.error(`Lỗi khi tạo quyết định: ${errorMessage}`);
-      console.error('Lỗi khi tạo quyết định:', err);
+      toast.error(`Lỗi khi cập nhật quyết định: ${err.message || "Không xác định"}`);
     }
   };
+
+  const parsedDecisionDate = formData.decisionDate
+    ? parse(formData.decisionDate, "dd/MM/yyyy", new Date())
+    : new Date();
 
   if (!semesterId) {
     return (
       <div>
-        <Header title="Tạo quyết định" href="/" currentPage="Tạo quyết định" />
+        <Header title="Cập nhật quyết định" href="/" currentPage="Cập nhật quyết định" />
         <div className="max-w-5xl mx-auto p-8 text-center text-red-500">
-          Không tìm thấy kỳ học.
+          Thiếu semesterId.
         </div>
       </div>
     );
   }
 
-  // Xác định file hiển thị dựa trên type
-  const displayedFile = formData.type === 'DRAFT' ? draftFile : finalFile;
-
   return (
     <div>
       <Toaster position="top-right" richColors />
       <Header
-        title="Tạo quyết định"
+        title="Cập nhật quyết định"
         href="/"
-        currentPage={`Tạo quyết định học kỳ ${semesterId}`}
+        currentPage={`Cập nhật quyết định học kỳ ${semesterId}`}
       />
       <div className="flex justify-end mt-6 mr-6">
         <div className="flex items-center gap-6">
-          {/* Decision Type Selection */}
           <div className="flex flex-col items-end">
             <Select
               value={formData.type}
-              onValueChange={(value) => updateField('type', value as 'DRAFT' | 'FINAL')}
+              onValueChange={(value) => updateField("type", value as "DRAFT" | "FINAL")}
             >
               <SelectTrigger
-                className={`
-                  ${textClass} 
-                  w-[180px] 
-                  border-gray-300 
-                  bg-white 
-                  rounded-md 
-                  shadow-sm 
-                  focus:border-blue-500 
-                  focus:ring-1 
-                  focus:ring-blue-500
-                `}
+                className={`${textClass} w-[180px] border-gray-300 bg-white rounded-md shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500`}
               >
                 <SelectValue placeholder="Chọn loại" />
               </SelectTrigger>
@@ -281,8 +287,7 @@ export const CreateDecision = () => {
             )}
           </div>
 
-          {/* File Upload Section */}
-          {(formData.type === 'DRAFT' || formData.type === 'FINAL') && (
+          {(formData.type === "DRAFT" || formData.type === "FINAL") && (
             <div className="flex flex-col items-end">
               <Button
                 type="button"
@@ -290,21 +295,11 @@ export const CreateDecision = () => {
                 size="sm"
                 onClick={handleUploadClick}
                 disabled={uploadDecisionLoading}
-                className={`
-                  border-gray-300 
-                  text-gray-700 
-                  hover:bg-gray-50 
-                  hover:border-gray-400 
-                  rounded-md 
-                  px-4 
-                  py-1
-                  ${uploadDecisionLoading ? 'opacity-60 cursor-not-allowed' : ''}
-                `}
+                className={`${uploadDecisionLoading ? "opacity-60 cursor-not-allowed" : ""}`}
               >
                 {uploadDecisionLoading
-                  ? 'Đang tải...'
-                  : `Tải file ${formData.type === 'DRAFT' ? 'nháp' : 'chính thức'}`
-                }
+                  ? "Đang tải..."
+                  : `Tải file ${formData.type === "DRAFT" ? "nháp" : "chính thức"}`}
               </Button>
               <input
                 type="file"
@@ -313,28 +308,24 @@ export const CreateDecision = () => {
                 className="hidden"
                 accept=".xlsx,.xls,.doc,.docx,.pdf"
               />
-              {displayedFile?.fileUrl && (
-                <div className="flex items-center gap-2 mt-1">
-                  <p className="text-green-600 text-xs truncate max-w-[200px]">
-                    {formData.type === 'DRAFT' ? 'File nháp' : 'File chính thức'}: {displayedFile.fileName}
-                  </p>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleRemoveFile}
-                    className="text-red-600 hover:text-red-800"
-                  >
-                    Xóa
-                  </Button>
-                </div>
-              )}
               {uploadDecisionError && (
                 <p className="text-red-500 text-xs mt-1 text-right">{uploadDecisionError}</p>
+              )}
+              {(formData.type === "DRAFT" && (draftFile?.fileUrl || formData.decisionURL)) && (
+                <p className="text-green-600 text-xs mt-1 text-right truncate max-w-[200px]">
+                  File nháp: {draftFile?.fileName || "Đã tải"}
+                </p>
+              )}
+              {(formData.type === "FINAL" && (finalFile?.fileUrl || formData.decisionURL)) && (
+                <p className="text-green-600 text-xs mt-1 text-right truncate max-w-[200px]">
+                  File chính thức: {finalFile?.fileName || "Đã tải"}
+                </p>
               )}
             </div>
           )}
         </div>
       </div>
+
       <div className="max-w-5xl mx-auto p-8">
         <Card className={`${textClass} shadow-lg`}>
           <CardContent className="p-10">
@@ -347,7 +338,7 @@ export const CreateDecision = () => {
                 </div>
                 <div className="w-1/2 text-right font-bold">
                   <p>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</p>
-                  <p className="font-bold">Độc lập - Tự do - Hạnh phúc</p>
+                  <p>Độc lập - Tự do - Hạnh phúc</p>
                 </div>
               </div>
 
@@ -356,11 +347,10 @@ export const CreateDecision = () => {
                   <div className="flex items-center gap-2">
                     <Label className={`${textClass} mb-1`}>Số quyết định</Label>
                     <Input
-                      value={formData.decisionName}
-                      onChange={(e) => updateField('decisionName', e.target.value)}
+                      value={formData.decisionName || ""}
+                      onChange={(e) => updateField("decisionName", e.target.value)}
                       className={`${textClass} inline-block w-32 sm:w-40 border border-black px-2 h-[32px]`}
                     />
-                    <span className={`${textClass}`}></span>
                   </div>
                   {formErrors.decisionName && (
                     <p className="text-red-500 text-sm mt-1">{formErrors.decisionName}</p>
@@ -368,26 +358,26 @@ export const CreateDecision = () => {
                 </div>
                 <div>
                   <p className="italic pr-[0.9cm]">
-                    TP. Hồ Chí Minh, ngày{' '}
+                    TP. Hồ Chí Minh, ngày{" "}
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
                           className={cn(
-                            'w-[200px] pl-3 text-left font-normal border border-black h-[32px] text-[14pt]',
-                            !formData.decisionDate && 'text-muted-foreground'
+                            "w-[200px] pl-3 text-left font-normal border border-black h-[32px] text-[14pt]",
+                            !formData.decisionDate && "text-muted-foreground"
                           )}
                         >
-                          {formData.decisionDate
-                            ? format(formData.decisionDate, 'dd/MM/yyyy')
-                            : 'Chọn ngày'}
+                          {formData.decisionDate || "Chọn ngày"}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0">
                         <Calendar
                           mode="single"
-                          selected={formData.decisionDate}
-                          onSelect={(date) => updateField('decisionDate', date || new Date())}
+                          selected={parsedDecisionDate}
+                          onSelect={(date) =>
+                            updateField("decisionDate", date ? format(date, "dd/MM/yyyy") : "")
+                          }
                           initialFocus
                         />
                       </PopoverContent>
@@ -402,8 +392,8 @@ export const CreateDecision = () => {
               <div className="text-center mt-6">
                 <h1 className="text-[14.5pt] font-bold uppercase">QUYẾT ĐỊNH</h1>
                 <Textarea
-                  value={formData.decisionTitle}
-                  onChange={(e) => updateField('decisionTitle', e.target.value)}
+                  value={formData.decisionTitle || ""}
+                  onChange={(e) => updateField("decisionTitle", e.target.value)}
                   className={`${textClass} border border-black w-full text-center font-bold`}
                   rows={3}
                 />
@@ -437,7 +427,7 @@ export const CreateDecision = () => {
                   <p className="mt-2 indent-[1.27cm]">
                     Căn cứ Quyết định số 10/QĐ-ĐHFPT ngày 06/01/2016 của Hiệu trưởng trường Đại học FPT về Sửa đổi bổ sung một số Điều trong Quy định về tốt nghiệp đại học chính quy của Trường Đại học FPT;
                   </p>
-                  {formData.basedOn.map((item, index) => (
+                  {formData.basedOn?.map((item, index) => (
                     <div key={index} className="flex items-start gap-2 mt-2">
                       <Textarea
                         value={item}
@@ -445,7 +435,7 @@ export const CreateDecision = () => {
                         className={`${textClass} border border-black w-full px-2 mt-2 indent-[1.27cm]`}
                         rows={3}
                       />
-                      {formData.basedOn.length > 1 && (
+                      {formData.basedOn!.length > 1 && (
                         <Button
                           type="button"
                           variant="destructive"
@@ -456,7 +446,7 @@ export const CreateDecision = () => {
                           Xóa
                         </Button>
                       )}
-                      {formErrors.basedOn && formData.basedOn[index].trim() === '' && (
+                      {formErrors.basedOn && formData.basedOn![index].trim() === "" && (
                         <p className="text-red-500 text-sm mt-1">{formErrors.basedOn}</p>
                       )}
                     </div>
@@ -480,8 +470,8 @@ export const CreateDecision = () => {
                 <p className="mt-6 font-bold text-center">QUYẾT ĐỊNH</p>
                 <Label className={`${textClass} mt-2 block font-bold`}>Điều 1:</Label>
                 <Textarea
-                  value={formData.content}
-                  onChange={(e) => updateField('content', e.target.value)}
+                  value={formData.content || ""}
+                  onChange={(e) => updateField("content", e.target.value)}
                   className={`${textClass} border border-black w-full px-2 mt-2 indent-[1.27cm]`}
                   rows={3}
                 />
@@ -502,7 +492,7 @@ export const CreateDecision = () => {
                     (Danh sách trên có {mentors.length} giảng viên hướng dẫn)
                   </p>
                 </div>
-                {formData.clauses.map((item, index) => (
+                {formData.clauses?.map((item, index) => (
                   <div key={index} className="flex items-start gap-2 mt-3">
                     <Textarea
                       value={item}
@@ -510,7 +500,7 @@ export const CreateDecision = () => {
                       className={`${textClass} border border-black w-full px-2 mt-2 indent-[1.27cm]`}
                       rows={3}
                     />
-                    {formData.clauses.length > 1 && (
+                    {formData.clauses!.length > 1 && (
                       <Button
                         type="button"
                         variant="destructive"
@@ -521,7 +511,7 @@ export const CreateDecision = () => {
                         Xóa
                       </Button>
                     )}
-                    {formErrors.clauses && formData.clauses[index].trim() === '' && (
+                    {formErrors.clauses && formData.clauses![index].trim() === "" && (
                       <p className="text-red-500 text-sm mt-1">{formErrors.clauses}</p>
                     )}
                   </div>
@@ -548,8 +538,8 @@ export const CreateDecision = () => {
                   <p className="font-bold uppercase">GIÁM ĐỐC</p>
                   <Label className={`${textClass} mt-2 block`}>Chữ ký</Label>
                   <Input
-                    value={formData.signature}
-                    onChange={(e) => updateField('signature', e.target.value)}
+                    value={formData.signature || ""}
+                    onChange={(e) => updateField("signature", e.target.value)}
                     className="mt-24 text-center font-bold border border-black bg-white w-full"
                   />
                   {formErrors.signature && (
@@ -565,8 +555,8 @@ export const CreateDecision = () => {
                 >
                   Hủy
                 </Button>
-                <Button type="submit" disabled={loading || uploadDecisionLoading}>
-                  {loading || uploadDecisionLoading ? 'Đang lưu...' : 'Lưu quyết định'}
+                <Button type="submit" disabled={loading || uploadDecisionLoading || !decisionId}>
+                  {loading || uploadDecisionLoading ? "Đang cập nhật..." : "Cập nhật quyết định"}
                 </Button>
               </div>
               {error && <p className="text-red-500 text-center">{error}</p>}
@@ -578,4 +568,4 @@ export const CreateDecision = () => {
   );
 };
 
-export default CreateDecision;
+export default UpdateDecision;

@@ -607,6 +607,35 @@ const graduationThesisMenu = {
         },
       ],
     },
+    {
+      title: "Bảng quyết định",
+      url: "/graduation-thesis/decision",
+      icon: List,
+      isActive: true,
+      items: [
+        {
+          title: "D.s quyết định g.v hướng dẫn",
+          url: "/graduation-thesis/decision",
+        },
+        {
+          title: "D.s quyết định đề tài ",
+          url: "/graduation-thesis/decision-list-top",
+        },
+      ],
+    },
+    {
+      title: "Quản lý thống kê",
+      url: "/graduation-thesis/dashboard-page",
+      icon: List,
+      isActive: true,
+      items: [
+        {
+          title: "Thống kê ",
+          url: "/graduation-thesis/dashboard-page",
+        },
+        
+      ],
+    },
   ],
 };
 
