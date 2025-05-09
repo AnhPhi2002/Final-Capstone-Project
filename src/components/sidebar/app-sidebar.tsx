@@ -442,6 +442,10 @@ const academicMenu = {
           title: "D.s giảng viên",
           url: "/academic/mentor-page",
         },
+        {
+          title: "Q.l liên ngành",
+          url: "/academic/inter-major",
+        },
 
       ],
     },

@@ -54,7 +54,7 @@ export const fetchGroupsWithoutSemester = createAsyncThunk(
 // Action để tạo nhóm mới
 export const createGroup = createAsyncThunk(
   "groups/create",
-  async (__,{ rejectWithValue }) => {
+  async (__, { rejectWithValue }) => {
     try {
       const response = await axiosClient.post(`/groups/create`);
       return response.data.group; // Trả về nhóm mới được tạo
@@ -93,6 +93,19 @@ export const inviteStudentToGroup = createAsyncThunk(
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Lỗi khi mời sinh viên!");
+    }
+  }
+);
+
+// groupSlice.ts
+export const deleteGroup = createAsyncThunk(
+  "groups/deleteGroup",
+  async (groupId: string, { rejectWithValue }) => {
+    try {
+      await axiosClient.put(`/groups/delete/${groupId}`);
+      return groupId;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Lỗi khi xóa nhóm!");
     }
   }
 );
@@ -138,12 +151,12 @@ const groupSlice = createSlice({
       })
       .addCase(createGroup.fulfilled, (state, action) => {
         state.loading = false;
-        
+
         if (action.payload) {
           state.groups = [...state.groups, action.payload]; // Thêm nhóm mới vào danh sách
         }
       })
-      
+
       .addCase(createGroup.rejected, (state) => {
         state.loading = false;
         // state.error = action.payload as string;
@@ -154,15 +167,28 @@ const groupSlice = createSlice({
       })
       .addCase(createGroupForAcademic.fulfilled, (state, action) => {
         state.loading = false;
-        
+
         if (action.payload) {
           state.groups = [...state.groups, action.payload]; // Thêm nhóm mới vào danh sách
         }
       })
-      
+
       .addCase(createGroupForAcademic.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+      .addCase(deleteGroup.fulfilled, (state, action) => {
+        // state.groupsDetails = state.groupsDetails.filter(group => group.id !== action.payload);
+        state.groups = state.groups.filter(group => group.id !== action.payload);
+        state.loading = false;
+      })
+      .addCase(deleteGroup.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(deleteGroup.pending, (state) => {
+        state.loading = true;
+        state.error = null;
       })
       ;
   },

@@ -2,16 +2,30 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "./store";
 import { axiosClient } from "../config/axios-client";
-import { StudentQualificationStatus, GroupStatus, TopicStatus, ReviewRound, DefenseRound,StudentGroupStatus,GroupTopicStatus } from "./types/staticDashboard";
+import {
+  StudentQualificationStatus,
+  GroupStatus,
+  TopicStatus,
+  ReviewRound,
+  DefenseRound,
+  StudentGroupStatus,
+  GroupTopicStatus,
+  DefenseResultSummary,
+  DefenseResultByRound,
+  GroupCreationType,
+} from "./types/staticDashboard";
 
 interface StatisticsState {
-  studentQualification: { data: StudentQualificationStatus[]; loading: boolean; error: string | null };
-  groupStatus: { data: GroupStatus[]; loading: boolean; error: string | null };
+  studentQualification: { data: StudentQualificationStatus[]; total?: number; loading: boolean; error: string | null };
+  groupStatus: { data: GroupStatus[]; total?: number; loading: boolean; error: string | null };
   topicStatus: { data: TopicStatus[]; loading: boolean; error: string | null };
-  reviewRounds: { data: ReviewRound[]; loading: boolean; error: string | null };
-  defenseRounds: { data: DefenseRound[]; loading: boolean; error: string | null };
-  studentGroupStatus: { data: StudentGroupStatus[]; loading: boolean; error: string | null };
+  reviewRounds: { data: ReviewRound[]; total?: number; loading: boolean; error: string | null };
+  defenseRounds: { data: DefenseRound[]; total?: number; loading: boolean; error: string | null };
+  studentGroupStatus: { data: StudentGroupStatus[]; total?: number; loading: boolean; error: string | null };
   groupTopicStatus: { data: GroupTopicStatus[]; loading: boolean; error: string | null };
+  defenseResultSummary: { data: DefenseResultSummary[]; loading: boolean; error: string | null };
+  defenseResultByRound: { data: DefenseResultByRound[]; loading: boolean; error: string | null };
+  groupCreationType: { data: GroupCreationType | null; loading: boolean; error: string | null };
 }
 
 const initialState: StatisticsState = {
@@ -22,16 +36,19 @@ const initialState: StatisticsState = {
   defenseRounds: { data: [], loading: false, error: null },
   studentGroupStatus: { data: [], loading: false, error: null },
   groupTopicStatus: { data: [], loading: false, error: null },
+  defenseResultSummary: { data: [], loading: false, error: null },
+  defenseResultByRound: { data: [], loading: false, error: null },
+  groupCreationType: { data: null, loading: false, error: null },
 };
 
-// Async thunks for each API
+// Async thunks
 export const fetchStudentQualification = createAsyncThunk(
   "statistics/fetchStudentQualification",
   async (semesterId: string) => {
     const response = await axiosClient.get(`/statistics/student-qualification-status`, {
       params: { semesterId },
     });
-    return response.data as StudentQualificationStatus[];
+    return response.data as { total: number; data: StudentQualificationStatus[] };
   }
 );
 
@@ -41,7 +58,7 @@ export const fetchGroupStatus = createAsyncThunk(
     const response = await axiosClient.get(`/statistics/group-statuses`, {
       params: { semesterId },
     });
-    return response.data as GroupStatus[];
+    return response.data as { total: number; data: GroupStatus[] };
   }
 );
 
@@ -61,7 +78,7 @@ export const fetchReviewRounds = createAsyncThunk(
     const response = await axiosClient.get(`/statistics/review-rounds`, {
       params: { semesterId },
     });
-    return response.data as ReviewRound[];
+    return response.data as { total: number; data: ReviewRound[] };
   }
 );
 
@@ -71,7 +88,7 @@ export const fetchDefenseRounds = createAsyncThunk(
     const response = await axiosClient.get(`/statistics/defense-rounds`, {
       params: { semesterId },
     });
-    return response.data as DefenseRound[];
+    return response.data as { total: number; data: DefenseRound[] };
   }
 );
 
@@ -81,7 +98,7 @@ export const fetchStudentGroupStatus = createAsyncThunk(
     const response = await axiosClient.get(`/statistics/student-group-status`, {
       params: { semesterId },
     });
-    return response.data as StudentGroupStatus[];
+    return response.data as { total: number; data: StudentGroupStatus[] };
   }
 );
 
@@ -92,6 +109,36 @@ export const fetchGroupTopicStatus = createAsyncThunk(
       params: { semesterId },
     });
     return response.data as GroupTopicStatus[];
+  }
+);
+
+export const fetchDefenseResultSummary = createAsyncThunk(
+  "statistics/fetchDefenseResultSummary",
+  async (semesterId: string) => {
+    const response = await axiosClient.get(`/statistics/defense-result-summary`, {
+      params: { semesterId },
+    });
+    return response.data as DefenseResultSummary[];
+  }
+);
+
+export const fetchDefenseResultByRound = createAsyncThunk(
+  "statistics/fetchDefenseResultByRound",
+  async (semesterId: string) => {
+    const response = await axiosClient.get(`/statistics/defense-result-by-round`, {
+      params: { semesterId },
+    });
+    return response.data as DefenseResultByRound[];
+  }
+);
+
+export const fetchGroupCreationType = createAsyncThunk(
+  "statistics/fetchGroupCreationType",
+  async (semesterId: string) => {
+    const response = await axiosClient.get(`/statistics/group-creation-type`, {
+      params: { semesterId },
+    });
+    return response.data as GroupCreationType;
   }
 );
 
@@ -108,7 +155,8 @@ const statisticsSlice = createSlice({
       })
       .addCase(fetchStudentQualification.fulfilled, (state, action) => {
         state.studentQualification.loading = false;
-        state.studentQualification.data = action.payload;
+        state.studentQualification.data = action.payload.data;
+        state.studentQualification.total = action.payload.total;
       })
       .addCase(fetchStudentQualification.rejected, (state, action) => {
         state.studentQualification.loading = false;
@@ -123,7 +171,8 @@ const statisticsSlice = createSlice({
       })
       .addCase(fetchGroupStatus.fulfilled, (state, action) => {
         state.groupStatus.loading = false;
-        state.groupStatus.data = action.payload;
+        state.groupStatus.data = action.payload.data;
+        state.groupStatus.total = action.payload.total;
       })
       .addCase(fetchGroupStatus.rejected, (state, action) => {
         state.groupStatus.loading = false;
@@ -153,7 +202,8 @@ const statisticsSlice = createSlice({
       })
       .addCase(fetchReviewRounds.fulfilled, (state, action) => {
         state.reviewRounds.loading = false;
-        state.reviewRounds.data = action.payload;
+        state.reviewRounds.data = action.payload.data;
+        state.reviewRounds.total = action.payload.total;
       })
       .addCase(fetchReviewRounds.rejected, (state, action) => {
         state.reviewRounds.loading = false;
@@ -168,7 +218,8 @@ const statisticsSlice = createSlice({
       })
       .addCase(fetchDefenseRounds.fulfilled, (state, action) => {
         state.defenseRounds.loading = false;
-        state.defenseRounds.data = action.payload;
+        state.defenseRounds.data = action.payload.data;
+        state.defenseRounds.total = action.payload.total;
       })
       .addCase(fetchDefenseRounds.rejected, (state, action) => {
         state.defenseRounds.loading = false;
@@ -183,7 +234,8 @@ const statisticsSlice = createSlice({
       })
       .addCase(fetchStudentGroupStatus.fulfilled, (state, action) => {
         state.studentGroupStatus.loading = false;
-        state.studentGroupStatus.data = action.payload;
+        state.studentGroupStatus.data = action.payload.data;
+        state.studentGroupStatus.total = action.payload.total;
       })
       .addCase(fetchStudentGroupStatus.rejected, (state, action) => {
         state.studentGroupStatus.loading = false;
@@ -203,6 +255,51 @@ const statisticsSlice = createSlice({
       .addCase(fetchGroupTopicStatus.rejected, (state, action) => {
         state.groupTopicStatus.loading = false;
         state.groupTopicStatus.error = action.error.message || "Failed to fetch";
+      });
+
+    // Defense Result Summary
+    builder
+      .addCase(fetchDefenseResultSummary.pending, (state) => {
+        state.defenseResultSummary.loading = true;
+        state.defenseResultSummary.error = null;
+      })
+      .addCase(fetchDefenseResultSummary.fulfilled, (state, action) => {
+        state.defenseResultSummary.loading = false;
+        state.defenseResultSummary.data = action.payload;
+      })
+      .addCase(fetchDefenseResultSummary.rejected, (state, action) => {
+        state.defenseResultSummary.loading = false;
+        state.defenseResultSummary.error = action.error.message || "Failed to fetch";
+      });
+
+    // Defense Result By Round
+    builder
+      .addCase(fetchDefenseResultByRound.pending, (state) => {
+        state.defenseResultByRound.loading = true;
+        state.defenseResultByRound.error = null;
+      })
+      .addCase(fetchDefenseResultByRound.fulfilled, (state, action) => {
+        state.defenseResultByRound.loading = false;
+        state.defenseResultByRound.data = action.payload;
+      })
+      .addCase(fetchDefenseResultByRound.rejected, (state, action) => {
+        state.defenseResultByRound.loading = false;
+        state.defenseResultByRound.error = action.error.message || "Failed to fetch";
+      });
+
+    // Group Creation Type
+    builder
+      .addCase(fetchGroupCreationType.pending, (state) => {
+        state.groupCreationType.loading = true;
+        state.groupCreationType.error = null;
+      })
+      .addCase(fetchGroupCreationType.fulfilled, (state, action) => {
+        state.groupCreationType.loading = false;
+        state.groupCreationType.data = action.payload;
+      })
+      .addCase(fetchGroupCreationType.rejected, (state, action) => {
+        state.groupCreationType.loading = false;
+        state.groupCreationType.error = action.error.message || "Failed to fetch";
       });
   },
 });

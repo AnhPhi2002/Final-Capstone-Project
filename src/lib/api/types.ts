@@ -1,3 +1,4 @@
+
 // types.ts
 export interface Semester {
   id: string;
@@ -190,7 +191,7 @@ export type Topic = {
   description: string;
   status: string;
   createdAt?: string; 
-  topicAssignments?: any[];// Có thể cần nếu API trả về
+  topicAssignments?: any[];
 
   semester: {
     id: string;
@@ -255,6 +256,7 @@ export interface Group {
   topicEnglish: string | null;
   topicTiengViet: string | null;
   totalMembers: number;
+  isDeleted: boolean;
   members: {
     id: string;
     groupId: string;

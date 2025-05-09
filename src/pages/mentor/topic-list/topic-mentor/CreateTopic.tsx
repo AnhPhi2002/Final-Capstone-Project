@@ -1,16 +1,16 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/api/redux/store";
 import { createTopic, fetchTopics } from "@/lib/api/redux/topicSlice";
+import { createInterMajorTopic } from "@/lib/api/redux/interMajorTopicSlice";
 import { fetchMajors } from "@/lib/api/redux/majorSlice";
 import { fetchMentorsBySemesterId } from "@/lib/api/redux/mentorSlice";
-import { uploadFile } from "@/lib/api/redux/uploadSlice";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { toast } from "sonner";
-import { Switch } from "@/components/ui/switch";
 import { fetchGroupsBySemester } from "@/lib/api/redux/groupSlice";
+import { fetchInterMajorConfigs } from "@/lib/api/redux/interMajorSlice";
+import { uploadFile } from "@/lib/api/redux/uploadSlice";
+
 import {
   Dialog,
   DialogTrigger,
@@ -22,27 +22,32 @@ import {
 } from "@/components/ui/dialog";
 import {
   Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
   SelectTrigger,
+  SelectContent,
+  SelectItem,
   SelectValue,
 } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
-export const CreateTopic: React.FC<{ semesterId: string; submissionPeriodId: string }> = ({ semesterId,submissionPeriodId }) => {
+type Props = {
+  semesterId: string;
+  submissionPeriodId: string;
+};
+
+export const CreateTopic: React.FC<Props> = ({ semesterId, submissionPeriodId }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { data: majors, loading: majorLoading } = useSelector(
-    (state: RootState) => state.majors
-  );
-  const { mentors, loading: mentorLoading } = useSelector(
-    (state: RootState) => state.mentors
-  );
-const { groups, loading: groupLoading } = useSelector(
-  (state: RootState) => state.groups);
 
-  const { fileUrl, loading: uploadLoading, error: uploadError } = useSelector(
-    (state: RootState) => state.upload
-  );
+  const { data: majors } = useSelector((state: RootState) => state.majors);
+  const { mentors } = useSelector((state: RootState) => state.mentors);
+  const { groups } = useSelector((state: RootState) => state.groups);
+  const { data: interMajors, loading: interMajorLoading } = useSelector((state: RootState) => state.interMajor);
+  const { fileUrl, loading: uploadLoading, error: uploadError } = useSelector((state: RootState) => state.upload);
 
   const [open, setOpen] = useState(false);
   const [nameVi, setNameVi] = useState("");
@@ -51,33 +56,30 @@ const { groups, loading: groupLoading } = useSelector(
   const [description, setDescription] = useState("");
   const [subSupervisorEmail, setSubSupervisorEmail] = useState("");
   const [filteredEmails, setFilteredEmails] = useState<string[]>([]);
+  const [groupCode, setGroupCode] = useState("");
   const [filteredGroups, setFilteredGroups] = useState<string[]>([]);
   const [isBusiness, setIsBusiness] = useState(false);
   const [businessPartner, setBusinessPartner] = useState<string | null>(null);
   const [majorId, setMajorId] = useState<string | null>(null);
-  const [groupCode, setGroupCode] = useState("");
   const [documentFile, setDocumentFile] = useState<File | null>(null);
-  const [documents, setDocuments] = useState<
-    { fileName: string; draftFileUrl: string; fileType: string }[]
-  >([]);
+  const [documents, setDocuments] = useState<{ fileName: string; draftFileUrl: string; fileType: string }[]>([]);
+  const [isInterMajor, setIsInterMajor] = useState(false);
+  const [selectedInterMajorId, setSelectedInterMajorId] = useState("");
 
-  // Fetch majors và mentors khi component mount
   useEffect(() => {
     dispatch(fetchMajors());
     dispatch(fetchMentorsBySemesterId(semesterId));
     dispatch(fetchGroupsBySemester(semesterId));
+    dispatch(fetchInterMajorConfigs({ semesterId }));
   }, [dispatch, semesterId]);
 
-  // Lọc email dựa trên input subSupervisorEmail
   useEffect(() => {
     if (subSupervisorEmail.trim() === "") {
       setFilteredEmails([]);
     } else {
       const filtered = mentors
         .map((mentor) => mentor.email)
-        .filter((email) =>
-          email.toLowerCase().startsWith(subSupervisorEmail.toLowerCase())
-        );
+        .filter((email) => email.toLowerCase().startsWith(subSupervisorEmail.toLowerCase()));
       setFilteredEmails(filtered);
     }
   }, [subSupervisorEmail, mentors]);
@@ -86,101 +88,35 @@ const { groups, loading: groupLoading } = useSelector(
     if (groupCode.trim() === "") {
       setFilteredGroups([]);
     } else {
-      const filteredGroup = groups
+      const filtered = groups
         .map((group) => group.groupCode)
-        .filter((code) =>
-          code.toLowerCase().startsWith(groupCode.toLowerCase())
-        );
-      setFilteredGroups(filteredGroup);
+        .filter((code) => code.toLowerCase().startsWith(groupCode.toLowerCase()));
+      setFilteredGroups(filtered);
     }
   }, [groupCode, groups]);
 
-  // Xử lý fileUrl từ API upload
   useEffect(() => {
-    if (fileUrl && !uploadLoading && !uploadError && documentFile) {
-      const fileName = documentFile.name || "Tài liệu";
+    if (fileUrl && !uploadLoading && documentFile) {
+      const fileName = documentFile.name;
       const fileType = fileName.split(".").pop() || "unknown";
       setDocuments([...documents, { fileName, draftFileUrl: fileUrl, fileType }]);
-      setDocumentFile(null); // Reset file sau khi upload thành công
-      toast.success("Tải file thành công!");
+      setDocumentFile(null);
+      toast.success("Tải file thành công");
     }
-    if (uploadError) {
-      toast.error(uploadError);
-    }
+    if (uploadError) toast.error(uploadError);
   }, [fileUrl, uploadLoading, uploadError, documentFile, documents]);
-
-  const handleBusinessToggle = (checked: boolean) => {
-    setIsBusiness(checked);
-    if (!checked) setBusinessPartner(null);
-  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setDocumentFile(file);
-    }
+    if (file) setDocumentFile(file);
   };
 
   const handleAddDocument = async () => {
     if (!documentFile) {
-      toast.error("Vui lòng chọn file để tải lên!");
+      toast.error("Chọn file trước khi tải");
       return;
     }
-
-    try {
-      await dispatch(uploadFile(documentFile)).unwrap(); // Gọi API upload và đợi kết quả
-    } catch (error) {
-      toast.error("Không thể tải file lên. Vui lòng thử lại!");
-    }
-  };
-
-  const handleCreateTopic = async () => {
-    if (!nameVi || !nameEn || !name || !description || !semesterId || !majorId) {
-      toast.error("Vui lòng nhập đầy đủ thông tin!");
-      return;
-    }
-
-    if (documentFile && documents.length === 0) {
-      toast.error("Vui lòng đợi file tải lên hoàn tất trước khi tạo đề tài!");
-      return;
-    }
-
-    const newTopic: Record<string, any> = {
-      nameVi,
-      nameEn,
-      name,
-      description,
-      semesterId,
-      majorId,
-      subSupervisorEmail,
-      submissionPeriodId,
-      isBusiness,
-      businessPartner: isBusiness ? businessPartner : null,
-      groupCode: groupCode,
-      source: "Tự đề xuất",
-      draftFileUrl: documents.length > 0 ? documents[0].draftFileUrl : null,
-    };
-
-    try {
-      await dispatch(createTopic(newTopic)).unwrap();
-      toast.success("Đề tài đã được tạo thành công!");
-      dispatch(fetchTopics({ semesterId, submissionPeriodId}));
-      setOpen(false);
-      setNameVi("");
-      setNameEn("");
-      setName("");
-      setDescription("");
-      setSubSupervisorEmail("");
-      setMajorId(null);
-      setGroupCode("");
-      setDocuments([]);
-      setIsBusiness(false);
-      setBusinessPartner(null);
-      setDocumentFile(null);
-    } catch (error: any) {
-      // toast.error(error?.message || "Tạo đề tài thất bại!");
-      toast.error(`${error}`);
-    }
+    await dispatch(uploadFile(documentFile));
   };
 
   const handleSelectEmail = (email: string) => {
@@ -193,6 +129,69 @@ const { groups, loading: groupLoading } = useSelector(
     setFilteredGroups([]);
   };
 
+  const handleCreateTopic = async () => {
+    if (!nameVi || !nameEn || !name || !description || !semesterId) {
+      toast.error("Vui lòng nhập đầy đủ thông tin");
+      return;
+    }
+
+    const basePayload = {
+      nameVi,
+      nameEn,
+      name,
+      description,
+      semesterId,
+      submissionPeriodId,
+      subSupervisorEmail,
+      isBusiness,
+      businessPartner: isBusiness ? businessPartner : null,
+      groupCode,
+      source: "Tự đề xuất",
+      draftFileUrl: documents[0]?.draftFileUrl || null,
+    };
+
+    try {
+      if (isInterMajor) {
+        if (interMajorLoading) {
+          toast.error("Đang tải cấu hình liên ngành, vui lòng đợi");
+          return;
+        }
+        if (!interMajors || interMajors.length === 0) {
+          toast.error("Hiện chưa có cấu hình liên ngành nào được tạo");
+          return;
+        }
+        if (!selectedInterMajorId) {
+          toast.error("Vui lòng chọn liên kết liên ngành");
+          return;
+        }
+        await dispatch(
+          createInterMajorTopic({ ...basePayload, majorPairConfigId: selectedInterMajorId })
+        ).unwrap();
+        toast.success("Tạo đề tài liên ngành thành công");
+      } else {
+        if (!majorId) {
+          toast.error("Vui lòng chọn ngành học");
+          return;
+        }
+        await dispatch(
+          createTopic({
+            ...basePayload,
+            majors: [{ id: majorId, name: majors.find(m => m.id === majorId)?.name || "" }],
+          })
+        ).unwrap();
+        toast.success("Tạo đề tài thành công");
+      }
+
+      dispatch(fetchTopics({ semesterId, submissionPeriodId }));
+      setOpen(false);
+      setNameVi(""); setNameEn(""); setName(""); setDescription("");
+      setSubSupervisorEmail(""); setGroupCode(""); setMajorId(null); setBusinessPartner(null);
+      setDocuments([]); setIsBusiness(false); setSelectedInterMajorId(""); setIsInterMajor(false);
+    } catch (err: any) {
+      toast.error(err?.message || "Tạo đề tài thất bại");
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -201,100 +200,61 @@ const { groups, loading: groupLoading } = useSelector(
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Tạo Đề Tài Mới</DialogTitle>
-          <DialogDescription>Nhập thông tin đề tài mới.</DialogDescription>
+          <DialogDescription>Nhập thông tin đề tài</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-3">
-          <Input
-            value={nameVi}
-            onChange={(e) => setNameVi(e.target.value)}
-            placeholder="Tên đề tài (Tiếng Việt)"
-          />
-          <Input
-            value={nameEn}
-            onChange={(e) => setNameEn(e.target.value)}
-            placeholder="Tên đề tài (Tiếng Anh)"
-          />
-          <Input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Tên dự án"
-          />
-          <Textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Mô tả đề tài"
-            className="h-24"
-          />
-
-          <div className="relative">
-            <Input
-              value={subSupervisorEmail}
-              onChange={(e) => setSubSupervisorEmail(e.target.value)}
-              placeholder="Email giảng viên phụ"
-            />
-            {filteredEmails.length > 0 && (
-              <ul className="absolute z-10 w-full bg-white border rounded-md shadow-lg max-h-40 overflow-y-auto">
-                {filteredEmails.map((email) => (
-                  <li
-                    key={email}
-                    className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
-                    onClick={() => handleSelectEmail(email)}
-                  >
-                    {email}
-                  </li>
-                ))}
-              </ul>
-            )}
+          <div className="flex items-center gap-2">
+            <Checkbox checked={isInterMajor} onCheckedChange={() => setIsInterMajor(!isInterMajor)} id="inter" />
+            <Label htmlFor="inter">Đề tài liên ngành</Label>
           </div>
 
-          <Select onValueChange={setMajorId} value={majorId || ""}>
-            <SelectTrigger className="w-full">
-              <SelectValue
-                placeholder={
-                  majorLoading ? "Đang tải ngành học..." : "Chọn ngành học"
-                }
-              />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                {majors?.length ? (
-                  majors.map((major) => (
-                    <SelectItem key={major.id} value={major.id}>
-                      {major.name}
-                    </SelectItem>
-                  ))
+          {isInterMajor ? (
+            <Select value={selectedInterMajorId} onValueChange={setSelectedInterMajorId} disabled={interMajorLoading}>
+              <SelectTrigger>
+                <SelectValue placeholder={interMajorLoading ? "Đang tải..." : interMajors?.length ? "Chọn liên kết liên ngành" : "Chưa có liên ngành"} />
+              </SelectTrigger>
+              <SelectContent>
+                {interMajors?.length ? (
+                  interMajors
+                    .filter((m) => !m.isDeleted)
+                    .map((m) => (
+                      <SelectItem key={m.id} value={m.id}>
+                        {m.name} ({m.firstMajor.name} & {m.secondMajor.name})
+                      </SelectItem>
+                    ))
                 ) : (
                   <SelectItem value="none" disabled>
-                    Không có ngành học
+                    Chưa có cấu hình liên ngành
                   </SelectItem>
                 )}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-
-          <div className="flex items-center justify-between">
-            <label className="text-sm font-medium">
-              Đề tài có liên quan đến doanh nghiệp?
-            </label>
-            <Switch
-              checked={isBusiness}
-              onCheckedChange={handleBusinessToggle}
-            />
-          </div>
-
-          {isBusiness && (
-            <Input
-              value={businessPartner || ""}
-              onChange={(e) => setBusinessPartner(e.target.value)}
-              placeholder="Tên doanh nghiệp"
-            />
+              </SelectContent>
+            </Select>
+          ) : (
+            <Select onValueChange={setMajorId} value={majorId || ""}>
+              <SelectTrigger>
+                <SelectValue placeholder="Chọn ngành học" />
+              </SelectTrigger>
+              <SelectContent>
+                {majors.map((major) => (
+                  <SelectItem key={major.id} value={major.id}>
+                    {major.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           )}
-          {/* <div className="relative">
+
+          <Input placeholder="Tên đề tài (Tiếng Việt)" value={nameVi} onChange={(e) => setNameVi(e.target.value)} />
+          <Input placeholder="Tên đề tài (Tiếng Anh)" value={nameEn} onChange={(e) => setNameEn(e.target.value)} />
+          <Input placeholder="Tên dự án" value={name} onChange={(e) => setName(e.target.value)} />
+          <Textarea placeholder="Mô tả đề tài" value={description} onChange={(e) => setDescription(e.target.value)} />
+
+          <div className="relative">
             <Input
+              placeholder="Email giảng viên phụ"
               value={subSupervisorEmail}
               onChange={(e) => setSubSupervisorEmail(e.target.value)}
-              placeholder="Email giảng viên phụ trách"
             />
             {filteredEmails.length > 0 && (
               <ul className="absolute z-10 w-full bg-white border rounded-md shadow-lg max-h-40 overflow-y-auto">
@@ -309,12 +269,13 @@ const { groups, loading: groupLoading } = useSelector(
                 ))}
               </ul>
             )}
-          </div> */}
+          </div>
+
           <div className="relative">
             <Input
+              placeholder="Mã nhóm"
               value={groupCode}
               onChange={(e) => setGroupCode(e.target.value)}
-              placeholder="Mã nhóm"
             />
             {filteredGroups.length > 0 && (
               <ul className="absolute z-10 w-full bg-white border rounded-md shadow-lg max-h-40 overflow-y-auto">
@@ -330,12 +291,17 @@ const { groups, loading: groupLoading } = useSelector(
               </ul>
             )}
           </div>
+
+          <div className="flex items-center justify-between">
+            <Label>Đề tài doanh nghiệp?</Label>
+            <Switch checked={isBusiness} onCheckedChange={setIsBusiness} />
+          </div>
+          {isBusiness && (
+            <Input placeholder="Tên doanh nghiệp" value={businessPartner || ""} onChange={(e) => setBusinessPartner(e.target.value)} />
+          )}
+
           <div className="flex items-center gap-2">
-            <Input
-              type="file"
-              accept=".doc,.docx,.xls,.xlsx"
-              onChange={handleFileChange}
-            />
+            <Input type="file" accept=".doc,.docx,.xls,.xlsx" onChange={handleFileChange} />
             <Button onClick={handleAddDocument} disabled={uploadLoading}>
               {uploadLoading ? "Đang tải..." : "Thêm"}
             </Button>
@@ -343,28 +309,18 @@ const { groups, loading: groupLoading } = useSelector(
 
           {documents.length > 0 && (
             <ul className="text-sm text-gray-600">
-              {documents.map((doc, index) => (
-                <li key={index}>
-                  📄{" "}
-                  <a href={doc.draftFileUrl} target="_blank" rel="noopener noreferrer">
-                    {doc.fileName}
-                  </a>
+              {documents.map((doc, idx) => (
+                <li key={idx}>
+                  📄 <a href={doc.draftFileUrl} target="_blank" rel="noopener noreferrer">{doc.fileName}</a>
                 </li>
               ))}
             </ul>
           )}
         </div>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={() => setOpen(false)}>
-            Hủy
-          </Button>
-          <Button
-            onClick={handleCreateTopic}
-            disabled={majorLoading || mentorLoading || uploadLoading || groupLoading}
-          >
-            Tạo
-          </Button>
+        <DialogFooter className="mt-4">
+          <Button variant="outline" onClick={() => setOpen(false)}>Hủy</Button>
+          <Button onClick={handleCreateTopic}>Tạo</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
