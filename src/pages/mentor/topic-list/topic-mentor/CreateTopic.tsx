@@ -137,6 +137,7 @@ export const CreateTopic: React.FC<Props> = ({ semesterId, submissionPeriodId })
 
     const basePayload = {
       nameVi,
+      majorId,
       nameEn,
       name,
       description,
@@ -187,8 +188,8 @@ export const CreateTopic: React.FC<Props> = ({ semesterId, submissionPeriodId })
       setNameVi(""); setNameEn(""); setName(""); setDescription("");
       setSubSupervisorEmail(""); setGroupCode(""); setMajorId(null); setBusinessPartner(null);
       setDocuments([]); setIsBusiness(false); setSelectedInterMajorId(""); setIsInterMajor(false);
-    } catch (err: any) {
-      toast.error(err?.message || "Tạo đề tài thất bại");
+    } catch (error: any) {
+      toast.error(`${error}` || "Lỗi khi tạo đề tài");
     }
   };
 

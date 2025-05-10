@@ -48,7 +48,7 @@ export default function TopicGroupRegisterDetail() {
 
   return (
     <div className="mt-6 bg-white">
-      <Card className="p-6">
+      <Card className="p-6 mx-6 shadow-md">
         <div className="flex items-center mt-4 gap-3">
           <Avatar className="w-10 h-10">
             <AvatarImage src="https://github.com/shadcn.png" alt="Topic Avatar" />

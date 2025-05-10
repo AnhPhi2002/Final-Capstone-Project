@@ -33,7 +33,7 @@ const statusClasses: {
 };
 
 export const TopicList = ({ selectedMajor }: { selectedMajor?: string }) => {
-  const { semesterId, submissionPeriodId } = useParams();
+  const { semesterId, submissionPeriodId, roundNumber, type } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
@@ -49,7 +49,7 @@ export const TopicList = ({ selectedMajor }: { selectedMajor?: string }) => {
       const payload: {
         semesterId: string;
         submissionPeriodId: string;
-        majorId?: string; // 👈 Nếu có selectedMajor thì truyền vào
+        majorId?: string;
       } = {
         semesterId,
         submissionPeriodId,
@@ -78,7 +78,7 @@ export const TopicList = ({ selectedMajor }: { selectedMajor?: string }) => {
             <div
               key={topic.id}
               onClick={() =>
-                navigate(`/lecturer/topic-detail/${topic.id}/${semesterId}`)
+                navigate( `/lecturer/topic-detail/${topic.id}/${semesterId}?submissionPeriodId=${submissionPeriodId}&roundNumber=${roundNumber}&type=${type}`)
               }
               className="relative min-h-[130px] w-full rounded-lg bg-muted/50 flex items-center p-4 gap-x-6 cursor-pointer hover:bg-muted transition-all"
             >

@@ -1,91 +1,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { axiosClient } from "../config/axios-client";
-import { ApproveTopic } from "../types";
+import { ApproveTopic, Topic } from "./types/topic";
 
-interface User {
-  id: string;
-  fullName: string | null;
-  email: string;
-}
-
-interface TopicRegistration {
-  id: string;
-  status: string;
-  registeredAt: string;
-  userId: string;
-  topicId: string;
-  user: User;
-  group: { id: string; groupCode: string } | null;
-}
-
-interface Topic {
-  id: string;
-  nameVi: string;
-  nameEn: string;
-  name: string;
-  topicCode?: string;
-  groupCode?: string;
-  description: string;
-  isBusiness: boolean;
-  businessPartner: string | null;
-  source: string | null;
-  semesterId: string | undefined;
-  majors: GroupInfo[];
-  mainMentorId?: string | null;
-  subMentorId?: string | null;
-  subSupervisor?: string | null;
-  mainSupervisor?: string | null;
-  submissionPeriodId: string | null;
-  createdBy: string | null;
-  status: string;
-  // status: "PENDING" | "APPROVED" | "IMPROVED" | "REJECTED";
-  reasons: string;
-  reviewReason?: string | null;
-  subSupervisorEmail: string | null;
-  creator?: {
-    fullName: string;
-    email: string;
-    createdAt?: string;
-  };
-  draftFileUrl: string | null | undefined;
-  group?: {
-    "id": string;
-    "groupCode": string;
-  };
-  createdAt: string;
-  topicRegistrations: TopicRegistration[];
-  subMentor?: {
-    fullName: string;
-    email: string;
-  };
-  documents?: [
-    {
-      fileName: string;
-      fileUrl: string;
-      fileType: string;
-    },
-  ];
-  topicAssignments?: TopicAssignment[];
-}
-
-interface TopicAssignment {
-  id?: string;
-  groupId: string;
-  status: string;
-  approvalStatus: string;
-  group?: {
-    id: string;
-    groupCode: string;
-  };
-}
-
-interface GroupInfo {
-  id: string;
-  name: string;
-}
-
-// Fetch danh sách topic theo semesterId
 export const fetchTopics = createAsyncThunk(
   "topics/fetchTopics",
   async (
@@ -106,7 +23,6 @@ export const fetchTopics = createAsyncThunk(
   }
 );
 
-
 export const exportTopicsToExcel = createAsyncThunk(
   "topics/exportExcel",
   async (
@@ -119,18 +35,13 @@ export const exportTopicsToExcel = createAsyncThunk(
         responseType: "blob",
       });
 
-      // ✅ Nếu là lỗi: content-type JSON → parse message
       const contentType = response.headers["content-type"];
       if (contentType && contentType.includes("application/json")) {
-        await response.data.text();
-
-        // ✅ Convert đúng Blob → JSON
         const text = await new Response(response.data).text();
         const json = JSON.parse(text);
         return rejectWithValue(json.message || "Xuất danh sách thất bại!");
       }
 
-      // ✅ Nếu là file hợp lệ
       const blob = new Blob([response.data], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
@@ -160,14 +71,12 @@ export const exportTopicsToExcel = createAsyncThunk(
   }
 );
 
-
-// Fetch chi tiết topic theo topicId
 export const fetchTopicDetail = createAsyncThunk(
   "topics/fetchTopicDetail",
   async ({ topicId, semesterId }: { topicId: string, semesterId: string }, { rejectWithValue }) => {
     try {
       const response = await axiosClient.get(`/topics/${topicId}`, {
-        params: { semesterId }, // Thêm `semesterId` vào params
+        params: { semesterId },
       });
       return response.data.data as Topic;
     } catch (error: any) {
@@ -178,7 +87,6 @@ export const fetchTopicDetail = createAsyncThunk(
   }
 );
 
-// Create new topic
 export const createTopic = createAsyncThunk(
   "topics/createTopic",
   async (newTopic: Partial<Topic>, { rejectWithValue }) => {
@@ -195,7 +103,20 @@ export const createTopic = createAsyncThunk(
 
 export const createTopicByAcademic = createAsyncThunk(
   "topics/createTopicByAcademic",
-  async (newTopic: Partial<Topic>, { rejectWithValue }) => {
+  async (
+    newTopic: Partial<Topic> & {
+      majorId: string;
+      mainMentorId?: string;
+      subMentorId?: string;
+      semesterId: string;
+      submissionPeriodId: string;
+      isBusiness: boolean;
+      businessPartner?: string | null;
+      source: string;
+      draftFileUrl?: string | null;
+    },
+    { rejectWithValue }
+  ) => {
     try {
       const response = await axiosClient.post(`/topics/create-with-mentors`, newTopic);
       return response.data.data as Topic;
@@ -211,11 +132,10 @@ export const deleteTopic = createAsyncThunk(
   "topics/deleteTopic",
   async ({ topicId, semesterId }: { topicId: string; semesterId: string }, { rejectWithValue }) => {
     try {
-      console.log("🟢 Gửi API xóa đề tài:", { topicId, semesterId });
-  await axiosClient.put(`/topics/${topicId}/delete`, {
+      await axiosClient.put(`/topics/${topicId}/delete`, {
         params: { semesterId },
       });
-      return topicId; 
+      return topicId;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Lỗi hệ thống!");
     }
@@ -229,17 +149,12 @@ export const updateTopic = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      console.log("📡 Gửi API cập nhật đề tài:", { topicId, updatedData, semesterId });
-
       const response = await axiosClient.put(
         `/topics/${topicId}`,
-        { ...updatedData, semesterId } 
+        { ...updatedData, semesterId }
       );
-
-      console.log("✅ API Response:", response.data);
       return response.data.data as Topic;
     } catch (error: any) {
-      console.error("❌ API Error:", error.response?.data);
       return rejectWithValue(error.response?.data?.message || "Không thể cập nhật đề tài.");
     }
   }
@@ -252,24 +167,16 @@ export const updateTopicForAcademic = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      console.log("📡 Gửi API cập nhật đề tài bằng POST:", { topicId, updatedData });
-
       const response = await axiosClient.post(
-        `/topics/${topicId}/assign`, 
-        updatedData 
+        `/topics/${topicId}/assign`,
+        updatedData
       );
-
-      console.log("✅ API Response:", response.data);
       return response.data.data as Topic;
     } catch (error: any) {
-      console.error("❌ API Error:", error.response?.data);
       return rejectWithValue(error.response?.data?.message || "Không thể cập nhật đề tài.");
     }
   }
 );
-
-
-
 
 export const fetchApprovalTopics = createAsyncThunk(
   "topics/fetchApprovalTopics",
@@ -292,7 +199,7 @@ export const updateTopicStatus = createAsyncThunk(
   "topics/updateTopicStatus",
   async ({ topicId, updatedData}: { topicId: string; updatedData: { status: string; reviewReason: string }}, { rejectWithValue }) => {
     try {
-      const response = await axiosClient.put(`/council-topic/topics/${topicId}/review`, updatedData); // ✅ Đảm bảo topicId đúng
+      const response = await axiosClient.put(`/council-topic/topics/${topicId}/review`, updatedData);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Không thể cập nhật trạng thái.");
@@ -321,7 +228,6 @@ export const fetchTopicRegistrations = createAsyncThunk(
       const response = await axiosClient.get(`/topics/topic/${topicId}/registrations`, {
         params: { semesterId },
       });
-
       return response.data.data as ApproveTopic[];
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Không thể tải danh sách đăng ký.");
@@ -335,9 +241,8 @@ export const updateTopicRegistrationStatus = createAsyncThunk(
     try {
       const response = await axiosClient.put(`/topics/topic-registrations/${registrationId}/approve`, {
         status,
-        semesterId, 
+        semesterId,
       });
-
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Không thể cập nhật trạng thái.");
@@ -357,7 +262,6 @@ const topicSlice = createSlice({
     error: null as string | null,
   },
   reducers: {
-    // ✅ Reset danh sách topic khi round thay đổi
     resetApprovalTopics: (state) => {
       state.approvalTopics = [];
       state.error = null;
@@ -421,7 +325,6 @@ const topicSlice = createSlice({
         if (!newTopic.creator) {
           const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
           newTopic.creator = {
-
             fullName: currentUser.fullName,
             email: currentUser.email,
           };
@@ -443,7 +346,6 @@ const topicSlice = createSlice({
         if (!newTopic.creator) {
           const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
           newTopic.creator = {
-
             fullName: currentUser.fullName,
             email: currentUser.email,
           };
@@ -455,7 +357,6 @@ const topicSlice = createSlice({
         state.error = action.payload as string;
       })
       .addCase(updateTopic.pending, (state) => {
-
         state.loading = true;
       })
       .addCase(updateTopic.fulfilled, (state, action: PayloadAction<Topic>) => {
@@ -494,12 +395,12 @@ const topicSlice = createSlice({
       })
       .addCase(fetchApprovalTopics.rejected, (state, action) => {
         state.loading = false;
-        state.approvalTopics = []; // ✅ Xóa danh sách cũ khi có lỗi
+        state.approvalTopics = [];
         state.error = action.payload as string;
       })
       .addCase(updateTopicStatus.fulfilled, (state, action) => {
         if (state.topicDetails) {
-          state.topicDetails = { ...state.topicDetails, ...action.payload }; // ✅ Cập nhật dữ liệu mới ngay lập tức
+          state.topicDetails = { ...state.topicDetails, ...action.payload };
         }
         state.loading = false;
       })
@@ -540,7 +441,6 @@ const topicSlice = createSlice({
       })
       .addCase(updateTopicRegistrationStatus.rejected, (state) => {
         state.loading = false;
-        // state.error = action.payload as string;
       })
       .addCase(deleteTopic.pending, (state) => {
         state.loading = true;
@@ -548,16 +448,14 @@ const topicSlice = createSlice({
       .addCase(deleteTopic.fulfilled, (state, action: PayloadAction<string>) => {
         state.loading = false;
         state.data = state.data.filter((topic: any) => topic.id !== action.payload);
-        state.topicDetails = null; // ✅ Xóa khỏi chi tiết nếu đang xem
+        state.topicDetails = null;
       })
       .addCase(deleteTopic.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
-      })
-      ;
+      });
   },
 });
 
-export const { resetTopicDetail } = topicSlice.actions;
-export const { resetApprovalTopics } = topicSlice.actions;
+export const { resetTopicDetail, resetApprovalTopics } = topicSlice.actions;
 export default topicSlice.reducer;

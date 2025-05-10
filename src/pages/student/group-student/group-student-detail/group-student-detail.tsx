@@ -31,8 +31,8 @@ export const GroupStudentDetail = () => {
       await dispatch(inviteMember({ groupId: groupId!, email })).unwrap();
       toast.success("Mời thành viên thành công!");
       setEmail("");
-    } catch (error: any) {
-      toast.error(error?.message || "Lỗi khi mời thành viên!");
+    } catch (error) {
+      toast.error(`${error}` || "Lỗi khi mời thành viên!");
     }
   };
 
