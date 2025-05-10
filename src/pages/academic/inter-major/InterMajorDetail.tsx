@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,7 +17,8 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
+import { Pencil, Trash2 } from "lucide-react";
 
 export const InterMajorDetail: React.FC = () => {
   const { interMajorId } = useParams<{ interMajorId: string }>();
@@ -95,13 +94,7 @@ export const InterMajorDetail: React.FC = () => {
     {
       field: "Trạng thái",
       value: (
-        <Badge
-          className={
-            selected.isActive
-              ? "bg-green-100 text-green-600 border border-green-500"
-              : "bg-gray-100 text-gray-600 border border-gray-500"
-          }
-        >
+        <Badge className={selected.isActive ? "badge-active" : "badge-inactive"}>
           {selected.isActive ? "Đang hoạt động" : "Không hoạt động"}
         </Badge>
       ),
@@ -109,13 +102,7 @@ export const InterMajorDetail: React.FC = () => {
     {
       field: "Đã xóa",
       value: (
-        <Badge
-          className={
-            selected.isDeleted
-              ? "bg-red-100 text-red-600 border border-red-400"
-              : "bg-green-100 text-green-600 border border-green-400"
-          }
-        >
+        <Badge className={selected.isDeleted ? "badge-deleted" : "badge-not-deleted"}>
           {selected.isDeleted ? "Đã xóa" : "Chưa xóa"}
         </Badge>
       ),
@@ -123,33 +110,37 @@ export const InterMajorDetail: React.FC = () => {
   ];
 
   return (
-    <div className="p-6 max-w-3xl mx-auto space-y-4">
+    <div className="p-6 w-full space-y-4">
       <div className="flex justify-between items-center mb-4">
-        <Button variant="outline" onClick={() => navigate(-1)}>
+        <Button variant="outline" onClick={() => navigate(-1)} className="border-gray-300 hover:bg-gray-100">
           ← Quay lại
         </Button>
         <div className="space-x-2">
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button variant="default">Chỉnh sửa</Button>
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                <Pencil className="mr-2 h-4 w-4" /> Chỉnh sửa
+              </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Chỉnh sửa tên liên ngành</DialogTitle>
               </DialogHeader>
-              <Input value={name} onChange={(e) => setName(e.target.value)} />
+              <Input value={name} onChange={(e) => setName(e.target.value)} className="border-gray-300 focus:ring-blue-500" />
               <DialogFooter className="mt-4">
-                <Button onClick={handleSubmit}>Lưu</Button>
+                <Button onClick={handleSubmit} className="bg-blue-600 hover:bg-blue-700 text-white">Lưu</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
-          <Button variant="destructive" onClick={handleDelete}>
-           Xóa
+          <Button onClick={handleDelete} className="bg-red-600 hover:bg-red-700 text-white">
+            <Trash2 className="mr-2 h-4 w-4" /> Xóa
           </Button>
         </div>
       </div>
-      <h2 className="text-2xl font-bold">Chi tiết liên ngành</h2>
-      <DataTable columns={interMajorDetailColumns} data={rows} />
+      <h2 className="text-2xl font-bold text-gray-800 text-center">Chi tiết liên ngành</h2>
+      <div className="w-full">
+        <DataTable columns={interMajorDetailColumns} data={rows} />
+      </div>
     </div>
   );
 };

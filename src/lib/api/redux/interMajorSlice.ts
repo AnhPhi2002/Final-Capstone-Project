@@ -208,6 +208,10 @@ const interMajorSlice = createSlice({
         // state.error = action.payload as string;
       })
       // PUT
+.addCase(updateInterMajorConfig.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(updateInterMajorConfig.fulfilled, (state, action: PayloadAction<InterMajorConfig>) => {
         state.loading = false;
         const updated = action.payload;
@@ -215,16 +219,25 @@ const interMajorSlice = createSlice({
         if (index !== -1) state.data[index] = updated;
         if (state.selected?.id === updated.id) state.selected = updated;
       })
-
+      .addCase(updateInterMajorConfig.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
       // DELETE
+      .addCase(deleteInterMajorConfig.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(deleteInterMajorConfig.fulfilled, (state, action: PayloadAction<string>) => {
         state.loading = false;
         const id = action.payload;
         state.data = state.data.filter(item => item.id !== id);
         if (state.selected?.id === id) state.selected = null;
       })
-
-      ;
+      .addCase(deleteInterMajorConfig.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
   },
 });
 
