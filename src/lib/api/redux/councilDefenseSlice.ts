@@ -189,7 +189,7 @@ export const deleteCouncilMember = createAsyncThunk(
 export const createDefenseSchedule = createAsyncThunk(
   "councils/createDefenseSchedule",
   async (
-    scheduleData: { councilId: string; groups: { groupId: string; reviewTime: string }[]; room: string },
+    scheduleData: { councilId: string; groups: { groupId: string; defenseTime: string }[]; room: string, majorId: string },
     { rejectWithValue }
   ) => {
     try {

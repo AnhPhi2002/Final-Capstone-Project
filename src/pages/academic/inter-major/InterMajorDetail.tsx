@@ -99,14 +99,14 @@ export const InterMajorDetail: React.FC = () => {
         </Badge>
       ),
     },
-    {
-      field: "Đã xóa",
-      value: (
-        <Badge className={selected.isDeleted ? "badge-deleted" : "badge-not-deleted"}>
-          {selected.isDeleted ? "Đã xóa" : "Chưa xóa"}
-        </Badge>
-      ),
-    },
+    // {
+    //   field: "Đã xóa",
+    //   value: (
+    //     <Badge className={selected.isDeleted ? "badge-deleted" : "badge-not-deleted"}>
+    //       {selected.isDeleted ? "Đã xóa" : "Chưa xóa"}
+    //     </Badge>
+    //   ),
+    // },
   ];
 
   return (
