@@ -31,10 +31,20 @@ export const CardSemester: React.FC<CardSemesterProps> = ({ data }) => {
     const foundYear = years.find((year) => year.id === yearId);
     return foundYear ? foundYear.year : "Unknown Year";
   };
+  const rawDecisions = useSelector((state: RootState) => state.decisionListTopic.decisions);
+const decisions = Array.isArray(rawDecisions) ? rawDecisions : [];
+  const handleCardClick = (semesterId: string) => {
+  const foundDecision = decisions.find(d => d.semesterId === semesterId);
+  const decisionId = foundDecision?.id;
+console.log("decisions", decisions);
+console.log("foundDecision", foundDecision);
 
-  const handleCardClick = (id: string) => {
-    navigate(`/academic/decision-list-top/${id}`);
-  };
+  if (decisionId) {
+    navigate(`/academic/decision-list-top/${semesterId}/${decisionId}`);
+  } else {
+    navigate(`/academic/decision-list-top/${semesterId}`);
+  }
+};
 
   const paginatedData = data.slice(
     (currentPage - 1) * itemsPerPage,

@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CardSemester } from "./card-semester";
+import { fetchDecisionListTopicById } from "@/lib/api/redux/decisionListTopicSlice";
 
 export const SelectSemester: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -38,6 +39,7 @@ export const SelectSemester: React.FC = () => {
   useEffect(() => {
     if (selectedYear) {
       dispatch(fetchSemesters({ yearId: selectedYear }));
+      dispatch(fetchDecisionListTopicById(selectedYear));
     }
   }, [dispatch, selectedYear]);
 

@@ -36,9 +36,8 @@ import configReducer from "./configSlice";
 import importTopicReducer from './importTopicSlice';
 
 import progressReportReducer from './progressReportSlice';
-
-import decisionTableReducer from './getDecisionListTableSlice';
-import decisionListTopReducer from './decisionListTopc';
+import decisionListTopicReducer from './decisionListTopicSlice';
+import getDecisionListTableSliceReducer from './getDecisionListTableSlice';
 
 import groupDetailV2Reducer from './groupDetailSliceV2';
 import topicV2Reducer from './topicV2Slice';
@@ -84,9 +83,8 @@ const rootReducer = combineReducers({
   councilDefense: CouncilDefenseReducer,
 
   decision: decisionReducer,
-  decisionTable: decisionTableReducer,
-  decisionListTop: decisionListTopReducer,
-  
+  decisionListTopic: decisionListTopicReducer,
+  getDecisionListTableSlice: getDecisionListTableSliceReducer,
   schedule: scheduleReducer,
   importBusinessTopic: importBusinessTopicReducer,
   config: configReducer,

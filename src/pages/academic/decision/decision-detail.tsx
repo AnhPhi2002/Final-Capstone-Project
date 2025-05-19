@@ -27,7 +27,10 @@ export const DecisionDetail = () => {
   }, [dispatch, semesterId]);
 
   const latestDecision = decisions.length > 0 ? decisions[0] : null;
-
+  // const latestDecision = decisions.find(
+  //   (d) => !d.type
+  // );
+  
   return (
     <div className="flex flex-col h-screen">
       <Header title="Tổng quan" href="/" currentPage="Bảng quyết định" />

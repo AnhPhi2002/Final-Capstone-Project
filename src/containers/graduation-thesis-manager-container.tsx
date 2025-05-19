@@ -16,9 +16,7 @@ import { CouncilReviewDetail } from "@/pages/thesisManager/council-review-123/co
 import { CouncilReviewPage } from "@/pages/thesisManager/council-review-123/council-review123-page";
 import { DeadineTopicDetailPage } from "@/pages/thesisManager/deadline-topic/columns/deadine-topic-detail-page";
 import { DeadineTopicPage } from "@/pages/thesisManager/deadline-topic/deadine-topic-page";
-import DecisionListTopDetail from "@/pages/thesisManager/decision-list-top/decision-list-top-detail";
-import { DecisionListTopPage } from "@/pages/thesisManager/decision-list-top/decision-list-top-page";
-import DecisionListTopView from "@/pages/thesisManager/decision-list-top/decision-list-top-view";
+
 import { DecisionDetail } from "@/pages/thesisManager/decision/decision-detail";
 import { DecisionPage } from "@/pages/thesisManager/decision/decision-page";
 import DecisionView from "@/pages/thesisManager/decision/decision-view";
@@ -78,15 +76,6 @@ export const GraduationThesisManagerContainer = () => {
         <Route path="/decision" element={< DecisionPage />} />
         <Route path="/decision/:semesterId" element={< DecisionDetail />} />
         <Route path="/decision/:semesterId/view" element={<DecisionView semesterId={":semesterId"} />} />
-        {/* <Route path="/decision/:semesterId/update" element={<UpdateDecision />} />
-        <Route path="/decision/:semesterId/create" element={<CreateDecision />} /> */}
-
-        <Route path="/decision-list-top" element={< DecisionListTopPage />} />
-        <Route path="/decision-list-top/:semesterId" element={<DecisionListTopDetail />} />
-        <Route path="/decision-list-top/:semesterId/:decisionId" element={<DecisionListTopDetail />} />
-        <Route path="/decision-list-top/:semesterId/view" element={<DecisionListTopView  />} />
-        {/* <Route path="/decision-list-top/:semesterId/create" element={<CreateDecisionListTopic />} />
-        <Route path="/decision-list-top/:semesterId/:decisionId/update" element={<UpdateDecisionListTopic />} /> */}
 
         <Route path="/*" element={<NotFound />} />
       </Routes>
