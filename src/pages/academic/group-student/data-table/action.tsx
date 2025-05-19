@@ -8,10 +8,25 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Link } from "react-router";
+import { Link, useParams } from "react-router";
+import { deleteGroup, fetchGroupsBySemester } from "@/lib/api/redux/groupSlice";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/lib/api/redux/store";
+import { toast } from "sonner";
 
 
 export const Action = ({ group }: { group: any }) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const semesterId = useParams<{ semesterId: string }>().semesterId as string;
+  const handleDelete = async (groupId: string) => {
+    try {
+      await dispatch(deleteGroup(groupId)).unwrap();
+      toast.success("Xóa nhóm thành công");
+      dispatch(fetchGroupsBySemester(semesterId));
+    } catch (err: any) {
+      toast.error(err?.message || "Xóa nhóm thất bại");
+    }
+  };
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -30,7 +45,7 @@ export const Action = ({ group }: { group: any }) => {
           <Link to={`/academic/group-student-detail/${group.id}/${group.semesterId}`}>Xem Chi Tiết</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="text-red-500">Xóa Nhóm</DropdownMenuItem>
+        <DropdownMenuItem className="text-red-500" onClick={() => handleDelete(group.id)}>Xóa Nhóm</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
 import { fetchTopicRegistrations } from "@/lib/api/redux/topicSlice";
-import { ApproveTopic } from "@/lib/api/types"; // 🔹 Đảm bảo import đúng
+import { ApproveTopic } from "@/lib/api/redux/types/topic"; 
 import Header from "@/components/header";
 
 import { DataTable } from "./data-table";

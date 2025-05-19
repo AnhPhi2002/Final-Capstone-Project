@@ -38,7 +38,8 @@ export const GroupStudentCardPage = () => {
   } = useAppSelector((state) => state.studentsWithoutGroup);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [isAutoCreatedFilter, setIsAutoCreatedFilter] = useState<string>("all"); // Thêm state cho bộ lọc
+  const [isAutoCreatedFilter, setIsAutoCreatedFilter] = useState<string>("all");
+  const activeGroups = groups.filter((group) => !group.isDeleted);
   const itemsPerPage = 10;
 
   // Lấy danh sách nhóm và sinh viên chưa có nhóm
@@ -50,7 +51,7 @@ export const GroupStudentCardPage = () => {
   }, [dispatch, semesterId]);
 
   // Lọc nhóm theo isAutoCreated
-  const filteredGroups = groups.filter((group) => {
+  const filteredGroups = activeGroups.filter((group) => {
     if (isAutoCreatedFilter === "all") return true;
     return group.isAutoCreated === (isAutoCreatedFilter === "true");
   });

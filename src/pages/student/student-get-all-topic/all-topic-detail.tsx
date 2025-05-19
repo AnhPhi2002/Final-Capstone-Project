@@ -53,8 +53,8 @@ export default function AllTopicDetail() {
       await dispatch(registerTopic({ topicId, semesterId })).unwrap();
       toast.success("Đăng ký đề tài thành công! Chờ mentor duyệt.");
       navigate("/student/all-topics-student");
-    } catch (err) {
-      toast.error("Có lỗi khi đăng ký đề tài.");
+    } catch (error) {
+      toast.error(`${error}` || "Có lỗi khi đăng ký đề tài.");
     }
   };
 

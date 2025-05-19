@@ -70,9 +70,12 @@ export default function TopicDetail() {
     if (!confirm("Bạn có chắc muốn xóa đề tài này?")) return;
 
     try {
-      toast.success("Xóa đề tài thành công");
+
       await dispatch(deleteTopic({ topicId, semesterId })).unwrap();
-      navigate("/lecturer/topic");
+      toast.success("Xóa đề tài thành công");
+      navigate(`/topic-list/semester/${semesterId}/submission/${topicDetails?.submissionPeriodId}/round/}/type/all`);
+
+
     } catch (error) {
       toast.error("Lỗi khi xóa đề tài!");
     }

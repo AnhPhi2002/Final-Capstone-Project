@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { ApproveTopic } from "@/lib/api/types"; // 🔹 Đảm bảo đúng đường dẫn
+import { ApproveTopic } from "@/lib/api/redux/types/topic";
 import { ActionMenu } from "./action";
 import { GroupCodeCell } from "./GroupCodeCell";
 

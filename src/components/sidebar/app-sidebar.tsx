@@ -442,6 +442,10 @@ const academicMenu = {
           title: "D.s giảng viên",
           url: "/academic/mentor-page",
         },
+        {
+          title: "Q.l liên ngành",
+          url: "/academic/inter-major",
+        },
 
       ],
     },
@@ -580,7 +584,7 @@ const studentMenu = {
 const graduationThesisMenu = {
   navMain: [
     {
-      title: "Danh sách sinh viên ",
+      title: "Quản lý thời gian hội đồng",
       url: "/graduation-thesis/council-member",
       icon: List,
       isActive: true,

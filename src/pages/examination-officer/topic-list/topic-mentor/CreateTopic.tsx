@@ -1,19 +1,24 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { AppDispatch, RootState } from "@/lib/api/redux/store";
-import { createTopicByAcademic } from "@/lib/api/redux/topicSlice";
+import { createTopicByAcademic, fetchTopics } from "@/lib/api/redux/topicSlice";
+import { createInterMajorTopicByAcademic } from "@/lib/api/redux/interMajorTopicSlice";
 import { fetchMajors } from "@/lib/api/redux/majorSlice";
 import { fetchMentorsBySemesterId } from "@/lib/api/redux/mentorSlice";
-import { fetchGroupsBySemester } from "@/lib/api/redux/groupSlice"; // Thêm import
+import { fetchGroupsBySemester } from "@/lib/api/redux/groupSlice";
+import { fetchInterMajorConfigs } from "@/lib/api/redux/interMajorSlice";
 import { uploadFile } from "@/lib/api/redux/uploadSlice";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogTrigger,
@@ -40,6 +45,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { debounce } from "lodash";
+import { Topic } from "@/lib/api/redux/types/topic";
 
 const topicSchema = z.object({
   nameVi: z.string().min(1, "Tên tiếng Việt không được để trống"),
@@ -48,19 +54,21 @@ const topicSchema = z.object({
   description: z.string().min(1, "Mô tả không được để trống"),
   mainMentorId: z.string().email("Nhập format mail @...com").optional().or(z.literal("")),
   subMentorId: z.string().email("Nhập format mail @...com").optional().or(z.literal("")),
-  majorId: z.string().min(1, "Vui lòng chọn ngành học"),
-  groupCode: z.string().optional(), // Giữ optional cho groupCode
+  majorId: z.string().optional(),
+  majorPairConfigId: z.string().optional(),
+  groupCode: z.string().optional(),
   isBusiness: z.boolean(),
   businessPartner: z.string().nullable().optional(),
 });
 
 type TopicFormData = z.infer<typeof topicSchema>;
 
-export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) => {
+export const CreateTopic: React.FC<{ semesterId: string; submissionPeriodId: string }> = ({ semesterId, submissionPeriodId }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { data: majors, loading: majorLoading } = useSelector((state: RootState) => state.majors);
   const { mentors, loading: mentorLoading } = useSelector((state: RootState) => state.mentors);
-  const { groups, loading: groupLoading } = useSelector((state: RootState) => state.groups); // Thêm groups từ groupSlice
+  const { groups, loading: groupLoading } = useSelector((state: RootState) => state.groups);
+  const { data: interMajors, loading: interMajorLoading } = useSelector((state: RootState) => state.interMajor);
   const { fileUrl, loading: uploadLoading, error: uploadError } = useSelector(
     (state: RootState) => state.upload
   );
@@ -75,6 +83,7 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
       mainMentorId: "",
       subMentorId: "",
       majorId: "",
+      majorPairConfigId: "",
       groupCode: "",
       isBusiness: false,
       businessPartner: null,
@@ -82,6 +91,7 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
   });
 
   const [open, setOpen] = useState(false);
+  const [isInterMajor, setIsInterMajor] = useState(false);
   const [filteredMainEmails, setFilteredMainEmails] = useState<string[]>([]);
   const [filteredSubEmails, setFilteredSubEmails] = useState<string[]>([]);
   const [documentFile, setDocumentFile] = useState<File | null>(null);
@@ -96,7 +106,8 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
   useEffect(() => {
     dispatch(fetchMajors());
     dispatch(fetchMentorsBySemesterId(semesterId));
-    dispatch(fetchGroupsBySemester(semesterId)); // Fetch danh sách nhóm
+    dispatch(fetchGroupsBySemester(semesterId));
+    dispatch(fetchInterMajorConfigs({ semesterId }));
   }, [dispatch, semesterId]);
 
   const filterMainEmails = debounce((input: string) => {
@@ -116,8 +127,8 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
     } else {
       const filtered = mentors
         .map((mentor) => mentor.email)
-        .filter((email) => 
-          email.toLowerCase().startsWith(input.toLowerCase()) && 
+        .filter((email) =>
+          email.toLowerCase().startsWith(input.toLowerCase()) &&
           email !== mainMentorId
         );
       setFilteredSubEmails(filtered);
@@ -186,28 +197,80 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
       return;
     }
 
-    const newTopic: Record<string, any> = {
-      ...data,
+    const basePayload: Partial<Topic> & {
+      majorId?: string;
+      majorPairConfigId?: string;
+      mainMentorId?: string;
+      subMentorId?: string;
+      semesterId: string;
+      submissionPeriodId: string;
+      isBusiness: boolean;
+      businessPartner?: string | null;
+      source: string;
+      draftFileUrl?: string | null;
+    } = {
+      nameVi: data.nameVi,
+      nameEn: data.nameEn,
+      name: data.name,
+      description: data.description,
+      mainMentorId: data.mainMentorId || undefined,
+      subMentorId: data.subMentorId || undefined,
       semesterId,
+      submissionPeriodId,
+      groupCode: data.groupCode || undefined,
+      isBusiness: data.isBusiness,
       businessPartner: data.isBusiness ? data.businessPartner : null,
       source: "Tự đề xuất",
       draftFileUrl: documents.length > 0 ? documents[0].draftFileUrl : null,
     };
-    if (!newTopic.mainMentorId) delete newTopic.mainMentorId;
-    if (!newTopic.subMentorId) delete newTopic.subMentorId;
 
     try {
-      await dispatch(createTopicByAcademic(newTopic)).unwrap();
-      toast.success("Đề tài đã được tạo thành công!");
+      if (isInterMajor) {
+        if (interMajorLoading) {
+          toast.error("Đang tải cấu hình liên ngành, vui lòng đợi!");
+          return;
+        }
+        if (!interMajors || interMajors.length === 0) {
+          toast.error("Hiện chưa có cấu hình liên ngành nào được tạo!");
+          return;
+        }
+        if (!data.majorPairConfigId) {
+          toast.error("Vui lòng chọn liên kết liên ngành!");
+          return;
+        }
+        await dispatch(
+          createInterMajorTopicByAcademic({
+            ...basePayload,
+            majorPairConfigId: data.majorPairConfigId,
+          })
+        ).unwrap();
+        toast.success("Tạo đề tài liên ngành thành công!");
+      } else {
+        if (!data.majorId) {
+          toast.error("Vui lòng chọn ngành học!");
+          return;
+        }
+        await dispatch(
+          createTopicByAcademic({
+            ...basePayload,
+            majorId: data.majorId,
+            majors: [{ id: data.majorId, name: majors.find(m => m.id === data.majorId)?.name || "" }],
+          })
+        ).unwrap();
+        toast.success("Tạo đề tài thành công!");
+      }
+
+      dispatch(fetchTopics({ semesterId, submissionPeriodId }));
       setOpen(false);
       form.reset();
       setDocuments([]);
+      setIsInterMajor(false);
     } catch (error: any) {
-      toast.error(error?.message || "Tạo đề tài thất bại!");
+      toast.error(`Tạo thất bại: ${error}`);
     }
   };
 
-  const isLoading = majorLoading || mentorLoading || uploadLoading || groupLoading;
+  const isLoading = majorLoading || mentorLoading || uploadLoading || groupLoading || interMajorLoading;
 
   return (
     <Dialog open={open} onOpenChange={(open) => (setOpen(open), !open && form.reset())}>
@@ -222,6 +285,101 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+            <div className="flex items-center gap-2">
+              <Checkbox
+                checked={isInterMajor}
+                onCheckedChange={() => {
+                  setIsInterMajor(!isInterMajor);
+                  form.setValue("majorId", "");
+                  form.setValue("majorPairConfigId", "");
+                }}
+                id="interMajor"
+              />
+              <FormLabel htmlFor="interMajor">Đề tài liên ngành</FormLabel>
+            </div>
+
+            {isInterMajor ? (
+              <FormField
+                control={form.control}
+                name="majorPairConfigId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Liên kết liên ngành</FormLabel>
+                    <FormControl>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue
+                            placeholder={
+                              interMajorLoading
+                                ? "Đang tải cấu hình liên ngành..."
+                                : interMajors?.length
+                                ? "Chọn liên kết liên ngành"
+                                : "Chưa có liên ngành"
+                            }
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            {interMajors?.length ? (
+                              interMajors
+                                .filter((m) => !m.isDeleted)
+                                .map((m) => (
+                                  <SelectItem key={m.id} value={m.id}>
+                                    {m.name} ({m.firstMajor.name} & {m.secondMajor.name})
+                                  </SelectItem>
+                                ))
+                            ) : (
+                              <SelectItem value="none" disabled>
+                                Chưa có cấu hình liên ngành
+                              </SelectItem>
+                            )}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ) : (
+              <FormField
+                control={form.control}
+                name="majorId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Ngành học</FormLabel>
+                    <FormControl>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue
+                            placeholder={
+                              majorLoading ? "Đang tải ngành học..." : "Chọn ngành học"
+                            }
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            {majors?.length ? (
+                              majors.map((major) => (
+                                <SelectItem key={major.id} value={major.id}>
+                                  {major.name}
+                                </SelectItem>
+                              ))
+                            ) : (
+                              <SelectItem value="none" disabled>
+                                Không có ngành học
+                              </SelectItem>
+                            )}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+
             <FormField
               control={form.control}
               name="nameEn"
@@ -328,43 +486,6 @@ export const CreateTopic: React.FC<{ semesterId: string }> = ({ semesterId }) =>
                       ))}
                     </ul>
                   )}
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="majorId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Ngành học</FormLabel>
-                  <FormControl>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue
-                          placeholder={
-                            majorLoading ? "Đang tải ngành học..." : "Chọn ngành học"
-                          }
-                        />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          {majors?.length ? (
-                            majors.map((major) => (
-                              <SelectItem key={major.id} value={major.id}>
-                                {major.name}
-                              </SelectItem>
-                            ))
-                          ) : (
-                            <SelectItem value="none" disabled>
-                              Không có ngành học
-                            </SelectItem>
-                          )}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />

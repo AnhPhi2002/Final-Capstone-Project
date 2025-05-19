@@ -4,7 +4,7 @@ import { fetchGroupsWithoutSemester } from "@/lib/api/redux/groupSlice";
 import { DataTable } from "./data-table/data-table";
 import { columns } from "./data-table/columns";
 import { PaginationDashboardPage } from "../pagination";
-import CreateGroup from "./create-group-button";
+import CreateGroupButton from "./CreateGroupButton";
 
 export const GroupStudentCardPage = () => {
   const dispatch = useAppDispatch();
@@ -33,7 +33,7 @@ export const GroupStudentCardPage = () => {
     <div className="flex flex-col h-screen">
       <div className="p-5 flex-1 overflow-auto">
         <div className="flex justify-end mb-4 gap-x-4">
-          <CreateGroup />
+        <CreateGroupButton semesterId="..." />
         </div>
         <DataTable columns={columns} data={currentGroups} />
         <div className="flex justify-end mt-6">

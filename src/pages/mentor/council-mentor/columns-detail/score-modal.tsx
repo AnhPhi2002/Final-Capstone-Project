@@ -106,7 +106,7 @@ export const ScoreModal: React.FC<ScoreModalProps> = ({
             />
           </div>
         </div>
-        <DialogFooter>
+        <DialogFooter className="mt-4">
           <Button variant="outline" onClick={() => setOpen(false)}>
             Hủy
           </Button>

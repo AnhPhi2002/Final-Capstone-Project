@@ -43,6 +43,8 @@ import groupDetailV2Reducer from './groupDetailSliceV2';
 import topicV2Reducer from './topicV2Slice';
 import mentorProgressReportReducer from './mentorProgressReportSlice';
 import  statisticsReducer  from './statisticsSlice';
+import interMajorReducer from "./interMajorSlice";
+import interMajorTopicReducer  from './interMajorTopicSlice';
 
 const rootReducer = combineReducers({
   counter: counterReducer,
@@ -92,6 +94,8 @@ const rootReducer = combineReducers({
   progressReport: progressReportReducer,
   mentorProgressReport: mentorProgressReportReducer,
   // statistics: statisticsReducer,
+  interMajor: interMajorReducer,
+  interMajorTopic: interMajorTopicReducer,
 });
 
 // const persistedReducer = persistReducer(persistConfig, rootReducer)

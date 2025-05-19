@@ -47,6 +47,17 @@ import CreateDecisionListTopic from "@/pages/academic/decision-list-top/create-d
 // import DecisionListTopDetail from "@/pages/academic/decision-list-top/decision-list-top-detail";
 // import CreateDecisionListTopic from "@/pages/academic/decision-list-top/create-decision-list-topic";
 // import UpdateDecisionListTopic from "@/pages/academic/decision-list-top/update-decision-lits-topic";
+// import UpdateDecisionListTopic from "@/pages/academic/decision-list-top/update-decision-lits-topic";
+import { InterMajorPage } from "@/pages/academic/inter-major/Inter-major-page";
+import { InterMajorDetailPage } from "@/pages/academic/inter-major/InterMajorDetailPage";
+import { InterMajorDetail } from "@/pages/academic/inter-major/InterMajorDetail";
+// import { EditInterMajorDialog } from "@/pages/academic/inter-major/EditInterMajorDialog";
+// import DashboardDetailPage from "@/pages/admin/dashboard/dashboard-detail-page";
+
+// import { CreateDecisionListTopic } from "@/pages/academic/decision-list-top/create-decision-list-topic";
+// import { UpdateDecisionLitsTopic } from "@/pages/academic/decision-list-top/update-decision-lits-topic";
+// import { DecisionListTopDetail } from "@/pages/academic/decision-list-top/decision-list-top-detail";
+
 
 
 
@@ -130,6 +141,13 @@ export const AcademicOfficerContainer = () => {
         <Route path="/decision-list-top/:semesterId/create" element={<CreateDecisionListTopic />} />
         {/* <Route path="/decision-list-top/:semesterId/:decisionId/view" element={<DecisionListTopDetail />} /> */}
         {/* <Route path="/decision-list-top/:semesterId/:decisionId/update" element={<UpdateDecisionListTopic />} /> */} 
+        {/* <Route path="/decision-list-top/:semesterId/:decisionId/update" element={<UpdateDecisionListTopic />} /> */}
+
+        <Route path="/inter-major/" element={<InterMajorPage />} />
+        <Route path="/inter-major/:id" element={<InterMajorDetailPage />} />
+        <Route path="/inter-major/:id/:interMajorId" element={<InterMajorDetail />} />
+        {/* <Route path="/inter-major/edit/:interMajorId" element={<EditInterMajorDialog  />} /> */}
+
         <Route path="/*" element={<NotFound />} />
       </Routes>
     </MainLayout>
