@@ -26,10 +26,10 @@ const ImportMentorPage = () => {
       <Header title="Tổng quan" href="/" currentPage={currentPage} />
       <Tabs defaultValue="all" onValueChange={handleTabChange} className="">
         <TabsList className="flex gap-5 justify-start">
-          <TabsTrigger value="all">Import danh sách Mentor</TabsTrigger>
-          <TabsTrigger value="eligible">
+          <TabsTrigger value="all">Import danh sách giảng viên trong kỳ</TabsTrigger>
+          {/* <TabsTrigger value="eligible">
           Import role GV trong kỳ
-          </TabsTrigger>
+          </TabsTrigger> */}
         </TabsList>
         <TabsContent value="all">
           <ImportMentorTab />

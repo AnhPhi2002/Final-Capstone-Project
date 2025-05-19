@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/api/redux/store";
 import { createDefenseSchedule } from "@/lib/api/redux/councilDefenseSlice";
 import { fetchGroupsBySemester } from "@/lib/api/redux/groupSlice";
+import { fetchMajors } from "@/lib/api/redux/majorSlice"; // Import fetchMajors
 import {
   Form,
   FormControl,
@@ -25,6 +26,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+// Cập nhật schema để thêm majorId
 const formSchema = z.object({
   groups: z
     .array(
@@ -36,6 +38,7 @@ const formSchema = z.object({
     .min(1, "Vui lòng chọn ít nhất một nhóm")
     .max(4, "Hội đồng chỉ có thể review tối đa 4 nhóm"),
   room: z.string().min(1, "Vui lòng nhập phòng"),
+  majorId: z.string().min(1, "Vui lòng chọn ngành học"), // Thêm majorId
 });
 
 interface CreateReviewScheduleProps {
@@ -57,6 +60,7 @@ export const CreateReviewSchedule: React.FC<CreateReviewScheduleProps> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { groups, loading: groupLoading } = useSelector((state: RootState) => state.groups);
+  const { data: majors, loading: majorLoading } = useSelector((state: RootState) => state.majors); // Lấy danh sách majors
 
   const [isLoading, setIsLoading] = useState(false);
   const [groupCount, setGroupCount] = useState(1);
@@ -66,12 +70,14 @@ export const CreateReviewSchedule: React.FC<CreateReviewScheduleProps> = ({
     defaultValues: {
       groups: [{ groupId: "", reviewTime: "" }],
       room: "",
+      majorId: "", // Thêm default value cho majorId
     },
   });
 
   useEffect(() => {
     if (open && semesterId) {
       dispatch(fetchGroupsBySemester(semesterId));
+      dispatch(fetchMajors()); // Dispatch fetchMajors khi mở form
     }
   }, [open, semesterId, dispatch]);
 
@@ -81,11 +87,11 @@ export const CreateReviewSchedule: React.FC<CreateReviewScheduleProps> = ({
       form.reset({
         groups: [{ groupId: "", reviewTime: "" }],
         room: "",
+        majorId: "", // Reset majorId
       });
     }
   }, [open, form]);
 
-  // Sửa logic lọc nhóm để xử lý defenseRound là chuỗi hoặc số
   const filteredGroups = useMemo(() => {
     console.log("Filtering groups with defenseRound:", defenseRound);
     console.log("All groups:", groups);
@@ -93,7 +99,6 @@ export const CreateReviewSchedule: React.FC<CreateReviewScheduleProps> = ({
     const matchedGroups = groups.filter((group: any) => {
       const hasMatchingRound = group.topicAssignments?.some(
         (assignment: any) => {
-          // Chuyển đổi defenseRound từ chuỗi sang số để so sánh
           const assignmentRound = assignment.defenseRound
             ? Number(assignment.defenseRound)
             : null;
@@ -117,6 +122,7 @@ export const CreateReviewSchedule: React.FC<CreateReviewScheduleProps> = ({
           defenseTime: new Date(g.reviewTime).toISOString(),
         })),
         room: data.room,
+        majorId: data.majorId, // Thêm majorId vào dữ liệu gửi
         defenseRound,
       };
       await dispatch(createDefenseSchedule(formattedData)).unwrap();
@@ -138,6 +144,43 @@ export const CreateReviewSchedule: React.FC<CreateReviewScheduleProps> = ({
       <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            {/* Thêm field chọn Major */}
+            <FormField
+              control={form.control}
+              name="majorId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Ngành học</FormLabel>
+                  <FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      disabled={majorLoading}
+                    >
+                      <SelectTrigger>
+                        <SelectValue
+                          placeholder={majorLoading ? "Đang tải..." : "Chọn ngành học"}
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {majors.length > 0 ? (
+                          majors.map((major: any) => (
+                            <SelectItem key={major.id} value={major.id}>
+                              {major.name}
+                            </SelectItem>
+                          ))
+                        ) : (
+                          <SelectItem value="no-data" disabled>
+                            Không có ngành học
+                          </SelectItem>
+                        )}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             {Array.from({ length: groupCount }).map((_, index) => (
               <div key={index}>
                 <FormField

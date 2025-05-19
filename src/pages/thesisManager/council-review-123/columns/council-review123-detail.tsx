@@ -177,6 +177,7 @@ export const CouncilReviewDetail = () => {
               setOpen={setOpenCreateSchedule}
               councilId={councilId}
               semesterId={semesterId}
+              onSuccess={handleRefetch}
             />
 
             <DataTable table={table} />

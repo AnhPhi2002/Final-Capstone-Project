@@ -1,6 +1,6 @@
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import { flexRender, type Table as TableType } from "@tanstack/react-table";
-import { ApproveTopic } from "@/lib/api/types";
+import { ApproveTopic } from "@/lib/api/redux/types/topic";
 
 interface DataTableProps {
   table: TableType<ApproveTopic>;

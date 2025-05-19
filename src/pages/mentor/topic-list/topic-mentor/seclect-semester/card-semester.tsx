@@ -65,13 +65,10 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
   );
 
   const handleCardClick = (
-    semesterId: string,
-    submissionRoundId: string,
-    roundNumber: number,
-    type: string
+    round: SubmissionRound,
   ) => {
     navigate(
-      `/lecturer/topic-list/semester/${semesterId}/submission/${submissionRoundId}/round/${roundNumber}/type/${type}`
+      `/lecturer/topic-list/semester/${round.semesterId}/submission/${round.id}/round/${round.roundNumber}/type/${round.type}`
     );
   };
 
@@ -98,10 +95,7 @@ export const CardSemester: React.FC<CardSemesterProps> = ({
             className="w-full p-4 shadow-md border rounded-lg hover:shadow-lg transition"
             onClick={() =>
               handleCardClick(
-                round.semesterId,
-                round.id,
-                round.roundNumber,
-                round.type
+                round
               )
             }
           >
