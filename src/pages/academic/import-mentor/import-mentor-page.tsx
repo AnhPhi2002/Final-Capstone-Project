@@ -6,7 +6,7 @@ import Header from "@/components/header";
 // import ImportRoleMentor from "./import-role-mentor";
 
 const ImportMentorPage = () => {
-  const [currentPage, setCurrentPage] = useState("Import danh sách sinh viên");
+  const [currentPage, setCurrentPage] = useState("Import danh sách giảng viên");
 
   const handleTabChange = (value: string) => {
     switch (value) {

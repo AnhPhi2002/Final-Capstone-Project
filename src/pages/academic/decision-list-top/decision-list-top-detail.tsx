@@ -7,7 +7,7 @@ import { Menu } from "./columns/menu";
 import { AppDispatch } from "@/lib/api/redux/store";
 import {
   fetchDecisionListTopic,
-  fetchDecisionListTopicById,
+  // fetchDecisionListTopicById,
   selectDecisionListTopic,
 } from "@/lib/api/redux/decisionListTopicSlice";
 
@@ -23,9 +23,10 @@ const effectiveDecisionId = decisionId || fallbackDecision?.id;
 
 useEffect(() => {
   if (decisionId) {
-    dispatch(fetchDecisionListTopicById(decisionId));
-  } else if (semesterId) {
     dispatch(fetchDecisionListTopic());
+    // dispatch(fetchDecisionListTopicById(decisionId));
+  // } else if (semesterId) {
+  //   dispatch(fetchDecisionListTopic());
   }
 }, [dispatch, decisionId, semesterId]);
 

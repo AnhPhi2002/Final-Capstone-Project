@@ -35,6 +35,7 @@ const translateStatus = (status: string, keyField: "status" | "round" | "type"):
       INACTIVE: "Không hoạt động",
       PENDING: "Đang chờ",
       APPROVED: "Đã duyệt",
+      IMPROVED: "Cần cải thiện",
       REJECTED: "Bị từ chối",
       "Has Group": "Có nhóm",
       "No Group": "Không có nhóm",
@@ -55,8 +56,8 @@ const translateStatus = (status: string, keyField: "status" | "round" | "type"):
     return roundMap[status] || `Vòng ${status}`;
   } else {
     const typeMap: { [key: string]: string } = {
-      "Auto Created": "Tự động tạo",
-      "Manually Created": "Tạo thủ công",
+      "Auto Created": "Nhóm tạo tự động",
+      "Manually Created": "Tạo tạo thủ công",
     };
     return typeMap[status] || status;
   }
@@ -300,7 +301,7 @@ const StatisticsOverview: React.FC<StatisticsOverviewProps> = ({ semesterId }) =
   return (
     <div className="rounded-lg mt-6">
       {renderStatSection(
-        "Sinh viên đạt/không đạt",
+        "Sinh viên đủ điều kiện làm đồ án tốt nghiệp-không đủ điều kiện làm đồ án tốt nghiệp",
         studentQualification.data,
         studentQualification.total,
         studentQualification.loading,
@@ -309,7 +310,7 @@ const StatisticsOverview: React.FC<StatisticsOverviewProps> = ({ semesterId }) =
         "bar"
       )}
       {renderStatSection(
-        "Trạng thái nhóm",
+        "Trạng thái hoạt động của nhóm",
         groupStatus.data,
         groupStatus.total,
         groupStatus.loading,
