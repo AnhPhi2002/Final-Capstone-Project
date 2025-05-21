@@ -14,7 +14,7 @@ import { DataTable } from "./data-table";
 import { columnsCouncils } from "./columns";
 import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
-import { CreateReviewSchedule } from "./CreateDefenseSchedule"; 
+// import { CreateReviewSchedule } from "./CreateDefenseSchedule"; 
 import { ArrowLeft } from "lucide-react";
 
 export const CouncilDefenseDetail = () => {
@@ -27,7 +27,7 @@ export const CouncilDefenseDetail = () => {
     (state: RootState) => state.councilDefense
   ); // Giả sử key là councilReviews trong store
   const [shouldRefetch, setShouldRefetch] = useState(false);
-  const [openCreateSchedule, setOpenCreateSchedule] = useState(false);
+  // const [openCreateSchedule, setOpenCreateSchedule] = useState(false);
   const navigate = useNavigate();
   // Fetch chi tiết hội đồng khi component mount hoặc councilId thay đổi
   useEffect(() => {
@@ -97,7 +97,7 @@ export const CouncilDefenseDetail = () => {
               </Button>
               <Button
                 className="bg-black text-white"
-                onClick={() => setOpenCreateSchedule(true)}
+                // onClick={() => setOpenCreateSchedule(true)}
                 disabled={loadingDetail}
               >
                 Tạo lịch bảo vệ
@@ -105,13 +105,13 @@ export const CouncilDefenseDetail = () => {
             </div>
 
             {/* Tích hợp CreateReviewSchedule */}
-            <CreateReviewSchedule
+            {/* <CreateReviewSchedule
               open={openCreateSchedule}
               setOpen={setOpenCreateSchedule}
               councilId={councilId}
               semesterId={semesterId}
               defenseRound={councilDetail?.round ?? 1}
-            />
+            /> */}
 
             <DataTable table={table} />
           </div>
