@@ -1,11 +1,13 @@
 import { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useParams, useNavigate } from "react-router";
 import { toast } from "sonner";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { importStudents, resetState } from "@/lib/api/redux/importStudentSlice";
+import import11  from "@/assets/images/import11.png";
+import { Upload } from "lucide-react";
 
 const ImportStudentTab = () => {
   const { semesterId } = useParams<{ semesterId: string }>();
@@ -53,8 +55,11 @@ const ImportStudentTab = () => {
     <Card>
       <CardHeader>
         <CardTitle>Import danh sách sinh viên vào hệ thống</CardTitle>
+        <CardDescription>Thêm danh sách sinh viên file Excel.</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-2">
+         <h3 className="font-semibold">Định dạng excel</h3>
+        <img src={import11} alt="Excel Format Example " className="pb-6" />
         <div
           {...getRootProps()}
           style={{
@@ -70,7 +75,11 @@ const ImportStudentTab = () => {
           ) : isDragActive ? (
             <p>Thả file vào đây ...</p>
           ) : (
-            <p>Kéo và thả tệp hoặc nhấp để chọn tệp.</p>
+             <div className="text-gray-500 flex items-center flex-col">
+              <Upload className="size-20 py-5" />
+              <p>Kéo và thả tệp ở đây hoặc nhấp để chọn tệp.</p>
+              <p>Định dạng file: .xlsx hoặc .xls</p>
+            </div>
           )}
         </div>
         {loading && <p>Đang xử lý import...</p>}

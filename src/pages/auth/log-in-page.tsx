@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { loginUser, loginWithGoogle, fetchUserProfile } from "@/lib/api/redux/authSlice";
 import { toast } from "react-toastify";
 import { GoogleLogin } from "@react-oauth/google";
-import { motion } from "framer-motion";
+// import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,7 +21,7 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import backgroundImage from "@/assets/images/bg.jpg";
+import backgroundImage from "@/assets/images/test2.jpg";
 
 interface User {
   id: string;
@@ -143,20 +143,12 @@ const LoginPage = () => {
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6">
-        <motion.div className="overflow-hidden whitespace-nowrap">
-          <motion.p
-            className="py-2 text-3xl font-bold text-primary inline-block"
-            initial={{ x: "100%" }}
-            animate={{ x: "-100%" }}
-            transition={{
-              repeat: Infinity,
-              duration: 8,
-              ease: "linear",
-            }}
-          >
-            {/* WELCOME TO FU FCPRIMS HCM Management System */}
-          </motion.p>
-        </motion.div>
+        <div className="overflow-hidden whitespace-nowrap">
+  <p className="animate-marquee py-2 text-3xl font-bold text-primary inline-block">
+    {/* WELCOME TO FU FCPRIMS HCM Management System */}
+  </p>
+</div>
+
 
         <div className="w-full max-w-md mx-auto mt-6">
           <Form {...form}>

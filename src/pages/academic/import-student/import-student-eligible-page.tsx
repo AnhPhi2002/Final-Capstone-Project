@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { importConditions, resetState } from "@/lib/api/redux/importConditionsSlice";
 import { useNavigate, useParams } from "react-router";
-
+import import22  from "@/assets/images/import22.png";
 const ImportStudentEligibleTab = () => {
   const { semesterId } = useParams<{ semesterId: string }>();
   const dispatch = useAppDispatch();
@@ -68,7 +68,7 @@ const ImportStudentEligibleTab = () => {
       </CardHeader>
       <CardContent className="space-y-2">
         <h3 className="font-semibold">Định dạng excel</h3>
-        <img alt="Excel Format Example" />
+        <img src={import22} alt="Excel Format Example " className="pb-6" />
         <div
           {...getRootProps()}
           style={{
@@ -77,7 +77,7 @@ const ImportStudentEligibleTab = () => {
             textAlign: "center",
             cursor: "pointer",
           }}
-          className="rounded-lg"
+          className="rounded-lg "
         >
           <input {...getInputProps()} />
           {selectedFile ? (
