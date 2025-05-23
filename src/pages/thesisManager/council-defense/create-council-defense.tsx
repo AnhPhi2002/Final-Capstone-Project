@@ -72,6 +72,14 @@ export const CreateDefenseTopicCouncil = () => {
     setCreating(true);
 
     const round = submissionRounds.find((r) => r.id === selectedSubmissionRound);
+    if (!round || round.type !== "DEFENSE") {
+      toast.error("Đợt nộp không hợp lệ!");
+      setCreating(false);
+      return;
+    }
+
+    console.log("Submission Rounds:", submissionRounds);
+    console.log("Selected Round:", round);
 
     const newCouncil = {
       name: councilName,
@@ -79,7 +87,7 @@ export const CreateDefenseTopicCouncil = () => {
       submissionPeriodId: selectedSubmissionRound,
       startDate: convertToISODate(startDate),
       endDate: convertToISODate(endDate, true),
-      round: round?.roundNumber || 1,
+      defenseRound: round.roundNumber, // Changed from 'round' to 'defenseRound' to match backend
     };
 
     console.log("Data gửi lên API:", newCouncil);
@@ -87,7 +95,7 @@ export const CreateDefenseTopicCouncil = () => {
     try {
       await dispatch(createCouncilDefense(newCouncil)).unwrap();
       toast.success("Tạo hội đồng bảo vệ thành công!");
-      await dispatch(fetchDefenseCouncilsList({ semesterId: selectedSemester, submissionPeriodId: selectedSubmissionRound })).unwrap();;
+      await dispatch(fetchDefenseCouncilsList({ semesterId: selectedSemester, submissionPeriodId: selectedSubmissionRound })).unwrap();
       setOpen(false);
       setCouncilName("");
       setSelectedYear("");
@@ -96,7 +104,6 @@ export const CreateDefenseTopicCouncil = () => {
       setStartDate("");
       setEndDate("");
     } catch (error) {
-      // console.error("Create council failed:", error);
       toast.error(`${error}`);
     } finally {
       setCreating(false);
@@ -105,10 +112,7 @@ export const CreateDefenseTopicCouncil = () => {
 
   const availableYears = years.filter((y) => !y.isDeleted);
   const availableSemesters = semesters.filter((s) => !s.isDeleted);
-  const availableRounds = submissionRounds.filter((r) => !r.isDeleted);
-  
-  // Lọc thêm để chỉ lấy các submission rounds có type "REVIEW"
-  const filteredRounds = availableRounds.filter((r) => r.type === "DEFENSE");
+  const filteredRounds = submissionRounds.filter((r) => !r.isDeleted && r.type === "DEFENSE");
 
   return (
     <div>
@@ -189,7 +193,7 @@ export const CreateDefenseTopicCouncil = () => {
                     {filteredRounds.length > 0 ? (
                       filteredRounds.map((round) => (
                         <SelectItem key={round.id} value={round.id}>
-                          {round.description}
+                          {round.description} (Vòng {round.roundNumber})
                         </SelectItem>
                       ))
                     ) : (
