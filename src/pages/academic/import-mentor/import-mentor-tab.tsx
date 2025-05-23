@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 // import { importStudents, resetState } from "@/lib/api/redux/importStudentSlice";
 import { importMentors, resetState } from "@/lib/api/redux/importMentor";
 import { Upload } from "lucide-react";
-import import22  from "@/assets/images/import22.png";
+import import3  from "@/assets/images/import3.png";
 const ImportMentorTab = () => {
   const { semesterId } = useParams<{ semesterId: string }>();
   const navigate = useNavigate();
@@ -59,7 +59,7 @@ const ImportMentorTab = () => {
       </CardHeader>
       <CardContent className="space-y-2">
          <h3 className="font-semibold">Định dạng excel</h3>
-        <img src={import22} alt="Excel Format Example " className="pb-6" />
+        <img src={import3} alt="Excel Format Example " className="pb-6" />
         <div
           {...getRootProps()}
           style={{

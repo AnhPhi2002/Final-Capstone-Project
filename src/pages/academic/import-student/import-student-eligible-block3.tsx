@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { importConditionsBlock3, resetState } from "@/lib/api/redux/importConditionsSlice";
 import { useNavigate, useParams } from "react-router";
-
+import import3  from "@/assets/images/import3.png";
 const ImportStudentEligibleBlock3Tab = () => {
   const { semesterId } = useParams<{ semesterId: string }>();
   const dispatch = useAppDispatch();
@@ -58,11 +58,11 @@ const ImportStudentEligibleBlock3Tab = () => {
     <Card>
       <CardHeader>
         <CardTitle>Import danh sách sinh viên Block3</CardTitle>
-        <CardDescription>Thêm danh sách sinh viên đủ điều kiện từ file Excel.</CardDescription>
+        <CardDescription>Thêm danh sách sinh viên học Block 3 từ file Excel.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-2">
         <h3 className="font-semibold">Định dạng excel</h3>
-        <img alt="Excel Format Example" />
+        <img src={import3} alt="Excel Format Example " className="pb-6" />
         <div
           {...getRootProps()}
           style={{
