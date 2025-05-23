@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
 import { fetchInterMajorConfigs } from "@/lib/api/redux/interMajorSlice";
+import { fetchSemesterDetail } from "@/lib/api/redux/semesterSlice";
 import Header from "@/components/header";
 import {
   Card,
@@ -20,14 +21,18 @@ import { useNavigate } from "react-router";
 export const InterMajorDetailPage: React.FC = () => {
   const { id: semesterId } = useParams<{ id: string }>();
   const dispatch = useDispatch<AppDispatch>();
-  const { data: configs, loading, error } = useSelector(
+  const { data: configs, loading: configsLoading, error: configsError } = useSelector(
     (state: RootState) => state.interMajor
+  );
+  const { semesterDetail: semester, loading: semesterLoading, error: semesterError } = useSelector(
+    (state: RootState) => state.semesters
   );
   const navigate = useNavigate();
 
   useEffect(() => {
     if (semesterId) {
       dispatch(fetchInterMajorConfigs({ semesterId }));
+      dispatch(fetchSemesterDetail(semesterId));
     }
   }, [dispatch, semesterId]);
 
@@ -41,16 +46,19 @@ export const InterMajorDetailPage: React.FC = () => {
         currentPage="Danh sách liên ngành"
       />
 
-      {/* ✅ Nút tạo nằm ngay dưới Header */}
       <div className="px-6 mt-4">
         <CreateInterMajorDialog semesterId={semesterId!} />
       </div>
 
       <div className="p-6 flex-1 overflow-auto">
-        {loading ? (
+        {semesterLoading ? (
+          <p className="text-center text-gray-500">Đang tải thông tin kỳ...</p>
+        ) : semesterError ? (
+          <p className="text-center text-red-500">Lỗi: {semesterError}</p>
+        ) : configsLoading ? (
           <p className="text-center text-gray-500">Đang tải...</p>
-        ) : error ? (
-          <p className="text-center text-red-500">Lỗi: {error}</p>
+        ) : configsError ? (
+          <p className="text-center text-red-500">Lỗi: {configsError}</p>
         ) : activeConfigs.length === 0 ? (
           <p className="text-center text-gray-500">Không có dữ liệu liên ngành</p>
         ) : (
@@ -68,6 +76,11 @@ export const InterMajorDetailPage: React.FC = () => {
                   <CardDescription>
                     {config.firstMajor.name} & {config.secondMajor.name}
                   </CardDescription>
+                  {semester && (
+                    <div className="text-sm text-gray-600">
+                      Kỳ: {semester.code}
+                    </div>
+                  )}
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center gap-2">

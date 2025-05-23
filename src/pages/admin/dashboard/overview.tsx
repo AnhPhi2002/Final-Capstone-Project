@@ -49,10 +49,10 @@ const Overview: React.FC<OverviewProps> = ({ semesterId }) => {
 
   return (
     <div className="grid grid-cols-12 gap-5">
-      <Card status="Tổng số sinh viên đủ điều kiện" total={qualified} />
-      <Card status="Tổng số sinh viên không đủ điều kiện" total={notQualified} />
-      <Card status="Tổng số sinh viên có nhóm" total={hasGroup} />
-      <Card status="Tổng số sinh viên chưa có nhóm" total={noGroup} />
+      <Card status="Tổng số sinh viên đủ điều kiện làm đồ án tốt nghiệp" total={qualified} />
+      <Card status="Tổng số s.v không đủ điều kiện làm đồ án tốt nghiệp" total={notQualified} />
+      <Card status="Tổng số sinh viên có nhóm làm đồ án" total={hasGroup} />
+      <Card status="Tổng số sinh viên chưa có nhóm làm đồ án" total={noGroup} />
     </div>
   );
 };
