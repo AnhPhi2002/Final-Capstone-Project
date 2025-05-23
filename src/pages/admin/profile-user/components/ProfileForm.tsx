@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 interface UserProfile {
   id?: string;
   email?: string;
-  fullName?: string;
+  username?: string;
   avatar?: string | null;
   gender?: string | null;
   phone?: string | null;
@@ -31,7 +31,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
               alt="Avatar"
             />
             <AvatarFallback>
-              {user.fullName ? user.fullName.charAt(0).toUpperCase() : "?"}
+              {user.username ? user.username.charAt(0).toUpperCase() : "?"}
             </AvatarFallback>
           </Avatar>
         </div>
@@ -47,11 +47,11 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
       <div className="bg-white rounded-lg p-6 border shadow-sm">
         <h2 className="text-lg font-semibold">Thông tin cơ bản</h2>
         <div className="mt-4 space-y-2">
-          <p><strong>Họ và tên: </strong> {user.fullName || "Chưa cập nhật"}</p>
+          <p><strong>Họ và tên: </strong> {user.username || "Chưa cập nhật"}</p>
           <p><strong>Giới tính: </strong> {user.gender || "Chưa cập nhật"}</p>
-          <p><strong>Nghề nghiệp: </strong> {user.profession || "Chưa cập nhật"}</p>
+          <p><strong>Chuyên ngành hẹp: </strong> {user.profession || "Chưa cập nhật"}</p>
           <p><strong>Chuyên môn: </strong> {user.specialty || "Chưa cập nhật"}</p>
-          <p><strong>Ngôn ngữ lập trình: </strong> {user.programming_language || "Chưa cập nhật"}</p>
+          <p><strong>Kỹ năng: </strong> {user.programming_language || "Chưa cập nhật"}</p>
         </div>
       </div>
 

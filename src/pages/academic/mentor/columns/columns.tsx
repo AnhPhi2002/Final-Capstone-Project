@@ -13,7 +13,7 @@ export const columns: ColumnDef<Mentor>[] = [
     header: "Email",
   },
   {
-    accessorKey: "fullName",
+    accessorKey: "username",
     header: "Tên giảng viên",
   },
   {
