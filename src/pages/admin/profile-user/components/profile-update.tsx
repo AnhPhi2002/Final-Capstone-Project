@@ -27,7 +27,7 @@ export default function ProfileUpdateForm() {
 
   // State lưu thông tin profile
   const [formData, setFormData] = useState({
-    fullName: "",
+    username: "",
     avatar: "",
     gender: "",
     phone: "",
@@ -45,7 +45,7 @@ export default function ProfileUpdateForm() {
   useEffect(() => {
     if (user) {
       setFormData({
-        fullName: user.fullName || "",
+        username: user.username || "",
         avatar: user.avatar || "",
         gender: user.gender || "",
         phone: user.phone || "",
@@ -109,43 +109,43 @@ export default function ProfileUpdateForm() {
                   <Input name="personal_Email" value={formData.personal_Email} onChange={handleChange} />
                 </div>
                 <div>
-                  <Label>Phone Number</Label>
+                  <Label>Số điện thoại liên hệ</Label>
                   <Input name="phone" value={formData.phone} onChange={handleChange} />
                 </div>
-                <div>
+                {/* <div>
                   <Label>Avatar URL</Label>
                   <Input name="avatar" value={formData.avatar} onChange={handleChange} placeholder="https://example.com/avatar.jpg" />
-                </div>
+                </div> */}
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <Label>Full Name</Label>
-                  <Input name="fullName" value={formData.fullName} onChange={handleChange} />
+                  <Label>Họ và tên</Label>
+                  <Input name="fullName" value={formData.username} onChange={handleChange} />
                 </div>
                 <div>
-                  <Label>Gender</Label>
+                  <Label>Giới tính</Label>
                   <Select value={formData.gender} onValueChange={(value) => handleSelectChange("gender", value)}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select Gender" />
+                      <SelectValue placeholder="Chọn giới tính" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Male">Male</SelectItem>
-                      <SelectItem value="Female">Female</SelectItem>
-                      <SelectItem value="Other">Other</SelectItem>
+                      <SelectItem value="Male">Nam</SelectItem>
+                      <SelectItem value="Female">Nữ</SelectItem>
+                      <SelectItem value="Other">Khác</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
-                  <Label>Profession</Label>
+                  <Label>Chuyên ngành hẹp</Label>
                   <Input name="profession" value={formData.profession} onChange={handleChange} />
                 </div>
                 <div>
-                  <Label>Specialty</Label>
+                  <Label>Ngành</Label>
                   <Input name="specialty" value={formData.specialty} onChange={handleChange} />
                 </div>
                 <div>
-                  <Label>Programming Languages</Label>
+                  <Label>Kỹ năng</Label>
                   <Input name="programming_language" value={formData.programming_language} onChange={handleChange} />
                 </div>
               </div>
