@@ -355,7 +355,7 @@ const StatisticsOverview: React.FC<StatisticsOverviewProps> = ({ semesterId }) =
         "bar"
       )}
       {renderStatSection(
-        "Nhóm có/không có đề tài",
+        "Nhóm có-không có đề tài",
         groupTopicStatus.data,
         undefined,
         groupTopicStatus.loading,
