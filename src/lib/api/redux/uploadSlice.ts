@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-// import axios from "axios";
 import { axiosClient } from "../config/axios-client";
 
 interface UploadState {
