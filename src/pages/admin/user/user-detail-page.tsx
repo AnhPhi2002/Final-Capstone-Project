@@ -29,14 +29,15 @@ const UserDetail = () => {
     <div className="flex flex-col h-screen">
       <Header title="Tổng quan" href="/" currentPage="Chi tiết tài khoản" />
       <div className="p-5 flex-1 overflow-auto">
-        <div className="max-w-4xl mx-auto">
+        <div >
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold">Thông tin tài khoản</h2>
+          
             <Button className="bg-black text-white hover:bg-gray-300" onClick={() => navigate("/admin/user")} variant="outline">
               Quay lại
             </Button>
           </div>
           <div className="bg-white shadow rounded-lg p-6">
+              <h2 className="text-2xl font-bold pb-6">Thông tin tài khoản</h2>
             <div className="grid grid-cols-2 gap-6">
               <div>
                 <label className="text-sm font-medium text-gray-500">Email</label>

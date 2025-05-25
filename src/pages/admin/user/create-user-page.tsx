@@ -85,16 +85,18 @@ const CreateUserPage = () => {
     <div className="flex flex-col h-screen">
       <Header title="Tổng quan" href="/" currentPage="Tạo tài khoản mới" />
       <div className="p-5 flex-1 overflow-auto">
-        <div className="max-w-4xl mx-auto">
+        <div >
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold">Tạo tài khoản mới</h2>
-            <Button onClick={() => navigate("/users")} variant="outline">
+       
+            <Button onClick={() => navigate("/admin/user")} >
               Quay lại
             </Button>
           </div>
           <div className="bg-white shadow rounded-lg p-6">
+              <h2 className="text-2xl font-bold pb-6">Tạo tài khoản mới</h2>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-2 gap-6">
+              
                 <div>
                   <label className="text-sm font-medium text-gray-500">Email</label>
                   <Input
