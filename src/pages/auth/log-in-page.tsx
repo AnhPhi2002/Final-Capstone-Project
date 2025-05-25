@@ -21,7 +21,7 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import backgroundImage from "@/assets/images/test2.jpg";
+import backgroundImage from "@/assets/images/test5.png";
 
 interface User {
   id: string;
