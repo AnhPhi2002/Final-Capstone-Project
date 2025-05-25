@@ -13,18 +13,47 @@ import {
 import { Link } from "react-router";
 import { filterUsers } from "@/lib/api/redux/userSlice";
 
-const ToolsPanel = () => {
+interface ToolsPanelProps {
+  itemsPerPage: number;
+  onItemsPerPageChange: (n: number) => void;
+  onSearchChange: (text: string) => void;
+  onFilterChange: (role: string) => void;
+}
+
+const ToolsPanel: React.FC<ToolsPanelProps> = ({
+  // itemsPerPage,
+  // onItemsPerPageChange,
+  onSearchChange,
+  onFilterChange,
+}) => {
   const dispatch = useDispatch();
   const [search, setSearch] = useState("");
   const [role, setRole] = useState("*");
 
-  const handleSearch = () => {
-    dispatch(filterUsers({ search, role }));
+  // Khi search input thay đổi
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setSearch(val);
+    onSearchChange(val);
   };
 
+  // Khi chọn lọc role
   const handleRoleChange = (value: string) => {
     setRole(value);
-    dispatch(filterUsers({ search, role: value }));
+    onFilterChange(value);
+  };
+
+  // Khi chọn số dòng trên trang
+  // const handleItemsPerPageChange = (value: string) => {
+  //   const n = Number(value);
+  //   if (!isNaN(n)) {
+  //     onItemsPerPageChange(n);
+  //   }
+  // };
+
+  // Nút tìm kiếm thực tế để gọi filter
+  const handleSearchClick = () => {
+    dispatch(filterUsers({ search, role }));
   };
 
   return (
@@ -33,14 +62,35 @@ const ToolsPanel = () => {
         <Input
           placeholder="Tìm kiếm theo email hoặc tên"
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+          onChange={handleSearchChange}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSearchClick();
+            }
+          }}
         />
-        <Button onClick={handleSearch}>
+        <Button onClick={handleSearchClick}>
           <Search />
         </Button>
       </div>
-      <div className="col-span-3"></div>
+
+      <div className="col-span-3">
+        {/* <Select
+          onValueChange={handleItemsPerPageChange}
+          value={itemsPerPage.toString()}
+        >
+          <SelectTrigger className="w-32">
+            <SelectValue placeholder="Dòng / trang" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="10">10 dòng</SelectItem>
+            <SelectItem value="20">20 dòng</SelectItem>
+            <SelectItem value="50">50 dòng</SelectItem>
+            <SelectItem value="100">100 dòng</SelectItem>
+          </SelectContent>
+        </Select> */}
+      </div>
+
       <div className="col-span-3">
         <Select value={role} onValueChange={handleRoleChange}>
           <SelectTrigger className="w-full">
@@ -54,6 +104,7 @@ const ToolsPanel = () => {
           </SelectContent>
         </Select>
       </div>
+
       <div className="col-span-2 flex">
         <Link to={"/admin/user/create-user"} className="w-full">
           <Button className="w-full flex gap-3 items-center">

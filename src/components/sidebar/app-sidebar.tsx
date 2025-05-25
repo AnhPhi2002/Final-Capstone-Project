@@ -4,6 +4,7 @@ import {
   Calendar,
   // ChartPie,
   CircleUserRound,
+  Cog,
   // ClipboardList,
   List,
   // NotebookPen,
@@ -205,7 +206,7 @@ const adminMenu = {
     {
       title: "Admin config",
       url: "/admin/admin-config",
-      icon: CircleUserRound,
+      icon: Cog,
       isActive: true,
       items: [
         {
