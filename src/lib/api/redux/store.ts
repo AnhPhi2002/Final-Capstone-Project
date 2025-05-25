@@ -45,6 +45,7 @@ import mentorProgressReportReducer from './mentorProgressReportSlice';
 import  statisticsReducer  from './statisticsSlice';
 import interMajorReducer from "./interMajorSlice";
 import interMajorTopicReducer  from './interMajorTopicSlice';
+import userReducer from './userSlice';
 
 const rootReducer = combineReducers({
   counter: counterReducer,
@@ -96,6 +97,8 @@ const rootReducer = combineReducers({
   // statistics: statisticsReducer,
   interMajor: interMajorReducer,
   interMajorTopic: interMajorTopicReducer,
+
+  users: userReducer,
 });
 
 // const persistedReducer = persistReducer(persistConfig, rootReducer)

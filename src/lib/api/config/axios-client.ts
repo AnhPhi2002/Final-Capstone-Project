@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 // export const BASE_URL = import.meta.env.VITE_REACT_APP_API_URL;
-const BASE_URL: string = import.meta.env.VITE_BACKEND_URL ||  'https://api.learnup.work/api';
+// const BASE_URL: string = import.meta.env.VITE_BACKEND_URL ||  'https://api.learnup.work/api';
 
-// export const BASE_URL = "http://localhost:3000/api";
+export const BASE_URL = "http://localhost:3000/api";
 // export const BASE_URL = "http://160.187.241.152:6969/api";
 
 console.log('BASE_URL', BASE_URL);
