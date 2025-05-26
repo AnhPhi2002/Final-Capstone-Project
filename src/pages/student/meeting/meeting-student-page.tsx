@@ -7,7 +7,7 @@ export const MeetingStudentPage = () => {
       <Header
         title="Tổng quan"
         href="/"
-        currentPage="Danh sách nhóm sinh vien"
+        currentPage="Lịch họp"
       />
       <div className="p-5 flex-1 overflow-auto">
         <SelectSemester />

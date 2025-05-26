@@ -83,9 +83,9 @@ const uniqueGroupSchedules = React.useMemo(() => {
   return (
     <div className="flex flex-col h-screen">
       <Header
-        title="Lịch xét duyệt giảng viên"
+        title="Quyết định bảo vệ"
         href="/lecturer-dashboard"
-        currentPage="Phòng xét duyệt"
+        currentPage="Chi tiết quyết định bảo vệ"
       />
       <div className="p-6 flex-1 overflow-auto">
         {loadingSchedulesMentor ? (

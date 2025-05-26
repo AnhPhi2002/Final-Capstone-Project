@@ -29,39 +29,49 @@ export const Decision: React.FC<DecisionProps> = ({ schedule, open, setOpen, ref
   const semesterId = schedule.schedule.group.semesterId;
   const groupCode = schedule.schedule.group.groupCode;
 
-  const handleSubmit = async () => {
-    if (!mentorDecision) {
-      toast.error("Vui lòng chọn trạng thái!");
-      return;
-    }
+const handleSubmit = async () => {
+  if (!mentorDecision) {
+    toast.error("Vui lòng chọn trạng thái!");
+    return;
+  }
 
-    setIsLoading(true);
-    try {
-      await dispatch(
-        confirmDefenseRound({
-          groupCode,
-          defenseRound: mentorDecision === "PASS" ? defenseRound : null,
-          mentorDecision,
-          semesterId,
-        })
-      ).unwrap();
+  // Khi PASS bắt buộc chọn defenseRound
+  if (mentorDecision === "PASS" && (defenseRound === null || defenseRound === undefined)) {
+    toast.error("Vui lòng chọn vòng bảo vệ khi trạng thái là Đạt!");
+    return;
+  }
 
-      toast.success("Xác nhận vòng bảo vệ thành công!");
+  setIsLoading(true);
+  try {
+    // Chuẩn bị payload theo yêu cầu backend
+    const payload = {
+      groupCode,
+      defenseRound: mentorDecision === "PASS" ? defenseRound : null,
+      mentorDecision,
+      semesterId,
+    };
 
-      await refetchData?.();
+    console.log("Confirm defense round successful:", payload);
 
-      setOpen(false);
-      setMentorDecision("");
-      setDefenseRound(null);
-    } catch (error) {
-      console.error("Confirm defense round failed:", error);
-      toast.error(`${error}`);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    await dispatch(confirmDefenseRound(payload)).unwrap();
 
-  if (!open) return null; // ✅ đảm bảo unmount khi đóng
+    toast.success("Xác nhận vòng bảo vệ thành công!");
+
+    await refetchData?.();
+
+    setOpen(false);
+    setMentorDecision("");
+    setDefenseRound(null);
+  } catch (error) {
+    console.error("Confirm defense round failed:", error);
+    toast.error(`${error}`);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+
+  if (!open) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -120,7 +130,7 @@ export const Decision: React.FC<DecisionProps> = ({ schedule, open, setOpen, ref
           <Button variant="outline" onClick={() => setOpen(false)} disabled={isLoading}>
             Hủy
           </Button>
-          <Button onClick={handleSubmit} disabled={isLoading || !mentorDecision}>
+          <Button onClick={handleSubmit} disabled={isLoading}>
             {isLoading ? "Đang lưu..." : "Xác nhận"}
           </Button>
         </div>

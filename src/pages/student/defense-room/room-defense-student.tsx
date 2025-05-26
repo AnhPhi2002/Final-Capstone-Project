@@ -37,7 +37,7 @@ export const RoomDefenseStudent: React.FC = () => {
   return (
     <div className="flex flex-col h-screen">
       <Header
-        title="Lịch bảo vệ sinh viên"
+        title="Lịch bảo vệ nhóm"
         href="/student-dashboard" // Giả định đường dẫn quay lại
         currentPage="Phòng bảo vệ"
       />

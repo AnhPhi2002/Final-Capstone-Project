@@ -143,7 +143,7 @@ export default function UpdateTopicDetail() {
 
               {/* 🔹 Select Mentor Phụ */}
               <div>
-                <p className="text-sm text-gray-500 mb-1">Mentor phụ</p>
+                <p className="text-sm text-gray-500 mb-1">Giáo viên hướng dẫn phụ</p>
                 <Select value={formData.subMentorEmail} onValueChange={(email) => setFormData({ ...formData, subMentorEmail: email })}>
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Chọn mentor phụ" />
@@ -156,7 +156,7 @@ export default function UpdateTopicDetail() {
                         </SelectItem>
                       ))
                     ) : (
-                      <SelectItem value="" disabled>Không có mentor khả dụng</SelectItem>
+                      <SelectItem value="" disabled>Không có giáo viên hướng dẫn khả dụng</SelectItem>
                     )}
                   </SelectContent>
                 </Select>

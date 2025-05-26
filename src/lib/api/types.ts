@@ -357,6 +357,7 @@ export interface ReviewSchedule {
     };
   };
   assignments:  ReviewScheduleAssignment[];
+  assignment: ReviewScheduleAssignment | null; // Updated to single object or null
   url: string | null;
   documents: ReviewScheduleDocument[];
 }

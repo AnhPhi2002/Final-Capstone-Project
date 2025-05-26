@@ -12,7 +12,7 @@ export const TopicDetailPage = () => {
   }
   return (
     <div>
-      <Header title="Hồ sơ" href="/" currentPage="Thông tin cá nhân" />
+      <Header title="Đề tài đăng ký" href="/" currentPage="Thông tin chi tiết đề tài" />
       <div className="container mx-auto px-6">
         <div className="flex justify-end mt-5">
           <Link to={`/academic/topic-detail/${topicId}/${semesterId}/update`}>

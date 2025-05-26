@@ -6,7 +6,7 @@ import Header from "@/components/header";
 import { DataTable } from "./data-table/data-table";
 import { columns } from "./data-table/columns";
 // import CreateGroup from "./create-group-button";
-import { ExportExcelGroupStudent } from "./export-excel-group-student";
+// import { ExportExcelGroupStudent } from "./export-excel-group-student";
 import { PaginationDashboardPage } from "../pagination";
 
 export const GroupStudentCardPage = () => {
@@ -39,7 +39,7 @@ export const GroupStudentCardPage = () => {
       <Header title="Tổng quan" href="/" currentPage="Danh sách nhóm sinh viên" />
       <div className="p-5 flex-1 overflow-auto">
         <div className="flex justify-end mb-4 gap-x-4">
-          <ExportExcelGroupStudent />
+          {/* <ExportExcelGroupStudent /> */}
           {/* <CreateGroup key={groups.length} semesterId={semesterId!} /> */}
         </div>
         <DataTable columns={columns} data={currentGroups} />
