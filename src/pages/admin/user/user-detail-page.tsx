@@ -32,7 +32,7 @@ const UserDetail = () => {
         <div >
           <div className="flex justify-between items-center mb-6">
           
-            <Button className="bg-black text-white hover:bg-gray-300" onClick={() => navigate("/admin/user")} variant="outline">
+            <Button className="bg-black text-white " onClick={() => navigate("/admin/user")} >
               Quay lại
             </Button>
           </div>

@@ -1,12 +1,15 @@
 import * as React from "react";
 import Logo from "@/assets/images/img01.jpg";
 import {
-  Calendar,
+  Calendar1Icon,
   // ChartPie,
   CircleUserRound,
   Cog,
-  // ClipboardList,
+  LayoutDashboardIcon,
+  LightbulbIcon,
   List,
+  ListCheckIcon,
+  StampIcon,
   // NotebookPen,
 } from "lucide-react";
 
@@ -408,7 +411,7 @@ const academicMenu = {
     {
       title: "Năm học và kỳ ",
       url: "/academic/semester",
-      icon: Calendar,
+      icon: Calendar1Icon,
       isActive: true,
       items: [
         {
@@ -424,7 +427,7 @@ const academicMenu = {
     {
       title: "Danh sách sinh viên ",
       url: "/academic/council-member",
-      icon: List,
+      icon: ListCheckIcon,
       isActive: true,
       items: [
         {
@@ -453,7 +456,7 @@ const academicMenu = {
     {
       title: "Quản lý đề tài",
       url: "/academic/council-member",
-      icon: List,
+      icon: LightbulbIcon,
       isActive: true,
       items: [
         {
@@ -462,22 +465,22 @@ const academicMenu = {
         },
       ],
     },
-    {
-      title: "Qlý. phân công đề tài",
-      url: "/academic/topic-assignment-decision",
-      icon: List,
-      isActive: true,
-      items: [
-        {
-          title: "Ds. quyết định",
-          url: "/academic/topic-assignment-decision",
-        },
-      ],
-    },
+    // {
+    //   title: "Qlý. phân công đề tài",
+    //   url: "/academic/topic-assignment-decision",
+    //   icon: List,
+    //   isActive: true,
+    //   items: [
+    //     {
+    //       title: "Ds. quyết định",
+    //       url: "/academic/topic-assignment-decision",
+    //     },
+    //   ],
+    // },
     {
       title: "Bảng quyết định",
       url: "/academic/decision",
-      icon: List,
+      icon: StampIcon,
       isActive: true,
       items: [
         {
@@ -493,7 +496,7 @@ const academicMenu = {
     {
       title: "Quản lý thống kê",
       url: "/academic/dashboard-page",
-      icon: List,
+      icon: LayoutDashboardIcon,
       isActive: true,
       items: [
         {
