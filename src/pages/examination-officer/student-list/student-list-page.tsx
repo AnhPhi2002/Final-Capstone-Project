@@ -1,18 +1,13 @@
 import Header from "@/components/header";
-import { SelectSemester } from "./seclect-semester/select-semester";
+import { SelectSemester } from "./select-semester";
 
-export const ReviewTopicPage = () => {
+const StudentListPage = () => {
   return (
     <div className="flex flex-col h-screen">
-      <Header
-        title="Tổng quan"
-        href="/"
-        currentPage="Đề tài chờ xét duyệt"
-      />
-
+      <Header title="Tổng quan" href="/" currentPage="Danh sách sinh viên " />
       <div className="p-5 flex-1 overflow-auto">
         <div className="flex flex-col items-end gap-4">
-          <div className="w-full mt-3">
+          <div className="w-full mt-[52px]">
             <SelectSemester />
           </div>
         </div>
@@ -20,3 +15,5 @@ export const ReviewTopicPage = () => {
     </div>
   );
 };
+
+export default StudentListPage;

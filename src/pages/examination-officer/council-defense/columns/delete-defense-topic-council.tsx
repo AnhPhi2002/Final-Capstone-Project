@@ -26,7 +26,7 @@ export const DeleteDefenseTopicCouncil: React.FC<DeleteDefenseTopicCouncilProps>
     try {
       await dispatch(deleteCouncil(councilId)).unwrap();
       toast.success("Hội đồng review đã được xóa thành công!");
-      navigate(`/examination/council-defense`);
+      navigate(`/graduation-thesis/council-defense`);
       setOpen(false);
       refetchData?.();
     } catch (error: any) {

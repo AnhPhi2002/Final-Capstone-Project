@@ -1,7 +1,7 @@
 // components/columns.tsx
 import { ColumnDef } from "@tanstack/react-table";
 import { CouncilDefenseMember } from "@/lib/api/types";
-import { Action } from "./action";
+// import { Action } from "./action";
 
 export const memberColumns: ColumnDef<CouncilDefenseMember>[] = [
   {
@@ -34,11 +34,11 @@ export const memberColumns: ColumnDef<CouncilDefenseMember>[] = [
     accessorKey: "status",
     header: "Trạng thái",
   },
-  {
-    id: "actions",
-    header: "Hành động",
-    cell: ({ row }) => (
-      <Action councilId={row.original.councilId} userId={row.original.userId} />
-    ),
-  },
+  // {
+  //   id: "actions",
+  //   header: "Hành động",
+  //   cell: ({ row }) => (
+  //     <Action councilId={row.original.councilId} userId={row.original.userId} />
+  //   ),
+  // },
 ];
