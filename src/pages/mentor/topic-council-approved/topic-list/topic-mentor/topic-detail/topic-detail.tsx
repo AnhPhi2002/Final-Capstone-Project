@@ -13,6 +13,24 @@ import { fetchUserById, resetMainMentor } from "@/lib/api/redux/authSlice";
 import { resetGroupDetail } from "@/lib/api/redux/groupDetailSlice";
 import { fetchSubUserById, resetSubMentor } from "@/lib/api/redux/authSubSlice"
 
+const statusClasses: {
+  [key in "APPROVED" | "REJECTED" | "PENDING" | "IMPROVED"]: string;
+} = {
+  APPROVED: "bg-green-100 text-green-600 hover:bg-green-200",
+  REJECTED: "bg-blue-100 text-blue-600 hover:bg-blue-200",
+  PENDING: "bg-gray-100 text-gray-600 hover:bg-gray-200",
+  IMPROVED: "bg-yellow-100 text-yellow-600 hover:bg-yellow-200",
+};
+
+const statusTranslations: {
+  [key in "APPROVED" | "REJECTED" | "PENDING" | "IMPROVED"]: string;
+} = {
+  APPROVED: "Đã duyệt",
+  REJECTED: "Bị từ chối",
+  PENDING: "Đang chờ duyệt",
+  IMPROVED: "Cần cải thiện",
+};
+
 export default function TopicDetail() {
   const { topicId, semesterId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
@@ -145,8 +163,13 @@ export default function TopicDetail() {
               </div>
               <div>
                 <p className="text-sm text-gray-500 mb-1">Trạng thái</p>
-                <Badge>
-                  {topicDetails.status || "Chưa cập nhật trạng thái"}
+                <Badge
+                  className={`${statusClasses[topicDetails.status as "APPROVED" | "REJECTED" | "PENDING" | "IMPROVED"] ||
+                    "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    } px-2 py-1 rounded-md text-xs`}
+                >
+                  {statusTranslations[topicDetails.status as "APPROVED" | "REJECTED" | "PENDING" | "IMPROVED"] ||
+                    topicDetails.status || "Chưa cập nhật trạng thái"}
                 </Badge>
               </div>
               

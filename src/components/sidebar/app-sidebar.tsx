@@ -362,6 +362,22 @@ const lecturerMenu = {
 const examinationMenu = {
   navMain: [
     {
+      title: "Danh sách sinh viên",
+      url: "/examination/council-member",
+      icon: List,
+      isActive: true,
+      items: [
+        {
+          title: "Danh sách sinh viên KLTN",
+          url: "/examination/student",
+        },
+        {
+          title: "Danh sách giảng viên",
+          url: "/examination/mentor-page",
+        },
+      ],
+    },
+    {
       title: "Quản lý đề tài xét duyệt",
       url: "/examination/council-member",
       icon: List,
@@ -382,7 +398,7 @@ const examinationMenu = {
       ],
     },
     {
-      title: "Quản lý hội chấm KLTN",
+      title: "Quản lý hội đồng KLTN",
       url: "/examination/review-topic-council",
       icon: List,
       isActive: true,
@@ -391,14 +407,10 @@ const examinationMenu = {
           title: "D.s h.đ xét duyệt đề tài",
           url: "/examination/review-topic-council",
         },
-        // {
-        //   title: "D.s h.đ kiểm tra đồ án ",
-        //   url: "/examination/council-review",
-        // },
-        // {
-        //   title: "D.s h.đ bảo vệ đồ án ",
-        //   url: "/examination/council-defense",
-        // },
+        {
+          title: "D.s h.đ bảo vệ đồ án ",
+          url: "/examination/council-defense",
+        },
       ],
     },
   ],

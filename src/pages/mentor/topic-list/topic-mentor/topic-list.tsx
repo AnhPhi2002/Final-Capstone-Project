@@ -1,8 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
 import { fetchTopics } from "@/lib/api/redux/topicSlice";
+import { fetchUserDetail } from "@/lib/api/redux/userSlice";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { resetSubMentor } from "@/lib/api/redux/authSubSlice";
@@ -32,12 +33,22 @@ const statusClasses: {
   IMPROVED: "bg-yellow-100 text-yellow-600 hover:bg-yellow-200",
 };
 
+const statusTranslations: {
+  [key in "APPROVED" | "REJECTED" | "PENDING" | "IMPROVED"]: string;
+} = {
+  APPROVED: "Đã duyệt",
+  REJECTED: "Bị từ chối",
+  PENDING: "Đang chờ duyệt",
+  IMPROVED: "Cần cải thiện",
+};
+
 export const TopicList = ({ selectedMajor }: { selectedMajor?: string }) => {
   const { semesterId, submissionPeriodId, roundNumber, type } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const [usernames, setUsernames] = useState<{ [key: string]: string }>({});
 
-  const { data: topics = [], loading: topicsLoading } = useSelector(
+  const { data: topics = [], loading: topicsLoading, error } = useSelector(
     (state: RootState) => state.topics
   );
 
@@ -55,7 +66,6 @@ export const TopicList = ({ selectedMajor }: { selectedMajor?: string }) => {
         submissionPeriodId,
       };
 
-      // 👇 Chỉ truyền majorId nếu đã chọn ngành
       if (selectedMajor) {
         payload.majorId = selectedMajor;
       }
@@ -64,11 +74,38 @@ export const TopicList = ({ selectedMajor }: { selectedMajor?: string }) => {
     }
   }, [dispatch, semesterId, submissionPeriodId, selectedMajor]);
 
+  useEffect(() => {
+    if (error) {
+      console.error("Error fetching topics:", error);
+      return;
+    }
+
+    topics.forEach((topic) => {
+      if (topic.createdBy && !usernames[topic.createdBy]) {
+        dispatch(fetchUserDetail(topic.createdBy)).then((result) => {
+          if (result.meta.requestStatus === "fulfilled" && result.payload) {
+            const username = (result.payload as { username: string }).username;
+            if (username) {
+              setUsernames((prev) => ({
+                ...prev,
+                [topic.createdBy!]: username,
+              }));
+            }
+          } else {
+            console.error(`Failed to fetch username for userId: ${topic.createdBy}`);
+          }
+        });
+      }
+    });
+  }, [dispatch, topics, usernames, error]);
+
   return (
     <div className="bg-background text-foreground min-h-screen">
       <div className="flex flex-1 flex-col gap-4">
         {topicsLoading ? (
           <p className="text-center text-gray-500">Đang tải danh sách đề tài...</p>
+        ) : error ? (
+          <p className="text-center text-red-500">Lỗi: {error}</p>
         ) : topics.length === 0 ? (
           <p className="text-center text-gray-500">
             Không có đề tài nào trong đợt nộp này.
@@ -78,7 +115,7 @@ export const TopicList = ({ selectedMajor }: { selectedMajor?: string }) => {
             <div
               key={topic.id}
               onClick={() =>
-                navigate( `/lecturer/topic-detail/${topic.id}/${semesterId}?submissionPeriodId=${submissionPeriodId}&roundNumber=${roundNumber}&type=${type}`)
+                navigate(`/lecturer/topic-detail/${topic.id}/${semesterId}?submissionPeriodId=${submissionPeriodId}&roundNumber=${roundNumber}&type=${type}`)
               }
               className="relative min-h-[130px] w-full rounded-lg bg-muted/50 flex items-center p-4 gap-x-6 cursor-pointer hover:bg-muted transition-all"
             >
@@ -89,7 +126,7 @@ export const TopicList = ({ selectedMajor }: { selectedMajor?: string }) => {
                   ] || "bg-gray-100 text-gray-600 hover:bg-gray-200"
                 } absolute top-4 right-6 px-2 py-1 rounded-md text-xs`}
               >
-                {topic.status}
+                {statusTranslations[topic.status as "APPROVED" | "REJECTED" | "PENDING" | "IMPROVED"] || topic.status}
               </Badge>
 
               <Avatar className="w-12 h-12">
@@ -109,11 +146,9 @@ export const TopicList = ({ selectedMajor }: { selectedMajor?: string }) => {
                   <span className="text-blue-500 font-medium">Topic:</span>{" "}
                   {topic.nameEn || "Không có tên"}
                 </h4>
-
                 <p className="text-muted-foreground text-sm leading-relaxed">
                   {truncateText(topic.description || "Không có mô tả", 320)}
                 </p>
-
                 <div className="mt-2 text-xs text-muted-foreground">
                   <p>
                     Ngày tạo:{" "}
@@ -122,7 +157,10 @@ export const TopicList = ({ selectedMajor }: { selectedMajor?: string }) => {
                   <p>
                     Được tạo bởi:{" "}
                     <span className="font-medium">
-                      {topic.creator?.fullName || "Không xác định"}
+                      {usernames[topic.createdBy!] ||
+                        (topic.creator?.fullName === "lecturer"
+                          ? "Giảng viên"
+                          : topic.creator?.fullName || "Không xác định")}
                     </span>
                   </p>
                 </div>

@@ -1,8 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
 import { fetchTopics } from "@/lib/api/redux/topicSlice";
+import { fetchUserDetail } from "@/lib/api/redux/userSlice";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { resetSubMentor } from "@/lib/api/redux/authSubSlice";
@@ -31,7 +32,14 @@ const statusClasses: {
   PENDING: "bg-gray-100 text-gray-600 hover:bg-gray-200",
   IMPROVED: "bg-yellow-100 text-yellow-600 hover:bg-yellow-200",
 };
-
+const statusTranslations: {
+  [key in "APPROVED" | "REJECTED" | "PENDING" | "IMPROVED"]: string;
+} = {
+  APPROVED: "Đã duyệt",
+  REJECTED: "Bị từ chối",
+  PENDING: "Đang chờ duyệt",
+  IMPROVED: "Cần cải thiện",
+};
 export const TopicList = () => {
   const { semesterId, submissionPeriodId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
@@ -40,6 +48,7 @@ export const TopicList = () => {
   const { data: topics = [], loading: topicsLoading } = useSelector(
     (state: RootState) => state.topics
   );
+  const [usernames, setUsernames] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     dispatch(resetMainMentor());
@@ -53,6 +62,21 @@ export const TopicList = () => {
       );
     }
   }, [dispatch, semesterId, submissionPeriodId]);
+
+  useEffect(() => {
+    topics.forEach((topic) => {
+      if (topic.createdBy && !usernames[topic.createdBy]) {
+        dispatch(fetchUserDetail(topic.createdBy)).then((result) => {
+          if (result.meta.requestStatus === "fulfilled" && result.payload) {
+            setUsernames((prev) => ({
+              ...prev,
+              [topic.createdBy!]: (result.payload as { username: string }).username,
+            }));
+          }
+        });
+      }
+    });
+  }, [dispatch, topics, usernames]);
 
   return (
     <div className="bg-background text-foreground min-h-screen">
@@ -79,7 +103,7 @@ export const TopicList = () => {
                   ] || "bg-gray-100 text-gray-600 hover:bg-gray-200"
                 } absolute top-4 right-6 px-2 py-1 rounded-md text-xs`}
               >
-                {topic.status}
+                {statusTranslations[topic.status as "APPROVED" | "REJECTED" | "PENDING" | "IMPROVED"] || topic.status}
               </Badge>
 
               <Avatar className="w-12 h-12">
@@ -110,7 +134,7 @@ export const TopicList = () => {
                   <p>
                     Được tạo bởi:{" "}
                     <span className="font-medium">
-                      {topic.creator?.fullName || "Không xác định"}
+                      {usernames[topic.createdBy!] || topic.creator?.fullName || "Không xác định"}
                     </span>
                   </p>
                 </div>

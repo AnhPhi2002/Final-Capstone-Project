@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
@@ -12,7 +12,7 @@ import {
 import { DataTable } from "./data-table";
 import { memberColumns } from "./columns";
 import Header from "@/components/header";
-import { AddMemberReviewCouncil } from "./add-council-member";
+// import { AddMemberDefenseCouncil } from "./add-council-member";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
@@ -25,7 +25,7 @@ export const CouncilDefenseMembersPage: React.FC = () => {
   const { councilDetail, loadingDetail } = useSelector(
     (state: RootState) => state.councilDefense
   ); // Sửa thành councilReviews nếu dùng key này trong store
-  const [openAddMember, setOpenAddMember] = useState(false);
+  // const [openAddMember, setOpenAddMember] = useState(false);
 
   const refetchData = () => {
     if (councilId) {
@@ -40,7 +40,7 @@ export const CouncilDefenseMembersPage: React.FC = () => {
   }, [councilId, dispatch]);
 
   const table = useReactTable({
-    data: councilDetail?.members || [],
+    data: (councilDetail?.members || []).filter((member) => !member.isDeleted),
     columns: memberColumns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -63,7 +63,7 @@ export const CouncilDefenseMembersPage: React.FC = () => {
     <div className="flex flex-col h-screen">
       <Header
         title="Chi tiết hội đồng kiểm tra đồ án"
-        href="/examination/council-defense-member"
+        href="/graduation-thesis/council-defense-member"
         currentPage="Thành viên  hội đồng kiểm tra đồ án"
       />
       <div className="p-5 flex-1 overflow-auto">
@@ -74,22 +74,22 @@ export const CouncilDefenseMembersPage: React.FC = () => {
           </Button>
 
           {/* Nút thêm thành viên bên phải */}
-          <Button
+          {/* <Button
             className="bg-black text-white"
             onClick={() => setOpenAddMember(true)}
             disabled={loadingDetail}
           >
             Thêm thành viên
-          </Button>
+          </Button> */}
         </div>
 
         {/* Tích hợp AddMemberReviewCouncil */}
-        <AddMemberReviewCouncil
+        {/* <AddMemberDefenseCouncil
           open={openAddMember}
           setOpen={setOpenAddMember}
           councilId={councilId}
           semesterId={semesterId}
-        />
+        /> */}
 
         {loadingDetail ? (
           <p className="text-center text-gray-500">

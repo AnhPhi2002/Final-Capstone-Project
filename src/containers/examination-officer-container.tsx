@@ -17,10 +17,14 @@ import { CouncilReviewPage } from "@/pages/examination-officer/council-review-12
 
 import { DeadineTopicDetailPage } from "@/pages/examination-officer/deadline-topic/columns/deadine-topic-detail-page";
 import { DeadineTopicPage } from "@/pages/examination-officer/deadline-topic/deadine-topic-page";
+import { MentorDetail } from "@/pages/examination-officer/mentor/columns/mentor-detail";
+import { MentorPage } from "@/pages/examination-officer/mentor/mentor-page";
 import { CouncilMembersPage } from "@/pages/examination-officer/review-topic-council/columns-member/CouncilMembersPage";
 
 import { ReviewTopicCouncilDetail } from "@/pages/examination-officer/review-topic-council/columns/review-topic-council-detail";
 import { ReviewTopicCouncilPage } from "@/pages/examination-officer/review-topic-council/review-topic-council-page";
+import { StudentsDetailPage } from "@/pages/examination-officer/student-list/columns/students-detail-page";
+import StudentListPage from "@/pages/examination-officer/student-list/student-list-page";
 import TemplateDetail from "@/pages/examination-officer/templates-mail/TemplateDetail";
 import { TopicDetailPage } from "@/pages/examination-officer/topic-list/topic-mentor/topic-detail/topic-detail-page";
 // import UpdateTopicDetail from "@/pages/examination-officer/topic-list/topic-mentor/topic-detail/update-topic-detail";
@@ -94,6 +98,13 @@ export const ExaminationOfficerContainer = () => {
         <Route path="/topic/:semesterId" element={<TopicPage />} />
         <Route path="/topic-list/semester/:semesterId/submission/:submissionPeriodId/round/:roundNumber" element={<TopicListPage />} />
         <Route path="/topic-detail/:topicId/:semesterId" element={<TopicDetailPage />} />
+
+        <Route path="/student" element={<StudentListPage />} />
+        <Route path="/student/:semesterId" element={<StudentsDetailPage />} />
+
+        <Route path="/mentor-page" element={<MentorPage />} />
+        <Route path="/mentor-page/:semesterId" element={<MentorDetail />} />
+
         <Route path="/*" element={<NotFound />} />
       </Routes>
     </MainLayout>

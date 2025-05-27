@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTopicDetail, deleteTopic, resetTopicDetail } from "@/lib/api/redux/topicSlice";
@@ -12,6 +12,25 @@ import { DataTableGroupTopic } from "./data-table-group-topic";
 import { fetchUserById, resetMainMentor } from "@/lib/api/redux/authSlice";
 import { resetGroupDetail } from "@/lib/api/redux/groupDetailSlice";
 import { fetchSubUserById, resetSubMentor } from "@/lib/api/redux/authSubSlice"
+import { fetchUserDetail } from "@/lib/api/redux/userSlice";
+
+const statusClasses: {
+  [key in "APPROVED" | "REJECTED" | "PENDING" | "IMPROVED"]: string;
+} = {
+  APPROVED: "bg-green-100 text-green-600 hover:bg-green-200",
+  REJECTED: "bg-blue-100 text-blue-600 hover:bg-blue-200",
+  PENDING: "bg-gray-100 text-gray-600 hover:bg-gray-200",
+  IMPROVED: "bg-yellow-100 text-yellow-600 hover:bg-yellow-200",
+};
+
+const statusTranslations: {
+  [key in "APPROVED" | "REJECTED" | "PENDING" | "IMPROVED"]: string;
+} = {
+  APPROVED: "Đã duyệt",
+  REJECTED: "Bị từ chối",
+  PENDING: "Đang chờ duyệt",
+  IMPROVED: "Cần cải thiện",
+};
 
 export default function TopicDetail() {
   const { topicId, semesterId } = useParams();
@@ -23,29 +42,29 @@ export default function TopicDetail() {
   // const { author: auth } = useSelector((state: RootState) => state.auth);
   const { author: mainMentor } = useSelector((state: RootState) => state.auth);
   const { author: subMentor } = useSelector((state: RootState) => state.authSub);
+  const [createdByUsername, setCreatedByUsername] = useState<string | null>(null);
 
   useEffect(() => {
-    // ✅ Reset mainMentor và subMentor trước khi fetch API
-    dispatch(resetGroupDetail()); 
-    dispatch(resetMainMentor()); 
+    dispatch(resetGroupDetail());
+    dispatch(resetMainMentor());
     dispatch(resetSubMentor());
     dispatch(resetTopicDetail());
-  
+
     // ✅ Đợi reset xong rồi mới gọi API mới
     setTimeout(() => {
       if (topicId && semesterId) {
         dispatch(fetchTopicDetail({ topicId, semesterId }));
-  
+
         if (topicDetails?.mainSupervisor) {
           dispatch(fetchUserById({ userId: topicDetails.mainSupervisor, semesterId }));
         }
-  
+
         if (topicDetails?.subSupervisor) {
           dispatch(fetchSubUserById({ userId: topicDetails.subSupervisor, semesterId }));
         }
       }
     }, 50); // Chờ 50ms để đảm bảo Redux đã reset xong trước khi fetch dữ liệu mới
-  
+
   }, [dispatch, topicId, semesterId]);
 
   // useEffect(() => {
@@ -53,6 +72,8 @@ export default function TopicDetail() {
   //     dispatch(fetchUserById({ userId: topicDetails.createdBy, semesterId: topicDetails.semesterId }));
   //   }
   // }, [dispatch, topicDetails?.createdBy, topicDetails?.semesterId]);
+
+
 
   useEffect(() => {
     if (topicDetails?.mainSupervisor && topicDetails?.semesterId) {
@@ -65,6 +86,16 @@ export default function TopicDetail() {
       dispatch(fetchSubUserById({ userId: topicDetails.subSupervisor, semesterId: topicDetails.semesterId }));
     }
   }, [dispatch, topicDetails?.subSupervisor, topicDetails?.semesterId]);
+
+  useEffect(() => {
+    if (topicDetails?.createdBy) {
+      dispatch(fetchUserDetail(topicDetails.createdBy)).then((result) => {
+        if (result.meta.requestStatus === "fulfilled" && result.payload) {
+          setCreatedByUsername((result.payload as { username: string }).username);
+        }
+      });
+    }
+  }, [dispatch, topicDetails?.createdBy]);
 
   if (loading)
     return <p className="text-center text-gray-500">Đang tải dữ liệu...</p>;
@@ -132,12 +163,12 @@ export default function TopicDetail() {
                 ({topicDetails.nameEn || "Chưa có tên tiếng Anh"})
               </h3>
               <p className="text-sm text-gray-500 italic">
-  Created at:{" "}
-  {topicDetails.createdAt
-    ? new Date(topicDetails.createdAt).toLocaleDateString()
-    : "Không xác định"}{" "}
-  <span className="font-bold">by {topicDetails.creator?.fullName || "không có tác giả"}</span>
-</p>
+                Created at:{" "}
+                {topicDetails.createdAt
+                  ? new Date(topicDetails.createdAt).toLocaleDateString()
+                  : "Không xác định"}{" "}
+                <span className="font-bold">by {createdByUsername || topicDetails.creator?.fullName || "không có tác giả"}</span>
+              </p>
 
             </div>
           </div>
@@ -166,11 +197,16 @@ export default function TopicDetail() {
               </div>
               <div>
                 <p className="text-sm text-gray-500 mb-1">Trạng thái</p>
-                <Badge>
-                  {topicDetails.status || "Chưa cập nhật trạng thái"}
+                <Badge
+                  className={`${statusClasses[topicDetails.status as "APPROVED" | "REJECTED" | "PENDING" | "IMPROVED"] ||
+                    "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    } px-2 py-1 rounded-md text-xs`}
+                >
+                  {statusTranslations[topicDetails.status as "APPROVED" | "REJECTED" | "PENDING" | "IMPROVED"] ||
+                    topicDetails.status || "Chưa cập nhật trạng thái"}
                 </Badge>
               </div>
-              
+
               <div>
                 <p className="text-sm text-gray-500 mb-1">Giáo viên hướng dẫn 1</p>
                 <p className="font-semibold italic">
@@ -217,12 +253,12 @@ export default function TopicDetail() {
               </div>
             </div>
 
-             <div>
+            <div>
               <p className="text-sm text-gray-500 mb-1">Description</p>
               <p className="italic text-gray-800">
                 {topicDetails.description || "Chưa có mô tả"}
               </p>
-            </div> 
+            </div>
           </CardContent>
 
 
@@ -240,3 +276,5 @@ export default function TopicDetail() {
     </div>
   );
 }
+
+
