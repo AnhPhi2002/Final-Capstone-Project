@@ -67,7 +67,7 @@ export const CouncilDefenseMentorDetail = () => {
           <Header
             title="Chi tiết hội đồng bảo vệ"
             href="/lecturer/check-defense"
-            currentPage="Quản lý hội đồng"
+            currentPage="Hội đồng bảo vệ"
           />
           <div className="p-6 flex-1 overflow-auto">
             <DataTable table={table} />

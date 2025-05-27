@@ -4,7 +4,7 @@ import { SelectSemester } from "./select-semester/select-semester";
 export const MentorCheckReviewPage = () => {
   return (
     <div className="flex flex-col h-screen">
-      <Header title="Tổng quan" href="/" currentPage="Danh sách hội chấm KLTN " />
+      <Header title="Tổng quan" href="/" currentPage="Hội đồng kiểm tra nhóm" />
 
       <div className="p-5 flex-1 overflow-auto">
         <div className="flex flex-col items-end gap-4">

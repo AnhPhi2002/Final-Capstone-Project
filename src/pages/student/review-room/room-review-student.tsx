@@ -1,4 +1,3 @@
-// src/components/room-review-student.tsx
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
@@ -9,11 +8,10 @@ import {
   getPaginationRowModel,
   getFilteredRowModel,
 } from "@tanstack/react-table";
-import { columns } from "./columns"; // Import columns từ file columns.tsx
-import { DataTable } from "./data-table"; // Import DataTable từ file data-table.tsx
+import { columns } from "./columns";
+import { DataTable } from "./data-table";
 import Header from "@/components/header";
 
-// Định nghĩa type cho dữ liệu
 export interface ReviewSchedule {
   schedule: {
     id: string;
@@ -24,20 +22,43 @@ export interface ReviewSchedule {
     room: string;
     reviewRound: number;
     status: string;
-    council: string;
-    group: string;
-    topic: string;
+    council: {
+      code: string;
+      name: string;
+    };
+    group: {
+      groupCode: string;
+      semesterId: string;
+      topicAssignments: {
+        defenseRound: number | null;
+        defendStatus: string | null;
+      }[];
+    };
+    topic: {
+      topicCode: string;
+      name: string;
+    };
   };
-  assignment: {
-    id: string;
-    score: number | null;
-    status: string;
-    feedback: string | null;
-    reviewerId: string | null;
-    assignedAt: string;
-    reviewedAt: string | null;
-  };
+  assignment: ReviewScheduleAssignment | null; // Updated to single object or null
   url: string | null;
+  documents: ReviewScheduleDocument[];
+}
+
+export interface ReviewScheduleDocument {
+  fileName: string;
+  fileUrl: string;
+}
+
+export interface ReviewScheduleAssignment {
+  id: string;
+  score: number | null;
+  feedback: string | null;
+  status: string;
+  reviewRound: number;
+  reviewer: {
+    fullName?: string;
+    email?: string;
+  };
 }
 
 export const RoomReviewStudent: React.FC = () => {
@@ -46,12 +67,10 @@ export const RoomReviewStudent: React.FC = () => {
     (state: RootState) => state.councilReview
   );
 
-  // Fetch dữ liệu khi component mount
   useEffect(() => {
     dispatch(fetchReviewSchedulesForStudent());
   }, [dispatch]);
 
-  // Cấu hình bảng
   const table = useReactTable({
     data: reviewSchedules || [],
     columns,
@@ -63,9 +82,9 @@ export const RoomReviewStudent: React.FC = () => {
   return (
     <div className="flex flex-col h-screen">
       <Header
-        title="Lịch xét duyệt sinh viên"
-        href="/student-dashboard" // Giả định đường dẫn quay lại
-        currentPage="Phòng xét duyệt"
+        title="Lịch kiểm tra nhóm"
+        href=""
+        currentPage="Chi tiết lịch kiểm tra"
       />
       <div className="p-6 flex-1 overflow-auto">
         {loadingSchedules ? (

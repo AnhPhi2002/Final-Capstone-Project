@@ -1,22 +1,46 @@
 // src/components/columns/interMajorDetailColumns.ts
 import { ColumnDef } from "@tanstack/react-table";
+import { Badge } from "@/components/ui/badge";
 
 export type InterMajorDetailRow = {
-  field: string;
-  value: string | JSX.Element;
+  name: string;
+  firstMajor: string;
+  secondMajor: string;
+  semester: string;
+  isActive: boolean;
 };
 
 export const interMajorDetailColumns: ColumnDef<InterMajorDetailRow>[] = [
   {
-    accessorKey: "field",
-    header: "Thông tin",
-    cell: ({ row }) => row.original.field,
-    meta: { className: "font-semibold text-left" },
+    accessorKey: "name",
+    header: "Tên liên ngành",
   },
   {
-    accessorKey: "value",
-    header: "Giá trị",
-    cell: ({ row }) => row.original.value,
-    meta: { className: "text-left" },
+    accessorKey: "firstMajor",
+    header: "Ngành thứ nhất",
+  },
+  {
+    accessorKey: "secondMajor",
+    header: "Ngành thứ hai",
+  },
+  {
+    accessorKey: "semester",
+    header: "Học kỳ",
+  },
+  {
+    accessorKey: "isActive",
+    header: "Trạng thái",
+    cell: ({ row }) => {
+      const isActive = row.getValue("isActive") as boolean;
+      return (
+        <Badge
+          className={
+            isActive ? "bg-green-100 text-green-500" : "bg-red-100 text-red-500"
+          }
+        >
+          {isActive ? "Đang hoạt động" : "Không hoạt động"}
+        </Badge>
+      );
+    },
   },
 ];

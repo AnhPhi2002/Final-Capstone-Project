@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { toast } from "sonner"; // Thêm import toast nếu chưa có
+import { toast } from "sonner";
 
 export function MeetingPage() {
   const { semesterId } = useParams<{ semesterId: string }>();
@@ -41,25 +41,30 @@ export function MeetingPage() {
   useEffect(() => {
     if (semesterId) {
       dispatch(fetchGroupsBySemester(semesterId));
-      dispatch(fetchMeetings(semesterId)).then((result) => {
-        if (fetchMeetings.fulfilled.match(result)) {
-          const meetings = result.payload;
-          meetings.forEach((meeting: any) => {
-            dispatch(fetchGroupDetail({ groupId: meeting.groupId, semesterId })).then(
-              (groupResult) => {
-                if (fetchGroupDetail.fulfilled.match(groupResult)) {
-                  setGroupCodes((prev) => ({
-                    ...prev,
-                    [meeting.groupId]: groupResult.payload.groupCode,
-                  }));
-                }
+      dispatch(fetchMeetings(semesterId));
+    }
+  }, [semesterId, dispatch]);
+
+  // Fetch group details for meetings whenever the meetings array changes
+  useEffect(() => {
+    if (semesterId && meetings.length > 0) {
+      meetings.forEach((meeting: any) => {
+        // Only fetch if groupCode for this groupId hasn't been fetched yet
+        if (!groupCodes[meeting.groupId]) {
+          dispatch(fetchGroupDetail({ groupId: meeting.groupId, semesterId })).then(
+            (groupResult) => {
+              if (fetchGroupDetail.fulfilled.match(groupResult)) {
+                setGroupCodes((prev) => ({
+                  ...prev,
+                  [meeting.groupId]: groupResult.payload.groupCode,
+                }));
               }
-            );
-          });
+            }
+          );
         }
       });
     }
-  }, [semesterId, dispatch]);
+  }, [meetings, semesterId, dispatch, groupCodes]);
 
   const handleOpenCreateModal = () => setIsCreateModalOpen(true);
   const handleCloseCreateModal = () => setIsCreateModalOpen(false);
@@ -77,14 +82,6 @@ export function MeetingPage() {
     setSelectedGroupId(value);
   };
 
-  // const handleJoinMeeting = (url: string | undefined) => {
-  //   if (!url) {
-  //     toast.error("Không có phòng họp online");
-  //     return;
-  //   }
-  //   window.open(url, "_blank", "noopener,noreferrer");
-  // };
-
   const sortedAndFilteredMeetings = [...meetings]
     .sort((a, b) => new Date(a.meetingTime).getTime() - new Date(b.meetingTime).getTime())
     .filter((meeting) => selectedGroupId === "all" || meeting.groupId === selectedGroupId);
@@ -92,9 +89,9 @@ export function MeetingPage() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       <Header
-        title={`Họp Học Kỳ ${semesterId || "Không xác định"}`}
+        title={`Tổng quan`}
         href="/meeting"
-        currentPage="Meetings"
+        currentPage="Lịch họp"
       />
       <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8 flex-1">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">

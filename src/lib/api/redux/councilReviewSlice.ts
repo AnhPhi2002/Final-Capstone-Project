@@ -263,49 +263,50 @@ export const fetchReviewSchedulesForMentor = createAsyncThunk(
 );
 
 export const confirmDefenseRound = createAsyncThunk(
-    "councils/confirmDefenseRound",
-    async (
-      {
+  "councils/confirmDefenseRound",
+  async (
+    {
+      groupCode,
+      defenseRound,
+      mentorDecision,
+      semesterId,
+    }: {
+      groupCode: string;
+      defenseRound: number | null;    // Chú ý: không optional, luôn có giá trị number hoặc null
+      mentorDecision: "PASS" | "NOT_PASS";
+      semesterId: string;
+    },
+    { rejectWithValue }
+  ) => {
+    try {
+      // Gửi đủ cả 3 trường theo yêu cầu
+      const body = {
         groupCode,
-        defenseRound,
+        defenseRound,    // Có thể là number hoặc null
         mentorDecision,
-        semesterId,
-      }: {
-        groupCode: string;
-        defenseRound?: number | null;
-        mentorDecision: "PASS" | "NOT_PASS";
-        semesterId: string;
-      },
-      { rejectWithValue }
-    ) => {
-      try {
-        const body: any = { groupCode, mentorDecision };
-  
-        // ✅ Chỉ truyền defenseRound khi chọn PASS
-        if (mentorDecision === "PASS" && defenseRound != null) {
-          body.defenseRound = defenseRound;
-        }
-  
-        // Khi chọn NOT_PASS thì body KHÔNG có defenseRound
-  
-        const response = await axiosClient.post(
-          `/council-review/defense/confirm-defense-round?semesterId=${semesterId}`,
-          body
-        );
-  
-        console.log("API confirmDefenseRound response:", response.data);
-  
-        return {
-          groupCode,
-          defendStatus: mentorDecision === "PASS" ? "CONFIRMED" : "NOT_PASSED",
-          defenseRound: mentorDecision === "PASS" ? defenseRound : undefined, // ✅ undefined thay vì null
-        };
-      } catch (error: any) {
-        console.error("API confirmDefenseRound error:", error.response?.data || error.message);
-        return rejectWithValue(error.response?.data?.message || "Không thể xác nhận vòng bảo vệ!");
-      }
+      };
+
+      console.log("Payload being sent to API:", body);
+
+      const response = await axiosClient.post(
+        `/council-review/defense/confirm-defense-round?semesterId=${semesterId}`,
+        body
+      );
+
+      console.log("API confirmDefenseRound response:", response.data);
+
+      return {
+        groupCode,
+        defendStatus: mentorDecision === "PASS" ? "CONFIRMED" : "NOT_PASSED",
+        defenseRound,
+      };
+    } catch (error: any) {
+      console.error("API confirmDefenseRound error:", error.response?.data || error.message);
+      return rejectWithValue(error.response?.data?.message || "Không thể xác nhận vòng bảo vệ!");
     }
-  );
+  }
+);
+
   
 const councilReviewSlice = createSlice({
     name: "councils",

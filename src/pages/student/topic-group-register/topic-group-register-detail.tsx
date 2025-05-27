@@ -7,8 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
 import { fetchTopicDetail } from "@/lib/api/redux/topicSlice"; // Sử dụng fetchTopicDetail từ topicSlice
-import { fetchUserById} from "@/lib/api/redux/authSlice";
-import { fetchSubUserById} from "@/lib/api/redux/authSubSlice";
+import { fetchUserById } from "@/lib/api/redux/authSlice";
+import { fetchSubUserById } from "@/lib/api/redux/authSubSlice";
+import Header from "@/components/header";
 
 
 export default function TopicGroupRegisterDetail() {
@@ -47,26 +48,28 @@ export default function TopicGroupRegisterDetail() {
   };
 
   return (
-    <div className="mt-6 bg-white">
-      <Card className="p-6 mx-6 shadow-md">
-        <div className="flex items-center mt-4 gap-3">
-          <Avatar className="w-10 h-10">
-            <AvatarImage src="https://github.com/shadcn.png" alt="Topic Avatar" />
-            <AvatarFallback>T</AvatarFallback>
-          </Avatar>
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900">
-              {topicDetails.nameEn || "Chưa có tên tiếng Anh"}
-            </h3>
-            <p className="text-sm text-gray-500 italic">
-              Created at:{" "}
-              {topicDetails.createdAt
-                ? new Date(topicDetails.createdAt).toLocaleDateString()
-                : "Không xác định"}
-            </p>
+    <div className="flex flex-col h-screen">
+      <Header title="Chi tiết" href="/" currentPage="Chi tiết đề tài" />
+      <div className="mt-6 bg-white">
+        <Card className="p-6 mx-6 shadow-md">
+          <div className="flex items-center mt-4 gap-3">
+            <Avatar className="w-10 h-10">
+              <AvatarImage src="https://github.com/shadcn.png" alt="Topic Avatar" />
+              <AvatarFallback>T</AvatarFallback>
+            </Avatar>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">
+                {topicDetails.nameEn || "Chưa có tên tiếng Anh"}
+              </h3>
+              <p className="text-sm text-gray-500 italic">
+                Created at:{" "}
+                {topicDetails.createdAt
+                  ? new Date(topicDetails.createdAt).toLocaleDateString()
+                  : "Không xác định"}
+              </p>
+            </div>
           </div>
-        </div>
-        <CardContent className="p-4 space-y-4">
+          <CardContent className="p-4 space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-sm text-gray-500 mb-1">Tên viết tắt</p>
@@ -94,25 +97,25 @@ export default function TopicGroupRegisterDetail() {
                   {topicDetails.status || "Chưa cập nhật trạng thái"}
                 </Badge>
               </div>
-              
+
               <div>
-                <p className="text-sm text-gray-500 mb-1">Mentor 1</p>
+                <p className="text-sm text-gray-500 mb-1">Giảng viên hướng dẫn 1</p>
                 <p className="font-semibold italic">
                   {mainMentor?.email ? (
                     <span className="text-blue-600">{mainMentor.email}</span>
                   ) : (
-                    <span className="text-red-500">Chưa có mentor 1</span>
+                    <span className="text-red-500">Chưa có giảng viên hướng dẫn 1</span>
                   )}
                 </p>
               </div>
               {/* 🔹 Thêm phần hiển thị Mentor phụ */}
               <div>
-                <p className="text-sm text-gray-500 mb-1">Mentor 2</p>
+                <p className="text-sm text-gray-500 mb-1">Giảng viên hướng dẫn 2</p>
                 <p className="font-semibold italic">
                   {subMentor?.email ? (
                     <span className="text-blue-600">{subMentor.email}</span>
                   ) : (
-                    <span className="text-red-500">Chưa có mentor 2</span>
+                    <span className="text-red-500">Chưa có gairng viên hướng dẫn 2</span>
                   )}
                 </p>
               </div>
@@ -143,12 +146,13 @@ export default function TopicGroupRegisterDetail() {
             </div>
           </CardContent>
 
-        <div className="flex justify-end gap-4 mt-6">
-          <Button variant="outline" onClick={() => navigate(-1)}>
-            Quay lại
-          </Button>
-        </div>
-      </Card>
+          <div className="flex justify-end gap-4 mt-6">
+            <Button variant="outline" onClick={() => navigate(-1)}>
+              Quay lại
+            </Button>
+          </div>
+        </Card>
+      </div>
     </div>
   );
 }

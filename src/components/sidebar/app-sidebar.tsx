@@ -332,18 +332,18 @@ const lecturerMenu = {
         },
       ],
     },
-    {
-      title: "Qlý. phân công đề tài",
-      url: "/lecturer/topic-assignment-decision",
-      icon: List,
-      isActive: true,
-      items: [
-        {
-          title: "Ds. quyết định",
-          url: "/lecturer/topic-assignment-decision",
-        },
-      ],
-    },
+    // {
+    //   title: "Qlý. phân công đề tài",
+    //   url: "/lecturer/topic-assignment-decision",
+    //   icon: List,
+    //   isActive: true,
+    //   items: [
+    //     {
+    //       title: "Ds. quyết định",
+    //       url: "/lecturer/topic-assignment-decision",
+    //     },
+    //   ],
+    // },
     {
       title: "Bảng quyết định",
       url: "/lecturer/decision",

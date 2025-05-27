@@ -8,7 +8,7 @@ export const GroupStudentDefenseWithStudentPage = () => {
       <Header
         title="Tổng quan"
         href="/"
-        currentPage="Danh sách nhóm sinh vien"
+        currentPage="Thông tin bảo vệ nhóm sinh viên"
       />
       <div className="p-5 flex-1 overflow-auto">
         {/* <SelectSemester /> */}

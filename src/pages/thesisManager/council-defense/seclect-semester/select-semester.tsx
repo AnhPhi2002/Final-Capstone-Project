@@ -117,11 +117,11 @@ export const SelectSemester: React.FC = () => {
           disabled={!selectedSemester}
         >
           <SelectTrigger className="w-[220px]">
-            <SelectValue placeholder="Chọn vòng kiểm tra đồ án" />
+            <SelectValue placeholder="Chọn vòng bảo vệ đồ án" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectLabel>Vòng kiểm tra đồ án</SelectLabel>
+              <SelectLabel>Vòng bảo vệ đồ án</SelectLabel>
               {loadingRounds ? (
                 <SelectItem value="loading" disabled>Đang tải...</SelectItem>
               ) : availableRounds.length > 0 ? (
@@ -131,7 +131,7 @@ export const SelectSemester: React.FC = () => {
                   </SelectItem>
                 ))
               ) : (
-                <SelectItem value="none" disabled>Không có vòng kiểm tra đồ án</SelectItem>
+                <SelectItem value="none" disabled>Không có vòng bảo vệ đồ án</SelectItem>
               )}
             </SelectGroup>
           </SelectContent>

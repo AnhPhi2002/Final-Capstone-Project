@@ -144,22 +144,22 @@ export default function TopicDetail() {
                 <Badge>{topicDetails.status || "Chưa cập nhật trạng thái"}</Badge>
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">Mentor 1</p>
+                <p className="text-sm text-gray-500 mb-1">Giáo viên hướng dẫn 1</p>
                 <p className="font-semibold italic">
                   {mainMentor?.email ? (
                     <span className="text-blue-600">{mainMentor.email}</span>
                   ) : (
-                    <span className="text-red-500">Chưa có mentor 1</span>
+                    <span className="text-red-500">Chưa có giáo viên hướng dẫn 1</span>
                   )}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">Mentor 2</p>
+                <p className="text-sm text-gray-500 mb-1">Giáo viên hướng dẫn 2</p>
                 <p className="font-semibold italic">
                   {subMentor?.email ? (
                     <span className="text-blue-600">{subMentor.email}</span>
                   ) : (
-                    <span className="text-red-500">Chưa có mentor 2</span>
+                    <span className="text-red-500">Chưa có giáo viên hướng dẫn 2</span>
                   )}
                 </p>
               </div>

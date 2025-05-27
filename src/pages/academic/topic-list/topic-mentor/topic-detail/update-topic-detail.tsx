@@ -136,15 +136,14 @@ export default function UpdateTopicDetail() {
                 />
               </div>
 
-              {/* 🔹 Select Mentor 1 (Hiển thị sẵn nếu có) */}
               <div>
-                <p className="text-sm text-gray-500 mb-1">Mentor 1</p>
+                <p className="text-sm text-gray-500 mb-1">Giáo viên hướng dẫn 1</p>
                 <Select
                   value={formData.mainMentorEmail || ""}
                   onValueChange={(email) => setFormData({ ...formData, mainMentorEmail: email })}
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Chọn mentor chính" />
+                    <SelectValue placeholder="Chọn giáo viên hướng dẫn 1" />
                   </SelectTrigger>
                   <SelectContent>
                     {mentors.length > 0 ? (
@@ -155,7 +154,7 @@ export default function UpdateTopicDetail() {
                       ))
                     ) : (
                       <SelectItem value="" disabled>
-                        Không có mentor khả dụng
+                        Không có giáo viên khả dụng
                       </SelectItem>
                     )}
                   </SelectContent>
@@ -164,13 +163,13 @@ export default function UpdateTopicDetail() {
 
               {/* 🔹 Select Mentor 2 (Hiển thị sẵn nếu có) */}
               <div>
-                <p className="text-sm text-gray-500 mb-1">Mentor 2</p>
+                <p className="text-sm text-gray-500 mb-1">Giáo viên hướng dẫn 2</p>
                 <Select
                   value={formData.subMentorEmail || ""}
                   onValueChange={(email) => setFormData({ ...formData, subMentorEmail: email })}
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Chọn mentor phụ" />
+                    <SelectValue placeholder="Chọn gairng viên hướng dẫn phụ" />
                   </SelectTrigger>
                   <SelectContent>
                     {mentors.length > 0 ? (
@@ -181,7 +180,7 @@ export default function UpdateTopicDetail() {
                       ))
                     ) : (
                       <SelectItem value="" disabled>
-                        Không có mentor khả dụng
+                        Không có gainrg viên khả dụng
                       </SelectItem>
                     )}
                   </SelectContent>

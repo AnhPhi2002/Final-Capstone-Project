@@ -43,7 +43,7 @@ export const MentorCheckDefense: React.FC = () => {
   return (
     <div className="flex flex-col h-screen">
       <Header
-        title="Lịch bảo vệ giảng viên"
+        title="Lịch bảo vệ nhóm"
         href="/lecturer-dashboard"
         currentPage="Phòng bảo vệ"
       />

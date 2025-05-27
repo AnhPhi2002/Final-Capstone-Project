@@ -1,6 +1,7 @@
 import { ColumnDef, CellContext } from "@tanstack/react-table";
 import { ReviewSchedule } from "@/lib/api/types";
 import { Action } from "./action";
+import { Badge } from "@/components/ui/badge";
 
 type ExtendedCellContext<TData, TValue> = CellContext<TData, TValue> & {
   refetchData?: () => void;
@@ -33,10 +34,10 @@ export const columns: ColumnDef<ReviewSchedule>[] = [
     cell: ({ row }) => {
       const status = row.original.schedule.group.topicAssignments[0]?.defendStatus;
       return status === "CONFIRMED"
-        ? <span className="text-green-600">Cho phép bảo vệ</span>
+        ? <Badge className="bg-green-100 text-green-600">Cho phép bảo vệ</Badge>
         : status === "UN_CONFIRMED"
-          ? <span className="text-red-600">Không cho phép bảo vệ</span>
-          : <span className="text-gray-500">Không xác định</span>;
+          ? <Badge className="bg-red-100 text-red-600">Không cho phép bảo vệ</Badge>
+          : <Badge className="bg-gray-100 text-gray-600">Không xác định</Badge>;
     },
   },
   {

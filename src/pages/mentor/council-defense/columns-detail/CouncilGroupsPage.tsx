@@ -41,9 +41,9 @@ export const CouncilDefenseGroupsPage: React.FC = () => {
   return (
     <div className="flex flex-col h-screen">
       <Header
-        title="Thông tin nhóm bảo vệ"
+        title="Tổng quan"
         href="/lecturer/check-defense"
-        currentPage="Quản lý hội đồng"
+        currentPage="Thông tin nhóm bảo vệ"
       />
       <div className="p-6 flex-1 overflow-auto">
         {loadingDetail ? (

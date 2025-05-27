@@ -71,9 +71,9 @@ export const MentorCheckReview: React.FC = () => {
   return (
     <div className="flex flex-col h-screen">
       <Header
-        title="Lịch xét duyệt giảng viên"
+        title="Lịch kiểm tra nhóm"
         href="/lecturer-dashboard"
-        currentPage="Phòng xét duyệt"
+        currentPage="Phòng kiểm tra"
       />
       <div className="p-6 flex-1 overflow-auto">
         {loadingSchedulesMentor ? (

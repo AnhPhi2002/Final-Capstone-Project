@@ -1,4 +1,3 @@
-// src/components/ReportAction.tsx
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -76,10 +75,9 @@ export const ReportAction = ({ schedule }: ReportActionProps) => {
     document.body.removeChild(link);
   };
 
-  // Hàm trích xuất tên file từ URL
   const getFileNameFromUrl = (url: string) => {
     const parts = url.split("/");
-    return parts[parts.length - 1]; // Lấy phần cuối của URL (tên file)
+    return parts[parts.length - 1];
   };
 
   const UploadModalContent = () => (
@@ -136,7 +134,7 @@ export const ReportAction = ({ schedule }: ReportActionProps) => {
   const ResultModalContent = () => {
     if (!schedule) return null;
 
-    const assignment = schedule.assignments?.[0];
+    const assignment = schedule.assignment;
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
@@ -157,15 +155,6 @@ export const ReportAction = ({ schedule }: ReportActionProps) => {
               <div className="mb-2">
                 <p className="font-semibold">Đánh giá:</p>
                 <p>{assignment.feedback || "Chưa đánh giá"}</p>
-              </div>
-
-              <div className="mb-2">
-                <p className="font-semibold">Người đánh giá:</p>
-                <p>
-                  {assignment.reviewer?.fullName
-                    ? assignment.reviewer.fullName
-                    : "Chưa có người đánh giá"}
-                </p>
               </div>
             </>
           ) : (
@@ -188,7 +177,7 @@ export const ReportAction = ({ schedule }: ReportActionProps) => {
                       );
                     }
                   }}
-                  disabled={!schedule.url} // Vô hiệu hóa nút nếu không có URL
+                  disabled={!schedule.url}
                 >
                   Tải tài liệu
                 </Button>
