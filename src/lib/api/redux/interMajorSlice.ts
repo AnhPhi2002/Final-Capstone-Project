@@ -49,9 +49,11 @@ export const fetchInterMajorConfigs = createAsyncThunk(
 
 export const fetchInterMajorConfigsForStudent = createAsyncThunk(
   "interMajor/fetchInterMajorConfigsForStudent",
-  async (_, { rejectWithValue }) => {
+  async ({ semesterId }: { semesterId: string }, { rejectWithValue }) => {
     try {
-      const response = await axiosClient.get("/inter-major-configs");
+      const response = await axiosClient.get("/inter-major-configs", {
+        params: semesterId,
+      });
       return response.data.data || [];
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Failed to fetch inter-major configs");
