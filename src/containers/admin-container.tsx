@@ -11,6 +11,7 @@ import CreateUserPage from "@/pages/admin/user/create-user-page";
 import UpdateUserPage from "@/pages/admin/user/update-user-page";
 import UserDetail from "@/pages/admin/user/user-detail-page";
 import UsersListingPage from "@/pages/admin/user/user-listing/users-page";
+import UserManagePage from "@/pages/admin/user/UserManagePage";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Route, Routes, useNavigate } from "react-router";
@@ -43,10 +44,14 @@ export const AdminContainer = () => {
         <Route path="/profile-page/update" element={<ProfileUpdateForm />} />
         <Route path="/admin-config" element={<AdminConfigPage />} />
         <Route path="/admin-config/update" element={<AdminConfigUpdate />} />
-        <Route path="/user" element={<UsersListingPage />} />
-        <Route path="/user/:id" element={<UserDetail />} />
-        <Route path="/user/create-user" element={<CreateUserPage />} />
-        <Route path="/user/update-user/:id/edit" element={<UpdateUserPage />} />
+
+        <Route path="/user-page" element={<UserManagePage />} />
+
+        {/* User Management Routes */}
+        <Route path="/user/:semesterId" element={<UsersListingPage />} />
+        <Route path="/user/user-detail/:userId" element={<UserDetail />} />
+        <Route path="/user/:semesterId/create-user" element={<CreateUserPage />} />
+        <Route path="/user/:semesterId/update-user/:userId/edit" element={<UpdateUserPage />} />
 
         <Route path="/dashboard-page" element={<DashboardPage />} />
         {/* <Route path="/dashboard-detail/:semesterId" element={<DashboardDetailPage />} /> */}

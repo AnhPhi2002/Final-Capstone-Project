@@ -46,13 +46,15 @@ const initialState: DecisionListTopicState = {
 
 // Lấy danh sách quyết định
 export const fetchDecisionListTopic = createAsyncThunk(
-  "decisionListTopic/fetchDecisionListTopic",
-  async (_, { rejectWithValue }) => {
+  'decisionListTopic/fetchDecisionListTopic',
+  async (semesterId: string, { rejectWithValue }) => {
     try {
-      const response = await axiosClient.get("/thesis-assignments");
+      const response = await axiosClient.get(`/admin/decisions`, {
+        params: { semesterId },
+      });
       return response.data.data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Lỗi lấy danh sách quyết định");
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch decisions');
     }
   }
 );

@@ -9,9 +9,11 @@ import ActionCell from "./ActionCell";
 interface UserColumnsProps {
   currentPage: number;
   itemsPerPage: number;
+  semesterId: string;
 }
 
-export function columns({ currentPage, itemsPerPage }: UserColumnsProps): ColumnDef<User>[] {
+export function columns({ currentPage, itemsPerPage, semesterId }: UserColumnsProps): ColumnDef<User>[] {
+  
   return [
     {
       id: "stt-id",
@@ -19,11 +21,11 @@ export function columns({ currentPage, itemsPerPage }: UserColumnsProps): Column
       header: "STT",
       cell: ({ row }) => {
         const index = row.index + 1 + (currentPage - 1) * itemsPerPage;
-        const id = row.getValue("id") as string;
+        // const id = row.getValue("id") as string;
         return (
           <div className="flex flex-col">
             <span className="font-medium">{index}</span>
-            <span className="text-xs text-muted-foreground break-all">{id}</span>
+            {/* <span className="text-xs text-muted-foreground break-all">{id}</span> */}
           </div>
         );
       },
@@ -120,7 +122,7 @@ export function columns({ currentPage, itemsPerPage }: UserColumnsProps): Column
     },
     {
       id: "actions",
-      cell: ({ row }) => <ActionCell userId={row.original.id} />,
+      cell: ({ row }) => <ActionCell userId={row.original.id} semesterId={semesterId}/>,
     },
   ];
 }

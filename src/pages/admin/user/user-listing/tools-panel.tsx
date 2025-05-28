@@ -12,49 +12,59 @@ import {
 } from "@/components/ui/select";
 import { Link } from "react-router";
 import { filterUsers } from "@/lib/api/redux/userSlice";
+// import { toast } from "sonner";
 
 interface ToolsPanelProps {
   itemsPerPage: number;
   onItemsPerPageChange: (n: number) => void;
   onSearchChange: (text: string) => void;
   onFilterChange: (role: string) => void;
+  semesterId: string;
 }
 
 const ToolsPanel: React.FC<ToolsPanelProps> = ({
-  // itemsPerPage,
-  // onItemsPerPageChange,
+  itemsPerPage,
+  onItemsPerPageChange,
   onSearchChange,
   onFilterChange,
+  semesterId,
 }) => {
   const dispatch = useDispatch();
   const [search, setSearch] = useState("");
   const [role, setRole] = useState("*");
 
-  // Khi search input thay đổi
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setSearch(val);
     onSearchChange(val);
   };
 
-  // Khi chọn lọc role
   const handleRoleChange = (value: string) => {
     setRole(value);
     onFilterChange(value);
   };
 
-  // Khi chọn số dòng trên trang
-  // const handleItemsPerPageChange = (value: string) => {
-  //   const n = Number(value);
-  //   if (!isNaN(n)) {
-  //     onItemsPerPageChange(n);
-  //   }
-  // };
+  const handleItemsPerPageChange = (value: string) => {
+    const n = Number(value);
+    if (!isNaN(n)) {
+      onItemsPerPageChange(n);
+    }
+  };
 
-  // Nút tìm kiếm thực tế để gọi filter
   const handleSearchClick = () => {
     dispatch(filterUsers({ search, role }));
   };
+
+  // const handleDeleteAll = async () => {
+  //   if (window.confirm("Bạn có chắc muốn xóa toàn bộ tài khoản người dùng trong học kỳ này?")) {
+  //     const result = await dispatch(deleteAll({ semesterId }) as any);
+  //     if (deleteAll.fulfilled.match(result)) {
+  //       toast.success(result.payload.message || "Xóa toàn bộ tài khoản thành công");
+  //     } else {
+  //       toast.error(result.payload || "Xóa toàn bộ tài khoản thất bại");
+  //     }
+  //   }
+  // };
 
   return (
     <div className="grid grid-cols-12 pb-5 gap-5">
@@ -75,10 +85,7 @@ const ToolsPanel: React.FC<ToolsPanelProps> = ({
       </div>
 
       <div className="col-span-3">
-        {/* <Select
-          onValueChange={handleItemsPerPageChange}
-          value={itemsPerPage.toString()}
-        >
+        <Select onValueChange={handleItemsPerPageChange} value={itemsPerPage.toString()}>
           <SelectTrigger className="w-32">
             <SelectValue placeholder="Dòng / trang" />
           </SelectTrigger>
@@ -88,12 +95,23 @@ const ToolsPanel: React.FC<ToolsPanelProps> = ({
             <SelectItem value="50">50 dòng</SelectItem>
             <SelectItem value="100">100 dòng</SelectItem>
           </SelectContent>
-        </Select> */}
+        </Select>
       </div>
 
-      <div className="col-span-3">
+      {/* <div className="col-span-1">
+        <Button
+          variant="destructive"
+          className="w-full flex gap-3 items-center"
+          onClick={handleDeleteAll}
+        >
+          <Trash2 />
+          Xóa toàn bộ
+        </Button>
+      </div> */}
+
+      <div className="col-span-2">
         <Select value={role} onValueChange={handleRoleChange}>
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="w-[50%]">
             <SelectValue placeholder="Vai trò" />
           </SelectTrigger>
           <SelectContent>
@@ -106,7 +124,7 @@ const ToolsPanel: React.FC<ToolsPanelProps> = ({
       </div>
 
       <div className="col-span-2 flex">
-        <Link to={"/admin/user/create-user"} className="w-full">
+        <Link to={`/admin/user/${semesterId}/create-user`} className="w-full">
           <Button className="w-full flex gap-3 items-center">
             <Plus />
             Tạo mới

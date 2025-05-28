@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router";
 import { fetchUserDetail, updateUser, updateUserRoles } from "@/lib/api/redux/userSlice";
@@ -15,7 +15,7 @@ import Header from "@/components/header";
 import { toast } from "sonner";
 
 const UpdateUserPage = () => {
-  const { id } = useParams<{ id: string }>();
+  const {semesterId, userId } = useParams<{  semesterId: string, userId: string; }>();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { userDetail, loading, error } = useSelector((state: any) => state.users);
@@ -28,10 +28,10 @@ const UpdateUserPage = () => {
   });
 
   useEffect(() => {
-    if (id) {
-      dispatch(fetchUserDetail(id) as any);
+    if (userId) {
+      dispatch(fetchUserDetail(userId ) as any); 
     }
-  }, [dispatch, id]);
+  }, [dispatch, userId]);
 
   useEffect(() => {
     if (userDetail) {
@@ -43,6 +43,12 @@ const UpdateUserPage = () => {
       });
     }
   }, [userDetail]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -60,14 +66,19 @@ const UpdateUserPage = () => {
       return;
     }
 
-    if (!id) {
+    if (!userId) {
       toast.error("Không tìm thấy ID người dùng");
       return;
     }
 
-    // Cập nhật thông tin user
+    if (["student", "lecturer"].includes(formData.role) && !semesterId) {
+      toast.error("Thiếu semesterId cho vai trò student hoặc lecturer");
+      return;
+    }
+
+    // Update user info
     const updateUserPayload = {
-      userId: id,
+      userId,
       email: formData.email,
       username: formData.username,
       fullName: formData.fullName,
@@ -79,38 +90,37 @@ const UpdateUserPage = () => {
       return;
     }
 
-    // Cập nhật vai trò
+    // Update roles
     const updateRolesPayload = {
-      userId: id,
+      userId,
       roles: [formData.role],
+      ...(["student", "lecturer"].includes(formData.role) && { semesterId }),
     };
 
     const updateRolesResult = await dispatch(updateUserRoles(updateRolesPayload) as any);
     if (updateUserRoles.fulfilled.match(updateRolesResult)) {
       toast.success("Cập nhật tài khoản thành công");
-      navigate("/admin/user");
+      navigate(`/admin/user/${semesterId}`);
     } else {
       toast.error(updateRolesResult.payload || "Cập nhật vai trò thất bại");
     }
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-  if (!userDetail) return <div>No user data</div>;
+  if (loading) return <div className="text-center text-gray-500">Đang tải...</div>;
+  if (!userDetail) return <div className="text-center text-red-500">Không có dữ liệu người dùng</div>;
 
   return (
     <div className="flex flex-col h-screen">
       <Header title="Tổng quan" href="/" currentPage="Cập nhật tài khoản" />
       <div className="p-5 flex-1 overflow-auto">
-        <div >
+        <div>
           <div className="flex justify-between items-center mb-6">
-          
-            <Button onClick={() => navigate("/admin/user")} >
+            <Button onClick={() => navigate(`/admin/user/${semesterId}`)}>
               Quay lại
             </Button>
           </div>
           <div className="bg-white shadow rounded-lg p-6">
-              <h2 className="text-2xl font-bold pb-6">Cập nhật tài khoản</h2>
+            <h2 className="text-2xl font-bold pb-6">Cập nhật tài khoản</h2>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-2 gap-6">
                 <div>

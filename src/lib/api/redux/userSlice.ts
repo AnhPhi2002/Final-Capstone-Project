@@ -30,10 +30,19 @@ interface UpdateUserRolesPayload {
   roles: string[];
 }
 
-export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
-  const response = await axiosClient.get("/admin/users");
-  return response.data.users as User[];
-});
+export const fetchUsers = createAsyncThunk(
+  'users/fetchUsers',
+  async ({ semesterId }: { semesterId: string }, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.get(`/admin/users`, {
+        params: { semesterId },
+      });
+      return response.data.users as User[];
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch users');
+    }
+  }
+);
 
 export const fetchUserDetail = createAsyncThunk("users/fetchUserDetail", async (userId: string) => {
   const response = await axiosClient.get(`/admin/users/${userId}`);
@@ -68,14 +77,29 @@ export const updateUserRoles = createAsyncThunk("users/updateUserRoles", async (
   }
 });
 
-export const deleteUser = createAsyncThunk("users/deleteUser", async (userId: string, { rejectWithValue }) => {
-  try {
-    await axiosClient.put(`/admin/users/${userId}/delete`, {});
-    return userId;
-  } catch (error: any) {
-    return rejectWithValue(error.response?.data?.message || "Failed to delete user");
+export const deleteUser = createAsyncThunk(
+  'users/deleteUser',
+  async ({ userId, semesterId }: { userId: string; semesterId: string }, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.put(`/admin/users/${userId}/delete`, { semesterId });
+      return response.data; // Return full response
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to delete user');
+    }
   }
-});
+);
+
+export const deleteAll = createAsyncThunk(
+  'users/deleteAll',
+  async ({ semesterId }: { semesterId: string }, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.put(`/admin/delete-all`, { semesterId });
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to delete user');
+    }
+  }
+);
 
 const userSlice = createSlice({
   name: "users",
@@ -200,9 +224,26 @@ const userSlice = createSlice({
           state.userDetail = null;
         }
       })
-      .addCase(deleteUser.rejected, (state, action) => {
+      .addCase(deleteUser.rejected, (state) => {
         state.loading = false;
-        state.error = action.payload as string;
+        // state.error = action.payload as string;
+      })
+      .addCase(deleteAll.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteAll.fulfilled, (state, action) => {
+        state.loading = false;
+        const userId = action.payload;
+        state.users = state.users.filter((user) => user.id !== userId);
+        state.filteredUsers = state.filteredUsers.filter((user) => user.id !== userId);
+        if (state.userDetail && state.userDetail.id === userId) {
+          state.userDetail = null;
+        }
+      })
+      .addCase(deleteAll.rejected, (state) => {
+        state.loading = false;
+        // state.error = action.payload as string;
       });
   },
 });

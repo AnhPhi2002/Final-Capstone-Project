@@ -230,7 +230,7 @@ const adminMenu = {
       items: [
         {
           title: "Tài khoản",
-          url: "/admin/user",
+          url: "/admin/user-page",
         },
       ],
     },

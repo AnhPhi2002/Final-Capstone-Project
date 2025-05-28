@@ -17,16 +17,17 @@ import { Link } from "react-router";
 
 interface ActionCellProps {
   userId: string;
+  semesterId: string;
 }
 
-const ActionCell: React.FC<ActionCellProps> = ({ userId }) => {
+const ActionCell: React.FC<ActionCellProps> = ({ userId, semesterId }) => {
   const dispatch = useDispatch();
 
   const handleDelete = async () => {
     if (window.confirm("Bạn có chắc muốn xóa tài khoản này?")) {
-      const result = await dispatch(deleteUser(userId) as any);
+      const result = await dispatch(deleteUser({ userId, semesterId }) as any);
       if (deleteUser.fulfilled.match(result)) {
-        toast.success("Xóa tài khoản thành công");
+        toast.success(result.payload.message || "Xóa tài khoản thành công");
       } else {
         toast.error(result.payload || "Xóa tài khoản thất bại");
       }
@@ -53,10 +54,10 @@ const ActionCell: React.FC<ActionCellProps> = ({ userId }) => {
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <Link to={`/admin/user/${userId}`}>Xem chi tiết tài khoản</Link>
+          <Link to={`/admin/user/user-detail/${userId}`}>Xem chi tiết tài khoản</Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Link to={`/admin/user/update-user/${userId}/edit`}>Cập nhật thông tin</Link>
+          <Link to={`/admin/user/${semesterId}/update-user/${userId}/edit`}>Cập nhật thông tin</Link>
         </DropdownMenuItem>
         {/* <DropdownMenuSub>
           <DropdownMenuSubTrigger>Thay đổi trạng thái</DropdownMenuSubTrigger>
