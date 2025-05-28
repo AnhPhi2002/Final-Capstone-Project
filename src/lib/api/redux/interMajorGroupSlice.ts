@@ -24,14 +24,16 @@ export const createInterMajorGroup = createAsyncThunk(
   async (
     {
       majorPairConfigId,
+      semesterId,
     }: {
       majorPairConfigId: string;
+      semesterId: string;
     },
     { rejectWithValue }
   ) => {
     try {
       const response = await axiosClient.post("/inter-major-groups", {
-        majorPairConfigId,
+        majorPairConfigId, semesterId
       });
       return response.data.data as InterMajorGroup;
     } catch (error: any) {
