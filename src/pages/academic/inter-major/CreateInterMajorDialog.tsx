@@ -90,7 +90,7 @@ export const CreateInterMajorDialog: React.FC<Props> = ({ semesterId }) => {
         <Button>Tạo liên kết liên ngành</Button>
       </DialogTrigger>
       <DialogContent className="max-w-md">
-        <DialogHeader>
+        <DialogHeader className="mb-4">
           <DialogTitle>Tạo liên kết liên ngành</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">

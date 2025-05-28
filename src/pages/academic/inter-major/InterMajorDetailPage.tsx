@@ -46,9 +46,10 @@ export const InterMajorDetailPage: React.FC = () => {
         currentPage="Danh sách liên ngành"
       />
 
-      <div className="px-6 mt-4">
-        <CreateInterMajorDialog semesterId={semesterId!} />
-      </div>
+     <div className="flex justify-end px-6 mt-4">
+  <CreateInterMajorDialog semesterId={semesterId!} />
+</div>
+
 
       <div className="p-6 flex-1 overflow-auto">
         {semesterLoading ? (

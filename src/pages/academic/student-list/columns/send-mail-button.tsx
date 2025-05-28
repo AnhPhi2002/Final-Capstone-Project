@@ -92,7 +92,7 @@ const SendMailButton = ({ semesterId }: SendMailButtonProps) => {
             <div className="flex justify-between items-center mb-4">
               <span className="font-semibold">Chọn mẫu email:</span>
               <Button
-                variant="outline"
+               
                 onClick={() => navigate("/academic/template-detail")}
               >
                 Quản lý Templates
