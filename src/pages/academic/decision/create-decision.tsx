@@ -1,58 +1,99 @@
-'use client';
+"use client";
 
-import { useDispatch, useSelector } from 'react-redux';
-import { Card, CardContent } from '@/components/ui/card';
-import Header from '@/components/header';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
-import { useNavigate, useParams } from 'react-router';
-import { format } from 'date-fns';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
-import { useEffect, useState, useRef } from 'react';
-import { AppDispatch, RootState } from '@/lib/api/redux/store';
-import { createDecision, CreateDecisionPayload } from '@/lib/api/redux/decisionSlice';
-import { fetchMentorsBySemesterId } from '@/lib/api/redux/mentorSlice';
-import { DataTable } from './columns/data-table';
-import { columns } from './columns/columns';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
-import { Toaster, toast } from 'sonner';
-import { z } from 'zod';
-import { fetchUserProfile } from '@/lib/api/redux/authSlice';
-import { uploadDecisionFile, resetUploadDecision, resetSpecificFile } from '@/lib/api/redux/uploadDecisionSlice';
+import { useDispatch, useSelector } from "react-redux";
+import { Card, CardContent } from "@/components/ui/card";
+import Header from "@/components/header";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { useNavigate, useParams } from "react-router";
+import { format } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { useEffect, useState, useRef } from "react";
+import { AppDispatch, RootState } from "@/lib/api/redux/store";
+import {
+  createDecision,
+  CreateDecisionPayload,
+} from "@/lib/api/redux/decisionSlice";
+import { fetchMentorsBySemesterId } from "@/lib/api/redux/mentorSlice";
+import { DataTable } from "./columns/data-table";
+import { columns } from "./columns/columns";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Toaster, toast } from "sonner";
+import { z } from "zod";
+import { fetchUserProfile } from "@/lib/api/redux/authSlice";
+import {
+  uploadDecisionFile,
+  resetUploadDecision,
+  resetSpecificFile,
+} from "@/lib/api/redux/uploadDecisionSlice";
+
+import columnsList from "../decision-list-top/columns/columns";
+import DataTableList from "../decision-list-top/columns/data-table";
+import { fetchGuidanceList } from "@/lib/api/redux/decisionListTopicSlice";
 
 // Định nghĩa schema Zod cho formData
 const decisionSchema = z.object({
-  decisionName: z.string().min(1, { message: 'Mã quyết định không được để trống' }),
-  decisionTitle: z.string().min(1, { message: 'Tiêu đề quyết định không được để trống' }),
+  decisionName: z
+    .string()
+    .min(1, { message: "Mã quyết định không được để trống" }),
+  decisionTitle: z
+    .string()
+    .min(1, { message: "Tiêu đề quyết định không được để trống" }),
   decisionDate: z.date().refine((date) => date >= new Date(), {
-    message: 'Ngày quyết định không được là ngày trong quá khứ',
+    message: "Ngày quyết định không được là ngày trong quá khứ",
   }),
-  type: z.enum(['DRAFT', 'FINAL'], { message: 'Loại quyết định phải là DRAFT hoặc FINAL' }),
-  basedOn: z.array(z.string()).refine((arr) => arr.every((item) => item.trim() !== ''), {
-    message: 'Căn cứ không được để trống',
+  type: z.enum(["DRAFT", "FINAL"], {
+    message: "Loại quyết định phải là DRAFT hoặc FINAL",
   }),
-  content: z.string().min(1, { message: 'Nội dung quyết định không được để trống' }),
-  clauses: z.array(z.string()).refine((arr) => arr.every((item) => item.trim() !== ''), {
-    message: 'Điều khoản không được để trống',
-  }),
-  signature: z.string().min(1, { message: 'Chữ ký không được để trống' }),
+  basedOn: z
+    .array(z.string())
+    .refine((arr) => arr.every((item) => item.trim() !== ""), {
+      message: "Căn cứ không được để trống",
+    }),
+  content: z
+    .string()
+    .min(1, { message: "Nội dung quyết định không được để trống" }),
+  clauses: z
+    .array(z.string())
+    .refine((arr) => arr.every((item) => item.trim() !== ""), {
+      message: "Điều khoản không được để trống",
+    }),
+  signature: z.string().min(1, { message: "Chữ ký không được để trống" }),
   participants: z.string().optional(),
 });
 
 export const CreateDecision = () => {
   const { semesterId } = useParams<{ semesterId: string }>();
+  const guidanceList = useSelector(
+    (state: RootState) => state.decisionListTopic.guidanceList
+  );
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error } = useSelector((state: RootState) => state.decision);
-  const { mentors, loading: mentorsLoading, error: mentorsError } = useSelector(
-    (state: RootState) => state.mentors
-  );
-  const { draftFile, finalFile, loading: uploadDecisionLoading, error: uploadDecisionError } = useSelector(
-    (state: RootState) => state.uploadDecision
-  );
+  const {
+    mentors,
+    loading: mentorsLoading,
+    error: mentorsError,
+  } = useSelector((state: RootState) => state.mentors);
+  const {
+    draftFile,
+    finalFile,
+    loading: uploadDecisionLoading,
+    error: uploadDecisionError,
+  } = useSelector((state: RootState) => state.uploadDecision);
   const user = useSelector((state: RootState) => state.auth.user);
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -62,57 +103,63 @@ export const CreateDecision = () => {
       dispatch(fetchUserProfile())
         .unwrap()
         .catch(() => {
-          toast.error('Vui lòng đăng nhập để tiếp tục');
-          navigate('/login');
+          toast.error("Vui lòng đăng nhập để tiếp tục");
+          navigate("/login");
         });
     }
     if (semesterId) {
       dispatch(fetchMentorsBySemesterId(semesterId));
     }
   }, [dispatch, semesterId, user, navigate]);
-
+  useEffect(() => {
+    if (semesterId) {
+      dispatch(fetchGuidanceList({ semesterId, includeAI: false }));
+    }
+  }, [dispatch, semesterId]);
   const [formData, setFormData] = useState({
-    decisionName: '',
-    decisionTitle: '',
+    decisionName: "",
+    decisionTitle: "",
+    decisionNameA: "", // thêm
+    decisionTitleB: "", // thêm
     decisionDate: new Date(),
-    type: 'DRAFT' as 'DRAFT' | 'FINAL',
-    basedOn: [''],
-    content: '',
-    clauses: [''],
-    signature: '',
-    participants: '',
-    decisionURL: '',
+    type: "DRAFT" as "DRAFT" | "FINAL",
+    basedOn: [""],
+    content: "",
+    clauses: [""],
+    signature: "",
+    participants: "",
+    decisionURL: "",
   });
 
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
-  const textClass = 'text-[14.5pt] font-times leading-[1.5]';
+  const textClass = "text-[14.5pt] font-times leading-[1.5]";
 
   const updateField = (field: keyof typeof formData, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    setFormErrors((prev) => ({ ...prev, [field]: '' }));
+    setFormErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
   const handleAppendBasedOn = () => {
-    setFormData((prev) => ({ ...prev, basedOn: [...prev.basedOn, ''] }));
+    setFormData((prev) => ({ ...prev, basedOn: [...prev.basedOn, ""] }));
   };
 
   const handleAppendClause = () => {
-    setFormData((prev) => ({ ...prev, clauses: [...prev.clauses, ''] }));
+    setFormData((prev) => ({ ...prev, clauses: [...prev.clauses, ""] }));
   };
 
   const updateBasedOn = (index: number, value: string) => {
     const newBasedOn = [...formData.basedOn];
     newBasedOn[index] = value;
     setFormData((prev) => ({ ...prev, basedOn: newBasedOn }));
-    setFormErrors((prev) => ({ ...prev, basedOn: '' }));
+    setFormErrors((prev) => ({ ...prev, basedOn: "" }));
   };
 
   const updateClause = (index: number, value: string) => {
     const newClauses = [...formData.clauses];
     newClauses[index] = value;
     setFormData((prev) => ({ ...prev, clauses: newClauses }));
-    setFormErrors((prev) => ({ ...prev, clauses: '' }));
+    setFormErrors((prev) => ({ ...prev, clauses: "" }));
   };
 
   const handleRemoveBasedOn = (index: number) => {
@@ -120,8 +167,10 @@ export const CreateDecision = () => {
       ...prev,
       basedOn: prev.basedOn.filter((_, i) => i !== index),
     }));
-    if (formData.basedOn.every((item, i) => i === index || item.trim() !== '')) {
-      setFormErrors((prev) => ({ ...prev, basedOn: '' }));
+    if (
+      formData.basedOn.every((item, i) => i === index || item.trim() !== "")
+    ) {
+      setFormErrors((prev) => ({ ...prev, basedOn: "" }));
     }
   };
 
@@ -130,8 +179,10 @@ export const CreateDecision = () => {
       ...prev,
       clauses: prev.clauses.filter((_, i) => i !== index),
     }));
-    if (formData.clauses.every((item, i) => i === index || item.trim() !== '')) {
-      setFormErrors((prev) => ({ ...prev, clauses: '' }));
+    if (
+      formData.clauses.every((item, i) => i === index || item.trim() !== "")
+    ) {
+      setFormErrors((prev) => ({ ...prev, clauses: "" }));
     }
   };
 
@@ -141,8 +192,12 @@ export const CreateDecision = () => {
       dispatch(uploadDecisionFile({ file, type: formData.type }))
         .unwrap()
         .then((result: { fileUrl: string; fileName: string }) => {
-          updateField('decisionURL', result.fileUrl);
-          toast.success(`Tải file ${formData.type === 'DRAFT' ? 'nháp' : 'chính thức'} thành công!`);
+          updateField("decisionURL", result.fileUrl);
+          toast.success(
+            `Tải file ${
+              formData.type === "DRAFT" ? "nháp" : "chính thức"
+            } thành công!`
+          );
         })
         .catch((error: string) => {
           toast.error(`Lỗi khi tải file: ${error}`);
@@ -156,22 +211,22 @@ export const CreateDecision = () => {
 
   const handleRemoveFile = () => {
     dispatch(resetSpecificFile(formData.type)); // Xóa file trong Redux store dựa trên type
-    updateField('decisionURL', '');
-    if (fileInputRef.current) fileInputRef.current.value = '';
-    toast.info('Đã xóa file');
+    updateField("decisionURL", "");
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    toast.info("Đã xóa file");
   };
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!semesterId) {
-      setFormErrors({ semesterId: 'semesterId không được để trống' });
-      toast.error('semesterId không được để trống');
+      setFormErrors({ semesterId: "semesterId không được để trống" });
+      toast.error("semesterId không được để trống");
       return;
     }
 
     if (!user) {
-      toast.error('Vui lòng đăng nhập để tạo quyết định');
-      navigate('/login');
+      toast.error("Vui lòng đăng nhập để tạo quyết định");
+      navigate("/login");
       return;
     }
 
@@ -183,27 +238,29 @@ export const CreateDecision = () => {
         errors[path] = err.message;
       });
       setFormErrors(errors);
-      toast.error('Vui lòng kiểm tra lại dữ liệu nhập');
+      toast.error("Vui lòng kiểm tra lại dữ liệu nhập");
       return;
     }
 
     const participantsText =
       mentors.length > 0
         ? `(Danh sách trên có ${mentors.length} giảng viên hướng dẫn)`
-        : 'Không có giảng viên hướng dẫn';
+        : "Không có giảng viên hướng dẫn";
 
     const payload: CreateDecisionPayload = {
       decisionName: formData.decisionName,
       decisionTitle: formData.decisionTitle,
-      decisionDate: format(formData.decisionDate, 'yyyy-MM-dd'),
+      decisionNameA: formData.decisionNameA, // ✅ thêm
+      decisionTitleB: formData.decisionTitleB,
+      decisionDate: format(formData.decisionDate, "yyyy-MM-dd"),
       type: formData.type,
-      basedOn: formData.basedOn.filter((item) => item.trim() !== ''),
+      basedOn: formData.basedOn.filter((item) => item.trim() !== ""),
       content: formData.content,
-      clauses: formData.clauses.filter((item) => item.trim() !== ''),
+      clauses: formData.clauses.filter((item) => item.trim() !== ""),
       signature: formData.signature,
       semesterId,
-      draftFile: formData.type === 'DRAFT' ? formData.decisionURL : '',
-      finalFile: formData.type === 'FINAL' ? formData.decisionURL : '',
+      draftFile: formData.type === "DRAFT" ? formData.decisionURL : "",
+      finalFile: formData.type === "FINAL" ? formData.decisionURL : "",
       decisionURL: formData.decisionURL,
       createdBy: user.id,
       createdAt: new Date().toISOString(),
@@ -211,18 +268,18 @@ export const CreateDecision = () => {
       participants: participantsText,
     };
 
-    console.log('Payload gửi lên:', payload);
-    console.log('Loading state:', loading);
+    console.log("Payload gửi lên:", payload);
+    console.log("Loading state:", loading);
 
     try {
       await dispatch(createDecision(payload)).unwrap();
-      toast.success('Tạo quyết định thành công!');
+      toast.success("Tạo quyết định thành công!");
       dispatch(resetUploadDecision()); // Reset uploadDecision state sau khi tạo thành công
       navigate(`/academic/decision/${semesterId}`);
     } catch (err: any) {
-      const errorMessage = err.message || 'Không xác định';
+      const errorMessage = err.message || "Không xác định";
       toast.error(`Lỗi khi tạo quyết định: ${errorMessage}`);
-      console.error('Lỗi khi tạo quyết định:', err);
+      console.error("Lỗi khi tạo quyết định:", err);
     }
   };
 
@@ -238,7 +295,7 @@ export const CreateDecision = () => {
   }
 
   // Xác định file hiển thị dựa trên type
-  const displayedFile = formData.type === 'DRAFT' ? draftFile : finalFile;
+  const displayedFile = formData.type === "DRAFT" ? draftFile : finalFile;
 
   return (
     <div>
@@ -254,7 +311,9 @@ export const CreateDecision = () => {
           <div className="flex flex-col items-end">
             <Select
               value={formData.type}
-              onValueChange={(value) => updateField('type', value as 'DRAFT' | 'FINAL')}
+              onValueChange={(value) =>
+                updateField("type", value as "DRAFT" | "FINAL")
+              }
             >
               <SelectTrigger
                 className={`
@@ -277,12 +336,14 @@ export const CreateDecision = () => {
               </SelectContent>
             </Select>
             {formErrors.type && (
-              <p className="text-red-500 text-xs mt-1 text-right">{formErrors.type}</p>
+              <p className="text-red-500 text-xs mt-1 text-right">
+                {formErrors.type}
+              </p>
             )}
           </div>
 
           {/* File Upload Section */}
-          {(formData.type === 'DRAFT' || formData.type === 'FINAL') && (
+          {(formData.type === "DRAFT" || formData.type === "FINAL") && (
             <div className="flex flex-col items-end">
               <Button
                 type="button"
@@ -298,13 +359,16 @@ export const CreateDecision = () => {
                   rounded-md 
                   px-4 
                   py-1
-                  ${uploadDecisionLoading ? 'opacity-60 cursor-not-allowed' : ''}
+                  ${
+                    uploadDecisionLoading ? "opacity-60 cursor-not-allowed" : ""
+                  }
                 `}
               >
                 {uploadDecisionLoading
-                  ? 'Đang tải...'
-                  : `Tải file ${formData.type === 'DRAFT' ? 'nháp' : 'chính thức'}`
-                }
+                  ? "Đang tải..."
+                  : `Tải file ${
+                      formData.type === "DRAFT" ? "nháp" : "chính thức"
+                    }`}
               </Button>
               <input
                 type="file"
@@ -316,7 +380,10 @@ export const CreateDecision = () => {
               {displayedFile?.fileUrl && (
                 <div className="flex items-center gap-2 mt-1">
                   <p className="text-green-600 text-xs truncate max-w-[200px]">
-                    {formData.type === 'DRAFT' ? 'File nháp' : 'File chính thức'}: {displayedFile.fileName}
+                    {formData.type === "DRAFT"
+                      ? "File nháp"
+                      : "File chính thức"}
+                    : {displayedFile.fileName}
                   </p>
                   <Button
                     variant="ghost"
@@ -329,7 +396,9 @@ export const CreateDecision = () => {
                 </div>
               )}
               {uploadDecisionError && (
-                <p className="text-red-500 text-xs mt-1 text-right">{uploadDecisionError}</p>
+                <p className="text-red-500 text-xs mt-1 text-right">
+                  {uploadDecisionError}
+                </p>
               )}
             </div>
           )}
@@ -357,85 +426,115 @@ export const CreateDecision = () => {
                     <Label className={`${textClass} mb-1`}>Số quyết định</Label>
                     <Input
                       value={formData.decisionName}
-                      onChange={(e) => updateField('decisionName', e.target.value)}
+                      onChange={(e) =>
+                        updateField("decisionName", e.target.value)
+                      }
                       className={`${textClass} inline-block w-32 sm:w-40 border border-black px-2 h-[32px]`}
                     />
                     <span className={`${textClass}`}></span>
                   </div>
                   {formErrors.decisionName && (
-                    <p className="text-red-500 text-sm mt-1">{formErrors.decisionName}</p>
+                    <p className="text-red-500 text-sm mt-1">
+                      {formErrors.decisionName}
+                    </p>
                   )}
                 </div>
                 <div>
                   <p className="italic pr-[0.9cm]">
-                    TP. Hồ Chí Minh, ngày{' '}
+                    TP. Hồ Chí Minh, ngày{" "}
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
                           className={cn(
-                            'w-[200px] pl-3 text-left font-normal border border-black h-[32px] text-[14pt]',
-                            !formData.decisionDate && 'text-muted-foreground'
+                            "w-[200px] pl-3 text-left font-normal border border-black h-[32px] text-[14pt]",
+                            !formData.decisionDate && "text-muted-foreground"
                           )}
                         >
                           {formData.decisionDate
-                            ? format(formData.decisionDate, 'dd/MM/yyyy')
-                            : 'Chọn ngày'}
+                            ? format(formData.decisionDate, "dd/MM/yyyy")
+                            : "Chọn ngày"}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0">
                         <Calendar
                           mode="single"
                           selected={formData.decisionDate}
-                          onSelect={(date) => updateField('decisionDate', date || new Date())}
+                          onSelect={(date) =>
+                            updateField("decisionDate", date || new Date())
+                          }
                           initialFocus
                         />
                       </PopoverContent>
                     </Popover>
                   </p>
                   {formErrors.decisionDate && (
-                    <p className="text-red-500 text-sm mt-1">{formErrors.decisionDate}</p>
+                    <p className="text-red-500 text-sm mt-1">
+                      {formErrors.decisionDate}
+                    </p>
                   )}
                 </div>
               </div>
 
               <div className="text-center mt-6">
-                <h1 className="text-[14.5pt] font-bold uppercase">QUYẾT ĐỊNH</h1>
+                <h1 className="text-[14.5pt] font-bold uppercase">
+                  QUYẾT ĐỊNH
+                </h1>
                 <Textarea
                   value={formData.decisionTitle}
-                  onChange={(e) => updateField('decisionTitle', e.target.value)}
+                  onChange={(e) => updateField("decisionTitle", e.target.value)}
                   className={`${textClass} border border-black w-full text-center font-bold`}
                   rows={3}
                 />
                 {formErrors.decisionTitle && (
-                  <p className="text-red-500 text-sm mt-1">{formErrors.decisionTitle}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {formErrors.decisionTitle}
+                  </p>
                 )}
                 <hr className="border-t border-black w-1/4 mx-auto mt-2" />
               </div>
 
               <div className="mt-6 text-[14.5pt]">
-                <p className="font-bold text-center">HIỆU TRƯỞNG TRƯỜNG ĐẠI HỌC FPT</p>
+                <p className="font-bold text-center">
+                  HIỆU TRƯỞNG TRƯỜNG ĐẠI HỌC FPT
+                </p>
                 <div className="italic text-justify">
                   <p className="mt-2 indent-[1.27cm]">
-                    Căn cứ Quyết định số 208/QĐ-TTg ngày 08/9/2006 của Thủ tướng Chính Phủ về việc thành lập Trường Đại học FPT;
+                    Căn cứ Quyết định số 208/QĐ-TTg ngày 08/9/2006 của Thủ tướng
+                    Chính Phủ về việc thành lập Trường Đại học FPT;
                   </p>
                   <p className="mt-2 indent-[1.27cm]">
-                    Căn cứ Nghị định số 99/2019/NĐ-CP ngày 30/12/2019 của Chính Phủ về việc Quy định chi tiết và hướng dẫn thi hành một số điều của Luật sửa đổi, bổ sung một số điều của Luật Giáo dục đại học;
+                    Căn cứ Nghị định số 99/2019/NĐ-CP ngày 30/12/2019 của Chính
+                    Phủ về việc Quy định chi tiết và hướng dẫn thi hành một số
+                    điều của Luật sửa đổi, bổ sung một số điều của Luật Giáo dục
+                    đại học;
                   </p>
                   <p className="mt-2 indent-[1.27cm]">
-                    Căn cứ Quyết định số 1177/QĐ-ĐHFPT ngày 09/11/2023 của Chủ tịch Hội đồng trường Trường Đại học FPT về việc ban hành Quy chế tổ chức và hoạt động của Trường Đại học FPT;
+                    Căn cứ Quyết định số 1177/QĐ-ĐHFPT ngày 09/11/2023 của Chủ
+                    tịch Hội đồng trường Trường Đại học FPT về việc ban hành Quy
+                    chế tổ chức và hoạt động của Trường Đại học FPT;
                   </p>
                   <p className="mt-2 indent-[1.27cm]">
-                    Căn cứ Quyết định số 17/QĐ-BGDĐT ngày 02/01/2020 của Bộ Giáo dục và Đào tạo về việc cho phép thành lập Phân hiệu trường Đại học FPT tại TP.HCM;
+                    Căn cứ Quyết định số 17/QĐ-BGDĐT ngày 02/01/2020 của Bộ Giáo
+                    dục và Đào tạo về việc cho phép thành lập Phân hiệu trường
+                    Đại học FPT tại TP.HCM;
                   </p>
                   <p className="mt-2 indent-[1.27cm]">
-                    Căn cứ Quyết định số 229/QĐ-BGDĐT ngày 31/01/2020 của Bộ Giáo dục và Đào tạo về việc cho phép Phân hiệu trường Đại học FPT tại TP.HCM tổ chức hoạt động đào tạo;
+                    Căn cứ Quyết định số 229/QĐ-BGDĐT ngày 31/01/2020 của Bộ
+                    Giáo dục và Đào tạo về việc cho phép Phân hiệu trường Đại
+                    học FPT tại TP.HCM tổ chức hoạt động đào tạo;
                   </p>
                   <p className="mt-2 indent-[1.27cm]">
-                    Căn cứ Quyết định số 15/QĐ-ĐHFPT ngày 06/01/2020 của Chủ tịch Hội đồng trường Trường Đại học FPT về việc ban hành Quy chế tổ chức và hoạt động của Phân hiệu Trường Đại học FPT tại TP.HCM;
+                    Căn cứ Quyết định số 15/QĐ-ĐHFPT ngày 06/01/2020 của Chủ
+                    tịch Hội đồng trường Trường Đại học FPT về việc ban hành Quy
+                    chế tổ chức và hoạt động của Phân hiệu Trường Đại học FPT
+                    tại TP.HCM;
                   </p>
                   <p className="mt-2 indent-[1.27cm]">
-                    Căn cứ Quyết định số 10/QĐ-ĐHFPT ngày 06/01/2016 của Hiệu trưởng trường Đại học FPT về Sửa đổi bổ sung một số Điều trong Quy định về tốt nghiệp đại học chính quy của Trường Đại học FPT;
+                    Căn cứ Quyết định số 10/QĐ-ĐHFPT ngày 06/01/2016 của Hiệu
+                    trưởng trường Đại học FPT về Sửa đổi bổ sung một số Điều
+                    trong Quy định về tốt nghiệp đại học chính quy của Trường
+                    Đại học FPT;
                   </p>
                   {formData.basedOn.map((item, index) => (
                     <div key={index} className="flex items-start gap-2 mt-2">
@@ -456,9 +555,12 @@ export const CreateDecision = () => {
                           Xóa
                         </Button>
                       )}
-                      {formErrors.basedOn && formData.basedOn[index].trim() === '' && (
-                        <p className="text-red-500 text-sm mt-1">{formErrors.basedOn}</p>
-                      )}
+                      {formErrors.basedOn &&
+                        formData.basedOn[index].trim() === "" && (
+                          <p className="text-red-500 text-sm mt-1">
+                            {formErrors.basedOn}
+                          </p>
+                        )}
                     </div>
                   ))}
                   <Button
@@ -478,21 +580,27 @@ export const CreateDecision = () => {
 
               <div>
                 <p className="mt-6 font-bold text-center">QUYẾT ĐỊNH</p>
-                <Label className={`${textClass} mt-2 block font-bold`}>Điều 1:</Label>
+                <Label className={`${textClass} mt-2 block font-bold`}>
+                  Điều 1:
+                </Label>
                 <Textarea
                   value={formData.content}
-                  onChange={(e) => updateField('content', e.target.value)}
+                  onChange={(e) => updateField("content", e.target.value)}
                   className={`${textClass} border border-black w-full px-2 mt-2 indent-[1.27cm]`}
                   rows={3}
                 />
                 {formErrors.content && (
-                  <p className="text-red-500 text-sm mt-1">{formErrors.content}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {formErrors.content}
+                  </p>
                 )}
                 <div className="mt-4">
                   {mentorsLoading ? (
                     <p className="text-center">Đang tải dữ liệu...</p>
                   ) : mentorsError ? (
-                    <p className="text-center text-red-500">Lỗi: {mentorsError}</p>
+                    <p className="text-center text-red-500">
+                      Lỗi: {mentorsError}
+                    </p>
                   ) : mentors.length === 0 ? (
                     <p className="text-center">Không có dữ liệu giảng viên</p>
                   ) : (
@@ -521,9 +629,12 @@ export const CreateDecision = () => {
                         Xóa
                       </Button>
                     )}
-                    {formErrors.clauses && formData.clauses[index].trim() === '' && (
-                      <p className="text-red-500 text-sm mt-1">{formErrors.clauses}</p>
-                    )}
+                    {formErrors.clauses &&
+                      formData.clauses[index].trim() === "" && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {formErrors.clauses}
+                        </p>
+                      )}
                   </div>
                 ))}
                 <Button
@@ -549,13 +660,106 @@ export const CreateDecision = () => {
                   <Label className={`${textClass} mt-2 block`}>Chữ ký</Label>
                   <Input
                     value={formData.signature}
-                    onChange={(e) => updateField('signature', e.target.value)}
+                    onChange={(e) => updateField("signature", e.target.value)}
                     className="mt-24 text-center font-bold border border-black bg-white w-full"
                   />
                   {formErrors.signature && (
-                    <p className="text-red-500 text-sm mt-1">{formErrors.signature}</p>
+                    <p className="text-red-500 text-sm mt-1">
+                      {formErrors.signature}
+                    </p>
                   )}
                 </div>
+              </div>
+
+              {error && <p className="text-red-500 text-center">{error}</p>}
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+      {/* Block 2: Form quyết định mới */}
+      <div className="max-w-8xl mx-auto p-8">
+        <Card className={`${textClass} shadow-lg`}>
+          <CardContent className="p-10">
+            <form onSubmit={onSubmit} className="space-y-6">
+              <div className="text-center">
+                <Textarea
+                  value={formData.decisionTitleB} // CHỈNH LẠI CHO ĐÚNG
+                  onChange={(e) =>
+                    updateField("decisionTitleB", e.target.value)
+                  }
+                  placeholder="VD: DANH SÁCH GIAO VÀ HƯỚNG DẪN KHÓA LUẬN TỐT NGHIỆP HỌC KỲ SPRING 2025"
+                  className={`${textClass} border border-black w-full text-center font-bold uppercase resize-none`}
+                  rows={4}
+                />
+                {formErrors.decisionTitleA && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {formErrors.decisionTitleA}
+                  </p>
+                )}
+
+                <p className="italic mt-3">
+                  (Ban hành kèm theo Quyết định số{" "}
+                  <span className="inline-block">
+                    <Input
+                      value={formData.decisionNameA} // CHỈNH LẠI CHO ĐÚNG
+                      onChange={(e) =>
+                        updateField("decisionNameA", e.target.value)
+                      }
+                      placeholder="VD: QD-2025-01"
+                      className={`${textClass} inline-block w-32 sm:w-40 border border-black px-2 h-[32px]`}
+                    />
+                    {formErrors.decisionNameB && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {formErrors.decisionNameB}
+                      </p>
+                    )}
+                  </span>{" "}
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          `${textClass} w-[200px] justify-start text-left border border-black h-[32px]`,
+                          !formData.decisionDate && "text-muted-foreground"
+                        )}
+                      >
+                        {formData.decisionDate
+                          ? format(
+                              new Date(formData.decisionDate),
+                              "dd/MM/yyyy"
+                            )
+                          : "Chọn ngày"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0">
+                      <Calendar
+                        mode="single"
+                        selected={
+                          formData.decisionDate
+                            ? new Date(formData.decisionDate)
+                            : undefined
+                        }
+                        onSelect={(date) =>
+                          updateField(
+                            "decisionDate",
+                            date ? format(date, "yyyy-MM-dd") : ""
+                          )
+                        }
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  {formErrors.decisionDate && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {formErrors.decisionDate}
+                    </p>
+                  )}{" "}
+                  của Giám Đốc phân hiệu Trường Đại học FPT tại TP. Hồ Chí Minh)
+                </p>
+              </div>
+
+              <div className="mt-6">
+                <DataTableList columns={columnsList} data={guidanceList} />
               </div>
 
               <div className="flex justify-end pt-4 gap-4">
@@ -565,11 +769,15 @@ export const CreateDecision = () => {
                 >
                   Hủy
                 </Button>
-                <Button type="submit" disabled={loading || uploadDecisionLoading}>
-                  {loading || uploadDecisionLoading ? 'Đang lưu...' : 'Lưu quyết định'}
+                <Button
+                  type="submit"
+                  disabled={loading || uploadDecisionLoading}
+                >
+                  {loading || uploadDecisionLoading
+                    ? "Đang lưu..."
+                    : "Lưu quyết định"}
                 </Button>
               </div>
-              {error && <p className="text-red-500 text-center">{error}</p>}
             </form>
           </CardContent>
         </Card>

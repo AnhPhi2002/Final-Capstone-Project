@@ -499,10 +499,7 @@ const academicMenu = {
           title: "D.s quyết định g.v hướng dẫn",
           url: "/academic/decision",
         },
-        {
-          title: "D.s quyết định đề tài ",
-          url: "/academic/decision-list-top",
-        },
+    
       ],
     },
     {
@@ -637,10 +634,7 @@ const graduationThesisMenu = {
           title: "D.s quyết định g.v hướng dẫn",
           url: "/graduation-thesis/decision",
         },
-        {
-          title: "D.s quyết định đề tài ",
-          url: "/graduation-thesis/decision-list-top",
-        },
+        
       ],
     },
     {

@@ -24,7 +24,7 @@
     data: TData[];
   }
 
-  export function DataTable<TData extends { topicCode: string }>({
+  export function DataTableList<TData extends { topicCode: string }>({
     columns,
     data,
   }: DataTableProps<TData>) {
@@ -113,4 +113,4 @@
     );
   }
 
-  export default DataTable;
+  export default DataTableList;

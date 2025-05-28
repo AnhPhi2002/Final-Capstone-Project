@@ -6,6 +6,8 @@ export interface Decision {
   id: string;
   decisionName?: string;
   decisionTitle?: string;
+  decisionNameA?: string;
+  decisionTitleB?: string;
   decisionDate: string;
   proposal?: string;
   content?: string;
@@ -26,6 +28,9 @@ export interface Decision {
 export interface CreateDecisionPayload {
   decisionName?: string;
   decisionTitle?: string;
+  decisionNameA?: string;
+  decisionTitleB?: string;
+  decisionTitleA?: string;
   decisionDate: string;
   type?: 'DRAFT' | 'FINAL';
   basedOn?: string[];

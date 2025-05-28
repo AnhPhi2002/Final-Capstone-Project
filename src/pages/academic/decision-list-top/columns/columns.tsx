@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 
-export const columns: ColumnDef<any>[] = [
+export const columnsList: ColumnDef<any>[] = [
   {
     accessorKey: "stt",
     header: "STT",
@@ -58,4 +58,4 @@ export const columns: ColumnDef<any>[] = [
   },
 ];
 
-export default columns;
+export default columnsList;
