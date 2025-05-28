@@ -22,8 +22,8 @@ const fallbackDecision = decisions.find((d) => d.semesterId === semesterId);
 const effectiveDecisionId = decisionId || fallbackDecision?.id;
 
 useEffect(() => {
-  if (decisionId) {
-    dispatch(fetchDecisionListTopic());
+  if (decisionId && semesterId) {
+    dispatch(fetchDecisionListTopic(semesterId));
     // dispatch(fetchDecisionListTopicById(decisionId));
   // } else if (semesterId) {
   //   dispatch(fetchDecisionListTopic());
