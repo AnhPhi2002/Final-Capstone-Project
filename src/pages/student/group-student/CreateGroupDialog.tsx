@@ -35,6 +35,8 @@ const CreateGroupDialogContent: React.FC<Props> = ({ onSuccess }) => {
   const handleCreateGroup = async () => {
     setLoading(true);
     try {
+      const userData = JSON.parse(localStorage.getItem("user") || "{}");
+      const semesterId = userData.semesterId;
       if (groupType === "normal") {
         await dispatch(createGroup()).unwrap();
         toast.success("Tạo nhóm KLTN thành công!");
@@ -45,7 +47,7 @@ const CreateGroupDialogContent: React.FC<Props> = ({ onSuccess }) => {
           return;
         }
 
-        await dispatch(createInterMajorGroup({ majorPairConfigId: selectedInterMajorId })).unwrap();
+        await dispatch(createInterMajorGroup({ majorPairConfigId: selectedInterMajorId, semesterId })).unwrap();
         toast.success("Tạo nhóm liên ngành thành công!");
       }
 
