@@ -9,11 +9,12 @@ import {
   Cog,
   LayoutDashboardIcon,
   LightbulbIcon,
-  List,
+
   ListCheckIcon,
   SquareCheckBigIcon,
   SquareEqualIcon,
   StampIcon,
+  TvMinimalIcon,
   // NotebookPen,
 } from "lucide-react";
 
@@ -281,7 +282,7 @@ const lecturerMenu = {
     {
       title: "Quản lý phòng họp",
       url: "/lecturer/council-member",
-      icon: SquareCheckBigIcon,
+      icon: TvMinimalIcon,
       isActive: true,
       items: [
         {
@@ -519,7 +520,7 @@ const studentMenu = {
     {
       title: "Danh sách sinh viên ",
       url: "/student/council-member",
-      icon: List,
+      icon: ListCheckIcon,
       isActive: true,
       items: [
         {
@@ -539,7 +540,7 @@ const studentMenu = {
     {
       title: "Đề tài",
       url: "/student/council-student",
-      icon: List,
+      icon: LightbulbIcon,
       isActive: true,
       items: [
         // {
@@ -559,7 +560,7 @@ const studentMenu = {
     {
       title: "Phòng",
       url: "/student/council-member",
-      icon: List,
+      icon: TvMinimalIcon,
       isActive: true,
       items: [
         {
@@ -579,7 +580,7 @@ const studentMenu = {
     {
       title: "Báo cáo tiến độ",
       url: "/student/council-member",
-      icon: List,
+      icon: SquareCheckBigIcon,
       isActive: true,
       items: [
         {
