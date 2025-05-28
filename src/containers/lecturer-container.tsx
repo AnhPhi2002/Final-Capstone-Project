@@ -49,8 +49,7 @@ import { TopicApprovedPage } from "@/pages/mentor/topic-council-approved/topic-l
 import { DecisionPage } from "@/pages/mentor/decision/decision-page";
 import { DecisionDetail } from "@/pages/mentor/decision/decision-detail";
 import DecisionView from "@/pages/mentor/decision/decision-view";
-import UpdateDecision from "@/pages/mentor/decision/update-decision";
-import CreateDecision from "@/pages/mentor/decision/create-decision";
+
 
 import { ProgressReportPage } from "@/pages/mentor/progress-report-mentor/progress-report-page";
 import { MentorProgressReportPage } from "@/pages/mentor/progress-report-mentor/data-table/MentorProgressReportPage";
@@ -210,13 +209,6 @@ export const LecturerContainer = () => {
         <Route path="/topic-list-approved/semester/:semesterId/submission/:submissionPeriodId/round/:roundNumber" element={<TopicListApprovedPage />} />
         <Route path="/topic-detail-approved/:topicId/:semesterId" element={<TopicDetailApprovedPage />} />
 
-        <Route path="/decision" element={< DecisionPage />} />
-        <Route path="/decision/:semesterId" element={< DecisionDetail />} />
-        <Route path="/decision/:semesterId/view" element={<DecisionView semesterId={":semesterId"} />} />
-        <Route path="/decision/:semesterId/update" element={<UpdateDecision />} />
-        <Route path="/decision/:semesterId/create" element={<CreateDecision />} />
-
-
         <Route path="/progress-report-mentor" element={<ProgressReportPage />} />
         <Route path="/progress-report-mentor/:semesterId" element={<MentorProgressReportPage />} />
         <Route path="/progress-report-mentor/:semesterId/detail/:reportId" element={<ProgressReportDetailPage />} />
@@ -238,8 +230,7 @@ export const LecturerContainer = () => {
         <Route path="/decision" element={< DecisionPage />} />
         <Route path="/decision/:semesterId" element={< DecisionDetail />} />
         <Route path="/decision/:semesterId/view" element={<DecisionView semesterId={":semesterId"} />} />
-        <Route path="/decision/:semesterId/update" element={<UpdateDecision />} />
-        <Route path="/decision/:semesterId/create" element={<CreateDecision />} />
+
 
 
         <Route path="/*" element={<NotFound />} />

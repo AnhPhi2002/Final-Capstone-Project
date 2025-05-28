@@ -1,7 +1,9 @@
 import * as React from "react";
 import Logo from "@/assets/images/img01.jpg";
 import {
+  BookUserIcon,
   Calendar1Icon,
+  CalendarDaysIcon,
   // ChartPie,
   CircleUserRound,
   Cog,
@@ -9,6 +11,8 @@ import {
   LightbulbIcon,
   List,
   ListCheckIcon,
+  SquareCheckBigIcon,
+  SquareEqualIcon,
   StampIcon,
   // NotebookPen,
 } from "lucide-react";
@@ -241,7 +245,7 @@ const lecturerMenu = {
     {
       title: "Quản lý sinh viên ",
       url: "/lecturer/council-member",
-      icon: List,
+      icon: ListCheckIcon,
       isActive: true,
       items: [
         {
@@ -253,7 +257,7 @@ const lecturerMenu = {
     {
       title: "Quản lý đề tài",
       url: "/lecturer/council-member",
-      icon: List,
+      icon: LightbulbIcon,
       isActive: true,
       items: [
         {
@@ -267,18 +271,17 @@ const lecturerMenu = {
         {
           title: "Đề tài chờ xét duyệt",
           url: "/lecturer/review-topic-page",
-          
         },
         {
           title: "Đề tài đã xét duyệt",
           url: "/lecturer/topic-approved",
-        }
+        },
       ],
     },
     {
       title: "Quản lý phòng họp",
       url: "/lecturer/council-member",
-      icon: List,
+      icon: SquareCheckBigIcon,
       isActive: true,
       items: [
         {
@@ -290,7 +293,7 @@ const lecturerMenu = {
     {
       title: "Hội đồng",
       url: "/lecturer/council-member",
-      icon: List,
+      icon: CalendarDaysIcon,
       isActive: true,
       items: [
         {
@@ -305,13 +308,12 @@ const lecturerMenu = {
           title: "Hội đồng bảo vệ",
           url: "/lecturer/council-defense",
         },
-
       ],
     },
     {
       title: "Quản lý nhóm làm đồ án",
       url: "/lecturer/council-member",
-      icon: List,
+      icon: SquareEqualIcon,
       isActive: true,
       items: [
         {
@@ -344,19 +346,16 @@ const lecturerMenu = {
     //     },
     //   ],
     // },
-    {
+
+     {
       title: "Bảng quyết định",
       url: "/lecturer/decision",
-      icon: List,
+      icon: StampIcon,
       isActive: true,
       items: [
         {
           title: "D.s quyết định g.v hướng dẫn",
           url: "/lecturer/decision",
-        },
-        {
-          title: "D.s quyết định đề tài ",
-          url: "/lecturer/decision-list-top",
         },
       ],
     },
@@ -367,7 +366,7 @@ const examinationMenu = {
     {
       title: "Danh sách sinh viên",
       url: "/examination/council-member",
-      icon: List,
+      icon: ListCheckIcon,
       isActive: true,
       items: [
         {
@@ -383,7 +382,7 @@ const examinationMenu = {
     {
       title: "Quản lý đề tài xét duyệt",
       url: "/examination/council-member",
-      icon: List,
+      icon: CalendarDaysIcon,
       isActive: true,
       items: [
         {
@@ -397,13 +396,13 @@ const examinationMenu = {
         {
           title: "Đề tài đã xét duyệt",
           url: "/examination/topic",
-        }
+        },
       ],
     },
     {
       title: "Quản lý hội đồng KLTN",
       url: "/examination/review-topic-council",
-      icon: List,
+      icon: BookUserIcon,
       isActive: true,
       items: [
         {
@@ -413,6 +412,18 @@ const examinationMenu = {
         {
           title: "D.s h.đ bảo vệ đồ án ",
           url: "/examination/council-defense",
+        },
+      ],
+    },
+    {
+      title: "Bảng quyết định",
+      url: "/examination/decision",
+      icon: StampIcon,
+      isActive: true,
+      items: [
+        {
+          title: "D.s quyết định g.v hướng dẫn",
+          url: "/examination/decision",
         },
       ],
     },
@@ -462,7 +473,6 @@ const academicMenu = {
           title: "Q.l liên ngành",
           url: "/academic/inter-major",
         },
-
       ],
     },
     {
@@ -477,18 +487,7 @@ const academicMenu = {
         },
       ],
     },
-    // {
-    //   title: "Qlý. phân công đề tài",
-    //   url: "/academic/topic-assignment-decision",
-    //   icon: List,
-    //   isActive: true,
-    //   items: [
-    //     {
-    //       title: "Ds. quyết định",
-    //       url: "/academic/topic-assignment-decision",
-    //     },
-    //   ],
-    // },
+
     {
       title: "Bảng quyết định",
       url: "/academic/decision",
@@ -499,7 +498,6 @@ const academicMenu = {
           title: "D.s quyết định g.v hướng dẫn",
           url: "/academic/decision",
         },
-    
       ],
     },
     {
@@ -512,7 +510,6 @@ const academicMenu = {
           title: "Thống kê ",
           url: "/academic/dashboard-page",
         },
-        
       ],
     },
   ],
@@ -589,7 +586,6 @@ const studentMenu = {
           title: "Báo cáo",
           url: "/student/progress-report",
         },
-
       ],
     },
   ],
@@ -599,7 +595,7 @@ const graduationThesisMenu = {
     {
       title: "Quản lý thời gian hội đồng",
       url: "/graduation-thesis/council-member",
-      icon: List,
+      icon: CalendarDaysIcon,
       isActive: true,
       items: [
         {
@@ -611,7 +607,7 @@ const graduationThesisMenu = {
     {
       title: "Quản lý hội chấm KLTN",
       url: "/graduation-thesis/review-topic-council",
-      icon: List,
+      icon: BookUserIcon,
       isActive: true,
       items: [
         {
@@ -624,30 +620,29 @@ const graduationThesisMenu = {
         },
       ],
     },
+
     {
       title: "Bảng quyết định",
       url: "/graduation-thesis/decision",
-      icon: List,
+      icon: StampIcon,
       isActive: true,
       items: [
         {
           title: "D.s quyết định g.v hướng dẫn",
           url: "/graduation-thesis/decision",
         },
-        
       ],
     },
     {
       title: "Quản lý thống kê",
       url: "/graduation-thesis/dashboard-page",
-      icon: List,
+      icon: LayoutDashboardIcon,
       isActive: true,
       items: [
         {
           title: "Thống kê ",
           url: "/graduation-thesis/dashboard-page",
         },
-        
       ],
     },
   ],
@@ -684,11 +679,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         {currentRole === "admin" && <NavMain items={adminMenu.navMain} />}
-        {currentRole === "academic_officer" && (<NavMain items={academicMenu.navMain} /> )}
-        {currentRole === "graduation_thesis_manager" && (<NavMain items={graduationThesisMenu.navMain} />)}
+        {currentRole === "academic_officer" && (
+          <NavMain items={academicMenu.navMain} />
+        )}
+        {currentRole === "graduation_thesis_manager" && (
+          <NavMain items={graduationThesisMenu.navMain} />
+        )}
         {currentRole === "student" && <NavMain items={studentMenu.navMain} />}
         {currentRole === "lecturer" && <NavMain items={lecturerMenu.navMain} />}
-        {currentRole === "examination_officer" && ( <NavMain items={examinationMenu.navMain} />)}
+        {currentRole === "examination_officer" && (
+          <NavMain items={examinationMenu.navMain} />
+        )}
       </SidebarContent>
       <SidebarFooter>
         {formattedUser ? <NavUser user={formattedUser} /> : <p>Đang tải...</p>}

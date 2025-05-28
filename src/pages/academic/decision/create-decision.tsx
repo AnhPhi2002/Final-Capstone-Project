@@ -714,41 +714,18 @@ export const CreateDecision = () => {
                       </p>
                     )}
                   </span>{" "}
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className={cn(
-                          `${textClass} w-[200px] justify-start text-left border border-black h-[32px]`,
-                          !formData.decisionDate && "text-muted-foreground"
-                        )}
-                      >
-                        {formData.decisionDate
-                          ? format(
-                              new Date(formData.decisionDate),
-                              "dd/MM/yyyy"
-                            )
-                          : "Chọn ngày"}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <Calendar
-                        mode="single"
-                        selected={
-                          formData.decisionDate
-                            ? new Date(formData.decisionDate)
-                            : undefined
-                        }
-                        onSelect={(date) =>
-                          updateField(
-                            "decisionDate",
-                            date ? format(date, "yyyy-MM-dd") : ""
-                          )
-                        }
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      `${textClass} w-[200px] justify-start text-left border border-black h-[32px] bg-gray-100 cursor-not-allowed`,
+                      "text-muted-foreground"
+                    )}
+                    disabled
+                  >
+                    {formData.decisionDate
+                      ? format(new Date(formData.decisionDate), "dd/MM/yyyy")
+                      : "Không có ngày"}
+                  </Button>
                   {formErrors.decisionDate && (
                     <p className="text-red-500 text-xs mt-1">
                       {formErrors.decisionDate}

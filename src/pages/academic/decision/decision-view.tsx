@@ -234,7 +234,7 @@ useEffect(() => {
               </p>
               <p className="italic mt-3">
                 (Ban hành kèm theo Quyết định số{" "}
-                {latestDecision?.decisionNameA || "___"}{" "}
+                {latestDecision?.decisionNameA || "___"} ngày {" "}
                 {format(
                   new Date(latestDecision?.decisionDate || new Date()),
                   "dd/MM/yyyy"

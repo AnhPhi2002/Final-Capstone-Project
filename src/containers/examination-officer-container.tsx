@@ -17,6 +17,9 @@ import { CouncilReviewPage } from "@/pages/examination-officer/council-review-12
 
 import { DeadineTopicDetailPage } from "@/pages/examination-officer/deadline-topic/columns/deadine-topic-detail-page";
 import { DeadineTopicPage } from "@/pages/examination-officer/deadline-topic/deadine-topic-page";
+import { DecisionDetail } from "@/pages/examination-officer/decision/decision-detail";
+import { DecisionPage } from "@/pages/examination-officer/decision/decision-page";
+import DecisionView from "@/pages/examination-officer/decision/decision-view";
 import { MentorDetail } from "@/pages/examination-officer/mentor/columns/mentor-detail";
 import { MentorPage } from "@/pages/examination-officer/mentor/mentor-page";
 import { CouncilMembersPage } from "@/pages/examination-officer/review-topic-council/columns-member/CouncilMembersPage";
@@ -93,6 +96,13 @@ export const ExaminationOfficerContainer = () => {
         <Route path="/council-defense/:councilId/:semesterId" element={<CouncilDefenseDetail />} />
         <Route path="/council-defense-member/:councilId/:semesterId" element={<CouncilDefenseMembersPage />} />
         <Route path="/council-defense-group/:councilId/:semesterId" element={<CouncilDefenseGroupsPage />} />
+         
+            <Route path="/decision" element={< DecisionPage />} />
+                <Route path="/decision/:semesterId" element={< DecisionDetail />} />
+                <Route path="/decision/:semesterId/view" element={<DecisionView semesterId={":semesterId"} />} />
+                {/* <Route path="/decision/:semesterId/update" element={<UpdateDecision />} />
+                <Route path="/decision/:semesterId/create" element={<CreateDecision />} /> */}
+        
 
         <Route path="/topic" element={<TopicPage />} />
         <Route path="/topic/:semesterId" element={<TopicPage />} />
