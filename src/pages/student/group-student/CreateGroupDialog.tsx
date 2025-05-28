@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/api/redux/store";
 import { createGroup, fetchGroupsWithoutSemester } from "@/lib/api/redux/groupSlice";
 import { createInterMajorGroup } from "@/lib/api/redux/interMajorGroupSlice";
-import { fetchInterMajorConfigsForStudent } from "@/lib/api/redux/interMajorSlice";
+import { fetchInterMajorConfigs } from "@/lib/api/redux/interMajorSlice";
 import { Button } from "@/components/ui/button";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -25,18 +25,18 @@ const CreateGroupDialogContent: React.FC<Props> = ({ onSuccess }) => {
   const [selectedInterMajorId, setSelectedInterMajorId] = useState("");
 
   const interMajors = useSelector((state: RootState) => state.interMajor.data);
+  const userData = JSON.parse(localStorage.getItem("user") || "{}");
+  const semesterId = userData.semesterId || "";
 
   useEffect(() => {
-    if (groupType === "inter") {
-      dispatch(fetchInterMajorConfigsForStudent());
+    if (groupType === "inter" && semesterId) {
+      dispatch(fetchInterMajorConfigs({ semesterId }));
     }
-  }, [dispatch, groupType]);
+  }, [dispatch, groupType, semesterId]);
 
   const handleCreateGroup = async () => {
     setLoading(true);
     try {
-      const userData = JSON.parse(localStorage.getItem("user") || "{}");
-      const semesterId = userData.semesterId;
       if (groupType === "normal") {
         await dispatch(createGroup()).unwrap();
         toast.success("Tạo nhóm KLTN thành công!");
@@ -85,7 +85,7 @@ const CreateGroupDialogContent: React.FC<Props> = ({ onSuccess }) => {
             </SelectTrigger>
             <SelectContent>
               {interMajors
-                .filter((m) => !m.isDeleted)
+                .filter((m) => !m.isDeleted && m.semesterId === semesterId) // Filter by semesterId
                 .map((config) => (
                   <SelectItem key={config.id} value={config.id}>
                     {config.name} ({config.firstMajor.name} & {config.secondMajor.name})
