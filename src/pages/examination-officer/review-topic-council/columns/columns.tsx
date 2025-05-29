@@ -1,6 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { CouncilDetail } from "@/lib/api/types"; // 👈 dùng đúng type
 import { ActionMenu } from "./action";
+import { Badge } from "@/components/ui/badge";
 
 // const formatDate = (dateString: string | undefined) => {
 //   if (!dateString) return "—";
@@ -40,13 +41,13 @@ export const columnsCouncils: ColumnDef<CouncilDetail, any>[] = [
     cell: ({ row }) => {
       const status = row.original.council.status;
       if (status === "ACTIVE") {
-        return <span className="text-green-600">Đang hoạt động</span>;
+        return <Badge className="text-green-600 bg-green-100">Đang hoạt động</Badge>;
       } else if (status === "COMPLETE") {
-        return <span className="text-blue-600">Hoàn thành</span>;
+        return <Badge className="text-blue-600 bg-blue-100">Hoàn thành</Badge>;
       } else if (status === "UPCOMING") {
-        return <span className="text-yellow-600">Sắp diễn ra</span>;
+        return <Badge className="text-yellow-600 bg-yellow-100">Sắp diễn ra</Badge>;
       } else {
-        return <span className="text-gray-600">Không xác định</span>;
+        return <Badge className="text-gray-600 bg-gray-100">Không xác định</Badge>;
       }
     },
   },

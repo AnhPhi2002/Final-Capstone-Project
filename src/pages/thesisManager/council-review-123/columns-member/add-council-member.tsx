@@ -139,7 +139,7 @@ export const AddMemberReviewCouncil: React.FC<AddMemberReviewCouncilProps> = ({
                           {mentors?.length ? (
                             mentors.map((mentor: Mentor) => (
                               <SelectItem key={mentor.id} value={mentor.email}>
-                                {mentor.fullName} ({mentor.email})
+                                 {mentor.email}
                                 {field.value.includes(mentor.email) && " ✓"}
                               </SelectItem>
                             ))

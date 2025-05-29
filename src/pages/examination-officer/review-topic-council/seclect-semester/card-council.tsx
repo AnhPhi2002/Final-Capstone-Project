@@ -22,20 +22,20 @@ const formatDate = (dateString: string) => {
   return date.toLocaleDateString("vi-VN");
 };
 
-const getRoundTypeLabel = (type?: string) => {
-  switch (type?.trim()) {
-    case "topic":
-      return "Đợt nộp đề tài";
-    case "check-topic":
-      return "Xét duyệt đề tài";
-    case "review":
-      return "Kiểm tra đồ án";
-    case "defense":
-      return "Bảo vệ đồ án";
-    default:
-      return "Không xác định";
-  }
-};
+// const getRoundTypeLabel = (type?: string) => {
+//   switch (type?.trim()) {
+//     case "topic":
+//       return "Đợt nộp đề tài";
+//     case "check-topic":
+//       return "Xét duyệt đề tài";
+//     case "review":
+//       return "Kiểm tra đồ án";
+//     case "defense":
+//       return "Bảo vệ đồ án";
+//     default:
+//       return "Không xác định";
+//   }
+// };
 
 export const CardCouncil: React.FC<CardCouncilProps> = ({
   councils,
@@ -70,7 +70,7 @@ export const CardCouncil: React.FC<CardCouncilProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {paginatedData.map((council) => {
               const { council: c } = council;
-              const roundTypeLabel = getRoundTypeLabel(c.type);
+              // const roundTypeLabel = getRoundTypeLabel(c.type);
               return (
                 <Card
                   key={c.id}
@@ -86,7 +86,7 @@ export const CardCouncil: React.FC<CardCouncilProps> = ({
                       {formatDate(c.councilEndDate)}
                     </CardDescription>
                     <CardDescription>
-                      Vòng nộp lần: {c.round} - {roundTypeLabel}
+                      Vòng: {c.round}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>

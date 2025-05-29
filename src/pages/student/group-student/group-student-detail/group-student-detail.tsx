@@ -23,12 +23,13 @@ export const GroupStudentDetail = () => {
   }, [dispatch, groupId, semesterId]);
 
   const handleInvite = async () => {
-    if (!email.trim()) {
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail) {
       toast.error("Vui lòng nhập email!");
       return;
     }
     try {
-      await dispatch(inviteMember({ groupId: groupId!, email })).unwrap();
+      await dispatch(inviteMember({ groupId: groupId!, email: trimmedEmail })).unwrap();
       toast.success("Mời thành viên thành công!");
       setEmail("");
     } catch (error) {

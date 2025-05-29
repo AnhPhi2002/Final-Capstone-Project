@@ -11,6 +11,37 @@ import { fetchUserById } from "@/lib/api/redux/authSlice";
 import { fetchSubUserById } from "@/lib/api/redux/authSubSlice";
 import Header from "@/components/header";
 
+// Hàm chuyển trạng thái sang tiếng Việt
+const getVietnameseStatus = (status: string) => {
+  switch (status) {
+    case "APPROVED":
+      return "Đã duyệt";
+    case "REJECTED":
+      return "Từ chối";
+    case "PENDING":
+      return "Chờ duyệt";
+    case "IMPROVED":
+      return "Cần chỉnh sửa";
+    default:
+      return "Không xác định";
+  }
+};
+
+// Màu sắc cho Badge theo trạng thái
+const getStatusClass = (status: string) => {
+  switch (status) {
+    case "APPROVED":
+      return "bg-green-100 text-green-700";
+    case "REJECTED":
+      return "bg-red-100 text-red-700";
+    case "PENDING":
+      return "bg-yellow-100 text-yellow-700";
+    case "IMPROVED":
+      return "bg-orange-100 text-orange-700";
+    default:
+      return "bg-gray-100 text-gray-700";
+  }
+};
 
 export default function TopicGroupRegisterDetail() {
   const { topicId, semesterId } = useParams();
@@ -91,12 +122,12 @@ export default function TopicGroupRegisterDetail() {
                     : "Chưa có chuyên ngành"}
                 </p>
               </div>
-              <div>
-                <p className="text-sm text-gray-500 mb-1">Trạng thái</p>
-                <Badge>
-                  {topicDetails.status || "Chưa cập nhật trạng thái"}
-                </Badge>
-              </div>
+            <div>
+              <p className="text-sm text-gray-500 mb-1">Trạng thái</p>
+              <Badge className={getStatusClass(topicDetails.status)}>
+                {getVietnameseStatus(topicDetails.status)}
+              </Badge>
+            </div>
 
               <div>
                 <p className="text-sm text-gray-500 mb-1">Giảng viên hướng dẫn 1</p>

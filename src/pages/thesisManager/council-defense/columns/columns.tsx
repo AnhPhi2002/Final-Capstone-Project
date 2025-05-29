@@ -2,6 +2,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { CouncilDefense } from "@/lib/api/types";
 import { ActionMenu } from "./action";
+import { Badge } from "@/components/ui/badge";
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -21,7 +22,7 @@ export const columnsCouncils: ColumnDef<CouncilDefense, any>[] = [
   },
   {
     accessorKey: "round",
-    header: "Vòng xét duyệt",
+    header: "Vòng bão vệ",
   },
   {
     accessorKey: "councilStartDate",
@@ -33,19 +34,19 @@ export const columnsCouncils: ColumnDef<CouncilDefense, any>[] = [
     header: "Ngày kết thúc",
     cell: ({ row }) => formatDate(row.original.councilEndDate),
   },
-  {
-    accessorKey: "status",
+{
+    accessorKey: "council.status",
     header: "Trạng thái",
     cell: ({ row }) => {
       const status = row.original.status;
       if (status === "ACTIVE") {
-        return <span className="text-green-600">Đang hoạt động</span>;
+        return <Badge className="text-green-600 bg-green-100">Đang hoạt động</Badge>;
       } else if (status === "COMPLETE") {
-        return <span className="text-blue-600">Hoàn thành </span>;
-      } else if (status === "UPCOMING")  {
-        return <span className="text-yellow-600">Sắp diễn ra</span>;
+        return <Badge className="text-blue-600 bg-blue-100">Hoàn thành</Badge>;
+      } else if (status === "UPCOMING") {
+        return <Badge className="text-yellow-600 bg-yellow-100">Sắp diễn ra</Badge>;
       } else {
-        return <span className="text-gray-600">Không xác định</span>;    
+        return <Badge className="text-gray-600 bg-gray-100">Không xác định</Badge>;
       }
     },
   },

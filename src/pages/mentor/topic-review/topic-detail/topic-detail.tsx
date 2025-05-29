@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { DataTableGroupTopic } from "./data-table-group-topic";
 import { fetchUserById } from "@/lib/api/redux/authSlice";
 import { resetGroupDetail } from "@/lib/api/redux/groupDetailSlice";
-import { Dot } from "lucide-react";
+// import { Dot } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Paragraph } from "@/components/ui/paragraph";
 import { useAppSelector } from "@/hooks/reduxHooks";
@@ -139,8 +139,8 @@ export default function TopicDetail() {
               {topicDetails.createdAt
                 ? new Date(topicDetails.createdAt).toLocaleDateString()
                 : "Không xác định"}
-              <Dot />
-              <span>{author?.fullName || "Không có tác giả"}</span>
+              {/* <Dot /> */}
+              {/* <span>{author?.fullName || "Không có tác giả"}</span> */}
             </Paragraph>
           </div>
         </div>

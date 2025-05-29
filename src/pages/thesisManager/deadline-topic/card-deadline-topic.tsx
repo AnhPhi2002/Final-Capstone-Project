@@ -152,7 +152,7 @@ export const CardDeadlineTopic: React.FC<CardDeadlineTopicProps> = ({
                         Học kỳ: {getSemesterCode(round.semesterId)}
                       </CardDescription>
                       <CardDescription>
-                        Vòng nộp lần: {round.roundNumber} -{" "}
+                        Vòng: {round.roundNumber} -{" "}
                         {TYPE_INFO[round.type]?.label || round.type}
                       </CardDescription>
                     </CardHeader>

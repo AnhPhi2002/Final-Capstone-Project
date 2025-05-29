@@ -83,7 +83,7 @@ export const CardCouncil: React.FC<CardCouncilProps> = ({
                       {formatDate(council.councilEndDate)}
                     </CardDescription>
                     <CardDescription>
-                      Vòng nộp lần: {council.round} - {roundTypeLabel}
+                      Vòng: {council.round} - {roundTypeLabel}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>

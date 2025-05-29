@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/api/redux/store";
 import { fetchTopics, exportTopicsToExcel, resetTopicDetail } from "@/lib/api/redux/topicSlice";
-import { Link, useParams } from "react-router"; // Sửa lỗi import
+import { Link, useParams } from "react-router";
 import { CreateTopic } from "./CreateTopic";
 import Header from "@/components/header";
 import { TopicList } from "./topic-list";
@@ -14,12 +14,11 @@ import { resetSubMentor } from "@/lib/api/redux/authSubSlice";
 import SendMailButton from "./send-mail-button";
 
 export const TopicListPage = () => {
-  const { semesterId, submissionPeriodId } = useParams<{ semesterId: string; submissionPeriodId: string }>(); // Type-safe params
+  const { semesterId, submissionPeriodId } = useParams<{ semesterId: string; submissionPeriodId: string }>();
   const dispatch = useDispatch<AppDispatch>();
-  const { loading: topicsLoading } = useSelector((state: RootState) => state.topics); // Lấy trạng thái loading từ Redux
+  const { loading: topicsLoading } = useSelector((state: RootState) => state.topics);
   const [selectedMajor, setSelectedMajor] = useState<string | undefined>();
 
-  // Fetch topics khi semesterId hoặc selectedMajor thay đổi
   useEffect(() => {
     dispatch(resetTopicDetail());
     dispatch(resetMainMentor());
@@ -27,7 +26,6 @@ export const TopicListPage = () => {
     if (semesterId) {
       dispatch(fetchTopics({ semesterId, submissionPeriodId, majorId: selectedMajor }));
     }
-
   }, [dispatch, semesterId, selectedMajor]);
 
   const handleExportExcel = async () => {
@@ -40,7 +38,6 @@ export const TopicListPage = () => {
       await dispatch(exportTopicsToExcel({ submissionPeriodId, semesterId })).unwrap();
       toast.success("Xuất danh sách đề tài thành công!");
     } catch (error: any) {
-
       toast.error(`${error}`);
     }
   };
@@ -54,7 +51,6 @@ export const TopicListPage = () => {
       />
 
       <div className="flex flex-col flex-1">
-        {/* Phần lọc (SelectMajor + Button) */}
         <div className="sticky top-16 bg-white z-40 p-6 rounded-md">
           <div className="flex items-center justify-between">
             <SelectMajor onMajorChange={setSelectedMajor} />
@@ -76,9 +72,8 @@ export const TopicListPage = () => {
           </div>
         </div>
 
-        {/* Danh sách Topic */}
         <div className="flex-1 overflow-y-auto p-6">
-          <TopicList />
+          <TopicList selectedMajor={selectedMajor} />
         </div>
       </div>
     </div>
