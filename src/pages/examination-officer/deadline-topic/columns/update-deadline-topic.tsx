@@ -111,7 +111,7 @@ export const UpdateDeadlineTopic: React.FC<UpdateDeadlineTopicProps> = ({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <Toaster position="top-right" richColors duration={3000} />
       <div className="bg-white rounded-lg p-6 w-full max-w-lg">
-        <h2 className="text-xl font-bold mb-4">Cập nhật vòng nộp</h2>
+        <h2 className="text-xl font-bold mb-4">Cập nhật vòng</h2>
 
         <div className="space-y-4">
           {/* Giao diện giữ lại nhưng không cho chỉnh sửa type và roundNumber */}
@@ -150,7 +150,7 @@ export const UpdateDeadlineTopic: React.FC<UpdateDeadlineTopicProps> = ({
 
           {/* Mô tả */}
           <div>
-            <Label className="block text-sm font-medium mb-1">Tên vòng nộp</Label>
+            <Label className="block text-sm font-medium mb-1">Tên vòng</Label>
             <Input
               type="text"
               name="description"

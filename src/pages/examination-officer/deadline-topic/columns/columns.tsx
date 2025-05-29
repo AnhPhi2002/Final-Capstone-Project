@@ -33,10 +33,11 @@ export const columns: ColumnDef<SubmissionRound, any>[] = [
       return date ? new Intl.DateTimeFormat("vi-VN").format(new Date(date)) : "Không xác định";
     },
   },
-  {
-    accessorKey: "type",
-    header: "Loại",
-  },
+{
+  accessorKey: "type",
+  header: "Loại",
+  cell: ({ row }) => row.original.type === "TOPIC" ? "Đề tài" : "Duyệt đề tài"
+},
   {
     accessorKey: "status",
     header: "Trạng thái",

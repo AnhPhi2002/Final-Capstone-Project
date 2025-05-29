@@ -1,6 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { CouncilMember } from "@/lib/api/types";
 import { ActionMenuMember } from "./action";
+import { Badge } from "@/components/ui/badge";
 
 export const columnsCouncilMembers: ColumnDef<CouncilMember, any>[] = [
   {
@@ -27,9 +28,9 @@ export const columnsCouncilMembers: ColumnDef<CouncilMember, any>[] = [
     accessorKey: "status",
     header: "Trạng thái",
     cell: ({ row }) => (
-      <span className={row.original.status === "ACTIVE" ? "text-green-600" : "text-red-600"}>
+      <Badge className={row.original.status === "ACTIVE" ? "text-green-600 bg-green-100" : "text-red-600 bg-red-300"}>
         {row.original.status === "ACTIVE" ? "Hoạt động" : "Không hoạt động"}
-      </span>
+      </Badge>
     ),
   },
   {

@@ -1,8 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
 import { fetchTopics } from "@/lib/api/redux/topicSlice";
+import { fetchUserDetail } from "@/lib/api/redux/userSlice";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { resetSubMentor } from "@/lib/api/redux/authSubSlice";
@@ -60,18 +61,38 @@ export const TopicApprovedList = ({ selectedMajor }: { selectedMajor?: string })
     (state: RootState) => state.topics
   );
 
+  const [usernames, setUsernames] = useState<{ [key: string]: string }>({});
+
   useEffect(() => {
     dispatch(resetMainMentor());
     dispatch(resetSubMentor());
     if (semesterId) {
       dispatch(fetchTopics({ semesterId, majorId: selectedMajor } as any));
     }
-  }, [dispatch, semesterId, selectedMajor, topics.length]);
+  }, [dispatch, semesterId, selectedMajor]);
+
+  useEffect(() => {
+    topics.forEach((topic) => {
+      if (topic.createdBy && !usernames[topic.createdBy]) {
+        dispatch(fetchUserDetail(topic.createdBy)).then((result) => {
+          if (result.meta.requestStatus === "fulfilled" && result.payload) {
+            const username = (result.payload as { username: string }).username;
+            if (username) {
+              setUsernames((prev) => ({
+                ...prev,
+                [topic.createdBy!]: username,
+              }));
+            }
+          }
+        });
+      }
+    });
+  }, [dispatch, topics, usernames]);
 
   const filteredTopics = topics.filter((topic) => topic.status !== "PENDING");
 
   return (
-    <div className="bg-background text-foreground min-h-scree">
+    <div className="bg-background text-foreground min-h-screen">
       <div className="flex flex-1 flex-col gap-4">
         {topicsLoading ? (
           <p className="text-center text-gray-500">Đang tải danh sách đề tài...</p>
@@ -113,7 +134,7 @@ export const TopicApprovedList = ({ selectedMajor }: { selectedMajor?: string })
 
               {/* Nội dung đề tài */}
               <div className="flex-1">
-                <h4 className="font-semibold text-lg text-primary ">
+                <h4 className="font-semibold text-lg text-primary">
                   <span className="text-blue-500 font-medium">Đề tài:</span>{" "}
                   {topic.nameEn || "Không có tên"}
                 </h4>
@@ -132,7 +153,10 @@ export const TopicApprovedList = ({ selectedMajor }: { selectedMajor?: string })
                   <p>
                     Được tạo bởi:{" "}
                     <span className="font-medium">
-                      {topic.creator?.fullName || "Không xác định"}
+                      {usernames[topic.createdBy!] ||
+                        (topic.creator?.fullName === "lecturer"
+                          ? "Giảng viên"
+                          : topic.creator?.fullName || "Không xác định")}
                     </span>
                   </p>
                 </div>

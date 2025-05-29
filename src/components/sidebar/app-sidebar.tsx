@@ -660,6 +660,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         name: user.fullName || user.username || "Người dùng",
         email: user.email,
         avatar: user.avatar || "/default-avatar.png",
+        username: user.username || "Người dùng",
       }
     : null;
 

@@ -12,6 +12,38 @@ import { registerTopic } from "@/lib/api/redux/topicStudentSlice";
 import { fetchUserById } from "@/lib/api/redux/authSlice";
 import { fetchSubUserById } from "@/lib/api/redux/authSubSlice";
 
+// Hàm chuyển trạng thái sang tiếng Việt
+const getVietnameseStatus = (status: string) => {
+  switch (status) {
+    case "APPROVED":
+      return "Đã duyệt";
+    case "REJECTED":
+      return "Từ chối";
+    case "PENDING":
+      return "Chờ duyệt";
+    case "IMPROVED":
+      return "Cần chỉnh sửa";
+    default:
+      return "Không xác định";
+  }
+};
+
+// Màu sắc cho Badge theo trạng thái
+const getStatusClass = (status: string) => {
+  switch (status) {
+    case "APPROVED":
+      return "bg-green-100 text-green-700";
+    case "REJECTED":
+      return "bg-red-100 text-red-700";
+    case "PENDING":
+      return "bg-yellow-100 text-yellow-700";
+    case "IMPROVED":
+      return "bg-orange-100 text-orange-700";
+    default:
+      return "bg-gray-100 text-gray-700";
+  }
+};
+
 export default function AllTopicDetail() {
   const { topicId, semesterId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
@@ -95,42 +127,42 @@ export default function AllTopicDetail() {
               </p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 mb-1">Tên tiếng Việt</p> 
+              <p className="text-sm text-gray-500 mb-1">Tên tiếng Việt</p>
               <p className="font-semibold italic">
                 {topicDetails.nameVi || "Chưa có tiêu đề tiếng Việt"}
               </p>
             </div>
             <div>
-                <p className="text-sm text-gray-500 mb-1">Ngành</p>
-                <p className="font-semibold italic">
-                  {topicDetails.majors?.length > 0
-                    ? topicDetails.majors.map(major => major.name).join(", ")
-                    : "Chưa có chuyên ngành"}
-                </p>
-              </div>
+              <p className="text-sm text-gray-500 mb-1">Ngành</p>
+              <p className="font-semibold italic">
+                {topicDetails.majors?.length > 0
+                  ? topicDetails.majors.map((major) => major.name).join(", ")
+                  : "Chưa có chuyên ngành"}
+              </p>
+            </div>
             <div>
               <p className="text-sm text-gray-500 mb-1">Trạng thái</p>
-              <Badge>
-                {topicDetails.status || "Chưa cập nhật trạng thái"}
+              <Badge className={getStatusClass(topicDetails.status)}>
+                {getVietnameseStatus(topicDetails.status)}
               </Badge>
             </div>
             <div>
-              <p className="text-sm text-gray-500 mb-1">Mentor 1</p>
+              <p className="text-sm text-gray-500 mb-1">Giảng viên hướng dẫn 1</p>
               <p className="font-semibold italic">
                 {mainMentor?.email ? (
                   <span className="text-blue-600">{mainMentor.email}</span>
                 ) : (
-                  <span className="text-red-500">Chưa có mentor 1</span>
+                  <span className="text-red-500">Chưa có giảng viên hướng dẫn 1</span>
                 )}
               </p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 mb-1">Mentor 2</p>
+              <p className="text-sm text-gray-500 mb-1">Giảng viên hướng dẫn 2</p>
               <p className="font-semibold italic">
                 {subMentor?.email ? (
                   <span className="text-blue-600">{subMentor.email}</span>
                 ) : (
-                  <span className="text-red-500">Chưa có mentor 2</span>
+                  <span className="text-red-500">Chưa có giảng viên hướng dẫn 2</span>
                 )}
               </p>
             </div>

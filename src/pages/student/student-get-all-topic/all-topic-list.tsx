@@ -62,6 +62,10 @@ export const AllTopicList = () => {
                   <span>Mổ tả: </span>
                   {topic.description || "Không có mô tả"}
                 </p>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  <span>Ngành: </span>
+                  {topic.majors?.length > 1 ? `Liên ngành ( ${topic.majors.map(major => major.name).join(", ")} )` : topic.majors?.[0]?.name || "Không có ngành"}
+                </p>
               </div>
             </div>
           ))

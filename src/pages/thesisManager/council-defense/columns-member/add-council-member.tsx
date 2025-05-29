@@ -165,7 +165,7 @@ export const AddMemberDefenseCouncil: React.FC<AddMemberReviewCouncilProps> = ({
                           {mentors?.length ? (
                             mentors.map((mentor: Mentor) => (
                               <SelectItem key={mentor.id} value={mentor.email}>
-                                {mentor.fullName} ({mentor.email})
+                                {mentor.email}
                                 {field.value.some((m) => m.email === mentor.email) && " ✓"}
                               </SelectItem>
                             ))
@@ -186,8 +186,7 @@ export const AddMemberDefenseCouncil: React.FC<AddMemberReviewCouncilProps> = ({
                               className="flex items-center justify-between gap-2"
                             >
                               <span className="text-sm">
-                                {mentors.find((m: Mentor) => m.email === member.email)?.fullName} (
-                                <br/>{member.email})
+                               {member.email}
                               </span>
                               <Select
                                 value={member.role}

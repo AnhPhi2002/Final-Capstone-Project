@@ -28,6 +28,6 @@ export const groupColumns: ColumnDef<CouncilReviewSessions>[] = [
   {
     id: "actions",
     header: "Hành động",
-    cell: ({ row, table }) => <Action session={row.original} table={table} />, // Truyền table vào Action
+    cell: ({ row, table }) => <Action session={row.original} table={table} />,
   },
 ];

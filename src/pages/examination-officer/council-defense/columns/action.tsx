@@ -41,7 +41,7 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({ council, refetchData }) 
             Cập nhật Hội đồng
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => navigate(`/graduation-thesis/council-defense-member/${council.id}/${semesterId}`)}
+            onClick={() => navigate(`/examination/council-defense-member/${council.id}/${semesterId}`)}
           >
             Thành viên hội đồng
           </DropdownMenuItem>

@@ -2,6 +2,8 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { ReviewSchedule } from "@/lib/api/types";
 import { Action } from "./action";
+import { Badge } from "@/components/ui/badge";
+
 
 export const columns: ColumnDef<ReviewSchedule>[] = [
   {
@@ -37,11 +39,11 @@ export const columns: ColumnDef<ReviewSchedule>[] = [
     cell: ({ row }) => {
       const status = row.original.schedule.status;
       if (status === "PENDING") {
-        return <span className="text-yellow-600">Đang chờ</span>;
+        return <Badge className="text-yellow-600 bg-yellow-100">Đang chờ</Badge>;
       } else if (status === "COMPLETED") {
-        return <span className="text-green-600">Hoàn thành</span>;
+        return <Badge className="text-green-600 bg-green-100">Hoàn thành</Badge>;
       } else {
-        return <span className="text-gray-600">{status}</span>;
+        return <Badge className="text-gray-600 bg-gray-100">{status}</Badge>;
       }
     },
   },

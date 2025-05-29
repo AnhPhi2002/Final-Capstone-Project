@@ -32,6 +32,7 @@ const statusClasses: {
   PENDING: "bg-gray-100 text-gray-600 hover:bg-gray-200",
   IMPROVED: "bg-yellow-100 text-yellow-600 hover:bg-yellow-200",
 };
+
 const statusTranslations: {
   [key in "APPROVED" | "REJECTED" | "PENDING" | "IMPROVED"]: string;
 } = {
@@ -40,7 +41,12 @@ const statusTranslations: {
   PENDING: "Đang chờ duyệt",
   IMPROVED: "Cần cải thiện",
 };
-export const TopicList = () => {
+
+interface TopicListProps {
+  selectedMajor?: string;
+}
+
+export const TopicList = ({ selectedMajor }: TopicListProps) => {
   const { semesterId, submissionPeriodId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
@@ -58,10 +64,11 @@ export const TopicList = () => {
         fetchTopics({
           semesterId,
           submissionPeriodId,
+          majorId: selectedMajor,
         })
       );
     }
-  }, [dispatch, semesterId, submissionPeriodId]);
+  }, [dispatch, semesterId, submissionPeriodId, selectedMajor]);
 
   useEffect(() => {
     topics.forEach((topic) => {
@@ -78,17 +85,24 @@ export const TopicList = () => {
     });
   }, [dispatch, topics, usernames]);
 
+  // Filter topics based on selectedMajor
+  const filteredTopics = selectedMajor
+    ? topics.filter((topic) =>
+        topic.majors.some((major) => major.id === selectedMajor)
+      )
+    : topics;
+
   return (
     <div className="bg-background text-foreground min-h-screen">
       <div className="flex flex-1 flex-col gap-4">
         {topicsLoading ? (
           <p className="text-center text-gray-500">Đang tải danh sách đề tài...</p>
-        ) : topics.length === 0 ? (
+        ) : filteredTopics.length === 0 ? (
           <p className="text-center text-gray-500">
             Không có đề tài nào trong đợt nộp này.
           </p>
         ) : (
-          topics.map((topic) => (
+          filteredTopics.map((topic) => (
             <div
               key={topic.id}
               onClick={() =>
@@ -103,7 +117,9 @@ export const TopicList = () => {
                   ] || "bg-gray-100 text-gray-600 hover:bg-gray-200"
                 } absolute top-4 right-6 px-2 py-1 rounded-md text-xs`}
               >
-                {statusTranslations[topic.status as "APPROVED" | "REJECTED" | "PENDING" | "IMPROVED"] || topic.status}
+                {statusTranslations[
+                  topic.status as "APPROVED" | "REJECTED" | "PENDING" | "IMPROVED"
+                ] || topic.status}
               </Badge>
 
               <Avatar className="w-12 h-12">
@@ -129,12 +145,16 @@ export const TopicList = () => {
                 <div className="mt-2 text-xs text-muted-foreground">
                   <p>
                     Ngày tạo:{" "}
-                    <span className="font-medium">{formatDate(topic.createdAt)}</span>
+                    <span className="font-medium">
+                      {formatDate(topic.createdAt)}
+                    </span>
                   </p>
                   <p>
                     Được tạo bởi:{" "}
                     <span className="font-medium">
-                      {usernames[topic.createdBy!] || topic.creator?.fullName || "Không xác định"}
+                      {usernames[topic.createdBy!] ||
+                        topic.creator?.fullName ||
+                        "Không xác định"}
                     </span>
                   </p>
                 </div>
