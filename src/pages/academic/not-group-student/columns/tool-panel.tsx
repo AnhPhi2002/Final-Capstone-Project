@@ -2,29 +2,27 @@ import { Input } from "@/components/ui/input";
 import SendMailButton from "./send-mail-button";
 import { useParams } from "react-router";
 
-const ToolPanel = () => {
+interface ToolPanelProps {
+  searchTerm: string;
+  setSearchTerm: (value: string) => void;
+}
+
+const ToolPanel = ({ searchTerm, setSearchTerm }: ToolPanelProps) => {
   const { semesterId } = useParams<{ semesterId: string }>();
   return (
-    <div className="grid grid-cols-12 pb-5 gap-5">
-      <div className="col-span-4 flex gap-3">
-        <Input placeholder="Nhập để tìm kiếm" />
-      </div>
-      <div className="col-span-3">
+    <div className="flex items-center pb-5 gap-5">
+      <Input
+        placeholder="Nhập để tìm kiếm"
+        className="w-[300px]"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+      <div className="ml-auto">
         {semesterId && <SendMailButton semesterId={semesterId} />}
-      </div>
-
-      <div className="col-span-2 flex">
-        {/* <Link
-          to={`/academic/random-group-student-page${semesterId ? `/${semesterId}` : ""}`}
-          className="w-full"
-        >
-          <Button className="w-full flex gap-3 items-center">
-            Nhóm ngẫu nhiên
-          </Button>
-        </Link> */}
       </div>
     </div>
   );
 };
 
 export default ToolPanel;
+

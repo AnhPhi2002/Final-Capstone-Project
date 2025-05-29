@@ -95,7 +95,7 @@ export const CreateInterMajorDialog: React.FC<Props> = ({ semesterId }) => {
         </DialogHeader>
         <div className="space-y-4">
           <div>
-            <Label>Tên liên kết</Label>
+            <Label className="mb-2 block">Tên liên kết</Label>
             <Input
               placeholder="VD: SE_AI"
               value={name}
@@ -104,7 +104,7 @@ export const CreateInterMajorDialog: React.FC<Props> = ({ semesterId }) => {
           </div>
 
           <div>
-            <Label>Ngành thứ nhất</Label>
+            <Label className="mb-2 block">Ngành thứ nhất</Label>
             <Select value={firstMajorId} onValueChange={setFirstMajorId}>
               <SelectTrigger>
                 <SelectValue placeholder="Chọn ngành thứ nhất" />
@@ -120,9 +120,9 @@ export const CreateInterMajorDialog: React.FC<Props> = ({ semesterId }) => {
           </div>
 
           <div>
-            <Label>Ngành thứ hai</Label>
+            <Label className="mb-2 block">Ngành thứ hai</Label>
             <Select value={secondMajorId} onValueChange={setSecondMajorId}>
-              <SelectTrigger>
+              <SelectTrigger className="mb-2">
                 <SelectValue placeholder="Chọn ngành thứ hai" />
               </SelectTrigger>
               <SelectContent>
@@ -136,7 +136,7 @@ export const CreateInterMajorDialog: React.FC<Props> = ({ semesterId }) => {
           </div>
 
           <Button
-            className="w-full mt-4"
+            className="w-full"
             onClick={handleSubmit}
             disabled={loading}
           >

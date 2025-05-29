@@ -3,9 +3,13 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Mentor } from '@/lib/api/types';
 import { Badge } from "@/components/ui/badge";
 
-export const columns: ColumnDef<Mentor>[] = [
+export const getColumns = (offset: number): ColumnDef<Mentor>[] => [
   {
-    accessorKey: "lecturerCode", // Định danh chính xác cho cột
+    header: "STT",
+    cell: ({ row }) => <span className="font-bold">{offset + row.index + 1}</span>,
+  },
+  {
+    accessorKey: "lecturerCode",
     header: "Mã GV",
   },
   {
@@ -42,7 +46,5 @@ export const columns: ColumnDef<Mentor>[] = [
       );
     },
   },
-
-
 ];
 

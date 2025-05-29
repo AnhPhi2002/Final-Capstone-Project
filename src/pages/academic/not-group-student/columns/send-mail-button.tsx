@@ -92,7 +92,7 @@ const SendMailButton = ({ semesterId }: SendMailButtonProps) => {
             <div className="flex justify-between items-center mb-4">
               <span className="font-semibold">Chọn mẫu email:</span>
               <Button
-                variant="outline"
+               
                 onClick={() => navigate("/academic/template-detail")}
               >
                 Quản lý Templates
@@ -100,7 +100,7 @@ const SendMailButton = ({ semesterId }: SendMailButtonProps) => {
             </div>
 
             <div className="mb-4">
-              <span className="font-semibold">Chọn mẫu email:</span>
+              <span className="font-semibold mb-2 block">Chọn mẫu email:</span>
               <Select onValueChange={handleTemplateChange}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Chọn mẫu email" />
