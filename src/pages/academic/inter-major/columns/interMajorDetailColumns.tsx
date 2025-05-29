@@ -2,12 +2,18 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 
+import { InterMajorAction } from "./interMajorAction";
+
 export type InterMajorDetailRow = {
+  id: string;
   name: string;
   firstMajor: string;
   secondMajor: string;
   semester: string;
   isActive: boolean;
+  semesterId: string;
+  firstMajorId: string;
+  secondMajorId: string;
 };
 
 export const interMajorDetailColumns: ColumnDef<InterMajorDetailRow>[] = [
@@ -42,5 +48,10 @@ export const interMajorDetailColumns: ColumnDef<InterMajorDetailRow>[] = [
         </Badge>
       );
     },
+  },
+  {
+    id: "actions",
+    header: "Thao tác",
+    cell: ({ row }) => <InterMajorAction row={row.original} />,
   },
 ];

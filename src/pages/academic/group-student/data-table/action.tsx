@@ -14,7 +14,6 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/api/redux/store";
 import { toast } from "sonner";
 
-
 export const Action = ({ group }: { group: any }) => {
   const dispatch = useDispatch<AppDispatch>();
   const semesterId = useParams<{ semesterId: string }>().semesterId as string;
@@ -37,15 +36,30 @@ export const Action = ({ group }: { group: any }) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Hành Động</DropdownMenuLabel>
-        <DropdownMenuItem onClick={() => navigator.clipboard.writeText(group.id)}>
+        <DropdownMenuItem
+          onClick={() => {
+            navigator.clipboard.writeText(group.id);
+            toast.success("Đã sao chép mã nhóm");
+          }}
+        >
           Sao Chép Mã Nhóm
         </DropdownMenuItem>
+
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <Link to={`/academic/group-student-detail/${group.id}/${group.semesterId}`}>Xem Chi Tiết</Link>
+          <Link
+            to={`/academic/group-student-detail/${group.id}/${group.semesterId}`}
+          >
+            Xem Chi Tiết
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="text-red-500" onClick={() => handleDelete(group.id)}>Xóa Nhóm</DropdownMenuItem>
+        <DropdownMenuItem
+          className="text-red-500"
+          onClick={() => handleDelete(group.id)}
+        >
+          Xóa Nhóm
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
