@@ -18,6 +18,10 @@ export const NotGroupStudentDetailPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [searchTerm, setSearchTerm] = useState("");
+  
+useEffect(() => {
+  setCurrentPage(1); // luôn quay về trang 1 khi search
+}, [searchTerm]);
 
   useEffect(() => {
     if (semesterId?.trim()) {
