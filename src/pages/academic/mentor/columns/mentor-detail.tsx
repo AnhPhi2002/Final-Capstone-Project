@@ -22,10 +22,10 @@ export const MentorDetail = () => {
   );
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  const [searchTerm, setSearchTerm] = useState(""); 
-useEffect(() => {
-  setCurrentPage(1); // luôn quay về trang 1 khi search
-}, [searchTerm]);
+  const [searchTerm, setSearchTerm] = useState("");
+  useEffect(() => {
+    setCurrentPage(1); // luôn quay về trang 1 khi search
+  }, [searchTerm]);
   useEffect(() => {
     if (semesterId) {
       dispatch(fetchMentorsBySemesterId(semesterId));
@@ -43,7 +43,8 @@ useEffect(() => {
       .filter(Boolean)
       .some(
         (field) =>
-          field && field.toLowerCase().includes(searchTerm.toLowerCase())
+          field &&
+          field.trim().toLowerCase().includes(searchTerm.trim().toLowerCase())
       )
   );
 
@@ -54,7 +55,7 @@ useEffect(() => {
   const offset = (currentPage - 1) * itemsPerPage;
   const currentMentors = filteredMentors.slice(offset, offset + itemsPerPage);
 
-  const columns = getColumns(offset);
+  const columns = getColumns(offset, searchTerm);
 
   return (
     <div className="flex flex-col h-screen">

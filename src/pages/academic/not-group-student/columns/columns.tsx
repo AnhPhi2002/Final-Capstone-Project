@@ -2,8 +2,29 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { StudentNotGroup } from "@/lib/api/redux/types/not-group-student";
 
+/**
+ * Highlight phần khớp với searchTerm bằng nền vàng + in đậm.
+ */
+const highlightMatch = (text: string, query: string) => {
+  const cleanQuery = query.trim();
+  if (!cleanQuery || !text) return text;
+  const parts = text.split(new RegExp(`(${cleanQuery})`, "gi"));
+  return parts.map((part, idx) =>
+    part.toLowerCase() === cleanQuery.toLowerCase() ? (
+      <span key={idx} className="bg-yellow-200 font-bold">{part}</span>
+    ) : (
+      part
+    )
+  );
+};
+
+
+/**
+ * Tạo danh sách cột với STT và highlight kết quả tìm kiếm.
+ */
 export const getColumns = (
-  baseIndex: number
+  baseIndex: number,
+  searchTerm: string
 ): ColumnDef<StudentNotGroup, unknown>[] => [
   {
     header: "STT",
@@ -14,22 +35,26 @@ export const getColumns = (
   {
     accessorKey: "studentCode",
     header: "MSSV",
-    cell: ({ row }) => <span>{row.getValue("studentCode")}</span>,
+    cell: ({ row }) =>
+      highlightMatch(row.original.studentCode || "", searchTerm),
   },
   {
     accessorKey: "email",
     header: "Email",
-    cell: ({ row }) => <span>{row.original.email || "N/A"}</span>,
+    cell: ({ row }) =>
+      highlightMatch(row.original.email || "", searchTerm),
   },
   {
     accessorKey: "major",
     header: "Ngành học",
-    cell: ({ row }) => <span>{row.original.major || "N/A"}</span>,
+    cell: ({ row }) =>
+      highlightMatch(row.original.major || "", searchTerm),
   },
   {
     accessorKey: "specialization.name",
     header: "Chuyên ngành hẹp",
-    cell: ({ row }) => <span>{row.original.specialization || "N/A"}</span>,
+    cell: ({ row }) =>
+      highlightMatch(row.original.specialization || "", searchTerm),
   },
   {
     accessorKey: "qualificationStatus",

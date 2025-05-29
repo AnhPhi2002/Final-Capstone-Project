@@ -18,7 +18,7 @@ export const NotGroupStudentDetailPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [searchTerm, setSearchTerm] = useState("");
-  
+
 useEffect(() => {
   setCurrentPage(1); // luôn quay về trang 1 khi search
 }, [searchTerm]);
@@ -34,7 +34,8 @@ useEffect(() => {
     [s.studentCode, s.email, s.major, s.specialization]
       .filter(Boolean)
       .some((field) =>
-        field && field.toLowerCase().includes(searchTerm.toLowerCase())
+        field && field.trim().toLowerCase().includes(searchTerm.trim().toLowerCase())
+
       )
   );
 
@@ -49,7 +50,8 @@ useEffect(() => {
     offset + itemsPerPage
   );
 
-  const columns = getColumns(offset);
+const columns = getColumns(offset, searchTerm);
+
 
   if (loading) return <p>Đang tải danh sách sinh viên...</p>;
   if (error) return <p className="text-red-500">Lỗi: {error}</p>;
