@@ -65,7 +65,7 @@ export function DataTable({ columns, data }: DataTableProps) {
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
+                Không có dữ liệu.
                 </TableCell>
               </TableRow>
             )}

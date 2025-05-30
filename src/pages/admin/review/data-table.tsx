@@ -32,7 +32,7 @@ export function DataTable({ table }: { table: any }) {
           ) : (
             <TableRow>
               <TableCell colSpan={table.getAllColumns().length} className="text-center">
-                No results.
+                Không có dữ liệu.
               </TableCell>
             </TableRow>
           )}

@@ -6,7 +6,6 @@ import { PaginationDashboardPage } from "@/pages/admin/pagination";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import ManualCreateGroupDialog from "./create-group-button";
-import { columns } from "./data-table/columns";
 import { DataTable } from "./data-table/data-table";
 import { ExportExcelGroupStudent } from "./export-excel-group-student";
 import { Button } from "@/components/ui/button";
@@ -21,11 +20,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CreateRandomGroup } from "./create-random-group";
+import ToolPanel from "./data-table/tool-panel";
+import { getColumns } from "./data-table/columns";
 
 export const GroupStudentCardPage = () => {
   const { semesterId } = useParams<{ semesterId: string }>();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
   const {
     groups,
     loading: groupsLoading,
@@ -39,10 +41,11 @@ export const GroupStudentCardPage = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [isAutoCreatedFilter, setIsAutoCreatedFilter] = useState<string>("all");
-  const activeGroups = groups.filter((group) => !group.isDeleted);
-  const itemsPerPage = 10;
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  useEffect(() => {
+    setCurrentPage(1); // luôn quay về trang 1 khi search
+  }, [searchTerm]);
 
-  // Lấy danh sách nhóm và sinh viên chưa có nhóm
   useEffect(() => {
     if (semesterId) {
       dispatch(fetchGroupsBySemester(semesterId));
@@ -50,26 +53,44 @@ export const GroupStudentCardPage = () => {
     }
   }, [dispatch, semesterId]);
 
-  // Lọc nhóm theo isAutoCreated
+  const activeGroups = groups.filter((group) => !group.isDeleted);
+
+  const keyword = searchTerm.trim().toLowerCase();
+
+  // Lọc theo searchTerm + isAutoCreated
   const filteredGroups = activeGroups.filter((group) => {
-    if (isAutoCreatedFilter === "all") return true;
-    return group.isAutoCreated === (isAutoCreatedFilter === "true");
+    const mentorEmails = group.mentors?.map((m) => m.email || "").join(" ");
+    const statusText =
+      group.status === "ACTIVE"
+        ? "Đang Hoạt Động"
+        : group.status === "PENDING"
+        ? "Chờ Xử Lý"
+        : "Ngừng Hoạt Động";
+
+    const matchesSearch =
+      !keyword ||
+      group.groupCode?.toLowerCase().includes(keyword) ||
+      mentorEmails?.toLowerCase().includes(keyword) ||
+      statusText.toLowerCase().includes(keyword);
+
+    const matchesFilter =
+      isAutoCreatedFilter === "all" ||
+      group.isAutoCreated === (isAutoCreatedFilter === "true");
+
+    return matchesSearch && matchesFilter;
   });
 
-  // Tính tổng số trang dựa trên filteredGroups
-  const totalPages =
-    filteredGroups.length > 0 ? Math.ceil(filteredGroups.length / itemsPerPage) : 1;
-
-  // Lấy các nhóm hiện tại cho trang hiện tại
-  const currentGroups = filteredGroups.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+  const itemsPerPage = 10;
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredGroups.length / itemsPerPage)
   );
+  const offset = (currentPage - 1) * itemsPerPage;
 
-  // Hàm xử lý khi nhấn nút Quay lại
-  const handleBack = () => {
-    navigate("/academic/group-student");
-  };
+  const currentGroups = filteredGroups.slice(offset, offset + itemsPerPage);
+  const columns = getColumns(offset, searchTerm);
+
+  const handleBack = () => navigate("/academic/group-student");
 
   if (groupsLoading || studentsLoading) return <p>Đang tải dữ liệu...</p>;
   if (groupsError) return <p className="text-red-500">Lỗi: {groupsError}</p>;
@@ -88,15 +109,16 @@ export const GroupStudentCardPage = () => {
         currentPage="Danh sách nhóm sinh viên"
       />
       <div className="p-5 flex-1 overflow-auto">
-        <div className="flex justify-between items-center mb-4">
-          <div>
+        <div className="flex justify-between items-start mb-4">
+          <div className="flex items-center gap-4">
             <Button onClick={handleBack}>
               <ArrowLeft className="mr-2 h-4 w-4" />
               Quay lại
             </Button>
+            <ToolPanel searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
           </div>
+
           <div className="flex gap-x-4 items-center">
-            {/* Thêm bộ lọc isAutoCreated */}
             <Select
               onValueChange={setIsAutoCreatedFilter}
               value={isAutoCreatedFilter}
@@ -113,9 +135,7 @@ export const GroupStudentCardPage = () => {
                 </SelectGroup>
               </SelectContent>
             </Select>
-            {/* <div className="flex justify-end mb-4 gap-x-4"> */}
-              {semesterId && <CreateRandomGroup semesterId={semesterId} />}
-            {/* </div> */}
+            {semesterId && <CreateRandomGroup semesterId={semesterId} />}
             <ExportExcelGroupStudent />
             <ManualCreateGroupDialog
               semesterId={semesterId!}
@@ -125,6 +145,7 @@ export const GroupStudentCardPage = () => {
         </div>
 
         <DataTable columns={columns} data={currentGroups} />
+
         <div className="flex justify-end mt-6">
           <PaginationDashboardPage
             totalPages={totalPages}
