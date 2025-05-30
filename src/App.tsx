@@ -9,12 +9,16 @@ import { LecturerContainer } from "./containers/lecturer-container";
 import { StudentContainer } from "./containers/student-container";
 import AccessDenied from "./pages/error/access-denied";
 import AutoNavigate from "./pages/auto-navigate";
+import ForgotPassword from "./pages/auth/forgot-password";
+import ResetPassword from "./pages/auth/reset-password";
 
 export default function Home() {
   return (
     <div>
       <Routes>
       <Route path="/" element={<AutoNavigate />} />
+        <Route path="/forgot-password" element={<ForgotPassword  />} />
+        <Route path="/reset-password" element={<ResetPassword  />} />
         <Route path="/log-in" element={<LoginPage />} />       
         <Route path="/admin/*" element={<AdminContainer />} />
         <Route path="/academic/*" element={<AcademicOfficerContainer />} />

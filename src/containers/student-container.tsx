@@ -82,8 +82,8 @@ export const StudentContainer = () => {
 
         <Route path="/progress-report" element={<ProgressReportPage />} />
         <Route path="/progress-report/:id" element={<ProgressReportDetail />} />
-
-
+        
+   
         <Route path="/*" element={<NotFound />} />
       </Routes>
     </MainLayout>

@@ -210,7 +210,7 @@ const LoginPage = () => {
                   </Label>
                 </div>
                 <Link
-                  to="/recover-password"
+                  to="/forgot-password"
                   className="text-sm text-primary hover:underline"
                 >
                   Quên mật khẩu?

@@ -25,13 +25,18 @@ interface UpdateUserPayload {
   fullName: string;
 }
 
+interface ChangePasswordPayload {
+  oldPassword: string;
+  newPassword: string;
+}
+
 interface UpdateUserRolesPayload {
   userId: string;
   roles: string[];
 }
 
 export const fetchUsers = createAsyncThunk(
-  'users/fetchUsers',
+  "users/fetchUsers",
   async ({ semesterId }: { semesterId: string }, { rejectWithValue }) => {
     try {
       const response = await axiosClient.get(`/admin/users`, {
@@ -39,64 +44,111 @@ export const fetchUsers = createAsyncThunk(
       });
       return response.data.users as User[];
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch users');
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch users"
+      );
     }
   }
 );
 
-export const fetchUserDetail = createAsyncThunk("users/fetchUserDetail", async (userId: string) => {
-  const response = await axiosClient.get(`/admin/users/${userId}`);
-  return response.data.user as User;
-});
-
-export const createUser = createAsyncThunk("users/createUser", async (payload: CreateUserPayload, { rejectWithValue }) => {
-  try {
-    const response = await axiosClient.post("/admin/users", payload);
+export const fetchUserDetail = createAsyncThunk(
+  "users/fetchUserDetail",
+  async (userId: string) => {
+    const response = await axiosClient.get(`/admin/users/${userId}`);
     return response.data.user as User;
-  } catch (error: any) {
-    return rejectWithValue(error.response?.data?.message || "Failed to create user");
   }
-});
+);
 
-export const updateUser = createAsyncThunk("users/updateUser", async (payload: UpdateUserPayload, { rejectWithValue }) => {
-  try {
-    const { userId, ...updateData } = payload;
-    const response = await axiosClient.put(`/admin/users/${userId}`, updateData);
-    return response.data.user as User;
-  } catch (error: any) {
-    return rejectWithValue(error.response?.data?.message || "Failed to update user");
+export const createUser = createAsyncThunk(
+  "users/createUser",
+  async (payload: CreateUserPayload, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.post("/admin/users", payload);
+      return response.data.user as User;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to create user"
+      );
+    }
   }
-});
+);
 
-export const updateUserRoles = createAsyncThunk("users/updateUserRoles", async (payload: UpdateUserRolesPayload, { rejectWithValue }) => {
-  try {
-    const response = await axiosClient.put("/admin/users/roles", payload);
-    return response.data.user as User;
-  } catch (error: any) {
-    return rejectWithValue(error.response?.data?.message || "Failed to update user roles");
+export const updateUser = createAsyncThunk(
+  "users/updateUser",
+  async (payload: UpdateUserPayload, { rejectWithValue }) => {
+    try {
+      const { userId, ...updateData } = payload;
+      const response = await axiosClient.put(
+        `/admin/users/${userId}`,
+        updateData
+      );
+      return response.data.user as User;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to update user"
+      );
+    }
   }
-});
+);
+
+export const updateUserRoles = createAsyncThunk(
+  "users/updateUserRoles",
+  async (payload: UpdateUserRolesPayload, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.put("/admin/users/roles", payload);
+      return response.data.user as User;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to update user roles"
+      );
+    }
+  }
+);
 
 export const deleteUser = createAsyncThunk(
-  'users/deleteUser',
-  async ({ userId, semesterId }: { userId: string; semesterId: string }, { rejectWithValue }) => {
+  "users/deleteUser",
+  async (
+    { userId, semesterId }: { userId: string; semesterId: string },
+    { rejectWithValue }
+  ) => {
     try {
-      const response = await axiosClient.put(`/admin/users/${userId}/delete`, { semesterId });
+      const response = await axiosClient.put(`/admin/users/${userId}/delete`, {
+        semesterId,
+      });
       return response.data; // Return full response
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to delete user');
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to delete user"
+      );
     }
   }
 );
 
 export const deleteAll = createAsyncThunk(
-  'users/deleteAll',
+  "users/deleteAll",
   async ({ semesterId }: { semesterId: string }, { rejectWithValue }) => {
     try {
-      const response = await axiosClient.put(`/admin/delete-all`, { semesterId });
+      const response = await axiosClient.put(`/admin/delete-all`, {
+        semesterId,
+      });
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to delete user');
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to delete user"
+      );
+    }
+  }
+);
+export const changePassword = createAsyncThunk(
+  "users/changePassword",
+  async (payload: ChangePasswordPayload, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.put("/users/change-password", payload);
+      return response.data.message as string; // server trả về { message: "Thành công" }
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Thay đổi mật khẩu thất bại"
+      );
     }
   }
 );
@@ -111,7 +163,10 @@ const userSlice = createSlice({
     error: null,
   } as UserState,
   reducers: {
-    filterUsers: (state, action: PayloadAction<{ search: string; role: string }>) => {
+    filterUsers: (
+      state,
+      action: PayloadAction<{ search: string; role: string }>
+    ) => {
       const { search, role } = action.payload;
       let filtered = state.users;
 
@@ -126,10 +181,15 @@ const userSlice = createSlice({
 
       if (role && role !== "*") {
         filtered = filtered.filter((user) => {
-          const roleDescription = user.roles[0]?.role?.description || "Không xác định";
-          if (role === "student") return roleDescription === "Sinh viên (Student Groups/Students)";
+          const roleDescription =
+            user.roles[0]?.role?.description || "Không xác định";
+          if (role === "student")
+            return roleDescription === "Sinh viên (Student Groups/Students)";
           if (role === "lecturer") return roleDescription === "Giảng viên";
-          if (role === "staff") return roleDescription === "Không xác định" || user.roles.length === 0;
+          if (role === "staff")
+            return (
+              roleDescription === "Không xác định" || user.roles.length === 0
+            );
           return true;
         });
       }
@@ -184,8 +244,12 @@ const userSlice = createSlice({
       .addCase(updateUser.fulfilled, (state, action) => {
         state.loading = false;
         const updatedUser = action.payload;
-        state.users = state.users.map((user) => (user.id === updatedUser.id ? updatedUser : user));
-        state.filteredUsers = state.filteredUsers.map((user) => (user.id === updatedUser.id ? updatedUser : user));
+        state.users = state.users.map((user) =>
+          user.id === updatedUser.id ? updatedUser : user
+        );
+        state.filteredUsers = state.filteredUsers.map((user) =>
+          user.id === updatedUser.id ? updatedUser : user
+        );
         if (state.userDetail && state.userDetail.id === updatedUser.id) {
           state.userDetail = updatedUser;
         }
@@ -201,8 +265,12 @@ const userSlice = createSlice({
       .addCase(updateUserRoles.fulfilled, (state, action) => {
         state.loading = false;
         const updatedUser = action.payload;
-        state.users = state.users.map((user) => (user.id === updatedUser.id ? updatedUser : user));
-        state.filteredUsers = state.filteredUsers.map((user) => (user.id === updatedUser.id ? updatedUser : user));
+        state.users = state.users.map((user) =>
+          user.id === updatedUser.id ? updatedUser : user
+        );
+        state.filteredUsers = state.filteredUsers.map((user) =>
+          user.id === updatedUser.id ? updatedUser : user
+        );
         if (state.userDetail && state.userDetail.id === updatedUser.id) {
           state.userDetail = updatedUser;
         }
@@ -219,7 +287,9 @@ const userSlice = createSlice({
         state.loading = false;
         const userId = action.payload;
         state.users = state.users.filter((user) => user.id !== userId);
-        state.filteredUsers = state.filteredUsers.filter((user) => user.id !== userId);
+        state.filteredUsers = state.filteredUsers.filter(
+          (user) => user.id !== userId
+        );
         if (state.userDetail && state.userDetail.id === userId) {
           state.userDetail = null;
         }
@@ -236,7 +306,9 @@ const userSlice = createSlice({
         state.loading = false;
         const userId = action.payload;
         state.users = state.users.filter((user) => user.id !== userId);
-        state.filteredUsers = state.filteredUsers.filter((user) => user.id !== userId);
+        state.filteredUsers = state.filteredUsers.filter(
+          (user) => user.id !== userId
+        );
         if (state.userDetail && state.userDetail.id === userId) {
           state.userDetail = null;
         }
@@ -244,6 +316,16 @@ const userSlice = createSlice({
       .addCase(deleteAll.rejected, (state) => {
         state.loading = false;
         // state.error = action.payload as string;
+      })
+      .addCase(changePassword.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(changePassword.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(changePassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   },
 });
