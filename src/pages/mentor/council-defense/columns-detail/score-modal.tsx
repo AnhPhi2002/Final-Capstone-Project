@@ -189,8 +189,9 @@ export const ScoreModal: React.FC<ScoreModalProps> = ({ open, setOpen, session, 
                           >
                             <div className="flex items-center justify-between">
                               <span className="font-medium">
-                                {student?.studentCode} - {email} ({studentInfo?.status})
+                                {student?.studentCode} - {email} ({studentInfo?.status === "ACTIVE" ? "Hoạt động" : "Dừng hoạt động"})
                               </span>
+
                             </div>
                             <div>
                               <FormLabel>Kết quả</FormLabel>
@@ -214,8 +215,8 @@ export const ScoreModal: React.FC<ScoreModalProps> = ({ open, setOpen, session, 
                                       <SelectValue placeholder="Chọn kết quả" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                      <SelectItem value="PASS">PASS</SelectItem>
-                                      <SelectItem value="NOT_PASS">NOT_PASS</SelectItem>
+                                      <SelectItem value="PASS">Đạt</SelectItem>
+                                      <SelectItem value="NOT_PASS">Không Đạt</SelectItem>
                                     </SelectContent>
                                   </Select>
                                 ) : (

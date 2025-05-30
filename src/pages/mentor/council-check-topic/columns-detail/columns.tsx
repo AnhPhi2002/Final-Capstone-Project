@@ -24,10 +24,23 @@ export const groupColumns: ColumnDef<CouncilReviewSessions>[] = [
     accessorKey: "room",
     header: "Phòng",
   },
-  {
-    accessorKey: "status",
-    header: "Trạng thái",
+{
+  accessorKey: "status",
+  header: "Trạng thái",
+  cell: ({ row }) => {
+    const status = row.getValue("status");
+    switch (status) {
+      case "PENDING":
+        return "Đang chờ";
+      case "COMPLETED":
+        return "Hoàn thành";
+      case "ACTIVE":
+        return "Đang hoạt động";
+      default:
+        return status;
+    }
   },
+},
   // {
   //   accessorKey: "assignments",
   //   header: "Điểm",

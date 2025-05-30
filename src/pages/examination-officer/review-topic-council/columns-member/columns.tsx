@@ -4,12 +4,12 @@ import { ActionMenuMember } from "./action";
 import { Badge } from "@/components/ui/badge";
 
 export const columnsCouncilMembers: ColumnDef<CouncilMember, any>[] = [
+  // {
+  //   accessorKey: "id",
+  //   header: "ID",
+  // },
   {
-    accessorKey: "id",
-    header: "ID",
-  },
-  {
-    accessorKey: "user.fullName",
+    accessorKey: "user.username",
     header: "Họ và tên",
   },
   {

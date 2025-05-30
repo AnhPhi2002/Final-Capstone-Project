@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 
 export const memberColumns: ColumnDef<CouncilDefenseMember>[] = [
   {
-    accessorKey: "user.fullName",
+    accessorKey: "user.username",
     header: "Họ và tên",
   },
   {

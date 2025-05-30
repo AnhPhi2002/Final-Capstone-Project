@@ -143,7 +143,13 @@ export const ReportAction = ({ schedule }: ReportActionProps) => {
             <div className="space-y-4">
               <div>
                 <Label>Kết quả</Label>
-                <p className="text-sm text-gray-700">{memberResult.result || "Chưa có kết quả"}</p>
+                <p className="text-sm text-gray-700">{memberResult.result
+                            ? memberResult.result === "PASS"
+                              ? "Đạt"
+                              : memberResult.result === "NOT_PASS"
+                                ? "Không đạt"
+                                : memberResult.result
+                            : "Chưa có kết quả"}</p>
               </div>
               <div>
                 <Label>Phản hồi</Label>

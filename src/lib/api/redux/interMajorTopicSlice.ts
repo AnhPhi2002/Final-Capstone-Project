@@ -53,9 +53,9 @@ const interMajorTopicSlice = createSlice({
       .addCase(createInterMajorTopic.fulfilled, (state) => {
         state.loading = false;
       })
-      .addCase(createInterMajorTopic.rejected, (state, action) => {
+      .addCase(createInterMajorTopic.rejected, (state) => {
         state.loading = false;
-        state.error = action.payload as string;
+        // state.error = action.payload as string;
       })
       .addCase(createInterMajorTopicByAcademic.pending, (state) => {
         state.loading = true;

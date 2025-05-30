@@ -301,7 +301,7 @@ const StatisticsOverview: React.FC<StatisticsOverviewProps> = ({ semesterId }) =
   return (
     <div className="rounded-lg mt-6">
       {renderStatSection(
-        "Sinh viên đủ điều kiện làm đồ án tốt nghiệp-không đủ điều kiện làm đồ án tốt nghiệp",
+        "Sinh viên đủ điều kiện và không đủ điều kiện làm đồ án tốt nghiệp",
         studentQualification.data,
         studentQualification.total,
         studentQualification.loading,
@@ -319,7 +319,7 @@ const StatisticsOverview: React.FC<StatisticsOverviewProps> = ({ semesterId }) =
         "bar"
       )}
       {renderStatSection(
-        "Trạng thái đề tài",
+        "Trạng thái đề tài được đăng ký của giảng viên",
         topicStatus.data,
         undefined,
         topicStatus.loading,
@@ -328,7 +328,7 @@ const StatisticsOverview: React.FC<StatisticsOverviewProps> = ({ semesterId }) =
         "bar"
       )}
       {renderStatSection(
-        "Vòng xét duyệt",
+        "Số nhóm hội đồng đã kiểm tra trong vòng review",
         reviewRounds.data,
         reviewRounds.total,
         reviewRounds.loading,
@@ -337,7 +337,7 @@ const StatisticsOverview: React.FC<StatisticsOverviewProps> = ({ semesterId }) =
         "line"
       )}
       {renderStatSection(
-        "Vòng bảo vệ",
+        "Số nhóm hội đồng đã kiểm tra trong vòng bảo vệ",
         defenseRounds.data,
         defenseRounds.total,
         defenseRounds.loading,
@@ -346,7 +346,7 @@ const StatisticsOverview: React.FC<StatisticsOverviewProps> = ({ semesterId }) =
         "line"
       )}
       {renderStatSection(
-        "Sinh viên có/không có nhóm",
+        "Sinh viên có/không nhóm làm đồ án tốt nghiệp",
         studentGroupStatus.data,
         studentGroupStatus.total,
         studentGroupStatus.loading,
@@ -355,7 +355,7 @@ const StatisticsOverview: React.FC<StatisticsOverviewProps> = ({ semesterId }) =
         "bar"
       )}
       {renderStatSection(
-        "Nhóm có-không có đề tài",
+        "Nhóm có/không đề tài",
         groupTopicStatus.data,
         undefined,
         groupTopicStatus.loading,
@@ -364,7 +364,7 @@ const StatisticsOverview: React.FC<StatisticsOverviewProps> = ({ semesterId }) =
         "bar"
       )}
       {renderStatSection(
-        "Tổng hợp kết quả bảo vệ",
+        "Tổng hợp kết quả bảo vệ của từng sinh viên",
         defenseResultSummary.data,
         undefined,
         defenseResultSummary.loading,
@@ -373,7 +373,7 @@ const StatisticsOverview: React.FC<StatisticsOverviewProps> = ({ semesterId }) =
         "bar"
       )}
       {renderStatSection(
-        "Kết quả bảo vệ theo vòng",
+        "Kết quả bảo vệ theo vòng của sinh viên",
         defenseResultByRound.data,
         undefined,
         defenseResultByRound.loading,
@@ -382,7 +382,7 @@ const StatisticsOverview: React.FC<StatisticsOverviewProps> = ({ semesterId }) =
         "stackedBar"
       )}
       {renderStatSection(
-        "Loại hình tạo nhóm",
+        "Loại hình tạo nhóm làm đồ án tốt nghiệp",
         groupCreationType.data?.breakdown || [],
         groupCreationType.data?.totalGroups,
         groupCreationType.loading,

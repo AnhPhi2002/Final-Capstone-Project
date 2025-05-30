@@ -29,8 +29,8 @@ const CreateReportPeriodForm = ({ semesterId, groups, onCancel }: CreateReportPe
       toast.error("Vui lòng chọn nhóm!");
       return;
     }
-    if (!formData.weekNumber || isNaN(Number(formData.weekNumber))) {
-      toast.error("Vui lòng nhập số tuần hợp lệ!");
+    if (!formData.weekNumber) {
+      toast.error("Vui lòng chọn số tuần!");
       return;
     }
     if (!formData.startDate) {
@@ -58,6 +58,8 @@ const CreateReportPeriodForm = ({ semesterId, groups, onCancel }: CreateReportPe
     }
   };
 
+  const weeks = Array.from({ length: 14 }, (_, i) => (i + 1).toString());
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
@@ -84,16 +86,25 @@ const CreateReportPeriodForm = ({ semesterId, groups, onCancel }: CreateReportPe
       </div>
       <div>
         <label className="block text-sm text-gray-500 mb-1">Số tuần</label>
-        <Input
-          type="number"
+        <Select
           value={formData.weekNumber}
-          onChange={(e) => setFormData({ ...formData, weekNumber: e.target.value })}
-          className="w-full p-2 border rounded"
-          required
+          onValueChange={(value) => setFormData({ ...formData, weekNumber: value })}
           disabled={loading}
-          placeholder="Nhập số tuần (ví dụ: 2)"
-          min="1"
-        />
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Chọn số tuần" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Số tuần</SelectLabel>
+              {weeks.map((week) => (
+                <SelectItem key={week} value={week}>
+                  Tuần {week}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
       </div>
       <div>
         <label className="block text-sm text-gray-500 mb-1">Ngày bắt đầu</label>

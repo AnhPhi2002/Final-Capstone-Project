@@ -115,11 +115,11 @@ export const CreateReviewTopicCouncil = () => {
       <Toaster position="top-right" richColors duration={3000} />
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button className="bg-black text-white">Tạo hội đồng xét duyệt</Button>
+          <Button className="bg-black text-white">Tạo hội đồng kiểm tra</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Tạo hội đồng xét duyệt</DialogTitle>
+            <DialogTitle>Tạo hội đồng kiểm tra</DialogTitle>
             <DialogDescription>Nhập thông tin hội đồng bên dưới.</DialogDescription>
           </DialogHeader>
 
@@ -129,7 +129,7 @@ export const CreateReviewTopicCouncil = () => {
               <Input
                 value={councilName}
                 onChange={(e) => setCouncilName(e.target.value)}
-                placeholder="VD: Hội đồng xét duyệt 1"
+                placeholder="VD: Hội đồng kiểm tra 1"
                 className="col-span-3"
               />
             </div>
