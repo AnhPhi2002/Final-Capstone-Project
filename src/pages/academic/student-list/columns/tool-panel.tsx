@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/select";
 import { useNavigate, useParams, Link } from "react-router"; // ✅ Sửa lại import đúng
 import SendMailButton from "./send-mail-button";
-import { DeleteStudentList } from "./delete-student-list";
+// import { DeleteStudentList } from "./delete-student-list";
 
 interface ToolPanelProps {
   onFilterChange: (value: string) => void;
@@ -25,7 +25,7 @@ const ToolPanel = ({
   itemsPerPage,
 }: ToolPanelProps) => {
   const { semesterId } = useParams<{ semesterId: string }>();
-  const navigate = useNavigate(); // ✅ Thêm navigate
+  const navigate = useNavigate(); 
 
   return (
     <div className="flex flex-col gap-4">
@@ -42,7 +42,7 @@ const ToolPanel = ({
             placeholder="Nhập để tìm kiếm"
             onChange={(e) => onSearchChange(e.target.value)}
           />
-          <DeleteStudentList semesterId={semesterId} />
+          {/* <DeleteStudentList semesterId={semesterId} /> */}
         </div>
 
         <div className="col-span-3">

@@ -40,9 +40,9 @@ const getStatusClass = (status: string) => {
     case "REJECTED":
       return "bg-red-100 text-red-700 hover:bg-red-200";
     case "PENDING":
-      return "bg-yellow-100 text-yellow-700 hover:bg-yellow-200";
+      return "bg-gray-100 text-gray-700 hover:bg-yellow-200";
     case "IMPROVED":
-      return "bg-black text-white hover:bg-zinc-800";
+      return "bg-yellow-100 text-yellow-700 hover:bg-zinc-800";
     default:
       return "bg-gray-100 text-gray-700";
   }

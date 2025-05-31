@@ -45,11 +45,9 @@ export function MeetingPage() {
     }
   }, [semesterId, dispatch]);
 
-  // Fetch group details for meetings whenever the meetings array changes
   useEffect(() => {
     if (semesterId && meetings.length > 0) {
       meetings.forEach((meeting: any) => {
-        // Only fetch if groupCode for this groupId hasn't been fetched yet
         if (!groupCodes[meeting.groupId]) {
           dispatch(fetchGroupDetail({ groupId: meeting.groupId, semesterId })).then(
             (groupResult) => {
@@ -85,6 +83,16 @@ export function MeetingPage() {
   const sortedAndFilteredMeetings = [...meetings]
     .sort((a, b) => new Date(a.meetingTime).getTime() - new Date(b.meetingTime).getTime())
     .filter((meeting) => selectedGroupId === "all" || meeting.groupId === selectedGroupId);
+
+  const formatMeetingTime = (time: string) => {
+    const date = new Date(time);
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const year = date.getUTCFullYear();
+    const hours = String(date.getUTCHours()).padStart(2, '0');
+    const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
@@ -180,16 +188,7 @@ export function MeetingPage() {
                     <Calendar className="w-5 h-5 mr-2 text-blue-500 flex-shrink-0" />
                     <div>
                       <span className="font-medium">Thời gian:</span>
-                      <p className="text-sm">
-                        {new Date(meeting.meetingTime).toLocaleString("vi-VN", {
-                          weekday: "long",
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </p>
+                      <p className="text-sm">{formatMeetingTime(meeting.meetingTime)}</p>
                     </div>
                   </div>
                   <div className="flex items-start text-gray-700">

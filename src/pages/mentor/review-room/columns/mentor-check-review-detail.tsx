@@ -1,5 +1,4 @@
-// src/components/mentor-check-review.tsx
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { RootState, AppDispatch } from "@/lib/api/redux/store";
@@ -13,6 +12,15 @@ import {
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import Header from "@/components/header";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export interface ReviewSchedule {
   schedule: {
@@ -45,25 +53,36 @@ export const MentorCheckReview: React.FC = () => {
   const { reviewSchedulesMentor, loadingSchedulesMentor, errorSchedulesMentor } = useSelector(
     (state: RootState) => state.councilReview
   );
-  const { semesterId } = useParams<{ semesterId?: string }>(); // Lấy semesterId từ URL
+  const { semesterId } = useParams<{ semesterId?: string }>();
+  const [selectedGroup, setSelectedGroup] = useState<string>("all");
 
-  // Fetch schedules khi component mount hoặc semesterId thay đổi
   useEffect(() => {
     if (semesterId) {
       dispatch(fetchReviewSchedulesForMentor({ semesterId }));
     }
   }, [dispatch, semesterId]);
 
-  // Cấu hình bảng
+  // Extract unique group codes
+  const uniqueGroupCodes = Array.from(
+    new Set(reviewSchedulesMentor?.map((item) => item.schedule.group.groupCode) || [])
+  );
+
+  // Configure table with filter
   const table = useReactTable({
     data: reviewSchedulesMentor || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    state: {
+      globalFilter: selectedGroup === "all" ? "" : selectedGroup,
+    },
+    globalFilterFn: (row, _columnId, filterValue) => {
+      if (!filterValue) return true;
+      return row.original.schedule.group.groupCode === filterValue;
+    },
   });
 
-  // Kiểm tra semesterId hợp lệ
   if (!semesterId) {
     return <p className="text-center text-red-500">Semester ID không hợp lệ!</p>;
   }
@@ -76,6 +95,32 @@ export const MentorCheckReview: React.FC = () => {
         currentPage="Phòng kiểm tra"
       />
       <div className="p-6 flex-1 overflow-auto">
+        <div className="mb-4">
+          <Select
+            value={selectedGroup}
+            onValueChange={(value) => setSelectedGroup(value)}
+            disabled={loadingSchedulesMentor || uniqueGroupCodes.length === 0}
+          >
+            <SelectTrigger className="w-full sm:w-64">
+              <SelectValue
+                placeholder={
+                  uniqueGroupCodes.length === 0 ? "Không có nhóm" : "Lọc theo nhóm"
+                }
+              />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Nhóm</SelectLabel>
+                <SelectItem value="all">Tất cả nhóm</SelectItem>
+                {uniqueGroupCodes.map((groupCode) => (
+                  <SelectItem key={groupCode} value={groupCode}>
+                    {groupCode}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
         {loadingSchedulesMentor ? (
           <p className="text-center text-gray-500">Đang tải lịch xét duyệt...</p>
         ) : errorSchedulesMentor ? (
@@ -88,4 +133,4 @@ export const MentorCheckReview: React.FC = () => {
       </div>
     </div>
   );
-}; 
+};

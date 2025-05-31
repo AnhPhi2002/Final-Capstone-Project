@@ -209,10 +209,10 @@ export const updateTopicStatus = createAsyncThunk(
 
 export const fetchRegisteredTopics = createAsyncThunk(
   "topics/fetchRegisteredTopics",
-  async ({ semesterId }: { semesterId: string }, { rejectWithValue }) => {
+  async ({ semesterId, round }: { semesterId: string, round: string }, { rejectWithValue }) => {
     try {
       const response = await axiosClient.get(`/topics/registered-topics`, {
-        params: { semesterId },
+        params: { semesterId, round },
       });
       return response.data.data;
     } catch (error: any) {

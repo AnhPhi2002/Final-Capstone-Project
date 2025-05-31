@@ -17,20 +17,30 @@ const statusClasses: {
   IMPROVED: "bg-yellow-100 text-yellow-600 hover:bg-yellow-200",
 };
 
+const statusTranslations: {
+  [key in "APPROVED" | "REJECTED" | "PENDING" | "IMPROVED"]: string;
+} = {
+  APPROVED: "Đã duyệt",
+  REJECTED: "Bị từ chối",
+  PENDING: "Đang chờ duyệt",
+  IMPROVED: "Cần cải thiện",
+};
+
 export const ApproveTopicList = () => {
-  const { semesterId } = useParams<{ semesterId: string }>();
+  const { semesterId, roundNumber } = useParams<{ semesterId: string; roundNumber: string }>();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const round = roundNumber;
 
   const { registeredTopics, loading, error } = useSelector(
     (state: RootState) => state.topics
   );
 
   useEffect(() => {
-    if (semesterId) {
-      dispatch(fetchRegisteredTopics({ semesterId }));
+    if (semesterId && round) {
+      dispatch(fetchRegisteredTopics({ semesterId, round }));
     }
-  }, [dispatch, semesterId]);
+  }, [dispatch, semesterId, round]);
 
   useEffect(() => {
     if (error) {
@@ -59,13 +69,12 @@ export const ApproveTopicList = () => {
               className="relative min-h-[130px] w-full rounded-lg bg-muted/50 flex items-center p-4 gap-x-6 cursor-pointer hover:bg-muted transition-all mb-4"
             >
               <Badge
-                className={`${
-                  statusClasses[
-                    topic.status as "APPROVED" | "REJECTED" | "PENDING" | "IMPROVED"
+                className={`${statusClasses[
+                  topic.status as "APPROVED" | "REJECTED" | "PENDING" | "IMPROVED"
                   ] || "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                } absolute top-4 right-6 px-2 py-1 rounded-md text-xs`}
+                  } absolute top-4 right-6 px-2 py-1 rounded-md text-xs`}
               >
-                {topic.status}
+                {statusTranslations[topic.status as "APPROVED" | "REJECTED" | "PENDING" | "IMPROVED"] || topic.status}
               </Badge>
               <Avatar className="w-12 h-12">
                 <AvatarImage

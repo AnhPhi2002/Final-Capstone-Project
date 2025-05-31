@@ -48,7 +48,15 @@ export const ViewScoreModal: React.FC<ViewScoreModalProps> = ({
                       <tr key={index} className="border-t">
                         <td className="p-2 text-sm text-gray-700">{result.student.studentCode}</td>
                         <td className="p-2 text-sm text-gray-700">{email}</td>
-                        <td className="p-2 text-sm text-gray-700">{result.result || "Chưa có kết quả"}</td>
+                        <td className="p-2 text-sm text-gray-700">
+                          {result.result
+                            ? result.result === "PASS"
+                              ? "Đạt"
+                              : result.result === "NOT_PASS"
+                                ? "Không đạt"
+                                : result.result
+                            : "Chưa có kết quả"}
+                        </td>
                         <td className="p-2 text-sm text-gray-700">{result.feedback || "Chưa có phản hồi"}</td>
                       </tr>
                     );
