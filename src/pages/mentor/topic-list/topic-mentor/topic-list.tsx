@@ -143,7 +143,7 @@ export const TopicList = ({ selectedMajor }: { selectedMajor?: string }) => {
 
               <div className="flex-1">
                 <h4 className="font-semibold text-lg text-primary">
-                  <span className="text-blue-500 font-medium">Topic:</span>{" "}
+                  <span className="text-blue-500 font-medium">Đề tài:</span>{" "}
                   {topic.nameEn || "Không có tên"}
                 </h4>
                 <p className="text-muted-foreground text-sm leading-relaxed">

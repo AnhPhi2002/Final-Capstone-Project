@@ -53,7 +53,7 @@ const getVietnameseStatus = (status: string) => {
 };
 
 export const TopicApprovedList = ({ selectedMajor }: { selectedMajor?: string }) => {
-  const { semesterId } = useParams();
+  const { semesterId, submissionPeriodId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
@@ -66,10 +66,10 @@ export const TopicApprovedList = ({ selectedMajor }: { selectedMajor?: string })
   useEffect(() => {
     dispatch(resetMainMentor());
     dispatch(resetSubMentor());
-    if (semesterId) {
-      dispatch(fetchTopics({ semesterId, majorId: selectedMajor } as any));
+    if (semesterId && submissionPeriodId) {
+      dispatch(fetchTopics({ semesterId,submissionPeriodId, majorId: selectedMajor } as any));
     }
-  }, [dispatch, semesterId, selectedMajor]);
+  }, [dispatch, semesterId,submissionPeriodId, selectedMajor]);
 
   useEffect(() => {
     topics.forEach((topic) => {

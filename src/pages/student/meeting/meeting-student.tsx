@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/lib/api/redux/store";
 import { fetchGroupsBySemester } from "@/lib/api/redux/groupSlice";
@@ -12,8 +11,11 @@ import { Calendar, MapPin, User } from "lucide-react";
 import Header from "@/components/header";
 
 export const MeetingStudentDetail: React.FC = () => {
-  const { id: semesterId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
+
+  // Lấy user từ localStorage
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const semesterId = user?.semesterId;
 
   const groupLoading = useSelector((state: RootState) => state.groups.loading);
   const groupError = useSelector((state: RootState) => state.groups.error);
@@ -43,21 +45,16 @@ export const MeetingStudentDetail: React.FC = () => {
 
   const formatMeetingTime = (time: string) => {
     const date = new Date(time);
-    const day = String(date.getUTCDate()).padStart(2, '0');
-    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(date.getUTCDate()).padStart(2, "0");
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
     const year = date.getUTCFullYear();
-    const hours = String(date.getUTCHours()).padStart(2, '0');
-    const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+    const hours = String(date.getUTCHours()).padStart(2, "0");
+    const minutes = String(date.getUTCMinutes()).padStart(2, "0");
     return `${day}/${month}/${year} ${hours}:${minutes}`;
   };
 
   return (
     <div className="flex flex-col h-screen">
-      <Header
-        title="Tổng quan"
-        href="/"
-        currentPage="Danh sách buổi họp"
-      />
       <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8 bg-gray-100 min-h-screen">
         <h1 className="text-4xl font-extrabold text-gray-900 mb-8 text-center tracking-tight">
           Danh Sách Buổi Họp
@@ -94,7 +91,7 @@ export const MeetingStudentDetail: React.FC = () => {
                       variant="secondary"
                       className="text-sm bg-blue-100 text-blue-800 font-medium"
                     >
-                      {formatMeetingTime(meeting.meetingTime).split(' ')[0]}
+                      {formatMeetingTime(meeting.meetingTime).split(" ")[0]}
                     </Badge>
                   </CardTitle>
                 </CardHeader>
