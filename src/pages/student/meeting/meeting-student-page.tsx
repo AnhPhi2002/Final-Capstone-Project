@@ -1,5 +1,6 @@
 import Header from "@/components/header";
-import { SelectSemester } from "./select/select-semester";
+// import { SelectSemester } from "./select/select-semester";
+import { MeetingStudentDetail } from "./meeting-student";
 
 export const MeetingStudentPage = () => {
   return (
@@ -10,8 +11,8 @@ export const MeetingStudentPage = () => {
         currentPage="Lịch họp"
       />
       <div className="p-5 flex-1 overflow-auto">
-        <SelectSemester />
-        
+        {/* <SelectSemester /> */}
+        <MeetingStudentDetail/>
       </div>
     </div>
   );

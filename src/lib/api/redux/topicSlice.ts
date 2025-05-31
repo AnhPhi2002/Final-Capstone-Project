@@ -23,6 +23,26 @@ export const fetchTopics = createAsyncThunk(
   }
 );
 
+export const fetchTopicsApproved = createAsyncThunk(
+  "topics/fetchTopicsApproved",
+  async (
+    { semesterId, submissionPeriodId, majorId }: { semesterId: string; submissionPeriodId?: string; majorId?: string;},
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axiosClient.get(`/topics/semester/${semesterId}`, {
+        params: { majorId, submissionPeriodId },
+      });
+      return response.data.data as Topic[];
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(error.response?.data?.message || error.message);
+      }
+      return rejectWithValue("An unknown error occurred");
+    }
+  }
+);
+
 export const exportTopicsToExcel = createAsyncThunk(
   "topics/exportExcel",
   async (
@@ -279,6 +299,21 @@ const topicSlice = createSlice({
       })
       .addCase(
         fetchTopics.fulfilled,
+        (state, action: PayloadAction<Topic[]>) => {
+          state.loading = false;
+          state.data = action.payload;
+        }
+      )
+      .addCase(fetchTopicsApproved.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+        .addCase(fetchTopicsApproved.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        fetchTopicsApproved.fulfilled,
         (state, action: PayloadAction<Topic[]>) => {
           state.loading = false;
           state.data = action.payload;
