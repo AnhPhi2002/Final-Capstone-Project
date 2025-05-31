@@ -67,7 +67,7 @@ const CreateGroupDialogContent: React.FC<Props> = ({ onSuccess }) => {
         <RadioGroup value={groupType} onValueChange={(val) => setGroupType(val as any)} className="flex gap-6">
           <div className="flex items-center gap-2">
             <RadioGroupItem value="normal" id="normal" />
-            <Label htmlFor="normal">Nhóm thường</Label>
+            <Label htmlFor="normal">Nhóm đơn ngành</Label>
           </div>
           <div className="flex items-center gap-2">
             <RadioGroupItem value="inter" id="inter" />

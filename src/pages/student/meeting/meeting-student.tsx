@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, MapPin, User } from "lucide-react";
-import Header from "@/components/header";
+
 
 export const MeetingStudentDetail: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
