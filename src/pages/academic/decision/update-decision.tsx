@@ -657,7 +657,7 @@ export const UpdateDecision = () => {
               <div className="mt-8 flex justify-between">
                 <div className="w-1/2 text-[13pt]">
                   <p className="italic font-semibold">Nơi nhận:</p>
-                  <p>- Như Điều 4 (để t/h);</p>
+                  <p>- Như Điều 4(để t/h);</p>
                   <p>- Lưu VT.</p>
                 </div>
                 <div className={`${textClass} w-1/3 text-center`}>
@@ -676,13 +676,28 @@ export const UpdateDecision = () => {
                   )}
                 </div>
               </div>
-
-             
+              <div className="flex justify-end p-6 gap-4">
+                <Button
+                  variant="outline"
+                  onClick={() => navigate(`/academic/decision/${semesterId}`)}
+                >
+                  Hủy
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={loading || uploadDecisionLoading || !decisionId}
+                >
+                  {loading || uploadDecisionLoading
+                    ? "Đang cập nhật..."
+                    : "Cập nhật quyết định"}
+                </Button>
+              </div>
+              {error && <p className="text-red-500 text-center">{error}</p>}
             </form>
           </CardContent>
         </Card>
       </div>
-      {/* Block 2: Form quyết định mới */}
+      {/* Block 2: Form quyAAết định mới */}
       <div className="max-w-8xl mx-auto p-8">
         <Card className={`${textClass} shadow-lg`}>
           <CardContent className="p-10">
@@ -710,23 +725,6 @@ export const UpdateDecision = () => {
           <div className="mt-6">
             <DataTableList columns={columnsList} data={guidanceList} />
           </div>
-           <div className="flex justify-end p-6 gap-4">
-                <Button
-                  variant="outline"
-                  onClick={() => navigate(`/academic/decision/${semesterId}`)}
-                >
-                  Hủy
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={loading || uploadDecisionLoading || !decisionId}
-                >
-                  {loading || uploadDecisionLoading
-                    ? "Đang cập nhật..."
-                    : "Cập nhật quyết định"}
-                </Button>
-              </div>
-              {error && <p className="text-red-500 text-center">{error}</p>}
         </Card>
       </div>
     </div>
