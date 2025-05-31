@@ -122,7 +122,7 @@ export default function UpdateReviewTopicDetail() {
       ).unwrap();
       toast.success("Cập nhật trạng thái thành công!");
       await dispatch(fetchTopicDetail({ topicId, semesterId })).unwrap();
-      navigate(`/lecturer/review-topic-list`);
+      navigate(`/lecturer/review-topic-page`);
     } catch (err: any) {
       toast.error(err?.message || "Có lỗi xảy ra khi cập nhật trạng thái.");
     }
