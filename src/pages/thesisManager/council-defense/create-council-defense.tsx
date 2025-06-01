@@ -56,7 +56,7 @@ export const CreateDefenseTopicCouncil = () => {
   }, [selectedSemester, dispatch]);
 
   const convertToISODate = (date: string, isEnd = false) =>
-    isEnd ? `${date}T23:59:59.999Z` : `${date}T00:00:00.000Z`;
+    isEnd ? `${date}T00:00:00.000Z` : `${date}T00:00:00.000Z`;
 
   const handleCreateCouncil = async () => {
     if (!councilName || !selectedSemester || !selectedSubmissionRound || !startDate || !endDate) {
@@ -71,7 +71,7 @@ export const CreateDefenseTopicCouncil = () => {
 
     setCreating(true);
 
-    const round = submissionRounds.find((r) => r.id === selectedSubmissionRound);
+    const round = submissionRounds.find((r: typeof submissionRounds[number]) => r.id === selectedSubmissionRound);
     if (!round || round.type !== "DEFENSE") {
       toast.error("Đợt nộp không hợp lệ!");
       setCreating(false);
