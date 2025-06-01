@@ -57,7 +57,7 @@ export const CreateReviewTopicCouncil = () => {
   }, [selectedSemester, dispatch]);
 
   const convertToISODate = (date: string, isEnd = false) =>
-    isEnd ? `${date}T23:59:59.999Z` : `${date}T00:00:00.000Z`;
+    isEnd ? `${date}T00:00:00.000Z` : `${date}T00:00:00.000Z`;
 
   const handleCreateCouncil = async () => {
     if (!councilName || !selectedSemester || !selectedSubmissionRound || !startDate || !endDate) {
