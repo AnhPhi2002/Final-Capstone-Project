@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/api/redux/store";
 import { fetchTopics, exportTopicsToExcel, resetTopicDetail } from "@/lib/api/redux/topicSlice";
-import { Link, useParams } from "react-router";
+import {  useParams } from "react-router";
 import { CreateTopic } from "./CreateTopic";
 import Header from "@/components/header";
 import { TopicList } from "./topic-list";
@@ -64,9 +64,9 @@ export const TopicListPage = () => {
                 Export danh sách đề tài
               </Button>
               <CreateTopic semesterId={semesterId!} submissionPeriodId={submissionPeriodId!}/>
-              <Link to={`/import-topic-mentor/${semesterId}`}>
+              {/* <Link to={`/import-topic-mentor/${semesterId}`}>
                 <Button className="flex gap-3 items-center">Import đề tài</Button>
-              </Link>
+              </Link> */}
             </div>
           </div>
         </div>
